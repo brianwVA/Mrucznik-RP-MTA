@@ -36,10 +36,8 @@ CREATE TABLE `mru_personalization` (
   `KaryTXD` tinyint(1) NOT NULL DEFAULT '0',
   `NewNick` tinyint(1) NOT NULL DEFAULT '0',
   `newbie` tinyint(1) NOT NULL DEFAULT '0',
-  `BronieScroll` tinyint(1) NOT NULL DEFAULT '0',
-  PRIMARY KEY (`UID`),
-  KEY `UID` (`UID`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+  `BronieScroll` tinyint(1) NOT NULL DEFAULT '0'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
@@ -51,4 +49,4 @@ CREATE TABLE `mru_personalization` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2026-01-12 17:24:46
+-- Dump completed on 2026-01-12 18:03:41

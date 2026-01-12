@@ -13,12 +13,10 @@ mkdir -p "$OUTDIR/schema" "$OUTDIR/data"
 echo "📦 Zrzuty będą zapisane w: $OUTDIR"
 echo
 
-# listy filtrów
+# listy filtrów (bez danych)
 NO_DATA_TABLES=(
 actions
-KO_liderzy_frakcji
 mru_bany
-mru_discord
 mru_diseases
 mru_graffiti
 mru_gspanel
@@ -28,54 +26,60 @@ mru_last_logons
 mru_liderzy
 mru_logowania
 mru_opisy
-mru_partie_akcje
-mru_partie
-mru_partie_hasla
-mru_partie_podpisy
-mru_partie_m
 mru_personalization
 mru_player_cooking
 mru_playeritems
-mru_pp
 mru_premium
 mru_premium_skins
-mru_premiumcode
-mru_premiumsales
-mru_prop_owners
 mru_ryby
 mru_uprawnienia
-mru_weaponskill
-mru_wybory
 )
 
-TABLES=$(sudo mysql -N -e "SHOW TABLES FROM \`$DB\`;")
+# lista wszystkich tabel i widoków
+OBJECTS=$(sudo mysql -N -e "SHOW FULL TABLES FROM \`$DB\`;")
 
-for T in $TABLES; do
-    COUNT=$(sudo mysql -N -e "SELECT COUNT(*) FROM \`$DB\`.\`$T\`;")
-    echo "Tabela: $T | wiersze: $COUNT"
+while read -r NAME TYPE; do
+    # knex*
+    if [[ "$NAME" == knex* ]]; then
+        continue
+    fi
+
+    COUNT="-"
+    if [[ "$TYPE" == "BASE TABLE" ]]; then
+        COUNT=$(sudo mysql -N -e "SELECT COUNT(*) FROM \`$DB\`.\`$NAME\`;")
+    fi
+
+    echo "Obiekt: $NAME | typ: $TYPE | wiersze: $COUNT"
 
     echo "  → zapis schematu..."
-    sudo mysqldump --no-data "$DB" "$T" > "$OUTDIR/schema/${T}_schema.sql"
+    sudo mysqldump \
+        --no-data \
+        --skip-triggers \
+        --set-gtid-purged=OFF \
+        "$DB" "$NAME" > "$OUTDIR/schema/${NAME}_schema.sql"
+
+    # jeśli to VIEW → nie dumpujemy danych
+    if [[ "$TYPE" == "VIEW" ]]; then
+        echo "  ⏭ widok — dane pominięte"
+        echo
+        continue
+    fi
 
     SKIP_DATA=false
 
-    # knex* i view*
-    if [[ "$T" == knex* ]] || [[ "$T" == view* ]]; then
-        SKIP_DATA=true
-    fi
-
     # dokładne nazwy
     for X in "${NO_DATA_TABLES[@]}"; do
-        if [[ "$T" == "$X" ]]; then
+        if [[ "$NAME" == "$X" ]]; then
             SKIP_DATA=true
             break
         fi
     done
 
     # wyjątek: mru_cars (tylko ownertype 4,5,6)
-    if [[ "$T" == "mru_cars" ]]; then
+    if [[ "$NAME" == "mru_cars" ]]; then
         echo "  → zapis danych (ownertype IN 4,5,6)..."
-        sudo mysqldump --no-create-info --where="ownertype IN (4,5,6)" "$DB" "$T" > "$OUTDIR/data/${T}_data.sql"
+        sudo mysqldump --no-create-info --where="ownertype IN (4,5,6)" \
+            "$DB" "$NAME" > "$OUTDIR/data/${NAME}_data.sql"
         echo "  ✔ zapisano"
         echo
         continue
@@ -88,13 +92,15 @@ for T in $TABLES; do
     fi
 
     echo "  → zapis danych..."
-    sudo mysqldump --no-create-info "$DB" "$T" > "$OUTDIR/data/${T}_data.sql"
+    sudo mysqldump --no-create-info "$DB" "$NAME" > "$OUTDIR/data/${NAME}_data.sql"
     echo "  ✔ zapisano"
     echo
-done
+
+done <<< "$OBJECTS"
 
 echo "  → zrzut procedur i funkcji..."
 sudo mysqldump --no-data --no-create-info --routines --triggers --databases "$DB" > "$OUTDIR/routines.sql"
 echo "  ✔ zapisano"
 
 echo "✅ Gotowe."
+
