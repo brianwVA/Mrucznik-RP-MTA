@@ -16,6 +16,7 @@ echo
 # listy filtrów
 NO_DATA_TABLES=(
 actions
+KO_liderzy_frakcji
 mru_bany
 mru_discord
 mru_diseases
