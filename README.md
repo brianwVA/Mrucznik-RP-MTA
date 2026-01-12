@@ -37,11 +37,8 @@ docker-compose up
 # który opisuje w jaki sposób skofigurować IDE takie jak Visual Studio Code, by pisać kod w Pawn.
 ```
 
-## Nowsza wersja
-
-Mapa była w trakcie przenoszenia na nową wersję MySQL + refactor, ale prace nie zostały dokończone. Zmiany możesz zobaczyć w tym pull requeście: https://github.com/MrucznikRolePlay/Mrucznik-RP-gamemode/pull/286
-
-Aby ją odpalić należy przełączyć się na brancha new_mysql: `git checkout new_mysql` a następnie odpalić kontenery: `docker-compose up`.
+Możesz też uruchomić serwer bez dockera. Pliki serwerowe znajdziesz w [serverfiles.tar.gz](serverfiles.tar.gz) a dump bazy danych w katalogu [database](database).
+W razie problemów z pluginem ColAndreas.so, użyj jego wersji statycznie linkowanej ColAndreas_static.so (zmodyfikuj server.cfg) lub doinstaluj bibliotekę libBulletDynamics.so.3.05 lub [skompiluj plugin samemu](https://github.com/MrucznikRolePlay/ColAndreas).
 
 ## Ważne adnotacje odnośnie kodu
 
@@ -67,6 +64,8 @@ Aby ją odpalić należy przełączyć się na brancha new_mysql: `git checkout 
 - [Creative] Developer od 6 listopada 2019
 - [Sandał] Developer od 9 grudnia 2019
 - [skTom] autor modułu discordowego
+- [nikodembanan] pomoc w nowej edycji MRP
+- [wig3r] pomoc w nowej edycji MRP
 
 ## [Edytory do PAWN](IDE.md)
 
