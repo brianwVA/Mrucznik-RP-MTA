@@ -1,6 +1,7 @@
 name: Database compatibility
 
 on:
+  workflow_dispatch:
   push:
     paths:
       - "database/**"

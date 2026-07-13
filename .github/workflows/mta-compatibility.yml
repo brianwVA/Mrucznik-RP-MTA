@@ -1,6 +1,7 @@
 name: MTA compatibility
 
 on:
+  workflow_dispatch:
   push:
     paths:
       - "gamemodes/**"
