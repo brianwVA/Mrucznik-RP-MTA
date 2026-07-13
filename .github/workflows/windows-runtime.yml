@@ -20,7 +20,7 @@ jobs:
     runs-on: windows-2022
     timeout-minutes: 90
     env:
-      MTA_INSTALLER_URL: https://mirror-cdn.multitheftauto.com/mtasa/main/mtasa-1.6.exe
+      MTA_INSTALLER_URL: https://nightly.multitheftauto.com/mtasa-1.6-rc-24124-20260613.exe
       MTA_INSTALLER_SHA256: b58328e72922321de59531acd139ff829cfc29270108e000956b5a1bd7c928b1
       MYSQL_URL: https://cdn.mysql.com/archives/mysql-8.0/mysql-8.0.36-winx64.zip
       MYSQL_SHA256: a1bc2ad567eef672be20b591ad25b14f221e60bde3ae3eb235128d91e4166557

@@ -417,33 +417,55 @@ addEventHandler('onElementInteriorChange', root,
 	end
 )
 
+local function dispatchPlayerText(player, msg)
+	if not player or not isElement(player) then return end
+	msg = tostring(msg):sub(1, 255)
+	msg = msg:gsub('(=?{[0-9A-Fa-f]*})', '') -- remove SA-MP colors
+	msg = msg:gsub('#%x%x%x%x%x%x', '') -- remove MTA colors
+	if msg == '' then return end
+
+	if not procCallOnAll('OnPlayerText', getElemID(player), msg) then
+		return
+	end
+
+	local r, g, b = getPlayerNametagColor(player)
+	local fullMsg = getPlayerName(player) .. ':#FFFFFF ' .. msg
+
+	if g_GlobalChatRadius then
+		local x, y, z = getElementPosition(player)
+		for i, data in pairs(g_Players) do
+			if getDistanceBetweenPoints3D(x, y, z, getElementPosition(data.elem)) <= g_GlobalChatRadius then
+				outputChatBox(fullMsg, data.elem, r, g, b, true)
+			end
+		end
+	else
+		outputChatBox(fullMsg, root, r, g, b, true)
+	end
+end
+
 addEventHandler('onPlayerChat', root,
 	function(msg, type)
-		if type ~= 0 then
-			return
-		end
+		if type ~= 0 then return end
 		cancelEvent()
+		dispatchPlayerText(source, msg)
+	end
+)
 
-		msg = tostring(msg)
-		msg = msg:gsub('(=?{[0-9A-Fa-f]*})', '') -- remove SA-MP colors
-		msg = msg:gsub('#%x%x%x%x%x%x', '') -- remove MTA colors
-
-		if not procCallOnAll('OnPlayerText', getElemID(source), msg) then
-			return
-		end
-
-		local r, g, b = getPlayerNametagColor(source)
-		local fullMsg = getPlayerName(source) .. ':#FFFFFF ' .. msg
-
-		if g_GlobalChatRadius then
-			local x, y, z = getElementPosition(source)
-			for i, data in pairs(g_Players) do
-				if getDistanceBetweenPoints3D(x, y, z, getElementPosition(data.elem)) <= g_GlobalChatRadius then
-					outputChatBox(fullMsg, data.elem, r, g, b, true)
-				end
+-- mrp_bridge replaces only the input line, not the original Pawn handlers.
+-- This bypasses hardcoded MTA names while preserving the complete command
+-- string, spacing and parameters passed to OnPlayerCommandText.
+addEvent('mrp:rawInput', true)
+addEventHandler('mrp:rawInput', root,
+	function(kind, text)
+		if not client or type(text) ~= 'string' or #text > 255 then return end
+		text = text:gsub('[%z\1-\31]', '')
+		if kind == 'command' then
+			text = text:gsub('^/+', '')
+			if text ~= '' then
+				procCallOnAll('OnPlayerCommandText', getElemID(client), '/' .. text)
 			end
-		else
-			outputChatBox(fullMsg, root, r, g, b, true)
+		elseif kind == 'chat' then
+			dispatchPlayerText(client, text)
 		end
 	end
 )

@@ -45,6 +45,12 @@ automatycznego startu. Pawn.RakNet i
 `bscrashfix`, które ingerują w proces lub protokół serwera SA-MP, są zastąpione
 przez warstwę zgodności i zabezpieczenia MTA.
 
+Komendy i zwykły czat wpisuje się tak jak w SA-MP, klawiszem `T` lub `F6`.
+Własny pasek wejściowy przekazuje pełną linię bezpośrednio do oryginalnych
+callbacków Pawn. Jest to konieczne dla zachowania dokładnych nazw `/help`,
+`/login` i `/say`, które w standardowym polu MTA są zarezerwowane przez klienta
+lub serwer. Konsola `F8` pozostaje konsolą techniczną MTA.
+
 ## Kontrola kompletności komend
 
 ```shell

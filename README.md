@@ -1,3 +1,32 @@
+# Mrucznik Role Play — port MTA:SA
+
+Ten fork zawiera kompletną bazę zgodności dla **MTA:SA 1.6**. Uruchamia dokładny
+gamemode `Mrucznik-RP.amx` v2.8.8 oraz cztery aktywne filterscripty wewnątrz MTA,
+a różnice silników obsługuje przypięta i przetestowana warstwa zgodności Lua.
+
+- 745 komend aktywnych w wydanym AMX oraz 547 aliasów zachowuje oryginalne
+  handlery Pawn, parametry i sprawdzanie uprawnień;
+- 42 dodatkowe nazwy znalezione w starym lub warunkowym kodzie źródłowym są
+  jawnie oznaczone jako nieaktywne — nie działały również w bazowym wydaniu;
+- baza MySQL, Redis, modele 0.3.DL, obiekty, textdrawy, animacje, pojazdy i
+  filterscripty są instalowane przez jeden skrypt;
+- GitHub Actions sprawdza katalog komend, wszystkie importy natywne, schemat
+  bazy, build ColAndreas x86 oraz start prawdziwego serwera MTA na Windows.
+
+Pełna instrukcja instalacji, wymagania i testy znajdują się w
+[`mta/README.md`](mta/README.md). Do klonowania wymagane są submoduły i Git LFS:
+
+```shell
+git clone --recurse-submodules https://github.com/brianwVA/Mrucznik-RP-MTA.git
+cd Mrucznik-RP-MTA
+git lfs pull
+```
+
+MTA AMX wymaga obecnie serwera **MTA 1.6 Windows x86 (32-bit)**. Oryginalne
+źródła i dokumentacja SA-MP pozostają poniżej jako referencja zachowania.
+
+## Oryginalna dokumentacja SA-MP
+
 # Mrucznik-RP-2.6
 
 Mapa serwera Mrucznik Role Play, jednego z największych polskich serwerów Role Play na modyfikacji San Andreas Multiplayer (SA:MP). 

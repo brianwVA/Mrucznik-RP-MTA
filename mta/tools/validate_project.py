@@ -174,6 +174,29 @@ def main() -> int:
         fail("Bridge must not override SA-MP nametag behavior")
     if 'setPlayerHudComponentVisible("money"' in bridge_client:
         fail("Bridge must not hide the SA-MP money HUD")
+    required_input_tokens = {
+        'toggleControl("chatbox", false)',
+        'bindKey("t", "down", openInput)',
+        'bindKey("F6", "down", openInput)',
+        'triggerServerEvent("mrp:rawInput"',
+    }
+    if not all(token in bridge_client for token in required_input_tokens):
+        fail("Bridge does not provide the exact SA-MP chat/command input path")
+
+    amx_events = (
+        mta / "vendor/mta-amx/amx/server/events.lua"
+    ).read_text(encoding="utf-8")
+    raw_input = re.search(
+        r"addEvent\('mrp:rawInput', true\)(.*?)(?=\naddEventHandler\('onPlayerWeaponSwitch')",
+        amx_events,
+        re.DOTALL,
+    )
+    if (
+        not raw_input
+        or "procCallOnAll('OnPlayerCommandText'" not in raw_input.group(1)
+        or "g_CommandMapping" in raw_input.group(1)
+    ):
+        fail("Raw input does not dispatch exact command names to the original Pawn handler")
     print("MTA project structure is valid")
     return 0
 
