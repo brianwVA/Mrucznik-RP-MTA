@@ -134,10 +134,14 @@ jobs:
       - name: Install MTA and complete Mrucznik runtime
         shell: pwsh
         run: |
-          $installer = Start-Process C:\mrp-test\downloads\mtasa.exe -ArgumentList @("/S", "/D=C:\mrp-test\mta") -Wait -PassThru
-          if ($installer.ExitCode -ne 0) { throw "MTA installer exited with $($installer.ExitCode)" }
+          $sevenZip = (Get-Command 7z.exe -ErrorAction Stop).Source
+          & $sevenZip x C:\mrp-test\downloads\mtasa.exe "-oC:\mrp-test\mta" -y
+          if ($LASTEXITCODE -ne 0) { throw "Could not extract the verified MTA installer" }
           $serverExe = Get-ChildItem C:\mrp-test\mta -Filter "MTA Server.exe" -Recurse | Select-Object -First 1
-          if (-not $serverExe) { throw "MTA Server.exe was not installed" }
+          if (-not $serverExe) {
+            Get-ChildItem C:\mrp-test\mta -File -Recurse | Select-Object -ExpandProperty FullName
+            throw "MTA Server.exe was not present in the verified installer"
+          }
           $serverRoot = $serverExe.Directory.FullName
           Set-Content C:\mrp-test\server-root.txt $serverRoot
           ./mta/setup.ps1 -MtaServerRoot $serverRoot -ColAndreasDll C:\mrp-test\colandreas\ColAndreas.dll `
