@@ -1,0 +1,15 @@
+<meta>
+    <info name="Mrucznik RP custom models" author="MrucznikRolePlay / OpenAI" version="0.1.0" />
+    <min_mta_version server="1.6.0-9.22457" client="1.6.0-9.22420" />
+    <script src="shared/registry.lua" type="shared" cache="false" />
+    <script src="server/main.lua" type="server" />
+    <script src="client/main.lua" type="client" cache="false" />
+    <export function="getBaseModel" type="server" />
+    <export function="getObjectBaseModel" type="server" />
+    <export function="registerObjectModel" type="server" />
+    <export function="applyObjectModel" type="client" />
+	<export function="applyObjectMaterial" type="client" />
+    <export function="createPreviewElement" type="client" />
+	<file src="client/material_replace.fx" />
+    <!-- setup.ps1 appends one <file> entry for every verified DFF/TXD asset. -->
+</meta>

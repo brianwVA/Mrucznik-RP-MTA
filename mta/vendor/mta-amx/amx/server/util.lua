@@ -1,0 +1,975 @@
+--[[
+local function fndebug(...)
+	local args = { ... }
+	for i, name in ipairs(args) do
+		local fn = _G[name]
+		_G[name] = function(...)
+			local args = { ... }
+			local result = fn(...)
+
+			local logstr = 'Server: ' .. name .. '('
+			for i, a in ipairs(args) do
+				if i > 1 then
+					logstr = logstr .. ', '
+				end
+				if type(a) == 'userdata' then
+					if getElementType(a) == 'player' then
+						a = getPlayerName(a)
+					else
+						a = 'element:' .. getElementType(a)
+					end
+				elseif type(a) == 'string' then
+					a = '"' .. a .. '"'
+				else
+					a = tostring(a)
+				end
+				logstr = logstr .. a
+			end
+			logstr = logstr .. ') = ' .. tostring(result)
+			outputConsole(logstr)
+			return result
+		end
+	end
+end
+fndebug(
+--	'setCameraMatrix',
+--	'setCameraInterior',
+--	'setCameraTarget',
+--	'setElementInterior'
+	'createObject'
+)
+--]]
+
+function clientCall(player, fnName, ...)
+	local called = triggerClientEvent(player, 'onClientCall', resourceRoot, fnName, ...)
+	if called == nil then
+		called = false -- if it's null set it to false to prevent stuff like 'concatenating nil values'
+	end
+	return called
+end
+
+g_Keys = {
+	[1] = 'mouse1',
+	[2] = 'mouse2',
+	[3] = 'mouse3',
+	[4] = 'mouse4',
+	[5] = 'mouse5',
+	[6] = 'mouse_wheel_up',
+	[7] = 'mouse_wheel_down',
+	[8] = 'arrow_l',
+	[9] = 'arrow_u',
+	[10] = 'arrow_r',
+	[11] = 'arrow_d',
+	[12] = '0',
+	[13] = '1',
+	[14] = '2',
+	[15] = '3',
+	[16] = '4',
+	[17] = '5',
+	[18] = '6',
+	[19] = '7',
+	[20] = '8',
+	[21] = '9',
+	[22] = 'a',
+	[23] = 'b',
+	[24] = 'c',
+	[25] = 'd',
+	[26] = 'e',
+	[27] = 'f',
+	[28] = 'g',
+	[29] = 'h',
+	[30] = 'i',
+	[31] = 'j',
+	[32] = 'k',
+	[33] = 'l',
+	[34] = 'm',
+	[35] = 'n',
+	[36] = 'o',
+	[37] = 'p',
+	[38] = 'q',
+	[39] = 'r',
+	[40] = 's',
+	[41] = 't',
+	[42] = 'u',
+	[43] = 'v',
+	[44] = 'w',
+	[45] = 'x',
+	[46] = 'y',
+	[47] = 'z',
+	[48] = 'num_0',
+	[49] = 'num_1',
+	[50] = 'num_2',
+	[51] = 'num_3',
+	[52] = 'num_4',
+	[53] = 'num_5',
+	[54] = 'num_6',
+	[55] = 'num_7',
+	[56] = 'num_8',
+	[57] = 'num_9',
+	[58] = 'num_mul',
+	[59] = 'num_add',
+	[60] = 'num_sep',
+	[61] = 'num_sub',
+	[62] = 'num_div',
+	[63] = 'num_dec',
+	[64] = 'F1',
+	[65] = 'F2',
+	[66] = 'F3',
+	[67] = 'F4',
+	[68] = 'F5',
+	[69] = 'F6',
+	[70] = 'F7',
+	[71] = 'F8',
+	[72] = 'F9',
+	[73] = 'F10',
+	[74] = 'F11',
+	[75] = 'F12',
+	[76] = 'backspace',
+	[77] = 'tab',
+	[78] = 'lalt',
+	[79] = 'ralt',
+	[80] = 'enter',
+	[81] = 'space',
+	[82] = 'pgup',
+	[83] = 'pgdn',
+	[84] = 'end',
+	[85] = 'home',
+	[86] = 'insert',
+	[87] = 'delete',
+	[88] = 'lshift',
+	[89] = 'rshift',
+	[90] = 'lctrl',
+	[91] = 'rctrl',
+	[92] = '[',
+	[93] = ']',
+	[94] = 'pause',
+	[95] = 'capslock',
+	[96] = 'scroll',
+	[97] = ';',
+	[98] = ',',
+	[99] = '-',
+	[100] = '.',
+	[101] = '/',
+	[102] = '#',
+	[103] = '\\',
+	[104] = '='
+}
+
+g_EventNames = {
+	OnPlayerConnect = true,
+	OnPlayerDisconnect = true,
+	OnPlayerWeaponShot = true,
+	OnPlayerEnterCheckpoint = true,
+	OnPlayerLeaveCheckpoint = true,
+	OnPlayerEnterRaceCheckpoint = true,
+	OnPlayerLeaveRaceCheckpoint = true,
+	OnPlayerStreamIn = true,
+	OnVehicleStreamIn = true,
+	OnActorStreamIn = true,
+	OnBotStreamIn = true,
+	OnPlayerStreamOut = true,
+	OnVehicleStreamOut = true,
+	OnActorStreamOut = true,
+	OnBotStreamOut = true,
+	OnPlayerExitedMenu = true,
+	OnPlayerSelectedMenuRow = true,
+	OnDialogResponse = true,
+	OnGameModeInit = true,
+	OnFilterScriptInit = true,
+	OnGameModeExit = true,
+	OnFilterScriptExit = true,
+	OnPlayerUpdate = true,
+	OnPlayerInteriorChange = true,
+	OnPlayerKeyStateChange = true,
+	OnPlayerKeyDown = true,
+	OnPlayerKeyUp = true,
+	OnPlayerRequestClass = true,
+	OnPlayerRequestSpawn = true,
+	OnPlayerSpawn = true,
+	OnPlayerText = true,
+	OnPlayerGiveDamage = true,
+	OnPlayerTakeDamage = true,
+	OnPlayerGiveDamageActor = true,
+	OnPlayerWeaponSwitch = true,
+	OnPlayerWeaponReload = true,
+	OnPlayerDeath = true,
+	OnVehicleSpawn = true,
+	OnBotEnterVehicle = true,
+	OnPlayerEnterVehicle = true,
+	OnBotExitVehicle = true,
+	OnPlayerExitVehicle = true,
+	OnVehicleDamageStatusUpdate = true,
+	OnVehicleDeath = true,
+	OnMarkerHit = true,
+	OnMarkerLeave = true,
+	OnBotTakeDamage = true,
+	OnBotGiveDamage = true,
+	OnBotDeath = true,
+	OnPlayerPickUpPickup = true,
+	OnPlayerCommandText = true,
+	OnPlayerClickTextDraw = true,
+	OnPlayerClickPlayerTextDraw = true,
+	OnPlayerClickWorld = true,
+	OnPlayerClickPlayer = true,
+	OnPlayerClickMap = true,
+	OnObjectMoved = true,
+	OnPlayerObjectMoved = true,
+	OnBotCreate = true,
+	OnMarkerCreate = true,
+	OnPlayerStateChange = true,
+	OnBotStateChange = true,
+	OnPlayerStunt = true
+}
+
+local allowedRPC = {
+	setGarageOpen = true,
+	syncPlayerWeapons = true,
+	requestClass = true,
+	requestSpawn = true
+}
+
+addEvent('onCall', true)
+addEventHandler('onCall', resourceRoot,
+	function(fnName, ...)
+		if allowedRPC[fnName] and _G[fnName] then
+			_G[fnName](...)
+		end
+	end,
+	false
+)
+
+function isPlayerInACLGroup(player, groupName)
+	local account = getPlayerAccount(player)
+	local group = aclGetGroup(groupName)
+	if not account or not group then
+		return false
+	end
+	local accountName = getAccountName(account)
+	for i, obj in ipairs(aclGroupListObjects(group)) do
+		if obj == 'user.' .. accountName or obj == 'user.*' then
+			return true
+		end
+	end
+	return false
+end
+
+local glitches = {
+	'quickreload',
+	'fastmove',
+	'fastfire',
+	'crouchbug',
+	'fastsprint',
+	'quickstand'
+}
+
+function toggleGlitches()
+	for _, glitch in ipairs(glitches) do
+		setGlitchEnabled(glitch, true)
+	end
+end
+
+function toggleSpecialProperties()
+	setWorldSpecialPropertyEnabled('randomfoliage', false)
+	setWorldSpecialPropertyEnabled('roadsignstext', false)
+	setWorldSpecialPropertyEnabled('snipermoon', true)
+end
+
+local _getPedOccupiedVehicle = getPedOccupiedVehicle
+function getPedOccupiedVehicle(player)
+	if not isElement(player) then return false end
+
+	if getElementType(player) == 'player' then
+		local data = g_Players[getElemID(player)]
+		if data and isElement(data.vehicle) then
+			return data.vehicle
+		else
+			return false
+		end
+	end
+
+	local data = g_Bots[getElemID(player)]
+	if data and isElement(data.vehicle) then
+		return data.vehicle
+	else
+		return false
+	end
+end
+
+local _warpPedIntoVehicle = warpPedIntoVehicle
+function warpPedIntoVehicle(player, vehicle, seat)
+	if not isElement(player) then return end
+
+	if not getPedOccupiedVehicle(player) then
+		_warpPedIntoVehicle(player, vehicle, seat)
+
+		if getElementType(player) == 'player' then
+			setCameraTarget(player, player)
+		end
+	else
+		removePedFromVehicle(player)
+		setTimer(warpPedIntoVehicle, 500, 1, player, vehicle, seat)
+	end
+end
+
+local _bindKey = bindKey
+function bindKey(player, key, ...)
+	if type(key) == 'string' then
+		return _bindKey(player, key, ...)
+	elseif type(key) == 'table' then
+		local result = true
+		for i, k in ipairs(key) do
+			result = result and _bindKey(player, k, ...)
+		end
+		return result
+	end
+end
+
+local _unbindKey = unbindKey
+function unbindKey(player, key, ...)
+	if type(key) == 'string' then
+		return _unbindKey(player, key, ...)
+	elseif type(key) == 'table' then
+		local result = true
+		for i, k in ipairs(key) do
+			result = result and _unbindKey(player, k, ...)
+		end
+		return result
+	end
+end
+
+local _isPedDead = isPedDead
+function isPedDead(player)
+	if _isPedDead(player) then
+		return true
+	end
+	local x, y, z = getElementPosition(player)
+	return x == 0 and y == 0 and z == 0
+end
+
+function isTimer(timer)
+	return timer and table.find(getTimers(), timer) and true
+end
+
+function getElemAMX(elem)
+	return elem and isElement(elem) and g_LoadedAMXs[getElementData(elem, 'amx.amxfile')]
+end
+
+function setElemAMX(elem, amx)
+	if elem and isElement(elem) then
+		setElementData(elem, 'amx.amxfile', amx and amx.name)
+	end
+end
+
+-- List functions
+
+function addElem(amx, listname, elem)
+	local list
+	if not elem then
+		list = amx
+		elem = listname
+		amx = nil
+	else
+		list = amx[listname]
+	end
+
+	local id
+	local globList
+	local newtable = { elem = elem }
+	if amx then
+		setElemAMX(elem, amx)
+		globList = _G['g_' .. listname:sub(1, 1):upper() .. listname:sub(2)]
+		if globList then
+			id = 0
+			while globList[id] do
+				id = id + 1
+			end
+			globList[id] = newtable
+		end
+	end
+
+	if not id then
+		id = 0
+
+		-- vehicles and objects in SA-MP start at ID 1
+		if list == g_Vehicles or list == g_Objects then
+			id = 1
+		end
+
+		while list[id] do
+			id = id + 1
+		end
+	end
+	list[id] = newtable
+	setElemID(elem, id)
+	return id, newtable
+end
+
+function removeElem(amx, listname, elem)
+	local list
+	if not elem then
+		list = amx
+		elem = listname
+		amx = nil
+	else
+		list = amx[listname]
+	end
+
+	local id = table.find(list, 'elem', elem)
+	if id then
+		list[id] = nil
+		setElemID(elem, nil)
+		if amx then
+			setElemAMX(elem, nil)
+			list = _G['g_' .. listname:sub(1, 1):upper() .. listname:sub(2)]
+			if list then
+				list[id] = nil
+			end
+		end
+		return id
+	end
+end
+
+function getElemID(elem)
+	return elem and isElement(elem) and getElementData(elem, 'amx.id')
+end
+
+function setElemID(elem, id)
+	if elem and isElement(elem) then
+		setElementData(elem, 'amx.id', id)
+	end
+end
+
+function initPlayerData(playerID)
+	local data = g_Players[playerID]
+	if not data then return end
+
+	data.keys = data.keys or {}
+	data.specialaction = SPECIAL_ACTION_NONE
+	data.state = PLAYER_STATE_NONE
+
+	data.pvars = {}
+	data.streamedActors = {}
+	data.streamedVehicles = {}
+	data.streamedPlayers = {}
+	data.attachedObjects = {}
+	data.streamedBots = {}
+	data.shotVect = {
+		oX = 0.0, oY = 0.0, oZ = 0.0,
+		hX = 0.0, hY = 0.0, hZ = 0.0
+	}
+end
+
+function getPlayerState(player)
+	local playerID = getElemID(player)
+	return g_Players[playerID] and g_Players[playerID].state or PLAYER_STATE_NONE
+end
+
+function getBotState(bot)
+	local botID = getElemID(bot)
+	return g_Bots[botID] and g_Bots[botID].state or PLAYER_STATE_NONE
+end
+
+function setPlayerState(player, state)
+	local playerID = getElemID(player)
+	if not g_Players[playerID] then return end
+
+	local oldState = g_Players[playerID].state or PLAYER_STATE_NONE
+	g_Players[playerID].state = state
+	if state ~= oldState then
+		procCallOnAll('OnPlayerStateChange', playerID, state, oldState)
+	end
+end
+
+function setBotState(bot, state)
+	local botID = getElemID(bot)
+	if not g_Bots[botID] then return end
+
+	local oldState = g_Bots[botID].state or PLAYER_STATE_NONE
+	g_Bots[botID].state = state
+	if state ~= oldState then
+		procCallOnAll('OnBotStateChange', botID, state, oldState)
+	end
+end
+
+function resetSpecialAction(player)
+	setPedWearingJetpack(player, false)
+
+	local playerdata = g_Players[getElemID(player)]
+	if not playerdata or not playerdata.specialaction then return end
+
+	if playerdata.specialaction ~= SPECIAL_ACTION_USECELLPHONE and
+	   playerdata.specialaction ~= SPECIAL_ACTION_CARRY then
+		playerdata.specialaction = SPECIAL_ACTION_NONE
+
+		setElementData(player, 'SpecialAction', nil)
+		setElementData(player, 'DanceMove', nil)
+	end
+end
+
+function utf8ByteLimit(s, maxChars)
+	local i, chars, len = 1, 0, #s
+	while i <= len and chars < maxChars do
+		local b = s:byte(i)
+		i = i + (b < 0x80 and 1 or b < 0xE0 and 2 or b < 0xF0 and 3 or 4)
+		chars = chars + 1
+	end
+	return math.min(i - 1, len)
+end
+
+function ipMaskToPattern(mask)
+	-- escape Lua pattern magic chars, leaving '*' alone
+	local pattern = mask:gsub('([%(%)%.%%%+%-%?%[%]%^%$])', '%%%1')
+
+	-- '*' wildcard -> one or more digits
+	pattern = pattern:gsub('%*', '%%d+')
+	return '^' .. pattern .. '$'
+end
+
+function isIpBlocked(ip)
+	local now = getTickCount()
+	for mask, entry in pairs(g_BlockedIPs) do
+		if entry.expires and now >= entry.expires then
+			-- timed block has expired
+			g_BlockedIPs[mask] = nil
+		elseif ip:match(entry.match) then
+			return true
+		end
+	end
+	return false
+end
+
+-- Clamping values
+function clamp(n, min, max)
+	return math.max(min, math.min(max, n))
+ end
+
+-- Table extensions
+
+local _table_insert = table.insert
+function table.insert(t, i, v)
+	if not v then
+		local id = #t + 1
+		t[id] = i
+		return id
+	else
+		_table_insert(t, i, v)
+		return i
+	end
+end
+
+function table.insert0(t, v)
+	local id
+	if not t[0] then
+		id = 0
+	else
+		id = #t + 1
+	end
+	t[id] = v
+	return id
+end
+
+function table.append(t, ...)
+	local args = { ... }
+	for i, a in ipairs(args) do
+		t[#t + 1] = a
+	end
+	return t
+end
+
+function table.keys(t)
+	local result = {}
+	for k, v in pairs(t) do
+		result[#result + 1] = k
+	end
+	return result
+end
+
+local _table_sort = table.sort
+function table.sort(t, ...)
+	_table_sort(t, ...)
+	return t
+end
+
+function table.find(t, ...)
+	if type(t) ~= 'table' then
+		return false
+	end
+	local args = { ... }
+	if #args == 0 then
+		for k, v in pairs(t) do
+			if v then
+				return k, v
+			end
+		end
+		return false
+	end
+
+	local value = table.remove(args)
+	if value == '[nil]' then
+		value = nil
+	end
+	for k, v in pairs(t) do
+		for i, index in ipairs(args) do
+			if type(index) == 'function' then
+				v = index(v)
+			else
+				if index == '[last]' then
+					index = #v
+				end
+				v = v[index]
+			end
+		end
+		if v == value then
+			return k, t[k]
+		end
+	end
+	return false
+end
+
+function table.findi(t, ...)
+	local _pairs = pairs
+	pairs = ipairs
+	local i = table.find(t, ...)
+	pairs = _pairs
+	return i
+end
+
+function table.deepcopy(t)
+	local known = {}
+	local function _deepcopy(t)
+		local result = {}
+		for k, v in pairs(t) do
+			if type(v) == 'table' then
+				if not known[v] then
+					known[v] = _deepcopy(v)
+				end
+				result[k] = known[v]
+			else
+				result[k] = v
+			end
+		end
+		return result
+	end
+	return _deepcopy(t)
+end
+
+function table.shallowcopy(t)
+	local result = {}
+	for k, v in pairs(t) do
+		result[k] = v
+	end
+	return result
+end
+
+function table.flatten(t, result)
+	if not result then
+		result = {}
+	end
+	for k, v in ipairs(t) do
+		if type(v) == 'table' then
+			table.flatten(v, result)
+		else
+			table.insert(result, v)
+		end
+	end
+	return result
+end
+
+function table.create(keys, vals)
+	local result = {}
+	if type(vals) == 'table' then
+		for i, k in ipairs(keys) do
+			result[k] = vals[i]
+		end
+	else
+		for i, k in ipairs(keys) do
+			result[k] = vals
+		end
+	end
+	return result
+end
+
+function table.map(t, callback, ...)
+	for k, v in ipairs(t) do
+		t[k] = callback(v, ...)
+	end
+	return t
+end
+
+function table.each(t, index, callback, ...)
+	local args = { ... }
+	if type(index) == 'function' then
+		table.insert(args, 1, callback)
+		callback = index
+		index = false
+	end
+	for k, v in pairs(t) do
+		if index then
+			v = v[index]
+		end
+		callback(v, unpack(args))
+	end
+	return t
+end
+
+function table.cmp(t1, t2)
+	if not t1 or not t2 or #t1 ~= #t2 then
+		return false
+	end
+	for i, v in ipairs(t1) do
+		if v ~= t2[i] then
+			return false
+		end
+	end
+	return true
+end
+
+function table.removevalue(t, val)
+	for i, v in ipairs(t) do
+		if v == val then
+			table.remove(t, i)
+			return i
+		end
+	end
+	return false
+end
+
+function table.filter(t, callback, cmpval)
+	if cmpval == nil then
+		cmpval = true
+	end
+	for k, v in pairs(t) do
+		if callback(v) ~= cmpval then
+			t[k] = nil
+		end
+	end
+	return t
+end
+
+function table.shadowize(t, ...)
+	t.shadow = {}
+	local args = { ... }
+	for i = 1, #args - 1 do
+		t.shadow[args[i]] = t[args[i]]
+		t[args[i]] = nil
+	end
+	setmetatable(t, args[#args])
+end
+
+function table.deshadowize(t, copy)
+	local result = copy and table.deepcopy(t) or t
+	for k, v in pairs(result.shadow) do
+		result[k] = v
+	end
+	result.shadow = nil
+	if not copy then
+		setmetatable(result, nil)
+	end
+	return result
+end
+
+function table.dump(t, caption, depth)
+	if not depth then
+		depth = 1
+	end
+	if depth == 1 and caption then
+		outputConsole(caption .. ':')
+	end
+	if type(t) ~= 'table' then
+		outputConsole(tostring(t))
+	else
+		local braceIndent = string.rep('  ', depth-1)
+		local fieldIndent = braceIndent .. '  '
+		outputConsole(braceIndent .. '{')
+		for k, v in pairs(t) do
+			if type(v) == 'table' and k ~= 'siblings' and k ~= 'parent' then
+				outputConsole(fieldIndent .. tostring(k) .. ' = ')
+				table.dump(v, nil, depth + 1)
+			else
+				outputConsole(fieldIndent .. tostring(k) .. ' = ' .. tostring(v))
+			end
+		end
+		outputConsole(braceIndent .. '}')
+	end
+end
+
+-- FILE functions
+
+local string, fileSetPos, fileRead = string, fileSetPos, fileRead
+
+function getResourceAMXFiles(res)
+	local result = false
+
+	local meta = xmlLoadFile(':' .. getResourceName(res) .. '/' .. 'meta.xml')
+	if not meta then
+		return false
+	end
+	result = {}
+	local i = 0
+	local amxNode
+	while true do
+		amxNode = xmlFindChild(meta, 'amx', i)
+		if not amxNode then
+			break
+		end
+		result[#result + 1] = xmlNodeGetAttribute(amxNode, 'src')
+		i = i + 1
+	end
+	xmlUnloadFile(meta)
+	return result
+end
+
+function fileReadLine(hFile)
+	local fileRead, fileIsEOF = fileRead, fileIsEOF
+	if fileIsEOF(hFile) then
+		return false
+	end
+	local result = ''
+	local initFilePos = fileGetPos(hFile)
+	local partPosition = 1
+	local breakPosition
+	while true do
+		result = result .. fileRead(hFile, 256)
+		breakPosition = result:find('\n', partPosition, true)
+		if breakPosition then
+			if initFilePos + breakPosition < fileGetSize(hFile) then
+				fileSetPos(hFile, initFilePos + breakPosition)
+			end
+			return result:sub(1, breakPosition - (result:byte(breakPosition - 1) == 13 and 2 or 1))
+		end
+		if fileIsEOF(hFile) then
+			return result
+		end
+		partPosition = partPosition + 256
+	end
+end
+
+function readBYTE(hFile)
+	local b0 = string.byte(fileRead(hFile, 1))
+	return b0
+end
+
+function readBYTEAt(hFile, offset)
+	fileSetPos(hFile, offset)
+	return readBYTE(hFile)
+end
+
+function readWORD(hFile)
+	local b0, b1 = string.byte(fileRead(hFile, 2), 1, 2)
+	return b1 * 256 + b0
+end
+
+function readWORDAt(hFile, offset)
+	fileSetPos(hFile, offset)
+	return readWORD(hFile)
+end
+
+function readDWORD(hFile)
+	local b0, b1, b2, b3 = string.byte(fileRead(hFile, 4), 1, 4)
+	return b3 * 16777216 + b2 * 65536 + b1 * 256 + b0
+end
+
+function readDWORDAt(hFile, offset)
+	fileSetPos(hFile, offset)
+	return readDWORD(hFile)
+end
+
+function readString(hFile, offset)
+	local result = ''
+	fileSetPos(hFile, offset)
+	local curByte = readBYTE(hFile)
+	while curByte ~= 0 do
+		result = result .. string.char(curByte)
+		curByte = readBYTE(hFile)
+	end
+	return result
+end
+
+-- MEMORY reading/writing functions
+
+function readMemString(amx, offset, length)
+	return amxReadString(amx.cptr, offset, length or 0x7FFFFFFF)
+end
+
+function writeMemString(amx, offset, str)
+	amxWriteString(amx.cptr, offset, str)
+end
+
+function writeMemFloat(amx, offset, float)
+	if not float then return end
+	amx.memDAT[offset] = float2cell(float)
+end
+
+function string:split(sep)
+	if #self == 0 then
+		return {}
+	end
+	sep = sep or ' '
+	local result = {}
+	local from = 1
+	local to
+	repeat
+		to = self:find(sep, from, true) or (#self + 1)
+		result[#result + 1] = self:sub(from, to - 1)
+		from = to + 1
+	until from == #self + 2
+	return result
+end
+
+function colorizeString(string)
+	return string:gsub('(=?{[0-9A-Fa-f]*})',
+	function(colorMatches)
+		-- replace the curly brackets with nothing
+		colorMatches = colorMatches:gsub('[{}]+', '')
+
+		-- Append to the beginning
+		colorMatches = '#' .. colorMatches
+
+		return colorMatches
+	end)
+end
+
+function color2cell(r, g, b, a)
+	r = math.min(math.max(r, 0), 255)
+	g = math.min(math.max(g, 0), 255)
+	b = math.min(math.max(b, 0), 255)
+	a = math.min(math.max(a, 0), 255)
+
+	local u = r * 0x1000000	-- 2^24
+		+ g * 0x10000	-- 2^16
+		+ b * 0x100	-- 2^8
+		+ a
+
+	if u >= 0x80000000 then
+		return u - 0x100000000
+	else
+		return u
+	end
+end
+
+function isPed(elem)
+	if getElementType(elem) == 'ped' then
+		return true
+	end
+	return false
+end
+
+function deprecated(native, version, additional)
+	if not native then return end
+	if not version or version == '' then
+		outputDebugString(native .. ' is deprecated and will no longer be available.')
+	elseif not additional or additional == '' then
+		outputDebugString(native .. ' has been deprecated since ' .. version .. ' and will no longer be available.')
+	else
+		outputDebugString(native .. ' has been deprecated since ' .. version .. ' and will no longer be available. More info: ' .. additional .. '.')
+	end
+end
+
+function notImplemented(native, additional)
+	if not ShowUnimplementedErrors or not native then return end
+	if not additional or additional == '' then
+		outputDebugString('Sorry, but ' .. native .. ' is not implemented.')
+	else
+		outputDebugString('Sorry, but ' .. native .. ' is not implemented. More info: ' .. additional .. '.')
+	end
+end

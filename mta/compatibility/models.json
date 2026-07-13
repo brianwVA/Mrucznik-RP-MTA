@@ -1,0 +1,492 @@
+{
+  "schema_version": 1,
+  "model_count": 81,
+  "models": [
+    {
+      "base": 11,
+      "custom": 20001,
+      "dff": "mrucznikskin65.dff",
+      "txd": "mrucznikskin65.txd"
+    },
+    {
+      "base": 11,
+      "custom": 20002,
+      "dff": "mrucznikskin66.dff",
+      "txd": "mrucznikskin66.txd"
+    },
+    {
+      "base": 11,
+      "custom": 20003,
+      "dff": "mrucznikskin71.dff",
+      "txd": "mrucznikskin71.txd"
+    },
+    {
+      "base": 20,
+      "custom": 20101,
+      "dff": "mrucznikskin46.dff",
+      "txd": "mrucznikskin46.txd"
+    },
+    {
+      "base": 20,
+      "custom": 20102,
+      "dff": "mrucznikskin47.dff",
+      "txd": "mrucznikskin47.txd"
+    },
+    {
+      "base": 20,
+      "custom": 20103,
+      "dff": "mrucznikskin79.dff",
+      "txd": "mrucznikskin79.txd"
+    },
+    {
+      "base": 20,
+      "custom": 20104,
+      "dff": "mrucznikskin80.dff",
+      "txd": "mrucznikskin80.txd"
+    },
+    {
+      "base": 20,
+      "custom": 20105,
+      "dff": "mrucznikskin81.dff",
+      "txd": "mrucznikskin81.txd"
+    },
+    {
+      "base": 20,
+      "custom": 20106,
+      "dff": "mrucznikskin82.dff",
+      "txd": "mrucznikskin82.txd"
+    },
+    {
+      "base": 20,
+      "custom": 20107,
+      "dff": "mrucznikskin83.dff",
+      "txd": "mrucznikskin83.txd"
+    },
+    {
+      "base": 11,
+      "custom": 20108,
+      "dff": "mrucznikskin84.dff",
+      "txd": "mrucznikskin84.txd"
+    },
+    {
+      "base": 45,
+      "custom": 20301,
+      "dff": "mrucznikskin02.dff",
+      "txd": "mrucznikskin02.txd"
+    },
+    {
+      "base": 20,
+      "custom": 20302,
+      "dff": "mrucznikskin38.dff",
+      "txd": "mrucznikskin38.txd"
+    },
+    {
+      "base": 20,
+      "custom": 20303,
+      "dff": "mrucznikskin35.dff",
+      "txd": "mrucznikskin35.txd"
+    },
+    {
+      "base": 20,
+      "custom": 20304,
+      "dff": "mrucznikskin39.dff",
+      "txd": "mrucznikskin39.txd"
+    },
+    {
+      "base": 20,
+      "custom": 20305,
+      "dff": "mrucznikskin40.dff",
+      "txd": "mrucznikskin40.txd"
+    },
+    {
+      "base": 20,
+      "custom": 20306,
+      "dff": "mrucznikskin41.dff",
+      "txd": "mrucznikskin41.txd"
+    },
+    {
+      "base": 20,
+      "custom": 20307,
+      "dff": "mrucznikskin42.dff",
+      "txd": "mrucznikskin42.txd"
+    },
+    {
+      "base": 20,
+      "custom": 20308,
+      "dff": "mrucznikskin43.dff",
+      "txd": "mrucznikskin43.txd"
+    },
+    {
+      "base": 20,
+      "custom": 20309,
+      "dff": "mrucznikskin44.dff",
+      "txd": "mrucznikskin44.txd"
+    },
+    {
+      "base": 20,
+      "custom": 20310,
+      "dff": "mrucznikskin45.dff",
+      "txd": "mrucznikskin45.txd"
+    },
+    {
+      "base": 20,
+      "custom": 20311,
+      "dff": "mrucznikskin48.dff",
+      "txd": "mrucznikskin48.txd"
+    },
+    {
+      "base": 20,
+      "custom": 20312,
+      "dff": "mrucznikskin49.dff",
+      "txd": "mrucznikskin49.txd"
+    },
+    {
+      "base": 20,
+      "custom": 20313,
+      "dff": "mrucznikskin50.dff",
+      "txd": "mrucznikskin50.txd"
+    },
+    {
+      "base": 20,
+      "custom": 20314,
+      "dff": "mrucznikskin51.dff",
+      "txd": "mrucznikskin51.txd"
+    },
+    {
+      "base": 20,
+      "custom": 20315,
+      "dff": "mrucznikskin52.dff",
+      "txd": "mrucznikskin52.txd"
+    },
+    {
+      "base": 20,
+      "custom": 20316,
+      "dff": "mrucznikskin69.dff",
+      "txd": "mrucznikskin69.txd"
+    },
+    {
+      "base": 45,
+      "custom": 20401,
+      "dff": "mrucznikskin01.dff",
+      "txd": "mrucznikskin01.txd"
+    },
+    {
+      "base": 45,
+      "custom": 20402,
+      "dff": "mrucznikskin03.dff",
+      "txd": "mrucznikskin03.txd"
+    },
+    {
+      "base": 45,
+      "custom": 20403,
+      "dff": "mrucznikskin04.dff",
+      "txd": "mrucznikskin04.txd"
+    },
+    {
+      "base": 45,
+      "custom": 20404,
+      "dff": "mrucznikskin05.dff",
+      "txd": "mrucznikskin05.txd"
+    },
+    {
+      "base": 45,
+      "custom": 20405,
+      "dff": "mrucznikskin06.dff",
+      "txd": "mrucznikskin06.txd"
+    },
+    {
+      "base": 45,
+      "custom": 20406,
+      "dff": "mrucznikskin08.dff",
+      "txd": "mrucznikskin08.txd"
+    },
+    {
+      "base": 45,
+      "custom": 20407,
+      "dff": "mrucznikskin09.dff",
+      "txd": "mrucznikskin09.txd"
+    },
+    {
+      "base": 45,
+      "custom": 20408,
+      "dff": "mrucznikskin10.dff",
+      "txd": "mrucznikskin10.txd"
+    },
+    {
+      "base": 45,
+      "custom": 20409,
+      "dff": "mrucznikskin11.dff",
+      "txd": "mrucznikskin11.txd"
+    },
+    {
+      "base": 45,
+      "custom": 20410,
+      "dff": "mrucznikskin12.dff",
+      "txd": "mrucznikskin12.txd"
+    },
+    {
+      "base": 45,
+      "custom": 20411,
+      "dff": "mrucznikskin13.dff",
+      "txd": "mrucznikskin13.txd"
+    },
+    {
+      "base": 45,
+      "custom": 20412,
+      "dff": "mrucznikskin14.dff",
+      "txd": "mrucznikskin14.txd"
+    },
+    {
+      "base": 45,
+      "custom": 20413,
+      "dff": "mrucznikskin15.dff",
+      "txd": "mrucznikskin15.txd"
+    },
+    {
+      "base": 45,
+      "custom": 20414,
+      "dff": "mrucznikskin16.dff",
+      "txd": "mrucznikskin16.txd"
+    },
+    {
+      "base": 45,
+      "custom": 20415,
+      "dff": "mrucznikskin17.dff",
+      "txd": "mrucznikskin17.txd"
+    },
+    {
+      "base": 45,
+      "custom": 20416,
+      "dff": "mrucznikskin18.dff",
+      "txd": "mrucznikskin18.txd"
+    },
+    {
+      "base": 45,
+      "custom": 20417,
+      "dff": "mrucznikskin20.dff",
+      "txd": "mrucznikskin20.txd"
+    },
+    {
+      "base": 45,
+      "custom": 20418,
+      "dff": "mrucznikskin21.dff",
+      "txd": "mrucznikskin21.txd"
+    },
+    {
+      "base": 45,
+      "custom": 20419,
+      "dff": "mrucznikskin22.dff",
+      "txd": "mrucznikskin22.txd"
+    },
+    {
+      "base": 45,
+      "custom": 20420,
+      "dff": "mrucznikskin23.dff",
+      "txd": "mrucznikskin23.txd"
+    },
+    {
+      "base": 45,
+      "custom": 20421,
+      "dff": "mrucznikskin24.dff",
+      "txd": "mrucznikskin24.txd"
+    },
+    {
+      "base": 45,
+      "custom": 20422,
+      "dff": "mrucznikskin25.dff",
+      "txd": "mrucznikskin25.txd"
+    },
+    {
+      "base": 45,
+      "custom": 20423,
+      "dff": "mrucznikskin26.dff",
+      "txd": "mrucznikskin26.txd"
+    },
+    {
+      "base": 45,
+      "custom": 20424,
+      "dff": "mrucznikskin27.dff",
+      "txd": "mrucznikskin27.txd"
+    },
+    {
+      "base": 45,
+      "custom": 20425,
+      "dff": "mrucznikskin28.dff",
+      "txd": "mrucznikskin28.txd"
+    },
+    {
+      "base": 45,
+      "custom": 20426,
+      "dff": "mrucznikskin29.dff",
+      "txd": "mrucznikskin29.txd"
+    },
+    {
+      "base": 45,
+      "custom": 20427,
+      "dff": "mrucznikskin30.dff",
+      "txd": "mrucznikskin30.txd"
+    },
+    {
+      "base": 45,
+      "custom": 20428,
+      "dff": "mrucznikskin31.dff",
+      "txd": "mrucznikskin31.txd"
+    },
+    {
+      "base": 45,
+      "custom": 20429,
+      "dff": "mrucznikskin32.dff",
+      "txd": "mrucznikskin32.txd"
+    },
+    {
+      "base": 45,
+      "custom": 20430,
+      "dff": "mrucznikskin33.dff",
+      "txd": "mrucznikskin33.txd"
+    },
+    {
+      "base": 12,
+      "custom": 20431,
+      "dff": "mrucznikskin36.dff",
+      "txd": "mrucznikskin36.txd"
+    },
+    {
+      "base": 20,
+      "custom": 20432,
+      "dff": "mrucznikskin37.dff",
+      "txd": "mrucznikskin37.txd"
+    },
+    {
+      "base": 22,
+      "custom": 20433,
+      "dff": "mrucznikskin53.dff",
+      "txd": "mrucznikskin53.txd"
+    },
+    {
+      "base": 3,
+      "custom": 20434,
+      "dff": "mrucznikskin54.dff",
+      "txd": "mrucznikskin54.txd"
+    },
+    {
+      "base": 9,
+      "custom": 20435,
+      "dff": "mrucznikskin55.dff",
+      "txd": "mrucznikskin55.txd"
+    },
+    {
+      "base": 11,
+      "custom": 20436,
+      "dff": "mrucznikskin56.dff",
+      "txd": "mrucznikskin56.txd"
+    },
+    {
+      "base": 11,
+      "custom": 20437,
+      "dff": "mrucznikskin57.dff",
+      "txd": "mrucznikskin57.txd"
+    },
+    {
+      "base": 11,
+      "custom": 20438,
+      "dff": "mrucznikskin58.dff",
+      "txd": "mrucznikskin58.txd"
+    },
+    {
+      "base": 11,
+      "custom": 20439,
+      "dff": "mrucznikskin59.dff",
+      "txd": "mrucznikskin59.txd"
+    },
+    {
+      "base": 11,
+      "custom": 20440,
+      "dff": "mrucznikskin60.dff",
+      "txd": "mrucznikskin60.txd"
+    },
+    {
+      "base": 11,
+      "custom": 20441,
+      "dff": "mrucznikskin61.dff",
+      "txd": "mrucznikskin61.txd"
+    },
+    {
+      "base": 11,
+      "custom": 20442,
+      "dff": "mrucznikskin62.dff",
+      "txd": "mrucznikskin62.txd"
+    },
+    {
+      "base": 11,
+      "custom": 20443,
+      "dff": "mrucznikskin63.dff",
+      "txd": "mrucznikskin63.txd"
+    },
+    {
+      "base": 11,
+      "custom": 20444,
+      "dff": "mrucznikskin64.dff",
+      "txd": "mrucznikskin64.txd"
+    },
+    {
+      "base": 11,
+      "custom": 20445,
+      "dff": "mrucznikskin67.dff",
+      "txd": "mrucznikskin67.txd"
+    },
+    {
+      "base": 20,
+      "custom": 20446,
+      "dff": "mrucznikskin68.dff",
+      "txd": "mrucznikskin68.txd"
+    },
+    {
+      "base": 11,
+      "custom": 20447,
+      "dff": "mrucznikskin70.dff",
+      "txd": "mrucznikskin70.txd"
+    },
+    {
+      "base": 11,
+      "custom": 20448,
+      "dff": "mrucznikskin72.dff",
+      "txd": "mrucznikskin72.txd"
+    },
+    {
+      "base": 11,
+      "custom": 20449,
+      "dff": "mrucznikskin73.dff",
+      "txd": "mrucznikskin73.txd"
+    },
+    {
+      "base": 11,
+      "custom": 20450,
+      "dff": "mrucznikskin74.dff",
+      "txd": "mrucznikskin74.txd"
+    },
+    {
+      "base": 11,
+      "custom": 20451,
+      "dff": "mrucznikskin75.dff",
+      "txd": "mrucznikskin75.txd"
+    },
+    {
+      "base": 7,
+      "custom": 20452,
+      "dff": "mrucznikskin76.dff",
+      "txd": "mrucznikskin76.txd"
+    },
+    {
+      "base": 11,
+      "custom": 20453,
+      "dff": "mrucznikskin77.dff",
+      "txd": "mrucznikskin77.txd"
+    },
+    {
+      "base": 7,
+      "custom": 20454,
+      "dff": "mrucznikskin78.dff",
+      "txd": "mrucznikskin78.txd"
+    }
+  ]
+}

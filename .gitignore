@@ -111,3 +111,11 @@ serverfiles/
 
 # Mrucznikowe
 out.csv
+
+# Local MTA build and test output
+mta/.build/
+mta/.cache/
+mta/server/mods/deathmatch/resources/amx/
+mta/server/mods/deathmatch/resources/amx-mrucznik/Mrucznik-RP.amx
+mta/server/mods/deathmatch/resources/amx/plugins/
+mta/server/mods/deathmatch/resources/amx/scriptfiles/

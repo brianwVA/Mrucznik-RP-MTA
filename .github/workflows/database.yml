@@ -1,0 +1,64 @@
+name: Database compatibility
+
+on:
+  push:
+    paths:
+      - "database/**"
+      - "mta/docker-compose.database.yml"
+      - ".github/workflows/database.yml"
+  pull_request:
+    paths:
+      - "database/**"
+      - "mta/docker-compose.database.yml"
+      - ".github/workflows/database.yml"
+
+jobs:
+  import:
+    runs-on: ubuntu-latest
+    services:
+      mysql:
+        image: mysql:8.0.36
+        env:
+          MYSQL_ROOT_PASSWORD: mrucznik-root
+          MYSQL_DATABASE: mrucznik
+          MYSQL_USER: samp
+          MYSQL_PASSWORD: funia
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd="mysqladmin ping -h 127.0.0.1 -uroot -pmrucznik-root"
+          --health-interval=5s
+          --health-timeout=5s
+          --health-retries=30
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: false
+          lfs: false
+      - name: Install MySQL client
+        run: |
+          sudo apt-get update
+          sudo apt-get install --yes mysql-client
+      - name: Import schema, seed data and routines
+        env:
+          MYSQL_PWD: mrucznik-root
+        run: |
+          for file in database/schema/*.sql; do
+            mysql --protocol=TCP -h127.0.0.1 -uroot mrucznik < "$file"
+          done
+          for file in database/data/*.sql; do
+            mysql --protocol=TCP -h127.0.0.1 -uroot mrucznik < "$file"
+          done
+          mysql --protocol=TCP -h127.0.0.1 -uroot < database/routines.sql
+      - name: Verify imported contract
+        env:
+          MYSQL_PWD: mrucznik-root
+        run: |
+          objects=$(mysql --protocol=TCP -h127.0.0.1 -uroot -Nse \
+            "SELECT COUNT(*) FROM information_schema.tables WHERE table_schema='mrucznik'")
+          routines=$(mysql --protocol=TCP -h127.0.0.1 -uroot -Nse \
+            "SELECT COUNT(*) FROM information_schema.routines WHERE routine_schema='mrucznik'")
+          test "$objects" -eq 61
+          test "$routines" -eq 31
+          mysql --protocol=TCP -h127.0.0.1 -usamp -pfunia -Nse \
+            "SELECT COUNT(*) FROM mrucznik.mru_config"

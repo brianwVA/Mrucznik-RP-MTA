@@ -1,0 +1,788 @@
+name,aliases,permissions,module,source,native_mta_status
+a,,everyone,komendy,gamemodes/modules/komendy/commands/a/a_impl.pwn,pending
+ac,antycheat antyczit nexac,everyone,antycheat,gamemodes/modules/antycheat/commands/ac/ac_impl.pwn,pending
+adajrange,admindajrange,everyone,komendy,gamemodes/modules/komendy/commands/adajrange/adajrange_impl.pwn,pending
+addcar,,everyone,komendy,gamemodes/modules/komendy/commands/addcar/addcar_impl.pwn,pending
+addmc,dajmc dodajmc,everyone,premium,gamemodes/modules/premium/commands/addmc/addmc_impl.pwn,pending
+admindutycmd,adminduty aduty,everyone,komendy,gamemodes/modules/komendy/commands/admindutycmd/admindutycmd_impl.pwn,pending
+admini,admins,everyone,komendy,gamemodes/modules/komendy/commands/admini/admini_impl.pwn,pending
+adminjail,aj,everyone,komendy,gamemodes/modules/komendy/commands/adminjail/adminjail_impl.pwn,pending
+adminkill,,everyone,komendy,gamemodes/modules/komendy/commands/adminkill/adminkill_impl.pwn,pending
+adminstats,,everyone,komendy,gamemodes/modules/komendy/commands/adminstats/adminstats_impl.pwn,pending
+agraffiti,agrafiti,admini,graffiti,gamemodes/modules/graffiti/commands/agraffiti/agraffiti_impl.pwn,pending
+ah,adminhelp adminpomoc,admini,komendy,gamemodes/modules/komendy/commands/ah/ah_impl.pwn,pending
+akceptuj,,everyone,oferty,gamemodes/modules/oferty/commands/akceptuj/akceptuj_impl.pwn,pending
+akceptujnaprawe,an,everyone,komendy,gamemodes/modules/komendy/commands/akceptujnaprawe/akceptujnaprawe_impl.pwn,pending
+akceptujtankowanie,at,everyone,komendy,gamemodes/modules/komendy/commands/akceptujtankowanie/akceptujtankowanie_impl.pwn,pending
+alarm,,everyone,komendy,gamemodes/modules/komendy/commands/alarm/alarm_impl.pwn,pending
+alkomat,,everyone,komendy,gamemodes/modules/komendy/commands/alkomat/alkomat_impl.pwn,pending
+and1,,,filterscripts,filterscripts/zombiescript.pwn,pending
+anim,animacje animhelp anims animshelp,everyone,animacje,gamemodes/modules/animacje/commands/anim/anim_impl.pwn,pending
+ann,,everyone,komendy,gamemodes/modules/komendy/commands/ann/ann_impl.pwn,pending
+antybh,,everyone,komendy,gamemodes/modules/komendy/commands/antybh/antybh_impl.pwn,pending
+anuluj,,everyone,komendy,gamemodes/modules/komendy/commands/anuluj/anuluj_impl.pwn,pending
+anulujzp,,everyone,komendy,gamemodes/modules/komendy/commands/anulujzp/anulujzp_impl.pwn,pending
+app,,everyone,komendy,gamemodes/modules/komendy/commands/app/app_impl.pwn,pending
+apteczka,,everyone,komendy,gamemodes/modules/komendy/commands/apteczka/apteczka_impl.pwn,pending
+aresztuj,,everyone,komendy,gamemodes/modules/komendy/commands/aresztuj/aresztuj_impl.pwn,pending
+armor,,everyone,komendy,gamemodes/modules/komendy/commands/armor/armor_impl.pwn,pending
+aroundabout,,,filterscripts,filterscripts/ronda.pwn,pending
+asystem,,everyone,komendy,gamemodes/modules/komendy/commands/asystem/asystem_impl.pwn,pending
+atakuj,,everyone,komendy,gamemodes/modules/komendy/commands/atakuj/atakuj_impl.pwn,pending
+aulecz,aheal,everyone,choroby,gamemodes/modules/choroby/commands/aulecz/aulecz_impl.pwn,pending
+autok,,everyone,komendy,gamemodes/modules/komendy/commands/autok/autok_impl.pwn,pending
+autopomoc,carhelp pojazdpomoc samochodpomoc vehiclehelp,everyone,pomoc,gamemodes/modules/pomoc/commands/autopomoc/autopomoc_impl.pwn,pending
+autoranny,,everyone,komendy,gamemodes/modules/komendy/commands/autoranny/autoranny_impl.pwn,pending
+autorzy,tworcy,everyone,komendy,gamemodes/modules/komendy/commands/autorzy/autorzy_impl.pwn,pending
+awans,,everyone,komendy,gamemodes/modules/komendy/commands/awans/awans_impl.pwn,pending
+b,,everyone,komendy,gamemodes/modules/komendy/commands/b/b_impl.pwn,pending
+balans,,everyone,komendy,gamemodes/modules/komendy/commands/balans/balans_impl.pwn,pending
+ban,,everyone,komendy,gamemodes/modules/komendy/commands/ban/ban_impl.pwn,pending
+bandana,,everyone,komendy,gamemodes/modules/komendy/commands/bandana/bandana_impl.pwn,pending
+banip,,everyone,komendy,gamemodes/modules/komendy/commands/banip/banip_impl.pwn,pending
+barierka,,everyone,komendy,gamemodes/modules/komendy/commands/barierka/barierka_impl.pwn,pending
+basenstats,,everyone,komendy,gamemodes/modules/komendy/commands/basenstats/basenstats_impl.pwn,pending
+bdaj,,everyone,komendy,gamemodes/modules/komendy/commands/bdaj/bdaj_impl.pwn,pending
+biegnij,,everyone,sila,gamemodes/modules/sila/commands/biegnij/biegnij_impl.pwn,pending
+bigears,,everyone,komendy,gamemodes/modules/komendy/commands/bigears/bigears_impl.pwn,pending
+biz,bizradio radiobiz,everyone,biznesy,gamemodes/modules/biznesy/commands/biz/biz_impl.pwn,pending
+bizinfo,,everyone,biznesy,gamemodes/modules/biznesy/commands/bizinfo/bizinfo_impl.pwn,pending
+bizlock,businesslock otworzbiznes zamknijbiznes,everyone,biznesy,gamemodes/modules/biznesy/commands/bizlock/bizlock_impl.pwn,pending
+bizpomoc,bizhelp biznespomoc,everyone,pomoc,gamemodes/modules/pomoc/commands/bizpomoc/bizpomoc_impl.pwn,pending
+blackjack,,everyone,komendy,gamemodes/modules/komendy/commands/blackjack/blackjack_impl.pwn,pending
+blok,block,everyone,komendy,gamemodes/modules/komendy/commands/blok/blok_impl.pwn,pending
+blokujnews,,everyone,komendy,gamemodes/modules/komendy/commands/blokujnews/blokujnews_impl.pwn,pending
+blokujnoba,,everyone,komendy,gamemodes/modules/komendy/commands/blokujnoba/blokujnoba_impl.pwn,pending
+blokujsprzedaz,,everyone,komendy,gamemodes/modules/komendy/commands/blokujsprzedaz/blokujsprzedaz_impl.pwn,pending
+boombox,,everyone,komendy,gamemodes/modules/komendy/commands/boombox/boombox_impl.pwn,pending
+boxstats,boksstats,everyone,komendy,gamemodes/modules/komendy/commands/boxstats/boxstats_impl.pwn,pending
+bp,,everyone,komendy,gamemodes/modules/komendy/commands/bp/bp_impl.pwn,pending
+bpracownicy,biznespracownicy businessworkers,everyone,biznesy,gamemodes/modules/biznesy/commands/bpracownicy/bpracownicy_impl.pwn,pending
+brama,br,everyone,komendy,gamemodes/modules/komendy/commands/brama/brama_impl.pwn,pending
+businfo,bus buspomoc,everyone,praca_kierowca,gamemodes/modules/praca_kierowca/commands/businfo/businfo_impl.pwn,pending
+busroute,,admini,praca_kierowca,gamemodes/modules/praca_kierowca/commands/busroute/busroute_impl.pwn,pending
+busstop,,admini,praca_kierowca,gamemodes/modules/praca_kierowca/commands/busstop/busstop_impl.pwn,pending
+bwcmd,bw,everyone,komendy,gamemodes/modules/komendy/commands/bwcmd/bwcmd_impl.pwn,pending
+c,,everyone,komendy,gamemodes/modules/komendy/commands/c/c_impl.pwn,pending
+caluj,,everyone,komendy,gamemodes/modules/komendy/commands/caluj/caluj_impl.pwn,pending
+car,auto pojazd samochod,everyone,komendy,gamemodes/modules/komendy/commands/car/car_impl.pwn,pending
+carcolors,kolory,everyone,praca_mechanik,gamemodes/modules/praca_mechanik/commands/carcolors/carcolors_impl.pwn,pending
+carjump,,everyone,komendy,gamemodes/modules/komendy/commands/carjump/carjump_impl.pwn,pending
+carslot,,everyone,komendy,gamemodes/modules/komendy/commands/carslot/carslot_impl.pwn,pending
+cbradio,cb cb_radio,everyone,komendy,gamemodes/modules/komendy/commands/cbradio/cbradio_impl.pwn,pending
+cc,,,filterscripts,filterscripts/colorchange.pwn,pending
+cc_dajlider,,,filterscripts,filterscripts/colorchange.pwn,pending
+cc_odrzut,,,filterscripts,filterscripts/colorchange.pwn,pending
+cc_restart,,,filterscripts,filterscripts/colorchange.pwn,pending
+cc_start,,,filterscripts,filterscripts/colorchange.pwn,pending
+cc_tog,,,filterscripts,filterscripts/colorchange.pwn,pending
+cc_widz,,,filterscripts,filterscripts/colorchange.pwn,pending
+cc_zabierzlider,,,filterscripts,filterscripts/colorchange.pwn,pending
+cca,cc,everyone,komendy,gamemodes/modules/komendy/commands/cca/cca_impl.pwn,pending
+cennik,,everyone,komendy,gamemodes/modules/komendy/commands/cennik/cennik_impl.pwn,pending
+check,,everyone,komendy,gamemodes/modules/komendy/commands/check/check_impl.pwn,pending
+checkadminstats,,everyone,komendy,gamemodes/modules/komendy/commands/checkadminstats/checkadminstats_impl.pwn,pending
+checkbw,,everyone,komendy,gamemodes/modules/komendy/commands/checkbw/checkbw_impl.pwn,pending
+checkcar,,everyone,komendy,gamemodes/modules/komendy/commands/checkcar/checkcar_impl.pwn,pending
+checkcars,,everyone,komendy,gamemodes/modules/komendy/commands/checkcars/checkcars_impl.pwn,pending
+checkpremium,checkkp checkmc,everyone,premium,gamemodes/modules/premium/commands/checkpremium/checkpremium_impl.pwn,pending
+checktank,checktankmod checktankmode,everyone,komendy,gamemodes/modules/komendy/commands/checktank/checktank_impl.pwn,pending
+chujcipa123strefa,,,filterscripts,filterscripts/colorchange.pwn,pending
+clearwlall,,everyone,komendy,gamemodes/modules/komendy/commands/clearwlall/clearwlall_impl.pwn,pending
+clearzone,,everyone,komendy,gamemodes/modules/komendy/commands/clearzone/clearzone_impl.pwn,pending
+cmdinfo,,everyone,komendy,gamemodes/modules/komendy/commands/cmdinfo/cmdinfo_impl.pwn,pending
+cnn,,everyone,komendy,gamemodes/modules/komendy/commands/cnn/cnn_impl.pwn,pending
+cnnn,,everyone,komendy,gamemodes/modules/komendy/commands/cnnn/cnnn_impl.pwn,pending
+cp,checkpoint czekpoint,everyone,komendy,gamemodes/modules/komendy/commands/cp/cp_impl.pwn,pending
+cp_usun,checkpoint_usun czekpoint_usun,everyone,komendy,gamemodes/modules/komendy/commands/cp_usun/cp_usun_impl.pwn,pending
+createbox,,admini,movables,gamemodes/modules/movables/commands/createbox/createbox_impl.pwn,pending
+createconvoyactor,,everyone,convoy,gamemodes/modules/convoy/commands/createconvoyactor/createconvoyactor_impl.pwn,pending
+createconvoybox,,everyone,convoy,gamemodes/modules/convoy/commands/createconvoybox/createconvoybox_impl.pwn,pending
+createobject,,admini,admin,gamemodes/modules/admin/commands/createobject/createobject_impl.pwn,pending
+crimereport,,everyone,komendy,gamemodes/modules/komendy/commands/crimereport/crimereport_impl.pwn,pending
+cwarsztat,,everyone,komendy,gamemodes/modules/komendy/commands/cwarsztat/cwarsztat_impl.pwn,pending
+cygaro,,everyone,komendy,gamemodes/modules/komendy/commands/cygaro/cygaro_impl.pwn,pending
+czas,time,everyone,komendy,gamemodes/modules/komendy/commands/czas/czas_impl.pwn,pending
+cziterzy,cheaters czity,everyone,antycheat,gamemodes/modules/antycheat/commands/cziterzy/cziterzy_impl.pwn,pending
+czyjtonumer,,everyone,komendy,gamemodes/modules/komendy/commands/czyjtonumer/czyjtonumer_impl.pwn,pending
+czysc,,everyone,komendy,gamemodes/modules/komendy/commands/czysc/czysc_impl.pwn,pending
+dajapteczke,dajapteczka,everyone,komendy,gamemodes/modules/komendy/commands/dajapteczke/dajapteczke_impl.pwn,pending
+dajbilet,,everyone,ibiza,gamemodes/modules/ibiza/commands/dajbilet/dajbilet_impl.pwn,pending
+dajbiznes,,everyone,biznesy,gamemodes/modules/biznesy/commands/dajbiznes/dajbiznes_impl.pwn,pending
+dajdowozu,,everyone,komendy,gamemodes/modules/komendy/commands/dajdowozu/dajdowozu_impl.pwn,pending
+dajdzwiek,,everyone,komendy,gamemodes/modules/komendy/commands/dajdzwiek/dajdzwiek_impl.pwn,pending
+dajfiltr,,everyone,komendy,gamemodes/modules/komendy/commands/dajfiltr/dajfiltr_impl.pwn,pending
+dajkase,givemoney,everyone,komendy,gamemodes/modules/komendy/commands/dajkase/dajkase_impl.pwn,pending
+dajklucze,dajkluczyki kluczyki,everyone,komendy,gamemodes/modules/komendy/commands/dajklucze/dajklucze_impl.pwn,pending
+dajkm,,everyone,komendy,gamemodes/modules/komendy/commands/dajkm/dajkm_impl.pwn,pending
+dajkp,,everyone,premium,gamemodes/modules/premium/commands/dajkp/dajkp_impl.pwn,pending
+dajlideraorg,,everyone,komendy,gamemodes/modules/komendy/commands/dajlideraorg/dajlideraorg_impl.pwn,pending
+dajobiekt,giveobject,everyone,player_attachments,gamemodes/modules/player_attachments/commands/dajobiekt/dajobiekt_impl.pwn,pending
+dajpodatek,givetax,everyone,komendy,gamemodes/modules/komendy/commands/dajpodatek/dajpodatek_impl.pwn,pending
+dajpomocnika,,everyone,komendy,gamemodes/modules/komendy/commands/dajpomocnika/dajpomocnika_impl.pwn,pending
+dajrange,giverank,everyone,komendy,gamemodes/modules/komendy/commands/dajrange/dajrange_impl.pwn,pending
+dajscene,,everyone,sceny,gamemodes/modules/sceny/commands/dajscene/dajscene_impl.pwn,pending
+dajskryptera,,everyone,komendy,gamemodes/modules/komendy/commands/dajskryptera/dajskryptera_impl.pwn,pending
+dajzaufanego,,everyone,komendy,gamemodes/modules/komendy/commands/dajzaufanego/dajzaufanego_impl.pwn,pending
+datek,charity,everyone,komendy,gamemodes/modules/komendy/commands/datek/datek_impl.pwn,pending
+degraduj,,everyone,komendy,gamemodes/modules/komendy/commands/degraduj/degraduj_impl.pwn,pending
+delete3dtext,,everyone,komendy,gamemodes/modules/komendy/commands/delete3dtext/delete3dtext_impl.pwn,pending
+deletedom,deldom usundom,everyone,komendy,gamemodes/modules/komendy/commands/deletedom/deletedom_impl.pwn,pending
+deleteobject,,everyone,komendy,gamemodes/modules/komendy/commands/deleteobject/deleteobject_impl.pwn,pending
+demorgan,prison,everyone,komendy,gamemodes/modules/komendy/commands/demorgan/demorgan_impl.pwn,pending
+departament,d,everyone,komendy,gamemodes/modules/komendy/commands/departament/departament_impl.pwn,pending
+depo,departmentooc dooc,everyone,komendy,gamemodes/modules/komendy/commands/depo/depo_impl.pwn,pending
+destroyconvoyactor,,everyone,convoy,gamemodes/modules/convoy/commands/destroyconvoyactor/destroyconvoyactor_impl.pwn,pending
+destroyconvoybox,,everyone,convoy,gamemodes/modules/convoy/commands/destroyconvoybox/destroyconvoybox_impl.pwn,pending
+destroyobject,,admini,admin,gamemodes/modules/admin/commands/destroyobject/destroyobject_impl.pwn,pending
+diagnozuj,diagnoza zdiagnozuj,everyone,choroby,gamemodes/modules/choroby/commands/diagnozuj/diagnozuj_impl.pwn,pending
+diluj,,everyone,praca_diler,gamemodes/modules/praca_diler/commands/diluj/diluj_impl.pwn,pending
+disabletruckerjob,,everyone,komendy,gamemodes/modules/komendy/commands/disabletruckerjob/disabletruckerjob_impl.pwn,pending
+dl,dajl dajlicencje givelicense,everyone,komendy,gamemodes/modules/komendy/commands/dl/dl_impl.pwn,pending
+dmvoff,,everyone,urzadls,gamemodes/modules/urzadls/commands/dmvoff/dmvoff_impl.pwn,pending
+dmvon,,everyone,urzadls,gamemodes/modules/urzadls/commands/dmvon/dmvon_impl.pwn,pending
+dn,,everyone,komendy,gamemodes/modules/komendy/commands/dn/dn_impl.pwn,pending
+dnobiekt,,everyone,admin,gamemodes/modules/admin/commands/dnobiekt/dnobiekt_impl.pwn,pending
+do,,everyone,komendy,gamemodes/modules/komendy/commands/do/do_impl.pwn,pending
+dodajweryfikacje,,everyone,komendy,gamemodes/modules/komendy/commands/dodajweryfikacje/dodajweryfikacje_impl.pwn,pending
+dodatki,,everyone,player_attachments,gamemodes/modules/player_attachments/commands/dodatki/dodatki_impl.pwn,pending
+dolacz,join,everyone,prace,gamemodes/modules/prace/commands/dolacz/dolacz_impl.pwn,pending
+dolaczzombie,,,filterscripts,filterscripts/zombiescript.pwn,pending
+domint,,everyone,komendy,gamemodes/modules/komendy/commands/domint/domint_impl.pwn,pending
+dompomoc,househelp,everyone,pomoc,gamemodes/modules/pomoc/commands/dompomoc/dompomoc_impl.pwn,pending
+dopasuj,,everyone,komendy,gamemodes/modules/komendy/commands/dopasuj/dopasuj_impl.pwn,pending
+dpa,,everyone,komendy,gamemodes/modules/komendy/commands/dpa/dpa_impl.pwn,pending
+dr,,everyone,komendy,gamemodes/modules/komendy/commands/dr/dr_impl.pwn,pending
+dskill,,everyone,komendy,gamemodes/modules/komendy/commands/dskill/dskill_impl.pwn,pending
+dsus,,everyone,komendy,gamemodes/modules/komendy/commands/dsus/dsus_impl.pwn,pending
+dutycd,dutysbi,everyone,komendy,gamemodes/modules/komendy/commands/dutycd/dutycd_impl.pwn,pending
+dvobiekt,,admini,admin,gamemodes/modules/admin/commands/dvobiekt/dvobiekt_impl.pwn,pending
+dynamite,,,filterscripts,filterscripts/Firecrackers.pwn,pending
+dzwon,call,everyone,komendy,gamemodes/modules/komendy/commands/dzwon/dzwon_impl.pwn,pending
+editobject,,everyone,admin,gamemodes/modules/admin/commands/editobject/editobject_impl.pwn,pending
+edytuj,,everyone,komendy,gamemodes/modules/komendy/commands/edytuj/edytuj_impl.pwn,pending
+edytujbiznes,bizedit editbiz editbusiness,everyone,biznesy,gamemodes/modules/biznesy/commands/edytujbiznes/edytujbiznes_impl.pwn,pending
+edytujupr,,everyone,komendy,gamemodes/modules/komendy/commands/edytujupr/edytujupr_impl.pwn,pending
+elo,,everyone,komendy,gamemodes/modules/komendy/commands/elo/elo_impl.pwn,pending
+elo2,,everyone,komendy,gamemodes/modules/komendy/commands/elo2/elo2_impl.pwn,pending
+endround,,everyone,komendy,gamemodes/modules/komendy/commands/endround/endround_impl.pwn,pending
+entercar,,everyone,komendy,gamemodes/modules/komendy/commands/entercar/entercar_impl.pwn,pending
+fajerwerki,,,filterscripts,filterscripts/Firecrackers.pwn,pending
+fbadmin,,everyone,front_business,gamemodes/modules/front_business/commands/fbadmin/fbadmin_impl.pwn,pending
+fbidrzwi,,everyone,komendy,gamemodes/modules/komendy/commands/fbidrzwi/fbidrzwi_impl.pwn,pending
+fdaj,,everyone,komendy,gamemodes/modules/komendy/commands/fdaj/fdaj_impl.pwn,pending
+federalne,fed,everyone,komendy,gamemodes/modules/komendy/commands/federalne/federalne_impl.pwn,pending
+felga,,everyone,praca_mechanik,gamemodes/modules/praca_mechanik/commands/felga/felga_impl.pwn,pending
+felgi,,everyone,praca_mechanik,gamemodes/modules/praca_mechanik/commands/felgi/felgi_impl.pwn,pending
+finfo,,everyone,komendy,gamemodes/modules/komendy/commands/finfo/finfo_impl.pwn,pending
+finisz,meta,everyone,komendy,gamemodes/modules/komendy/commands/finisz/finisz_impl.pwn,pending
+fixallveh,,everyone,komendy,gamemodes/modules/komendy/commands/fixallveh/fixallveh_impl.pwn,pending
+fixr,,everyone,komendy,gamemodes/modules/komendy/commands/fixr/fixr_impl.pwn,pending
+fixvc,fixvicecity,everyone,vicecity,gamemodes/modules/vicecity/commands/fixvc/fixvc_impl.pwn,pending
+fixveh,,everyone,komendy,gamemodes/modules/komendy/commands/fixveh/fixveh_impl.pwn,pending
+flip,,everyone,komendy,gamemodes/modules/komendy/commands/flip/flip_impl.pwn,pending
+fly,,everyone,komendy,gamemodes/modules/komendy/commands/fly/fly_impl.pwn,pending
+fooc,familyooc fo rodzinnyooc,everyone,komendy,gamemodes/modules/komendy/commands/fooc/fooc_impl.pwn,pending
+forceskin,,everyone,komendy,gamemodes/modules/komendy/commands/forceskin/forceskin_impl.pwn,pending
+forum,,everyone,komendy,gamemodes/modules/komendy/commands/forum/forum_impl.pwn,pending
+fpanel,,everyone,komendy,gamemodes/modules/komendy/commands/fpanel/fpanel_impl.pwn,pending
+fracinfo,,everyone,komendy,gamemodes/modules/komendy/commands/fracinfo/fracinfo_impl.pwn,pending
+fskin,mundur uniform,everyone,komendy,gamemodes/modules/komendy/commands/fskin/fskin_impl.pwn,pending
+getantidote,,,filterscripts,filterscripts/zombiescript.pwn,pending
+getcar,,everyone,komendy,gamemodes/modules/komendy/commands/getcar/getcar_impl.pwn,pending
+gethere,tm,everyone,komendy,gamemodes/modules/komendy/commands/gethere/gethere_impl.pwn,pending
+getimmunity,sprawdzodpornosc,everyone,choroby,gamemodes/modules/choroby/commands/getimmunity/getimmunity_impl.pwn,pending
+getint,,everyone,komendy,gamemodes/modules/komendy/commands/getint/getint_impl.pwn,pending
+getposp,getpos,everyone,komendy,gamemodes/modules/komendy/commands/getposp/getposp_impl.pwn,pending
+getvw,,everyone,komendy,gamemodes/modules/komendy/commands/getvw/getvw_impl.pwn,pending
+giveaccessfs,,,filterscripts,filterscripts/zombiescript.pwn,pending
+givegun,,everyone,komendy,gamemodes/modules/komendy/commands/givegun/givegun_impl.pwn,pending
+giveroom,dajpokoj dajwynajem,everyone,komendy,gamemodes/modules/komendy/commands/giveroom/giveroom_impl.pwn,pending
+glosnik,sanradio,everyone,komendy,gamemodes/modules/komendy/commands/glosnik/glosnik_impl.pwn,pending
+glosowanie,,everyone,komendy,gamemodes/modules/komendy/commands/glosowanie/glosowanie_impl.pwn,pending
+glosuj,,,filterscripts,filterscripts/wybory.pwn,pending
+goto,to,everyone,komendy,gamemodes/modules/komendy/commands/goto/goto_impl.pwn,pending
+gotoadmin,,everyone,komendy,gamemodes/modules/komendy/commands/gotoadmin/gotoadmin_impl.pwn,pending
+gotobank,,everyone,komendy,gamemodes/modules/komendy/commands/gotobank/gotobank_impl.pwn,pending
+gotobiz,,everyone,biznesy,gamemodes/modules/biznesy/commands/gotobiz/gotobiz_impl.pwn,pending
+gotobox,,admini,movables,gamemodes/modules/movables/commands/gotobox/gotobox_impl.pwn,pending
+gotocar,,everyone,komendy,gamemodes/modules/komendy/commands/gotocar/gotocar_impl.pwn,pending
+gotoczit,,everyone,komendy,gamemodes/modules/komendy/commands/gotoczit/gotoczit_impl.pwn,pending
+gotodom,,everyone,komendy,gamemodes/modules/komendy/commands/gotodom/gotodom_impl.pwn,pending
+gotofrontbiz,gotofb,everyone,front_business,gamemodes/modules/front_business/commands/gotofrontbiz/gotofrontbiz_impl.pwn,pending
+gotoin,,everyone,komendy,gamemodes/modules/komendy/commands/gotoin/gotoin_impl.pwn,pending
+gotoint,,everyone,komendy,gamemodes/modules/komendy/commands/gotoint/gotoint_impl.pwn,pending
+gotojet,,everyone,komendy,gamemodes/modules/komendy/commands/gotojet/gotojet_impl.pwn,pending
+gotojob,,everyone,prace,gamemodes/modules/prace/commands/gotojob/gotojob_impl.pwn,pending
+gotols,,everyone,komendy,gamemodes/modules/komendy/commands/gotols/gotols_impl.pwn,pending
+gotolv,,everyone,komendy,gamemodes/modules/komendy/commands/gotolv/gotolv_impl.pwn,pending
+gotomark,,everyone,komendy,gamemodes/modules/komendy/commands/gotomark/gotomark_impl.pwn,pending
+gotomechy,,everyone,komendy,gamemodes/modules/komendy/commands/gotomechy/gotomechy_impl.pwn,pending
+gotopos,,everyone,komendy,gamemodes/modules/komendy/commands/gotopos/gotopos_impl.pwn,pending
+gotosalon,,everyone,komendy,gamemodes/modules/komendy/commands/gotosalon/gotosalon_impl.pwn,pending
+gotosf,,everyone,komendy,gamemodes/modules/komendy/commands/gotosf/gotosf_impl.pwn,pending
+gotostacja,,everyone,komendy,gamemodes/modules/komendy/commands/gotostacja/gotostacja_impl.pwn,pending
+gotostad,,everyone,komendy,gamemodes/modules/komendy/commands/gotostad/gotostad_impl.pwn,pending
+gotoszpital,,everyone,komendy,gamemodes/modules/komendy/commands/gotoszpital/gotoszpital_impl.pwn,pending
+gotovc,,everyone,vicecity,gamemodes/modules/vicecity/commands/gotovc/gotovc_impl.pwn,pending
+gotovcint,,everyone,vicecity,gamemodes/modules/vicecity/commands/gotovcint/gotovcint_impl.pwn,pending
+gotowybory,,,filterscripts,filterscripts/wybory.pwn,pending
+gps,,everyone,komendy,gamemodes/modules/komendy/commands/gps/gps_impl.pwn,pending
+grafiti,graffiti,everyone,graffiti,gamemodes/modules/graffiti/commands/grafiti/grafiti_impl.pwn,pending
+gspanel,gunshop,everyone,frontbiz_gunshop,gamemodes/modules/frontbiz_gunshop/commands/gspanel/gspanel_impl.pwn,pending
+gwiazda,,,filterscripts,filterscripts/Firecrackers.pwn,pending
+help,komendy pomoc,everyone,pomoc,gamemodes/modules/pomoc/commands/help/help_impl.pwn,pending
+house,dom,everyone,komendy,gamemodes/modules/komendy/commands/house/house_impl.pwn,pending
+houseinfo,dom_info dominfo,everyone,komendy,gamemodes/modules/komendy/commands/houseinfo/houseinfo_impl.pwn,pending
+houseowner,,everyone,komendy,gamemodes/modules/komendy/commands/houseowner/houseowner_impl.pwn,pending
+hpall,,everyone,komendy,gamemodes/modules/komendy/commands/hpall/hpall_impl.pwn,pending
+hq,,everyone,komendy,gamemodes/modules/komendy/commands/hq/hq_impl.pwn,pending
+hydraulika,,everyone,praca_mechanik,gamemodes/modules/praca_mechanik/commands/hydraulika/hydraulika_impl.pwn,pending
+i,,everyone,komendy,gamemodes/modules/komendy/commands/i/i_impl.pwn,pending
+icons,ikonki ikony,everyone,komendy,gamemodes/modules/komendy/commands/icons/icons_impl.pwn,pending
+id,,everyone,komendy,gamemodes/modules/komendy/commands/id/id_impl.pwn,pending
+idz,,everyone,komendy,gamemodes/modules/komendy/commands/idz/idz_impl.pwn,pending
+innyspawn,spawnchange zmianaspawnu zmienspawn,everyone,komendy,gamemodes/modules/komendy/commands/innyspawn/innyspawn_impl.pwn,pending
+inwigilacja,,everyone,komendy,gamemodes/modules/komendy/commands/inwigilacja/inwigilacja_impl.pwn,pending
+ip,,everyone,komendy,gamemodes/modules/komendy/commands/ip/ip_impl.pwn,pending
+ip5,,everyone,listaip,gamemodes/modules/listaip/commands/ip5/ip5_impl.pwn,pending
+irc,,everyone,komendy,gamemodes/modules/komendy/commands/irc/irc_impl.pwn,pending
+ircpomoc,irchelp,everyone,pomoc,gamemodes/modules/pomoc/commands/ircpomoc/ircpomoc_impl.pwn,pending
+ja,me,everyone,komendy,gamemodes/modules/komendy/commands/ja/ja_impl.pwn,pending
+jail,,everyone,komendy,gamemodes/modules/komendy/commands/jail/jail_impl.pwn,pending
+jetpack,,everyone,praca_przemytnik,gamemodes/modules/praca_przemytnik/commands/jetpack/jetpack_impl.pwn,pending
+jump,,everyone,komendy,gamemodes/modules/komendy/commands/jump/jump_impl.pwn,pending
+k,krzyk,everyone,komendy,gamemodes/modules/komendy/commands/k/k_impl.pwn,pending
+kamera,,everyone,komendy,gamemodes/modules/komendy/commands/kamera/kamera_impl.pwn,pending
+kamera_wiezienie,kamera_w kamera_wiezienna kameraw kamerawiezienie kamerawiezienna,everyone,komendy,gamemodes/modules/komendy/commands/kamera_wiezienie/kamera_wiezienie_impl.pwn,pending
+kamerau,,everyone,komendy,gamemodes/modules/komendy/commands/kamerau/kamerau_impl.pwn,pending
+kamizelka,,everyone,komendy,gamemodes/modules/komendy/commands/kamizelka/kamizelka_impl.pwn,pending
+kanister,fillcar,everyone,komendy,gamemodes/modules/komendy/commands/kanister/kanister_impl.pwn,pending
+kasa,money,everyone,komendy,gamemodes/modules/komendy/commands/kasa/kasa_impl.pwn,pending
+kask,,everyone,wypadek,gamemodes/modules/wypadek/commands/kask/kask_impl.pwn,pending
+kaucja,bail,everyone,komendy,gamemodes/modules/komendy/commands/kaucja/kaucja_impl.pwn,pending
+kb,kontobankowe,everyone,komendy,gamemodes/modules/komendy/commands/kb/kb_impl.pwn,pending
+kick,,everyone,komendy,gamemodes/modules/komendy/commands/kick/kick_impl.pwn,pending
+kickall,,everyone,komendy,gamemodes/modules/komendy/commands/kickall/kickall_impl.pwn,pending
+kill,smierc szpital,everyone,bw,gamemodes/modules/bw/commands/kill/kill_impl.pwn,pending
+killall,,everyone,komendy,gamemodes/modules/komendy/commands/killall/killall_impl.pwn,pending
+kmwyniki,,everyone,komendy,gamemodes/modules/komendy/commands/kmwyniki/kmwyniki_impl.pwn,pending
+kod,,everyone,komendy,gamemodes/modules/komendy/commands/kod/kod_impl.pwn,pending
+kogut,sygnal syrena,everyone,komendy,gamemodes/modules/komendy/commands/kogut/kogut_impl.pwn,pending
+kolejka,,everyone,komendy,gamemodes/modules/komendy/commands/kolejka/kolejka_impl.pwn,pending
+kolo,kf kolofortuny,everyone,komendy,gamemodes/modules/komendy/commands/kolo/kolo_impl.pwn,pending
+komandos,wino,everyone,komendy,gamemodes/modules/komendy/commands/komandos/komandos_impl.pwn,pending
+komendacmd,cmd command komenda,everyone,komendy,gamemodes/modules/komendy/commands/komendacmd/komendacmd_impl.pwn,pending
+komendycmd,cmds commands komendy,everyone,komendy,gamemodes/modules/komendy/commands/komendycmd/komendycmd_impl.pwn,pending
+komentuj,km,everyone,komendy,gamemodes/modules/komendy/commands/komentuj/komentuj_impl.pwn,pending
+konsola,,everyone,komendy,gamemodes/modules/komendy/commands/konsola/konsola_impl.pwn,pending
+kontakty,kontakt,everyone,komendy,gamemodes/modules/komendy/commands/kontakty/kontakty_impl.pwn,pending
+kontrakt,contract,everyone,komendy,gamemodes/modules/komendy/commands/kontrakt/kontrakt_impl.pwn,pending
+konwoj,convoy,everyone,convoy,gamemodes/modules/convoy/commands/konwoj/konwoj_impl.pwn,pending
+kostka,,everyone,komendy,gamemodes/modules/komendy/commands/kostka/kostka_impl.pwn,pending
+kostka2,dice,everyone,komendy,gamemodes/modules/komendy/commands/kostka2/kostka2_impl.pwn,pending
+koxubankot,,everyone,komendy,gamemodes/modules/komendy/commands/koxubankot/koxubankot_impl.pwn,pending
+kradnij,,everyone,komendy,gamemodes/modules/komendy/commands/kradnij/kradnij_impl.pwn,pending
+ksam,,everyone,komendy,gamemodes/modules/komendy/commands/ksam/ksam_impl.pwn,pending
+ksiazkatel,ksiazka number numer sprawdznumber,everyone,komendy,gamemodes/modules/komendy/commands/ksiazkatel/ksiazkatel_impl.pwn,pending
+kup,buy,everyone,komendy,gamemodes/modules/komendy/commands/kup/kup_impl.pwn,pending
+kupbilet,,everyone,ibiza,gamemodes/modules/ibiza/commands/kupbilet/kupbilet_impl.pwn,pending
+kupbiletpociag,kbpo kpociag,everyone,komendy,gamemodes/modules/komendy/commands/kupbiletpociag/kupbiletpociag_impl.pwn,pending
+kupbiznes,,everyone,biznesy,gamemodes/modules/biznesy/commands/kupbiznes/kupbiznes_impl.pwn,pending
+kupbron,,everyone,frontbiz_gunshop,gamemodes/modules/frontbiz_gunshop/commands/kupbron/kupbron_impl.pwn,pending
+kupdildo,,everyone,komendy,gamemodes/modules/komendy/commands/kupdildo/kupdildo_impl.pwn,pending
+kupdragi,buydrugs kupnarkotyki,everyone,praca_diler,gamemodes/modules/praca_diler/commands/kupdragi/kupdragi_impl.pwn,pending
+kuphelikopter,buyheli buyhelicopter kupheli,everyone,komendy,gamemodes/modules/komendy/commands/kuphelikopter/kuphelikopter_impl.pwn,pending
+kupkredyty,,everyone,komendy,gamemodes/modules/komendy/commands/kupkredyty/kupkredyty_impl.pwn,pending
+kuplicencje,kuplic,everyone,urzadls,gamemodes/modules/urzadls/commands/kuplicencje/kuplicencje_impl.pwn,pending
+kuplodzie,buyboat kuplodz kupstatek,everyone,komendy,gamemodes/modules/komendy/commands/kuplodzie/kuplodzie_impl.pwn,pending
+kuporg,kuporganizacje zalozorganizacje,everyone,organizacje,gamemodes/modules/organizacje/commands/kuporg/kuporg_impl.pwn,pending
+kupowaniedomu,buyhouse kupdom,everyone,komendy,gamemodes/modules/komendy/commands/kupowaniedomu/kupowaniedomu_impl.pwn,pending
+kuppojazd,buycar kupauto kupmotocykl kupmotor kupsamochod,everyone,komendy,gamemodes/modules/komendy/commands/kuppojazd/kuppojazd_impl.pwn,pending
+kuppozwolenie,,everyone,komendy,gamemodes/modules/komendy/commands/kuppozwolenie/kuppozwolenie_impl.pwn,pending
+kupsamoloty,buyplane kuplot kupsamolot,everyone,komendy,gamemodes/modules/komendy/commands/kupsamoloty/kupsamoloty_impl.pwn,pending
+kupskin,wybierzskin,everyone,komendy,gamemodes/modules/komendy/commands/kupskin/kupskin_impl.pwn,pending
+kupwodolot,,everyone,pojazdy,gamemodes/modules/pojazdy/commands/kupwodolot/kupwodolot_impl.pwn,pending
+kuracja,,everyone,choroby,gamemodes/modules/choroby/commands/kuracja/kuracja_impl.pwn,pending
+kurs,fare,everyone,praca_kierowca,gamemodes/modules/praca_kierowca/commands/kurs/kurs_impl.pwn,pending
+laptop,portable,everyone,komendy,gamemodes/modules/komendy/commands/laptop/laptop_impl.pwn,pending
+licencje,licenses,everyone,komendy,gamemodes/modules/komendy/commands/licencje/licencje_impl.pwn,pending
+lidercar,leadercar leaderveh liderveh,everyone,pojazdy,gamemodes/modules/pojazdy/commands/lidercar/lidercar_impl.pwn,pending
+liderpomoc,leaderhelp liderhelp,everyone,pomoc,gamemodes/modules/pomoc/commands/liderpomoc/liderpomoc_impl.pwn,pending
+liderranga,leaderranga leaderrangi leaderrank liderrangi liderrank,everyone,frakcje,gamemodes/modules/frakcje/commands/liderranga/liderranga_impl.pwn,pending
+linie,,everyone,komendy,gamemodes/modules/komendy/commands/linie/linie_impl.pwn,pending
+lkiz,,everyone,komendy,gamemodes/modules/komendy/commands/lkiz/lkiz_impl.pwn,pending
+loadconfig,,everyone,komendy,gamemodes/modules/komendy/commands/loadconfig/loadconfig_impl.pwn,pending
+loadinfo,,everyone,komendy,gamemodes/modules/komendy/commands/loadinfo/loadinfo_impl.pwn,pending
+lock,unlock,everyone,komendy,gamemodes/modules/komendy/commands/lock/lock_impl.pwn,pending
+lockdown,,admini,weryfikacje,gamemodes/modules/weryfikacje/commands/lockdown/lockdown_impl.pwn,pending
+lockint,zamekint,everyone,komendy,gamemodes/modules/komendy/commands/lockint/lockint_impl.pwn,pending
+login,,everyone,komendy,gamemodes/modules/komendy/commands/login/login_impl.pwn,pending
+losowostworzdom,lcreatehouse lpostawdom lstworzdom ltworzdom lzrobdom,everyone,komendy,gamemodes/modules/komendy/commands/losowostworzdom/losowostworzdom_impl.pwn,pending
+losowypozar,,everyone,komendy,gamemodes/modules/komendy/commands/losowypozar/losowypozar_impl.pwn,pending
+lot,,everyone,komendy,gamemodes/modules/komendy/commands/lot/lot_impl.pwn,pending
+lotto,,everyone,komendy,gamemodes/modules/komendy/commands/lotto/lotto_impl.pwn,pending
+lowienie,fish low ryba wedka wedkuj zlap,everyone,fishing,gamemodes/modules/fishing/commands/lowienie/lowienie_impl.pwn,pending
+lsmcelevator,,everyone,komendy,gamemodes/modules/komendy/commands/lsmcelevator/lsmcelevator_impl.pwn,pending
+makeircadmin,,everyone,komendy,gamemodes/modules/komendy/commands/makeircadmin/makeircadmin_impl.pwn,pending
+makeleader,,everyone,komendy,gamemodes/modules/komendy/commands/makeleader/makeleader_impl.pwn,pending
+makemember,,everyone,komendy,gamemodes/modules/komendy/commands/makemember/makemember_impl.pwn,pending
+makevlider,,everyone,komendy,gamemodes/modules/komendy/commands/makevlider/makevlider_impl.pwn,pending
+malunek,maluj,everyone,praca_mechanik,gamemodes/modules/praca_mechanik/commands/malunek/malunek_impl.pwn,pending
+malunki,paintjobs,everyone,praca_mechanik,gamemodes/modules/praca_mechanik/commands/malunki/malunki_impl.pwn,pending
+mandacik,mandat ticket,everyone,komendy,gamemodes/modules/komendy/commands/mandacik/mandacik_impl.pwn,pending
+mark,,everyone,komendy,gamemodes/modules/komendy/commands/mark/mark_impl.pwn,pending
+maseczka,dajmaseczke sprzedajmaseczke,everyone,choroby,gamemodes/modules/choroby/commands/maseczka/maseczka_impl.pwn,pending
+maska,,everyone,komendy,gamemodes/modules/komendy/commands/maska/maska_impl.pwn,pending
+materialy,materials mats,everyone,komendy,gamemodes/modules/komendy/commands/materialy/materialy_impl.pwn,pending
+mdc,,everyone,komendy,gamemodes/modules/komendy/commands/mdc/mdc_impl.pwn,pending
+megafon,m megaphone,everyone,komendy,gamemodes/modules/komendy/commands/megafon/megafon_impl.pwn,pending
+mi,deathwarning mordinfo warningdeath,everyone,komendy,gamemodes/modules/komendy/commands/mi/mi_impl.pwn,pending
+mikser,,everyone,komendy,gamemodes/modules/komendy/commands/mikser/mikser_impl.pwn,pending
+mojeauta,mojeauto,everyone,komendy,gamemodes/modules/komendy/commands/mojeauta/mojeauta_impl.pwn,pending
+mojskin,,everyone,komendy,gamemodes/modules/komendy/commands/mojskin/mojskin_impl.pwn,pending
+mole,,everyone,komendy,gamemodes/modules/komendy/commands/mole/mole_impl.pwn,pending
+mp3,music muzyka,everyone,komendy,gamemodes/modules/komendy/commands/mp3/mp3_impl.pwn,pending
+mruczniki,,,filterscripts,filterscripts/Mruczniki_2016.pwn,pending
+msgbox,,everyone,komendy,gamemodes/modules/komendy/commands/msgbox/msgbox_impl.pwn,pending
+muzyczka,,everyone,komendy,gamemodes/modules/komendy/commands/muzyczka/muzyczka_impl.pwn,pending
+myfrac,,,legacy,gamemodes/obiekty/skrypt/objecttest.pwn,pending
+myorg,,,legacy,gamemodes/obiekty/skrypt/objecttest.pwn,pending
+namierz,find szukaj znajdz,everyone,komendy,gamemodes/modules/komendy/commands/namierz/namierz_impl.pwn,pending
+napad,,,napady,gamemodes/modules/napady/commands/napad/napad_impl.pwn,pending
+napadoff,,,napady,gamemodes/modules/napady/commands/napadoff/napadoff_impl.pwn,pending
+napadon,,,napady,gamemodes/modules/napady/commands/napadon/napadon_impl.pwn,pending
+napraw,repair,everyone,praca_mechanik,gamemodes/modules/praca_mechanik/commands/napraw/napraw_impl.pwn,pending
+naprawpojazd,,everyone,praca_mechanik,gamemodes/modules/praca_mechanik/commands/naprawpojazd/naprawpojazd_impl.pwn,pending
+nastepnylevel,buylevel kuplevel nextlevel,everyone,komendy,gamemodes/modules/komendy/commands/nastepnylevel/nastepnylevel_impl.pwn,pending
+naucz,,everyone,komendy,gamemodes/modules/komendy/commands/naucz/naucz_impl.pwn,pending
+nazywo,live wywiad,everyone,komendy,gamemodes/modules/komendy/commands/nazywo/nazywo_impl.pwn,pending
+newbie,n,everyone,komendy,gamemodes/modules/komendy/commands/newbie/newbie_impl.pwn,pending
+newcar,,everyone,komendy,gamemodes/modules/komendy/commands/newcar/newcar_impl.pwn,pending
+news,wiadomosc,everyone,sannews,gamemodes/modules/sannews/commands/news/news_impl.pwn,pending
+news2,,everyone,komendy,gamemodes/modules/komendy/commands/news2/news2_impl.pwn,pending
+nitro,nos,everyone,praca_mechanik,gamemodes/modules/praca_mechanik/commands/nitro/nitro_impl.pwn,pending
+nonewbie,,everyone,komendy,gamemodes/modules/komendy/commands/nonewbie/nonewbie_impl.pwn,pending
+noooc,,everyone,komendy,gamemodes/modules/komendy/commands/noooc/noooc_impl.pwn,pending
+o,ooc,everyone,komendy,gamemodes/modules/komendy/commands/o/o_impl.pwn,pending
+obiz,bizad buisnessad ogloszeniebiz ogloszeniebiznesowe,everyone,biznesy,gamemodes/modules/biznesy/commands/obiz/obiz_impl.pwn,pending
+objectsdebug,,everyone,vicecity,gamemodes/modules/vicecity/commands/objectsdebug/objectsdebug_impl.pwn,pending
+obrazenia,,everyone,komendy,gamemodes/modules/komendy/commands/obrazenia/obrazenia_impl.pwn,pending
+oczyscmdc,,everyone,komendy,gamemodes/modules/komendy/commands/oczyscmdc/oczyscmdc_impl.pwn,pending
+od,odbierz,everyone,komendy,gamemodes/modules/komendy/commands/od/od_impl.pwn,pending
+odmroz,unfreeze,everyone,komendy,gamemodes/modules/komendy/commands/odmroz/odmroz_impl.pwn,pending
+odmv,,everyone,komendy,gamemodes/modules/komendy/commands/odmv/odmv_impl.pwn,pending
+odpal,,everyone,komendy,gamemodes/modules/komendy/commands/odpal/odpal_impl.pwn,pending
+odpornosc,,everyone,choroby,gamemodes/modules/choroby/commands/odpornosc/odpornosc_impl.pwn,pending
+odznaka,,everyone,komendy,gamemodes/modules/komendy/commands/odznaka/odznaka_impl.pwn,pending
+og,ad advertise ogloszenie,everyone,komendy,gamemodes/modules/komendy/commands/og/og_impl.pwn,pending
+okienko,,everyone,komendy,gamemodes/modules/komendy/commands/okienko/okienko_impl.pwn,pending
+oldcar,,everyone,komendy,gamemodes/modules/komendy/commands/oldcar/oldcar_impl.pwn,pending
+op,odepnijpas odepnijpasy,everyone,wypadek,gamemodes/modules/wypadek/commands/op/op_impl.pwn,pending
+opis,,everyone,komendy,gamemodes/modules/komendy/commands/opis/opis_impl.pwn,pending
+opispomoc,deschelp descriptionhelp,everyone,pomoc,gamemodes/modules/pomoc/commands/opispomoc/opispomoc_impl.pwn,pending
+opuscdom,zlomujdom zlomujhouse,everyone,komendy,gamemodes/modules/komendy/commands/opuscdom/opuscdom_impl.pwn,pending
+orgbiz,bizorg orgb orgbiznes,everyone,front_business,gamemodes/modules/front_business/commands/orgbiz/orgbiz_impl.pwn,pending
+orgpanel,panelorg panelorganizacji panelrodziny pr rpanel,everyone,organizacje,gamemodes/modules/organizacje/commands/orgpanel/orgpanel_impl.pwn,pending
+orgpomoc,frachelp fracpomoc fractionhelp frakcjapomoc organizacjapomoc organizationhelp orghelp,everyone,pomoc,gamemodes/modules/pomoc/commands/orgpomoc/orgpomoc_impl.pwn,pending
+orgs,biznesy gangi mafie organizacje rodziny,everyone,organizacje,gamemodes/modules/organizacje/commands/orgs/orgs_impl.pwn,pending
+otworzlinie,,everyone,komendy,gamemodes/modules/komendy/commands/otworzlinie/otworzlinie_impl.pwn,pending
+owarsztat,,everyone,komendy,gamemodes/modules/komendy/commands/owarsztat/owarsztat_impl.pwn,pending
+paj,,everyone,komendy,gamemodes/modules/komendy/commands/paj/paj_impl.pwn,pending
+paka,,everyone,komendy,gamemodes/modules/komendy/commands/paka/paka_impl.pwn,pending
+paliwo,fuel licznikpaliwa,everyone,komendy,gamemodes/modules/komendy/commands/paliwo/paliwo_impl.pwn,pending
+pancerz,,everyone,praca_przemytnik,gamemodes/modules/praca_przemytnik/commands/pancerz/pancerz_impl.pwn,pending
+panel,,everyone,komendy,gamemodes/modules/komendy/commands/panel/panel_impl.pwn,pending
+panelbasenu,,everyone,komendy,gamemodes/modules/komendy/commands/panelbasenu/panelbasenu_impl.pwn,pending
+panelbiznesu,bizpan bizpanel panelbiz,everyone,biznesy,gamemodes/modules/biznesy/commands/panelbiznesu/panelbiznesu_impl.pwn,pending
+panelibizy,ibiza panelibiza,everyone,ibiza,gamemodes/modules/ibiza/commands/panelibizy/panelibizy_impl.pwn,pending
+panelvinyl,,everyone,komendy,gamemodes/modules/komendy/commands/panelvinyl/panelvinyl_impl.pwn,pending
+paralizator,taser tazer,everyone,komendy,gamemodes/modules/komendy/commands/paralizator/paralizator_impl.pwn,pending
+patrol,,everyone,komendy,gamemodes/modules/komendy/commands/patrol/patrol_impl.pwn,pending
+payday,,everyone,debug,gamemodes/modules/debug/commands/payday/payday_impl.pwn,pending
+pban,,everyone,komendy,gamemodes/modules/komendy/commands/pban/pban_impl.pwn,pending
+pblok,pblock,everyone,komendy,gamemodes/modules/komendy/commands/pblok/pblok_impl.pwn,pending
+personalizuj,personalizacja personalize ustawienia,everyone,komendy,gamemodes/modules/komendy/commands/personalizuj/personalizuj_impl.pwn,pending
+piwo,,everyone,komendy,gamemodes/modules/komendy/commands/piwo/piwo_impl.pwn,pending
+pjtest,,everyone,komendy,gamemodes/modules/komendy/commands/pjtest/pjtest_impl.pwn,pending
+pl,pokazlicencje showlicenses,everyone,komendy,gamemodes/modules/komendy/commands/pl/pl_impl.pwn,pending
+plac,pay zaplac,everyone,komendy,gamemodes/modules/komendy/commands/plac/plac_impl.pwn,pending
+placmedyk,,everyone,komendy,gamemodes/modules/komendy/commands/placmedyk/placmedyk_impl.pwn,pending
+po,poszukuj su suspect,everyone,komendy,gamemodes/modules/komendy/commands/po/po_impl.pwn,pending
+pobij,,everyone,bijatyki,gamemodes/modules/bijatyki/commands/pobij/pobij_impl.pwn,pending
+podatek,settax,everyone,komendy,gamemodes/modules/komendy/commands/podatek/podatek_impl.pwn,pending
+poddajesie,,everyone,komendy,gamemodes/modules/komendy/commands/poddajesie/poddajesie_impl.pwn,pending
+poddajsie,,everyone,komendy,gamemodes/modules/komendy/commands/poddajsie/poddajsie_impl.pwn,pending
+podglad,,everyone,komendy,gamemodes/modules/komendy/commands/podglad/podglad_impl.pwn,pending
+podszyj,,everyone,frakcja_lspd,gamemodes/modules/frakcja_lspd/commands/podszyj/podszyj_impl.pwn,pending
+pogodaall,weatherall,everyone,komendy,gamemodes/modules/komendy/commands/pogodaall/pogodaall_impl.pwn,pending
+pojazdygracza,,everyone,komendy,gamemodes/modules/komendy/commands/pojazdygracza/pojazdygracza_impl.pwn,pending
+pokazcb,,everyone,komendy,gamemodes/modules/komendy/commands/pokazcb/pokazcb_impl.pwn,pending
+pokazdowod,dowod,everyone,komendy,gamemodes/modules/komendy/commands/pokazdowod/pokazdowod_impl.pwn,pending
+polej,,everyone,komendy,gamemodes/modules/komendy/commands/polej/polej_impl.pwn,pending
+pos,,,filterscripts,filterscripts/colorchange.pwn,pending
+poszukuj,,everyone,komendy,gamemodes/modules/komendy/commands/poszukuj/poszukuj_impl.pwn,pending
+pozwolenie,,everyone,komendy,gamemodes/modules/komendy/commands/pozwolenie/pozwolenie_impl.pwn,pending
+pracapomoc,jobhelp jobpomoc,everyone,pomoc,gamemodes/modules/pomoc/commands/pracapomoc/pracapomoc_impl.pwn,pending
+pracownicy,czlonkowie,everyone,organizacje,gamemodes/modules/organizacje/commands/pracownicy/pracownicy_impl.pwn,pending
+premiumpanel,dotacje kp premium,everyone,premium,gamemodes/modules/premium/commands/premiumpanel/premiumpanel_impl.pwn,pending
+premiumskin,,everyone,premium,gamemodes/modules/premium/commands/premiumskin/premiumskin_impl.pwn,pending
+prezent,,,filterscripts,filterscripts/sanie.pwn,pending
+profiler,,everyone,admin,gamemodes/modules/admin/commands/profiler/profiler_impl.pwn,pending
+przebierz,,everyone,komendy,gamemodes/modules/komendy/commands/przebierz/przebierz_impl.pwn,pending
+przedmiotycmd,p przedmioty,everyone,komendy,gamemodes/modules/komendy/commands/przedmiotycmd/przedmiotycmd_impl.pwn,pending
+przejazd,,everyone,komendy,gamemodes/modules/komendy/commands/przejazd/przejazd_impl.pwn,pending
+przelew,przelej transfer wiretransfer,everyone,komendy,gamemodes/modules/komendy/commands/przelew/przelew_impl.pwn,pending
+przemyt,,everyone,praca_przemytnik,gamemodes/modules/praca_przemytnik/commands/przemyt/przemyt_impl.pwn,pending
+przeszukaj,frisk,everyone,komendy,gamemodes/modules/komendy/commands/przeszukaj/przeszukaj_impl.pwn,pending
+przyjmij,invite,everyone,komendy,gamemodes/modules/komendy/commands/przyjmij/przyjmij_impl.pwn,pending
+pwarn,,everyone,komendy,gamemodes/modules/komendy/commands/pwarn/pwarn_impl.pwn,pending
+qf,quitfrakcja,everyone,komendy,gamemodes/modules/komendy/commands/qf/qf_impl.pwn,pending
+quitbusiness,opuscbiz opuscbiznes qb quitbiz quitbiznes,everyone,biznesy,gamemodes/modules/biznesy/commands/quitbusiness/quitbusiness_impl.pwn,pending
+quitpraca,opuscprace quitjob,everyone,komendy,gamemodes/modules/komendy/commands/quitpraca/quitpraca_impl.pwn,pending
+r,radio,everyone,komendy,gamemodes/modules/komendy/commands/r/r_impl.pwn,pending
+radiostacja,,everyone,komendy,gamemodes/modules/komendy/commands/radiostacja/radiostacja_impl.pwn,pending
+rakieta,,,filterscripts,filterscripts/Firecrackers.pwn,pending
+ranny,,everyone,komendy,gamemodes/modules/komendy/commands/ranny/ranny_impl.pwn,pending
+rapidfly,,everyone,komendy,gamemodes/modules/komendy/commands/rapidfly/rapidfly_impl.pwn,pending
+raport,report,everyone,komendy,gamemodes/modules/komendy/commands/raport/raport_impl.pwn,pending
+re,reply,everyone,komendy,gamemodes/modules/komendy/commands/re/re_impl.pwn,pending
+record,rec recordnpc,everyone,npc,gamemodes/modules/npc/commands/record/record_impl.pwn,pending
+red,,everyone,komendy,gamemodes/modules/komendy/commands/red/red_impl.pwn,pending
+reflektor,,everyone,komendy,gamemodes/modules/komendy/commands/reflektor/reflektor_impl.pwn,pending
+reklama,ha,everyone,komendy,gamemodes/modules/komendy/commands/reklama/reklama_impl.pwn,pending
+reloadbans,,everyone,komendy,gamemodes/modules/komendy/commands/reloadbans/reloadbans_impl.pwn,pending
+reloadwybory,,,filterscripts,filterscripts/wybory.pwn,pending
+removecar,,everyone,komendy,gamemodes/modules/komendy/commands/removecar/removecar_impl.pwn,pending
+removeganglimit,,everyone,komendy,gamemodes/modules/komendy/commands/removeganglimit/removeganglimit_impl.pwn,pending
+removezoneprotect,,everyone,komendy,gamemodes/modules/komendy/commands/removezoneprotect/removezoneprotect_impl.pwn,pending
+rentroom,wynajem wynajmij wynajmijpokoj wynajmuj,everyone,komendy,gamemodes/modules/komendy/commands/rentroom/rentroom_impl.pwn,pending
+reset_ulepszen,resetuj_ulepszenia resetujulepszenia resetulepszen resetupgrades,everyone,komendy,gamemodes/modules/komendy/commands/reset_ulepszen/reset_ulepszen_impl.pwn,pending
+resetsejfhasla,,everyone,komendy,gamemodes/modules/komendy/commands/resetsejfhasla/resetsejfhasla_impl.pwn,pending
+resms,res,everyone,komendy,gamemodes/modules/komendy/commands/resms/resms_impl.pwn,pending
+respawn,,everyone,komendy,gamemodes/modules/komendy/commands/respawn/respawn_impl.pwn,pending
+respawncar,respcar,everyone,komendy,gamemodes/modules/komendy/commands/respawncar/respawncar_impl.pwn,pending
+respawnplayer,respp,everyone,komendy,gamemodes/modules/komendy/commands/respawnplayer/respawnplayer_impl.pwn,pending
+restart,,everyone,komendy,gamemodes/modules/komendy/commands/restart/restart_impl.pwn,pending
+rezonans,,everyone,komendy,gamemodes/modules/komendy/commands/rezonans/rezonans_impl.pwn,pending
+rodzinny,f family,everyone,komendy,gamemodes/modules/komendy/commands/rodzinny/rodzinny_impl.pwn,pending
+roleta,,everyone,komendy,gamemodes/modules/komendy/commands/roleta/roleta_impl.pwn,pending
+rooc,radioooc ro,everyone,komendy,gamemodes/modules/komendy/commands/rooc/rooc_impl.pwn,pending
+rozbierz,,everyone,komendy,gamemodes/modules/komendy/commands/rozbierz/rozbierz_impl.pwn,pending
+rozkuj,odkuj uncuff,everyone,kajdanki,gamemodes/modules/kajdanki/commands/rozkuj/rozkuj_impl.pwn,pending
+rozwiaz,odwiaz untie,everyone,komendy,gamemodes/modules/komendy/commands/rozwiaz/rozwiaz_impl.pwn,pending
+rozwiedz,,everyone,komendy,gamemodes/modules/komendy/commands/rozwiedz/rozwiedz_impl.pwn,pending
+rozwod,,everyone,komendy,gamemodes/modules/komendy/commands/rozwod/rozwod_impl.pwn,pending
+ruleta,ruletka,everyone,komendy,gamemodes/modules/komendy/commands/ruleta/ruleta_impl.pwn,pending
+ryby,fishes,everyone,fishing,gamemodes/modules/fishing/commands/ryby/ryby_impl.pwn,pending
+rybypomoc,fishhelp,everyone,pomoc,gamemodes/modules/pomoc/commands/rybypomoc/rybypomoc_impl.pwn,pending
+sad,,everyone,komendy,gamemodes/modules/komendy/commands/sad/sad_impl.pwn,pending
+samppomoc,samphelp,everyone,pomoc,gamemodes/modules/pomoc/commands/samppomoc/samppomoc_impl.pwn,pending
+sanie,,,filterscripts,filterscripts/sanie.pwn,pending
+sasc,,,filterscripts,filterscripts/SAN_extPSq.pwn,pending
+say,l local,everyone,komendy,gamemodes/modules/komendy/commands/say/say_impl.pwn,pending
+sb,sprawdzbron szukajbroni,everyone,komendy,gamemodes/modules/komendy/commands/sb/sb_impl.pwn,pending
+sban,,everyone,komendy,gamemodes/modules/komendy/commands/sban/sban_impl.pwn,pending
+sblock,,everyone,komendy,gamemodes/modules/komendy/commands/sblock/sblock_impl.pwn,pending
+sblok,sblock,everyone,komendy,gamemodes/modules/komendy/commands/sblok/sblok_impl.pwn,pending
+scena,,everyone,sceny,gamemodes/modules/sceny/commands/scena/scena_impl.pwn,pending
+scenaallow,,everyone,sceny,gamemodes/modules/sceny/commands/scenaallow/scenaallow_impl.pwn,pending
+scenadisallow,,everyone,sceny,gamemodes/modules/sceny/commands/scenadisallow/scenadisallow_impl.pwn,pending
+screenshot,ss,everyone,komendy,gamemodes/modules/komendy/commands/screenshot/screenshot_impl.pwn,pending
+sejf,sejfr,everyone,organizacje,gamemodes/modules/organizacje/commands/sejf/sejf_impl.pwn,pending
+sejfpomoc,sejf sejfpanel,everyone,komendy,gamemodes/modules/komendy/commands/sejfpomoc/sejfpomoc_impl.pwn,pending
+selldom,sellhouse sprzedajdom,everyone,komendy,gamemodes/modules/komendy/commands/selldom/selldom_impl.pwn,pending
+selldrugs,sprzedajdragi sprzedajnarkotyki,everyone,praca_diler,gamemodes/modules/praca_diler/commands/selldrugs/selldrugs_impl.pwn,pending
+sellkontrabanda,sellcontraband sellkontraband sellkontrabande sprzedajkontrabande,everyone,praca_przemytnik,gamemodes/modules/praca_przemytnik/commands/sellkontrabanda/sellkontrabanda_impl.pwn,pending
+sellkontrabandabot,sprzedajkontrabandebot,everyone,frontbiz_gunshop,gamemodes/modules/frontbiz_gunshop/commands/sellkontrabandabot/sellkontrabandabot_impl.pwn,pending
+setactoranime,,everyone,komendy,gamemodes/modules/komendy/commands/setactoranime/setactoranime_impl.pwn,pending
+setarmor,,everyone,komendy,gamemodes/modules/komendy/commands/setarmor/setarmor_impl.pwn,pending
+setcarhp,,everyone,komendy,gamemodes/modules/komendy/commands/setcarhp/setcarhp_impl.pwn,pending
+setcarint,,everyone,komendy,gamemodes/modules/komendy/commands/setcarint/setcarint_impl.pwn,pending
+setcarvw,,everyone,komendy,gamemodes/modules/komendy/commands/setcarvw/setcarvw_impl.pwn,pending
+setdrunk,,everyone,komendy,gamemodes/modules/komendy/commands/setdrunk/setdrunk_impl.pwn,pending
+setfrac,,,legacy,gamemodes/obiekty/skrypt/objecttest.pwn,pending
+setimmunity,ustawodpornosc,everyone,choroby,gamemodes/modules/choroby/commands/setimmunity/setimmunity_impl.pwn,pending
+setint,,everyone,komendy,gamemodes/modules/komendy/commands/setint/setint_impl.pwn,pending
+setkontrabanda,,everyone,praca_przemytnik,gamemodes/modules/praca_przemytnik/commands/setkontrabanda/setkontrabanda_impl.pwn,pending
+setmats,,everyone,komendy,gamemodes/modules/komendy/commands/setmats/setmats_impl.pwn,pending
+setmc,,everyone,premium,gamemodes/modules/premium/commands/setmc/setmc_impl.pwn,pending
+setname,,everyone,komendy,gamemodes/modules/komendy/commands/setname/setname_impl.pwn,pending
+setorg,,,legacy,gamemodes/obiekty/skrypt/objecttest.pwn,pending
+setplocal,,everyone,komendy,gamemodes/modules/komendy/commands/setplocal/setplocal_impl.pwn,pending
+setpogoda,dajpogode setweather,everyone,komendy,gamemodes/modules/komendy/commands/setpogoda/setpogoda_impl.pwn,pending
+setserverpass,ssp,everyone,komendy,gamemodes/modules/komendy/commands/setserverpass/setserverpass_impl.pwn,pending
+setskin,,everyone,komendy,gamemodes/modules/komendy/commands/setskin/setskin_impl.pwn,pending
+setslot,,everyone,komendy,gamemodes/modules/komendy/commands/setslot/setslot_impl.pwn,pending
+setstat,,everyone,komendy,gamemodes/modules/komendy/commands/setstat/setstat_impl.pwn,pending
+setstrong,,everyone,komendy,gamemodes/modules/komendy/commands/setstrong/setstrong_impl.pwn,pending
+setveh,setauto setcar zmienauto,everyone,komendy,gamemodes/modules/komendy/commands/setveh/setveh_impl.pwn,pending
+setvregistration,setcarreg setrg,everyone,admin,gamemodes/modules/admin/commands/setvregistration/setvregistration_impl.pwn,pending
+setvw,,everyone,komendy,gamemodes/modules/komendy/commands/setvw/setvw_impl.pwn,pending
+setzombie,,,filterscripts,filterscripts/zombiescript.pwn,pending
+setzonecontrol,,everyone,gangzone,gamemodes/modules/gangzone/commands/setzonecontrol/setzonecontrol_impl.pwn,pending
+sex,,everyone,komendy,gamemodes/modules/komendy/commands/sex/sex_impl.pwn,pending
+sh,,everyone,komendy,gamemodes/modules/komendy/commands/sh/sh_impl.pwn,pending
+shotobject,shootobject,admini,admin,gamemodes/modules/admin/commands/shotobject/shotobject_impl.pwn,pending
+showkary,,everyone,komendy,gamemodes/modules/komendy/commands/showkary/showkary_impl.pwn,pending
+skick,,everyone,komendy,gamemodes/modules/komendy/commands/skick/skick_impl.pwn,pending
+skill,,everyone,komendy,gamemodes/modules/komendy/commands/skill/skill_impl.pwn,pending
+skinf,,everyone,komendy,gamemodes/modules/komendy/commands/skinf/skinf_impl.pwn,pending
+skiny,unikat,everyone,premium,gamemodes/modules/premium/commands/skiny/skiny_impl.pwn,pending
+skret,,everyone,komendy,gamemodes/modules/komendy/commands/skret/skret_impl.pwn,pending
+skuj,cuff kajdanki,everyone,kajdanki,gamemodes/modules/kajdanki/commands/skuj/skuj_impl.pwn,pending
+skydive,,everyone,komendy,gamemodes/modules/komendy/commands/skydive/skydive_impl.pwn,pending
+slap,,everyone,komendy,gamemodes/modules/komendy/commands/slap/slap_impl.pwn,pending
+slub,,everyone,komendy,gamemodes/modules/komendy/commands/slub/slub_impl.pwn,pending
+sluzba,duty,everyone,komendy,gamemodes/modules/komendy/commands/sluzba/sluzba_impl.pwn,pending
+sms,t txt,everyone,komendy,gamemodes/modules/komendy/commands/sms/sms_impl.pwn,pending
+snn,,everyone,komendy,gamemodes/modules/komendy/commands/snn/snn_impl.pwn,pending
+spawnall,spawnujauta spawnujpojazdy,everyone,pojazdy,gamemodes/modules/pojazdy/commands/spawnall/spawnall_impl.pwn,pending
+spawnplayer,,,komendy,gamemodes/modules/komendy/commands/respawnplayer/respawnplayer_impl.pwn,pending
+spec,,everyone,komendy,gamemodes/modules/komendy/commands/spec/spec_impl.pwn,pending
+specshow,specshow,everyone,admin,gamemodes/modules/admin/commands/specshow/specshow_impl.pwn,pending
+spoiler,spojler,everyone,komendy,gamemodes/modules/komendy/commands/spoiler/spoiler_impl.pwn,pending
+spoilery,spojlery,everyone,komendy,gamemodes/modules/komendy/commands/spoilery/spoilery_impl.pwn,pending
+sprawdzczasgry,getplaytime,everyone,komendy,gamemodes/modules/komendy/commands/sprawdzczasgry/sprawdzczasgry_impl.pwn,pending
+sprawdzdom,checkdom,everyone,komendy,gamemodes/modules/komendy/commands/sprawdzdom/sprawdzdom_impl.pwn,pending
+sprawdzin,,everyone,komendy,gamemodes/modules/komendy/commands/sprawdzin/sprawdzin_impl.pwn,pending
+sprawdzinv,,everyone,komendy,gamemodes/modules/komendy/commands/sprawdzinv/sprawdzinv_impl.pwn,pending
+sprawdzkase,,everyone,komendy,gamemodes/modules/komendy/commands/sprawdzkase/sprawdzkase_impl.pwn,pending
+sprawdzkredyty,,everyone,komendy,gamemodes/modules/komendy/commands/sprawdzkredyty/sprawdzkredyty_impl.pwn,pending
+sprawdzneon,,everyone,praca_mechanik,gamemodes/modules/praca_mechanik/commands/sprawdzneon/sprawdzneon_impl.pwn,pending
+sprawdztest,,everyone,komendy,gamemodes/modules/komendy/commands/sprawdztest/sprawdztest_impl.pwn,pending
+sprobuj,,everyone,komendy,gamemodes/modules/komendy/commands/sprobuj/sprobuj_impl.pwn,pending
+sprunk,,everyone,komendy,gamemodes/modules/komendy/commands/sprunk/sprunk_impl.pwn,pending
+sprzedajalkohol,sella sprzedaja,everyone,komendy,gamemodes/modules/komendy/commands/sprzedajalkohol/sprzedajalkohol_impl.pwn,pending
+sprzedajapteczka,sprzedajapteczke,everyone,praca_medyk,gamemodes/modules/praca_medyk/commands/sprzedajapteczka/sprzedajapteczka_impl.pwn,pending
+sprzedajauto,dajauto dajsamochod,everyone,komendy,gamemodes/modules/komendy/commands/sprzedajauto/sprzedajauto_impl.pwn,pending
+sprzedajbiznes,,everyone,biznesy,gamemodes/modules/biznesy/commands/sprzedajbiznes/sprzedajbiznes_impl.pwn,pending
+sprzedajbron,sellgun,everyone,komendy,gamemodes/modules/komendy/commands/sprzedajbron/sprzedajbron_impl.pwn,pending
+sprzedajmaterialy,sprzedajmats,everyone,komendy,gamemodes/modules/komendy/commands/sprzedajmaterialy/sprzedajmaterialy_impl.pwn,pending
+sprzedajmatsbot,,everyone,frontbiz_gunshop,gamemodes/modules/frontbiz_gunshop/commands/sprzedajmatsbot/sprzedajmatsbot_impl.pwn,pending
+sprzedajneon,sellneon sprzedajneony zmienneon zmienneony,everyone,pojazdy,gamemodes/modules/pojazdy/commands/sprzedajneon/sprzedajneon_impl.pwn,pending
+sprzedajprzemyt,sellprzemyt sellsmuggled sprzedajprzemyt,everyone,praca_przemytnik,gamemodes/modules/praca_przemytnik/commands/sprzedajprzemyt/sprzedajprzemyt_impl.pwn,pending
+sprzedajrybe,sellfish sprzedajryby,everyone,fishing,gamemodes/modules/fishing/commands/sprzedajrybe/sprzedajrybe_impl.pwn,pending
+sprzedajzestaw,,everyone,praca_mechanik,gamemodes/modules/praca_mechanik/commands/sprzedajzestaw/sprzedajzestaw_impl.pwn,pending
+stan,stankonta,everyone,komendy,gamemodes/modules/komendy/commands/stan/stan_impl.pwn,pending
+star2,,,filterscripts,filterscripts/Firecrackers.pwn,pending
+startlotto,,everyone,komendy,gamemodes/modules/komendy/commands/startlotto/startlotto_impl.pwn,pending
+startskinevent,,everyone,komendy,gamemodes/modules/komendy/commands/startskinevent/startskinevent_impl.pwn,pending
+startujlekcje,startegzamin startlekcja startlesson zacznijlekcje,everyone,komendy,gamemodes/modules/komendy/commands/startujlekcje/startujlekcje_impl.pwn,pending
+staty,stats statystyki,everyone,komendy,gamemodes/modules/komendy/commands/staty/staty_impl.pwn,pending
+staty2,stats2,everyone,komendy,gamemodes/modules/komendy/commands/staty2/staty2_impl.pwn,pending
+stopanim,stopani,everyone,komendy,gamemodes/modules/komendy/commands/stopanim/stopanim_impl.pwn,pending
+stopbieg,,everyone,komendy,gamemodes/modules/komendy/commands/stopbieg/stopbieg_impl.pwn,pending
+stoprecord,stoprec stoprecordnpc,everyone,npc,gamemodes/modules/npc/commands/stoprecord/stoprecord_impl.pwn,pending
+streamer,,everyone,komendy,gamemodes/modules/komendy/commands/streamer/streamer_impl.pwn,pending
+strefa,,,filterscripts,filterscripts/zombiescript.pwn,pending
+strefagangu,gangzone,everyone,komendy,gamemodes/modules/komendy/commands/strefagangu/strefagangu_impl.pwn,pending
+studia,,everyone,komendy,gamemodes/modules/komendy/commands/studia/studia_impl.pwn,pending
+stworzbiznes,createbiz createbusiness stworzbiz,everyone,biznesy,gamemodes/modules/biznesy/commands/stworzbiznes/stworzbiznes_impl.pwn,pending
+stworzdom,zrobdom,everyone,komendy,gamemodes/modules/komendy/commands/stworzdom/stworzdom_impl.pwn,pending
+stworztrase,stworzwyscig,everyone,komendy,gamemodes/modules/komendy/commands/stworztrase/stworztrase_impl.pwn,pending
+swat,,everyone,komendy,gamemodes/modules/komendy/commands/swat/swat_impl.pwn,pending
+swiadek,witness,everyone,komendy,gamemodes/modules/komendy/commands/swiadek/swiadek_impl.pwn,pending
+swieta,,,filterscripts,filterscripts/sanie.pwn,pending
+sylwester2018,,,filterscripts,filterscripts/Sunny_IslandPARTY.pwn,pending
+sylwestroweparty2017,,,filterscripts,filterscripts/Sunny_Island.pwn,pending
+szept,cicho s,everyone,komendy,gamemodes/modules/komendy/commands/szept/szept_impl.pwn,pending
+szturmowy,,everyone,komendy,gamemodes/modules/komendy/commands/szturmowy/szturmowy_impl.pwn,pending
+szukani,poszukiwani wanted,everyone,komendy,gamemodes/modules/komendy/commands/szukani/szukani_impl.pwn,pending
+tablet,,everyone,komendy,gamemodes/modules/komendy/commands/tablet/tablet_impl.pwn,pending
+tankowanie,refill,everyone,praca_mechanik,gamemodes/modules/praca_mechanik/commands/tankowanie/tankowanie_impl.pwn,pending
+tankujauta,fuelcars,everyone,komendy,gamemodes/modules/komendy/commands/tankujauta/tankujauta_impl.pwn,pending
+tankveh,fuelcar tankujauto,everyone,komendy,gamemodes/modules/komendy/commands/tankveh/tankveh_impl.pwn,pending
+taryfikator,,everyone,komendy,gamemodes/modules/komendy/commands/taryfikator/taryfikator_impl.pwn,pending
+teczka,,everyone,komendy,gamemodes/modules/komendy/commands/teczka/teczka_impl.pwn,pending
+telefonpomoc,callhelp phonehelp,everyone,pomoc,gamemodes/modules/pomoc/commands/telefonpomoc/telefonpomoc_impl.pwn,pending
+teleturniej,,everyone,komendy,gamemodes/modules/komendy/commands/teleturniej/teleturniej_impl.pwn,pending
+temat,,everyone,komendy,gamemodes/modules/komendy/commands/temat/temat_impl.pwn,pending
+ticketend,,everyone,komendy,gamemodes/modules/komendy/commands/ticketend/ticketend_impl.pwn,pending
+tickets,,everyone,komendy,gamemodes/modules/komendy/commands/tickets/tickets_impl.pwn,pending
+tod,,everyone,komendy,gamemodes/modules/komendy/commands/tod/tod_impl.pwn,pending
+togadmin,togadm,everyone,komendy,gamemodes/modules/komendy/commands/togadmin/togadmin_impl.pwn,pending
+togadminmess,,everyone,komendy,gamemodes/modules/komendy/commands/togadminmess/togadminmess_impl.pwn,pending
+togbw,,everyone,komendy,gamemodes/modules/komendy/commands/togbw/togbw_impl.pwn,pending
+togcb,,everyone,komendy,gamemodes/modules/komendy/commands/togcb/togcb_impl.pwn,pending
+togdepo,zablokujdepo,everyone,komendy,gamemodes/modules/komendy/commands/togdepo/togdepo_impl.pwn,pending
+togfam,,everyone,komendy,gamemodes/modules/komendy/commands/togfam/togfam_impl.pwn,pending
+togfinfo,,everyone,komendy,gamemodes/modules/komendy/commands/togfinfo/togfinfo_impl.pwn,pending
+togglepozwo,,everyone,komendy,gamemodes/modules/komendy/commands/togglepozwo/togglepozwo_impl.pwn,pending
+toglicznik,togspeed togtextdraw,everyone,komendy,gamemodes/modules/komendy/commands/toglicznik/toglicznik_impl.pwn,pending
+togname,,everyone,komendy,gamemodes/modules/komendy/commands/togname/togname_impl.pwn,pending
+tognewbie,togn,everyone,komendy,gamemodes/modules/komendy/commands/tognewbie/tognewbie_impl.pwn,pending
+togooc,zablokujooc,everyone,komendy,gamemodes/modules/komendy/commands/togooc/togooc_impl.pwn,pending
+togopis,,everyone,komendy,gamemodes/modules/komendy/commands/togopis/togopis_impl.pwn,pending
+togparty,,,filterscripts,filterscripts/zombiescript.pwn,pending
+togpodglad,,everyone,komendy,gamemodes/modules/komendy/commands/togpodglad/togpodglad_impl.pwn,pending
+togro,,everyone,komendy,gamemodes/modules/komendy/commands/togro/togro_impl.pwn,pending
+togscroll,,everyone,komendy,gamemodes/modules/komendy/commands/togscroll/togscroll_impl.pwn,pending
+togtxda,,everyone,komendy,gamemodes/modules/komendy/commands/togtxda/togtxda_impl.pwn,pending
+togvopis,,everyone,komendy,gamemodes/modules/komendy/commands/togvopis/togvopis_impl.pwn,pending
+togwl,togcrime toghq,everyone,komendy,gamemodes/modules/komendy/commands/togwl/togwl_impl.pwn,pending
+tp,,everyone,komendy,gamemodes/modules/komendy/commands/tp/tp_impl.pwn,pending
+trampolina,,everyone,komendy,gamemodes/modules/komendy/commands/trampolina/trampolina_impl.pwn,pending
+transport,,everyone,vicecity,gamemodes/modules/vicecity/commands/transport/transport_impl.pwn,pending
+trasa,,everyone,praca_kierowca,gamemodes/modules/praca_kierowca/commands/trasa/trasa_impl.pwn,pending
+trasy,wyscigi,everyone,komendy,gamemodes/modules/komendy/commands/trasy/trasy_impl.pwn,pending
+trasybiegu,,everyone,komendy,gamemodes/modules/komendy/commands/trasybiegu/trasybiegu_impl.pwn,pending
+ubranie,,everyone,komendy,gamemodes/modules/komendy/commands/ubranie/ubranie_impl.pwn,pending
+ucisz,mute unmute,everyone,komendy,gamemodes/modules/komendy/commands/ucisz/ucisz_impl.pwn,pending
+ugotuj,cook gotuj,everyone,cooking,gamemodes/modules/cooking/commands/ugotuj/ugotuj_impl.pwn,pending
+uid,,everyone,komendy,gamemodes/modules/komendy/commands/uid/uid_impl.pwn,pending
+ukradnij,,everyone,praca_zlodziej_aut,gamemodes/modules/praca_zlodziej_aut/commands/ukradnij/ukradnij_impl.pwn,pending
+ulecz,,everyone,choroby,gamemodes/modules/choroby/commands/ulecz/ulecz_impl.pwn,pending
+uleczall,healall,everyone,choroby,gamemodes/modules/choroby/commands/uleczall/uleczall_impl.pwn,pending
+ulepsz,ulepszenia upgrade,everyone,komendy,gamemodes/modules/komendy/commands/ulepsz/ulepsz_impl.pwn,pending
+unblock,,everyone,komendy,gamemodes/modules/komendy/commands/unblock/unblock_impl.pwn,pending
+unbp,zdejmijbp,everyone,komendy,gamemodes/modules/komendy/commands/unbp/unbp_impl.pwn,pending
+unbw,,everyone,komendy,gamemodes/modules/komendy/commands/unbw/unbw_impl.pwn,pending
+undemorgan,prisonoff unprison,everyone,komendy,gamemodes/modules/komendy/commands/undemorgan/undemorgan_impl.pwn,pending
+unfrakcja,,everyone,komendy,gamemodes/modules/komendy/commands/unfrakcja/unfrakcja_impl.pwn,pending
+unjail,unaj,everyone,komendy,gamemodes/modules/komendy/commands/unjail/unjail_impl.pwn,pending
+unmark,odznacz,everyone,antycheat,gamemodes/modules/antycheat/commands/unmark/unmark_impl.pwn,pending
+unmaska,,everyone,komendy,gamemodes/modules/komendy/commands/unmaska/unmaska_impl.pwn,pending
+unrentroom,niewynajmuj unrent,everyone,komendy,gamemodes/modules/komendy/commands/unrentroom/unrentroom_impl.pwn,pending
+unspec,,everyone,komendy,gamemodes/modules/komendy/commands/unspec/unspec_impl.pwn,pending
+unwarn,,everyone,komendy,gamemodes/modules/komendy/commands/unwarn/unwarn_impl.pwn,pending
+up,,everyone,komendy,gamemodes/modules/komendy/commands/up/up_impl.pwn,pending
+uprawnienia,,everyone,komendy,gamemodes/modules/komendy/commands/uprawnienia/uprawnienia_impl.pwn,pending
+upusc,drop,everyone,money,gamemodes/modules/money/commands/upusc/upusc_impl.pwn,pending
+ustawcena,,everyone,multiple,gamemodes/modules/komendy/commands/ustawcena/ustawcena_impl.pwn,pending
+ustawmistrz,setchamp setmistrz,everyone,komendy,gamemodes/modules/komendy/commands/ustawmistrz/ustawmistrz_impl.pwn,pending
+usunbiznes,deletebiz deletebusiness usunbiz,everyone,biznesy,gamemodes/modules/biznesy/commands/usunbiznes/usunbiznes_impl.pwn,pending
+usunbron,ub,everyone,komendy,gamemodes/modules/komendy/commands/usunbron/usunbron_impl.pwn,pending
+usunopis,,admini,komendy,gamemodes/modules/komendy/commands/usunopis/usunopis_impl.pwn,pending
+usunpozar,,everyone,komendy,gamemodes/modules/komendy/commands/usunpozar/usunpozar_impl.pwn,pending
+usunzaufanego,,everyone,komendy,gamemodes/modules/komendy/commands/usunzaufanego/usunzaufanego_impl.pwn,pending
+uwb,,everyone,komendy,gamemodes/modules/komendy/commands/uwb/uwb_impl.pwn,pending
+veh,,everyone,komendy,gamemodes/modules/komendy/commands/veh/veh_impl.pwn,pending
+vinyl,,everyone,komendy,gamemodes/modules/komendy/commands/vinyl/vinyl_impl.pwn,pending
+vopis,,everyone,komendy,gamemodes/modules/komendy/commands/vopis/vopis_impl.pwn,pending
+vopispomoc,vdescriptionhelp vopishelp,everyone,pomoc,gamemodes/modules/pomoc/commands/vopispomoc/vopispomoc_impl.pwn,pending
+walka,boks walcz,everyone,komendy,gamemodes/modules/komendy/commands/walka/walka_impl.pwn,pending
+warn,,everyone,komendy,gamemodes/modules/komendy/commands/warn/warn_impl.pwn,pending
+wczytajrangi,,everyone,komendy,gamemodes/modules/komendy/commands/wczytajrangi/wczytajrangi_impl.pwn,pending
+wczytajskiny,,everyone,komendy,gamemodes/modules/komendy/commands/wczytajskiny/wczytajskiny_impl.pwn,pending
+wczytajskrypt,,everyone,komendy,gamemodes/modules/komendy/commands/wczytajskrypt/wczytajskrypt_impl.pwn,pending
+wejdz,enter,everyone,komendy,gamemodes/modules/komendy/commands/wejdz/wejdz_impl.pwn,pending
+wejdzw,wyjdzw,everyone,komendy,gamemodes/modules/komendy/commands/wejdzw/wejdzw_impl.pwn,pending
+wez,get,everyone,komendy,gamemodes/modules/komendy/commands/wez/wez_impl.pwn,pending
+wezdragi,usedrugs weznarkotyki,everyone,praca_diler,gamemodes/modules/praca_diler/commands/wezdragi/wezdragi_impl.pwn,pending
+wezportfel,,everyone,komendy,gamemodes/modules/komendy/commands/wezportfel/wezportfel_impl.pwn,pending
+wezwij,service,everyone,komendy,gamemodes/modules/komendy/commands/wezwij/wezwij_impl.pwn,pending
+wezwijwoz,callcar,everyone,komendy,gamemodes/modules/komendy/commands/wezwijwoz/wezwijwoz_impl.pwn,pending
+wezzlecenie,zlecenie,everyone,komendy,gamemodes/modules/komendy/commands/wezzlecenie/wezzlecenie_impl.pwn,pending
+wiadomosc,w,everyone,komendy,gamemodes/modules/komendy/commands/wiadomosc/wiadomosc_impl.pwn,pending
+wieza,tower,everyone,komendy,gamemodes/modules/komendy/commands/wieza/wieza_impl.pwn,pending
+winda,,everyone,komendy,gamemodes/modules/komendy/commands/winda/winda_impl.pwn,pending
+winda2,,everyone,komendy,gamemodes/modules/komendy/commands/winda2/winda2_impl.pwn,pending
+windalock,,everyone,komendy,gamemodes/modules/komendy/commands/windalock/windalock_impl.pwn,pending
+witaj,,everyone,komendy,gamemodes/modules/komendy/commands/witaj/witaj_impl.pwn,pending
+wizytowka,,everyone,komendy,gamemodes/modules/komendy/commands/wizytowka/wizytowka_impl.pwn,pending
+wk,wyrzucklucze wyrzuckluczyki wywalklucze wywalkluczyki,everyone,komendy,gamemodes/modules/komendy/commands/wk/wk_impl.pwn,pending
+wlsett,,everyone,komendy,gamemodes/modules/komendy/commands/wlsett/wlsett_impl.pwn,pending
+wobiekt,,everyone,komendy,gamemodes/modules/komendy/commands/wobiekt/wobiekt_impl.pwn,pending
+worek,,everyone,komendy,gamemodes/modules/komendy/commands/worek/worek_impl.pwn,pending
+wplac,bank deposit,everyone,komendy,gamemodes/modules/komendy/commands/wplac/wplac_impl.pwn,pending
+wrzuc,wepchaj wepchnij,everyone,komendy,gamemodes/modules/komendy/commands/wrzuc/wrzuc_impl.pwn,pending
+wulkan,,,filterscripts,filterscripts/Firecrackers.pwn,pending
+wybieralka,,everyone,komendy,gamemodes/modules/komendy/commands/wybieralka/wybieralka_impl.pwn,pending
+wyczysc,clear oczysc,everyone,komendy,gamemodes/modules/komendy/commands/wyczysc/wyczysc_impl.pwn,pending
+wyjdz,exit,everyone,komendy,gamemodes/modules/komendy/commands/wyjdz/wyjdz_impl.pwn,pending
+wyjdzzombie,,,filterscripts,filterscripts/zombiescript.pwn,pending
+wyjedz,wjedz,everyone,komendy,gamemodes/modules/komendy/commands/wyjedz/wyjedz_impl.pwn,pending
+wyloguj,logout,everyone,komendy,gamemodes/modules/komendy/commands/wyloguj/wyloguj_impl.pwn,pending
+wylogujall,logoutall,everyone,komendy,gamemodes/modules/komendy/commands/wylogujall/wylogujall_impl.pwn,pending
+wylogujgracz,logoutpl,everyone,komendy,gamemodes/modules/komendy/commands/wylogujgracz/wylogujgracz_impl.pwn,pending
+wymiana,,everyone,komendy,gamemodes/modules/komendy/commands/wymiana/wymiana_impl.pwn,pending
+wynajempomoc,renthelp,everyone,pomoc,gamemodes/modules/pomoc/commands/wynajempomoc/wynajempomoc_impl.pwn,pending
+wyniki,,everyone,komendy,gamemodes/modules/komendy/commands/wyniki/wyniki_impl.pwn,pending
+wypij,drink pij,everyone,komendy,gamemodes/modules/komendy/commands/wypij/wypij_impl.pwn,pending
+wypisz,wydaj,everyone,komendy,gamemodes/modules/komendy/commands/wypisz/wypisz_impl.pwn,pending
+wyplac,withdraw,everyone,komendy,gamemodes/modules/komendy/commands/wyplac/wyplac_impl.pwn,pending
+wypusc,free uwolnij,everyone,komendy,gamemodes/modules/komendy/commands/wypusc/wypusc_impl.pwn,pending
+wypuscrybe,throwfish wywalrybe,everyone,fishing,gamemodes/modules/fishing/commands/wypuscrybe/wypuscrybe_impl.pwn,pending
+wyrzucbronie,wb,everyone,komendy,gamemodes/modules/komendy/commands/wyrzucbronie/wyrzucbronie_impl.pwn,pending
+wyscig,,everyone,komendy,gamemodes/modules/komendy/commands/wyscig/wyscig_impl.pwn,pending
+wyscig_start,,everyone,komendy,gamemodes/modules/komendy/commands/wyscig_start/wyscig_start_impl.pwn,pending
+wyscig_stop,,everyone,komendy,gamemodes/modules/komendy/commands/wyscig_stop/wyscig_stop_impl.pwn,pending
+wywal,eject,everyone,komendy,gamemodes/modules/komendy/commands/wywal/wywal_impl.pwn,pending
+wywalcb,,everyone,komendy,gamemodes/modules/komendy/commands/wywalcb/wywalcb_impl.pwn,pending
+wywaldmv,wywalzdmv,everyone,komendy,gamemodes/modules/komendy/commands/wywaldmv/wywaldmv_impl.pwn,pending
+wywaldragi,wd wyrzucdragi,everyone,komendy,gamemodes/modules/komendy/commands/wywaldragi/wywaldragi_impl.pwn,pending
+wywalklub,,everyone,ibiza,gamemodes/modules/ibiza/commands/wywalklub/wywalklub_impl.pwn,pending
+wywalmaterialy,,everyone,komendy,gamemodes/modules/komendy/commands/wywalmaterialy/wywalmaterialy_impl.pwn,pending
+wywalryby,throwfishes wyrzucryby,everyone,fishing,gamemodes/modules/fishing/commands/wywalryby/wywalryby_impl.pwn,pending
+wywaltelefon,wywaltel,everyone,komendy,gamemodes/modules/komendy/commands/wywaltelefon/wywaltelefon_impl.pwn,pending
+wywalzsad,,everyone,komendy,gamemodes/modules/komendy/commands/wywalzsad/wywalzsad_impl.pwn,pending
+wywaz,,everyone,komendy,gamemodes/modules/komendy/commands/wywaz/wywaz_impl.pwn,pending
+yo,,everyone,komendy,gamemodes/modules/komendy/commands/yo/yo_impl.pwn,pending
+yo2,,everyone,komendy,gamemodes/modules/komendy/commands/yo2/yo2_impl.pwn,pending
+yo3,,everyone,komendy,gamemodes/modules/komendy/commands/yo3/yo3_impl.pwn,pending
+yo4,,everyone,komendy,gamemodes/modules/komendy/commands/yo4/yo4_impl.pwn,pending
+z,h hangup zakoncz,everyone,komendy,gamemodes/modules/komendy/commands/z/z_impl.pwn,pending
+zabawaon,,,filterscripts,filterscripts/zombiescript.pwn,pending
+zabawastatus,,,filterscripts,filterscripts/zombiescript.pwn,pending
+zabierz,take,everyone,komendy,gamemodes/modules/komendy/commands/zabierz/zabierz_impl.pwn,pending
+zabierzbilet,,everyone,ibiza,gamemodes/modules/ibiza/commands/zabierzbilet/zabierzbilet_impl.pwn,pending
+zabierzbiznes,,everyone,biznesy,gamemodes/modules/biznesy/commands/zabierzbiznes/zabierzbiznes_impl.pwn,pending
+zabierzgps,takegps,everyone,komendy,gamemodes/modules/komendy/commands/zabierzgps/zabierzgps_impl.pwn,pending
+zabierzlideraorg,,everyone,komendy,gamemodes/modules/komendy/commands/zabierzlideraorg/zabierzlideraorg_impl.pwn,pending
+zabierzobiekt,removeobject,everyone,player_attachments,gamemodes/modules/player_attachments/commands/zabierzobiekt/zabierzobiekt_impl.pwn,pending
+zablokujtel,togphone togtel togtelefon,everyone,komendy,gamemodes/modules/komendy/commands/zablokujtel/zablokujtel_impl.pwn,pending
+zablokujw,togw togwhisper,everyone,komendy,gamemodes/modules/komendy/commands/zablokujw/zablokujw_impl.pwn,pending
+zakoncztrase,,everyone,praca_kierowca,gamemodes/modules/praca_kierowca/commands/zakoncztrase/zakoncztrase_impl.pwn,pending
+zaliczegz,,everyone,komendy,gamemodes/modules/komendy/commands/zaliczegz/zaliczegz_impl.pwn,pending
+zamknijlinie,,everyone,komendy,gamemodes/modules/komendy/commands/zamknijlinie/zamknijlinie_impl.pwn,pending
+zamroz,freeze,everyone,komendy,gamemodes/modules/komendy/commands/zamroz/zamroz_impl.pwn,pending
+zaparkuj,parkuj,everyone,komendy,gamemodes/modules/komendy/commands/zaparkuj/zaparkuj_impl.pwn,pending
+zapiszdomy,,everyone,komendy,gamemodes/modules/komendy/commands/zapiszdomy/zapiszdomy_impl.pwn,pending
+zapiszkonta,,everyone,komendy,gamemodes/modules/komendy/commands/zapiszkonta/zapiszkonta_impl.pwn,pending
+zapytaj,,everyone,komendy,gamemodes/modules/komendy/commands/zapytaj/zapytaj_impl.pwn,pending
+zaraz,setstd,everyone,choroby,gamemodes/modules/choroby/commands/zaraz/zaraz_impl.pwn,pending
+zasady,,everyone,komendy,gamemodes/modules/komendy/commands/zasady/zasady_impl.pwn,pending
+zastrzyk,,everyone,choroby,gamemodes/modules/choroby/commands/zastrzyk/zastrzyk_impl.pwn,pending
+zatankuj,fill tankuj,everyone,komendy,gamemodes/modules/komendy/commands/zatankuj/zatankuj_impl.pwn,pending
+zatrzymajlekcje,stopegzamin stoplekcja stoplesson zakonczlekcje,everyone,komendy,gamemodes/modules/komendy/commands/zatrzymajlekcje/zatrzymajlekcje_impl.pwn,pending
+zaufanioff,zasluzenioff,everyone,komendy,gamemodes/modules/komendy/commands/zaufanioff/zaufanioff_impl.pwn,pending
+zaufanion,zasluzenion,everyone,komendy,gamemodes/modules/komendy/commands/zaufanion/zaufanion_impl.pwn,pending
+zaufanyggracz,zaufanygracz zg,everyone,komendy,gamemodes/modules/komendy/commands/zaufanyggracz/zaufanyggracz_impl.pwn,pending
+zawodnicy,,everyone,komendy,gamemodes/modules/komendy/commands/zawodnicy/zawodnicy_impl.pwn,pending
+zawodnik,,everyone,komendy,gamemodes/modules/komendy/commands/zawodnik/zawodnik_impl.pwn,pending
+zaznacz,kursor mouse,everyone,komendy,gamemodes/modules/komendy/commands/zaznacz/zaznacz_impl.pwn,pending
+zbijwl,,everyone,komendy,gamemodes/modules/komendy/commands/zbijwl/zbijwl_impl.pwn,pending
+zd,,everyone,praca_kierowca,gamemodes/modules/praca_kierowca/commands/zd/zd_impl.pwn,pending
+zdejmij,zdejmijprzedmiot,everyone,player_attachments,gamemodes/modules/player_attachments/commands/zdejmij/zdejmij_impl.pwn,pending
+zdejmijkevlar,wyrzuckami zdejmijkami,everyone,komendy,gamemodes/modules/komendy/commands/zdejmijkevlar/zdejmijkevlar_impl.pwn,pending
+zderzaki,zderzak,everyone,praca_mechanik,gamemodes/modules/praca_mechanik/commands/zderzaki/zderzaki_impl.pwn,pending
+zdmv,cdmv,everyone,komendy,gamemodes/modules/komendy/commands/zdmv/zdmv_impl.pwn,pending
+zgas,,everyone,komendy,gamemodes/modules/komendy/commands/zgas/zgas_impl.pwn,pending
+zjedz,eat jedz,everyone,cooking,gamemodes/modules/cooking/commands/zjedz/zjedz_impl.pwn,pending
+zk,odbierzkluczyki zabierzkluczyki,everyone,komendy,gamemodes/modules/komendy/commands/zk/zk_impl.pwn,pending
+zlomuj,nauto przemaluj spawnuj,everyone,komendy,gamemodes/modules/komendy/commands/zlomuj/zlomuj_impl.pwn,pending
+zlomujbiznes,,everyone,biznesy,gamemodes/modules/biznesy/commands/zlomujbiznes/zlomujbiznes_impl.pwn,pending
+zmiendom,setdom sethouse,everyone,komendy,gamemodes/modules/komendy/commands/zmiendom/zmiendom_impl.pwn,pending
+zmiendomk,setdomk setdomkupiony,everyone,komendy,gamemodes/modules/komendy/commands/zmiendomk/zmiendomk_impl.pwn,pending
+zmienhaslo,,everyone,komendy,gamemodes/modules/komendy/commands/zmienhaslo/zmienhaslo_impl.pwn,pending
+zmienhp,sethp,everyone,komendy,gamemodes/modules/komendy/commands/zmienhp/zmienhp_impl.pwn,pending
+zmiennick,,everyone,komendy,gamemodes/modules/komendy/commands/zmiennick/zmiennick_impl.pwn,pending
+zmienplec,srs,everyone,komendy,gamemodes/modules/komendy/commands/zmienplec/zmienplec_impl.pwn,pending
+zmienprace,setjob zmienjob,everyone,komendy,gamemodes/modules/komendy/commands/zmienprace/zmienprace_impl.pwn,pending
+zmienskin,,everyone,komendy,gamemodes/modules/komendy/commands/zmienskin/zmienskin_impl.pwn,pending
+zmienwiek,setwiek,everyone,admin,gamemodes/modules/admin/commands/zmienwiek/zmienwiek_impl.pwn,pending
+zmienwl,setwl,everyone,komendy,gamemodes/modules/komendy/commands/zmienwl/zmienwl_impl.pwn,pending
+zniszczobiekty,,everyone,komendy,gamemodes/modules/komendy/commands/zniszczobiekty/zniszczobiekty_impl.pwn,pending
+zombieclear,,,filterscripts,filterscripts/zombiescript.pwn,pending
+zonedelay,,everyone,komendy,gamemodes/modules/komendy/commands/zonedelay/zonedelay_impl.pwn,pending
+zoneid,,everyone,komendy,gamemodes/modules/komendy/commands/zoneid/zoneid_impl.pwn,pending
+zp,zapnijpas zapnijpasy,everyone,wypadek,gamemodes/modules/wypadek/commands/zp/zp_impl.pwn,pending
+zrobkolejke,,everyone,komendy,gamemodes/modules/komendy/commands/zrobkolejke/zrobkolejke_impl.pwn,pending
+zrzut,,everyone,praca_przemytnik,gamemodes/modules/praca_przemytnik/commands/zrzut/zrzut_impl.pwn,pending
+zuzel,,everyone,komendy,gamemodes/modules/komendy/commands/zuzel/zuzel_impl.pwn,pending
+zuzel_start,,everyone,komendy,gamemodes/modules/komendy/commands/zuzel_start/zuzel_start_impl.pwn,pending
+zuzel_stop,,everyone,komendy,gamemodes/modules/komendy/commands/zuzel_stop/zuzel_stop_impl.pwn,pending
+zweryfikuj,,admini,weryfikacje,gamemodes/modules/weryfikacje/commands/zweryfikuj/zweryfikuj_impl.pwn,pending
+zwiaz,tie,everyone,komendy,gamemodes/modules/komendy/commands/zwiaz/zwiaz_impl.pwn,pending
+zwolnij,uninvite,everyone,komendy,gamemodes/modules/komendy/commands/zwolnij/zwolnij_impl.pwn,pending

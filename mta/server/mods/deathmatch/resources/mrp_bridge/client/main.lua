@@ -1,0 +1,8 @@
+addEventHandler("onClientResourceStart", resourceRoot, function()
+    setBlurLevel(0)
+    setInteriorSoundsEnabled(false)
+    setOcclusionsEnabled(true)
+    setPlayerHudComponentVisible("money", false)
+    setPlayerHudComponentVisible("area_name", false)
+    setPlayerHudComponentVisible("vehicle_name", false)
+end)

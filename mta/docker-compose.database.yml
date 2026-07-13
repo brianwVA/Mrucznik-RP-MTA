@@ -1,0 +1,46 @@
+services:
+  mysql:
+    image: mysql:8.0.36
+    command:
+      - --default-authentication-plugin=mysql_native_password
+      - --character-set-server=utf8mb4
+      - --collation-server=utf8mb4_polish_ci
+    environment:
+      MYSQL_ROOT_PASSWORD: mrucznik-root
+      MYSQL_DATABASE: mrucznik
+      MYSQL_USER: samp
+      MYSQL_PASSWORD: funia
+    ports:
+      - "3306:3306"
+    volumes:
+      - mrucznik_mysql:/var/lib/mysql
+      - ../database:/docker-entrypoint-initdb.d:ro
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "127.0.0.1", "-usamp", "-pfunia"]
+      interval: 5s
+      timeout: 5s
+      retries: 30
+
+  redis:
+    image: redis:7.2.5-alpine
+    ports:
+      - "6379:6379"
+    volumes:
+      - mrucznik_redis:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 3s
+      timeout: 3s
+      retries: 30
+
+  redis-seed:
+    image: redis:7.2.5-alpine
+    depends_on:
+      redis:
+        condition: service_healthy
+    command: ["redis-cli", "-h", "redis", "SET", "server:mrucznik-redis", "1"]
+    restart: "no"
+
+volumes:
+  mrucznik_mysql:
+  mrucznik_redis:

@@ -1,0 +1,48 @@
+name: MTA compatibility
+
+on:
+  push:
+    paths:
+      - "gamemodes/**"
+      - "filterscripts/**"
+      - "include/**"
+      - "mta/**"
+      - ".github/workflows/mta-compatibility.yml"
+  pull_request:
+    paths:
+      - "gamemodes/**"
+      - "filterscripts/**"
+      - "include/**"
+      - "mta/**"
+      - ".github/workflows/mta-compatibility.yml"
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: false
+          lfs: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Rebuild compatibility catalogs
+        run: |
+          python3 mta/tools/build_command_catalog.py
+          python3 mta/tools/build_model_catalog.py
+          if [ "$(wc -c < serverfiles.tar.gz)" -gt 1024 ]; then
+            python3 mta/tools/build_native_catalog.py
+          else
+            echo "AMX native regeneration skipped: Git LFS payload not present"
+          fi
+          git diff --exit-code -- mta/compatibility mta/server/mods/deathmatch/resources/mrp_models/shared/registry.lua
+      - name: Validate project structure
+        run: python3 mta/tools/validate_project.py
+      - name: Verify pinned plugin packages
+        run: python3 mta/tools/verify_plugin_lock.py
+      - name: Validate Lua 5.1 syntax
+        run: |
+          sudo apt-get update
+          sudo apt-get install --yes lua5.1
+          find mta -type f -name '*.lua' -print0 | xargs -0 -n1 luac5.1 -p

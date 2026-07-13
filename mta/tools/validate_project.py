@@ -1,0 +1,131 @@
+#!/usr/bin/env python3
+"""Static validation for the reproducible MTA compatibility build."""
+
+from __future__ import annotations
+
+import json
+import re
+import sys
+import xml.etree.ElementTree as ET
+from pathlib import Path
+
+
+def fail(message: str) -> None:
+    raise ValueError(message)
+
+
+def main() -> int:
+    mta = Path(__file__).resolve().parents[1]
+    commands = json.loads((mta / "compatibility/commands.json").read_text(encoding="utf-8"))
+    models = json.loads((mta / "compatibility/models.json").read_text(encoding="utf-8"))
+    natives = json.loads((mta / "compatibility/natives.json").read_text(encoding="utf-8"))
+    plugins = json.loads((mta / "plugins.lock.json").read_text(encoding="utf-8"))
+    if commands["command_count"] != 787 or commands["definition_count"] != 788:
+        fail("Unexpected command inventory size")
+    if models["model_count"] != 81:
+        fail("Unexpected 0.3.DL ped model inventory size")
+    if natives["native_entry_count"] != 579 or natives["unique_native_count"] != 489:
+        fail("Unexpected compiled AMX native inventory size")
+    programs = {program["name"]: program for program in natives["programs"]}
+    if programs.get("Mrucznik-RP", {}).get("native_entry_count") != 556:
+        fail("Unexpected gamemode native inventory size")
+    if plugins.get("platform") != "windows-x86" or len(plugins.get("plugins", [])) != 12:
+        fail("Unexpected Windows plugin lock inventory")
+    plugin_names = [plugin["name"] for plugin in plugins["plugins"]]
+    load_names = [plugin["load_name"] for plugin in plugins["plugins"]]
+    if len(plugin_names) != len(set(plugin_names)) or len(load_names) != len(set(load_names)):
+        fail("Plugin names and load names must be unique")
+    for plugin in plugins["plugins"]:
+        if not re.fullmatch(r"[0-9a-f]{64}", plugin.get("sha256", "")):
+            fail(f"Plugin {plugin['name']} does not have a pinned SHA-256")
+        if not plugin.get("url", "").startswith("https://github.com/"):
+            fail(f"Plugin {plugin['name']} must use its primary GitHub release")
+        if not plugin.get("files"):
+            fail(f"Plugin {plugin['name']} has no installed files")
+    destinations: dict[str, list[str]] = {}
+    for plugin in plugins["plugins"]:
+        for destination in plugin["files"].values():
+            destinations.setdefault(destination, []).append(plugin["name"])
+    overwrites = {
+        destination: owners
+        for destination, owners in destinations.items()
+        if len(owners) > 1
+    }
+    for destination, owners in overwrites.items():
+        if plugins.get("allowed_overwrites", {}).get(destination) != owners[-1]:
+            fail(f"Undeclared plugin overwrite for {destination}: {owners}")
+    replaced = {item["name"] for item in plugins.get("replaced_by_mta", [])}
+    if replaced != {"Pawn.RakNet", "bscrashfix"}:
+        fail("Unexpected set of SA-MP process plugins replaced by MTA")
+    built_load_names = {plugin["load_name"] for plugin in plugins.get("built_plugins", [])}
+    imported_providers = set(natives["provider_counts"]) - {
+        "mta-amx-core",
+        "mrp-mta-compat",
+    }
+    if imported_providers != set(load_names) | built_load_names:
+        fail("Plugin lock does not cover every provider imported by the AMX")
+
+    for meta in sorted(mta.rglob("meta.xml")):
+        root = ET.parse(meta).getroot()
+        for node in root.findall("script") + root.findall("file"):
+            source = node.get("src")
+            if not source:
+                fail(f"Missing src in {meta}")
+            path = meta.parent / source
+            if not path.exists():
+                fail(f"Missing resource file {path} referenced by {meta}")
+
+    setup = (mta / "setup.ps1").read_text(encoding="utf-8")
+    if "e15e50239e7bf488ec433e597c6d19f30bbbe6e543f449af6ec182b5ed870c3f" not in setup:
+        fail("MTA AMX archive checksum is not pinned")
+    if "17f3455d20083782e897fe9bb7ce45f0349d1fd2fc74975a990db1f8344f7625" not in setup:
+        fail("Object Preview archive checksum is not pinned")
+    if "6a55e642f88de29531c1c6cc57516e16a94247a1" not in (
+        mta / "vendor/mta-amx/UPSTREAM.md"
+    ).read_text(encoding="utf-8"):
+        fail("Vendored MTA AMX commit is not documented")
+    if "10447436f9fd22000192b34ad5ffbf582e431c46" not in (
+        mta / "vendor/colandreas/UPSTREAM.md"
+    ).read_text(encoding="utf-8"):
+        fail("Vendored ColAndreas commit is not documented")
+
+    compatibility = (mta / "vendor/mta-amx/amx/server/mrp_compat.lua").read_text(
+        encoding="utf-8"
+    )
+    compatibility_natives = {
+        native["name"]
+        for native in natives["natives"]
+        if native["provider"] == "mrp-mta-compat"
+    }
+    for native in compatibility_natives:
+        if f"g_SAMPSyscallPrototypes.{native}" not in compatibility:
+            fail(f"Missing MTA compatibility prototype for {native}")
+
+    # An imported native may exist in the upstream syscall table while still
+    # being only a notImplemented() placeholder. Treat that as a release
+    # blocker: every function the exact compiled AMX can call needs a real path.
+    imported_names = {native["name"] for native in natives["natives"]}
+    function_pattern = re.compile(
+        r"function\s+(\w+)\([^)]*\)(.*?)(?=\nfunction\s+|\Z)", re.DOTALL
+    )
+    for lua_path in sorted((mta / "vendor/mta-amx/amx/server").rglob("*.lua")):
+        lua = lua_path.read_text(encoding="utf-8")
+        for match in function_pattern.finditer(lua):
+            if match.group(1) in imported_names and "notImplemented(" in match.group(2):
+                fail(
+                    f"Imported native remains a placeholder: "
+                    f"{match.group(1)} ({lua_path})"
+                )
+
+    if '"amx-mrucznik"' not in setup:
+        fail("Installer does not autostart the Mrucznik gamemode")
+    print("MTA project structure is valid")
+    return 0
+
+
+if __name__ == "__main__":
+    try:
+        raise SystemExit(main())
+    except (ValueError, ET.ParseError, json.JSONDecodeError) as error:
+        print(error, file=sys.stderr)
+        raise SystemExit(1)

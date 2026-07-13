@@ -1,0 +1,39 @@
+name: Build ColAndreas x86
+
+on:
+  push:
+    paths:
+      - "mta/vendor/colandreas/**"
+      - "mta/build-colandreas.ps1"
+      - ".github/workflows/build-colandreas.yml"
+  pull_request:
+    paths:
+      - "mta/vendor/colandreas/**"
+      - "mta/build-colandreas.ps1"
+      - ".github/workflows/build-colandreas.yml"
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: false
+          lfs: false
+      - name: Build exact Mrucznik ColAndreas fork
+        shell: pwsh
+        run: >-
+          ./mta/build-colandreas.ps1
+          -VcpkgRoot $env:VCPKG_INSTALLATION_ROOT
+          -OutputDirectory ./artifacts/colandreas
+      - name: Verify artifact
+        shell: pwsh
+        run: |
+          if (-not (Test-Path ./artifacts/colandreas/ColAndreas.dll)) { throw "Missing DLL" }
+          Get-FileHash -Algorithm SHA256 ./artifacts/colandreas/ColAndreas.dll
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ColAndreas-v1.5.1-mrucznik-windows-x86
+          path: artifacts/colandreas/ColAndreas.dll
+          if-no-files-found: error

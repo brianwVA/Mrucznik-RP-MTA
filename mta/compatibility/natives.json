@@ -1,0 +1,2502 @@
+{
+  "sources": [
+    "serverfiles/gamemodes/Mrucznik-RP.amx",
+    "serverfiles/filterscripts/animy.amx",
+    "serverfiles/filterscripts/realtime.amx",
+    "serverfiles/filterscripts/sobeitblock.amx",
+    "serverfiles/filterscripts/SAN_extPSq.amx"
+  ],
+  "native_entry_count": 579,
+  "unique_native_count": 489,
+  "programs": [
+    {
+      "name": "Mrucznik-RP",
+      "native_entry_count": 556,
+      "unique_native_count": 487
+    },
+    {
+      "name": "animy",
+      "native_entry_count": 7,
+      "unique_native_count": 7
+    },
+    {
+      "name": "realtime",
+      "native_entry_count": 2,
+      "unique_native_count": 2
+    },
+    {
+      "name": "sobeitblock",
+      "native_entry_count": 4,
+      "unique_native_count": 4
+    },
+    {
+      "name": "SAN_extPSq",
+      "native_entry_count": 10,
+      "unique_native_count": 10
+    }
+  ],
+  "provider_counts": {
+    "ColAndreas": 10,
+    "Whirlpool": 1,
+    "crashdetect": 1,
+    "discord-connector": 2,
+    "libRegEx": 6,
+    "log-plugin": 3,
+    "mrp-mta-compat": 14,
+    "mta-amx-core": 331,
+    "mysql": 14,
+    "pawn-memory": 13,
+    "profiler": 4,
+    "redis": 7,
+    "requests": 7,
+    "sscanf": 6,
+    "streamer": 70
+  },
+  "natives": [
+    {
+      "name": "AddSimpleModel",
+      "occurrences": 1,
+      "provider": "mrp-mta-compat"
+    },
+    {
+      "name": "AddSimpleModelTimed",
+      "occurrences": 1,
+      "provider": "mrp-mta-compat"
+    },
+    {
+      "name": "AddStaticVehicleEx",
+      "occurrences": 1,
+      "provider": "mta-amx-core"
+    },
+    {
+      "name": "AddVehicleComponent",
+      "occurrences": 1,
+      "provider": "mta-amx-core"
+    },
+    {
+      "name": "ApplyActorAnimation",
+      "occurrences": 1,
+      "provider": "mta-amx-core"
+    },
+    {
+      "name": "ApplyAnimation",
+      "occurrences": 2,
+      "provider": "mta-amx-core"
+    },
+    {
+      "name": "ApplyDynamicActorAnimation",
+      "occurrences": 1,
+      "provider": "streamer"
+    },
+    {
+      "name": "asin",
+      "occurrences": 1,
+      "provider": "mta-amx-core"
+    },
+    {
+      "name": "atan2",
+      "occurrences": 1,
+      "provider": "mta-amx-core"
+    },
+    {
+      "name": "AttachCameraToPlayerObject",
+      "occurrences": 1,
+      "provider": "mta-amx-core"
+    },
+    {
+      "name": "AttachDynamicObjectToVehicle",
+      "occurrences": 1,
+      "provider": "streamer"
+    },
+    {
+      "name": "AttachTrailerToVehicle",
+      "occurrences": 1,
+      "provider": "mta-amx-core"
+    },
+    {
+      "name": "Ban",
+      "occurrences": 1,
+      "provider": "mta-amx-core"
+    },
+    {
+      "name": "BS_Delete",
+      "occurrences": 1,
+      "provider": "mrp-mta-compat"
+    },
+    {
+      "name": "BS_IgnoreBits",
+      "occurrences": 1,
+      "provider": "mrp-mta-compat"
+    },
+    {
+      "name": "BS_New",
+      "occurrences": 1,
+      "provider": "mrp-mta-compat"
+    },
+    {
+      "name": "BS_ReadValue",
+      "occurrences": 1,
+      "provider": "mrp-mta-compat"
+    },
+    {
+      "name": "BS_SetWriteOffset",
+      "occurrences": 1,
+      "provider": "mrp-mta-compat"
+    },
+    {
+      "name": "BS_WriteValue",
+      "occurrences": 1,
+      "provider": "mrp-mta-compat"
+    },
+    {
+      "name": "CA_CreateObject",
+      "occurrences": 1,
+      "provider": "ColAndreas"
+    },
+    {
+      "name": "CA_DestroyObject",
+      "occurrences": 1,
+      "provider": "ColAndreas"
+    },
+    {
+      "name": "CA_Init",
+      "occurrences": 1,
+      "provider": "ColAndreas"
+    },
+    {
+      "name": "CA_IsValidObject",
+      "occurrences": 1,
+      "provider": "ColAndreas"
+    },
+    {
+      "name": "CA_LoadFromDff",
+      "occurrences": 1,
+      "provider": "ColAndreas"
+    },
+    {
+      "name": "CA_RayCastLine",
+      "occurrences": 1,
+      "provider": "ColAndreas"
+    },
+    {
+      "name": "CA_RayCastMultiLine",
+      "occurrences": 1,
+      "provider": "ColAndreas"
+    },
+    {
+      "name": "CA_RemoveBuilding",
+      "occurrences": 1,
+      "provider": "ColAndreas"
+    },
+    {
+      "name": "CA_SetObjectPos",
+      "occurrences": 1,
+      "provider": "ColAndreas"
+    },
+    {
+      "name": "CA_SetObjectRot",
+      "occurrences": 1,
+      "provider": "ColAndreas"
+    },
+    {
+      "name": "CallLocalFunction",
+      "occurrences": 2,
+      "provider": "mta-amx-core"
+    },
+    {
+      "name": "CallRemoteFunction",
+      "occurrences": 4,
+      "provider": "mta-amx-core"
+    },
+    {
+      "name": "CancelEdit",
+      "occurrences": 1,
+      "provider": "mta-amx-core"
+    },
+    {
+      "name": "CancelSelectTextDraw",
+      "occurrences": 1,
+      "provider": "mta-amx-core"
+    },
+    {
+      "name": "ChangeVehicleColor",
+      "occurrences": 1,
+      "provider": "mta-amx-core"
+    },
+    {
+      "name": "ChangeVehiclePaintjob",
+      "occurrences": 1,
+      "provider": "mta-amx-core"
+    },
+    {
+      "name": "clamp",
+      "occurrences": 1,
+      "provider": "mta-amx-core"
+    },
+    {
+      "name": "ClearAnimations",
+      "occurrences": 1,
+      "provider": "mta-amx-core"
+    },
+    {
+      "name": "ClearDynamicActorAnimations",
+      "occurrences": 1,
+      "provider": "streamer"
+    },
+    {
+      "name": "CreateDynamic3DTextLabel",
+      "occurrences": 2,
+      "provider": "streamer"
+    },
+    {
+      "name": "CreateDynamicActor",
+      "occurrences": 1,
+      "provider": "streamer"
+    },
+    {
+      "name": "CreateDynamicCircle",
+      "occurrences": 1,
+      "provider": "streamer"
+    },
+    {
+      "name": "CreateDynamicCP",
+      "occurrences": 1,
+      "provider": "streamer"
+    },
+    {
+      "name": "CreateDynamicCube",
+      "occurrences": 1,
+      "provider": "streamer"
+    },
+    {
+      "name": "CreateDynamicCylinder",
+      "occurrences": 1,
+      "provider": "streamer"
+    },
+    {
+      "name": "CreateDynamicMapIcon",
+      "occurrences": 1,
+      "provider": "streamer"
+    },
+    {
+      "name": "CreateDynamicMapIconEx",
+      "occurrences": 1,
+      "provider": "streamer"
+    },
+    {
+      "name": "CreateDynamicObject",
+      "occurrences": 2,
+      "provider": "streamer"
+    },
+    {
+      "name": "CreateDynamicPickup",
+      "occurrences": 1,
+      "provider": "streamer"
+    },
+    {
+      "name": "CreateDynamicRectangle",
+      "occurrences": 1,
+      "provider": "streamer"
+    },
+    {
+      "name": "CreateLog",
+      "occurrences": 1,
+      "provider": "log-plugin"
+    },
+    {
+      "name": "CreateObject",
+      "occurrences": 1,
+      "provider": "mta-amx-core"
+    },
+    {
+      "name": "CreatePlayer3DTextLabel",
+      "occurrences": 1,
+      "provider": "mta-amx-core"
+    },
+    {
+      "name": "CreatePlayerObject",
+      "occurrences": 1,
+      "provider": "mta-amx-core"
+    },
+    {
+      "name": "CreatePlayerTextDraw",
+      "occurrences": 1,
+      "provider": "mta-amx-core"
+    },
+    {
+      "name": "CreateVehicle",
+      "occurrences": 1,
+      "provider": "mta-amx-core"
+    },
+    {
+      "name": "db_free_result",
+      "occurrences": 1,
+      "provider": "mta-amx-core"
+    },
+    {
+      "name": "db_get_field",
+      "occurrences": 1,
+      "provider": "mta-amx-core"
+    },
+    {
+      "name": "db_get_field_assoc",
+      "occurrences": 1,
+      "provider": "mta-amx-core"
+    },
+    {
+      "name": "db_get_field_assoc_float",
+      "occurrences": 1,
+      "provider": "mta-amx-core"
+    },
+    {
+      "name": "db_get_field_assoc_int",
+      "occurrences": 1,
+      "provider": "mta-amx-core"
+    },
+    {
+      "name": "db_next_row",
+      "occurrences": 1,
+      "provider": "mta-amx-core"
+    },
+    {
+      "name": "db_num_rows",
+      "occurrences": 1,
+      "provider": "mta-amx-core"
+    },
+    {
+      "name": "db_open",
+      "occurrences": 1,
+      "provider": "mta-amx-core"
+    },
+    {
+      "name": "db_query",
+      "occurrences": 1,
+      "provider": "mta-amx-core"
+    },
+    {
+      "name": "DCC_FindChannelById",
+      "occurrences": 1,
+      "provider": "discord-connector"
+    },
+    {
+      "name": "DCC_SendChannelMessage",
+      "occurrences": 1,
+      "provider": "discord-connector"
+    },
+    {
+      "name": "DeletePlayer3DTextLabel",
+      "occurrences": 1,
+      "provider": "mta-amx-core"
+    },
+    {
+      "name": "deleteproperty",
+      "occurrences": 1,
+      "provider": "mta-amx-core"
+    },
+    {
+      "name": "DeletePVar",
+      "occurrences": 1,
+      "provider": "mta-amx-core"
+    },
+    {
+      "name": "DeleteSVar",
+      "occurrences": 1,
+      "provider": "mta-amx-core"
+    },
+    {
+      "name": "DestroyAllDynamicObjects",
+      "occurrences": 1,
+      "provider": "streamer"
+    },
+    {
+      "name": "DestroyDynamic3DTextLabel",
+      "occurrences": 1,
+      "provider": "streamer"
+    },
+    {
+      "name": "DestroyDynamicActor",
+      "occurrences": 1,
+      "provider": "streamer"
+    },
+    {
+      "name": "DestroyDynamicArea",
+      "occurrences": 1,
+      "provider": "streamer"
+    },
+    {
+      "name": "DestroyDynamicCP",
+      "occurrences": 1,
+      "provider": "streamer"
+    },
+    {
+      "name": "DestroyDynamicMapIcon",
+      "occurrences": 1,
+      "provider": "streamer"
+    },
+    {
+      "name": "DestroyDynamicObject",
+      "occurrences": 1,
+      "provider": "streamer"
+    },
+    {
+      "name": "DestroyDynamicPickup",
+      "occurrences": 1,
+      "provider": "streamer"
+    },
+    {
+      "name": "DestroyLog",
+      "occurrences": 1,
+      "provider": "log-plugin"
+    },
+    {
+      "name": "DestroyObject",
+      "occurrences": 1,
+      "provider": "mta-amx-core"
+    },
+    {
+      "name": "DestroyPickup",
+      "occurrences": 1,
+      "provider": "mta-amx-core"
+    },
+    {
+      "name": "DestroyPlayerObject",
+      "occurrences": 1,
+      "provider": "mta-amx-core"
+    },
+    {
+      "name": "DestroyVehicle",
+      "occurrences": 1,
+      "provider": "mta-amx-core"
+    },
+    {
+      "name": "DetachTrailerFromVehicle",
+      "occurrences": 1,
+      "provider": "mta-amx-core"
+    },
+    {
+      "name": "DisableInteriorEnterExits",
+      "occurrences": 1,
+      "provider": "mta-amx-core"
+    },
+    {
+      "name": "DisablePlayerCheckpoint",
+      "occurrences": 1,
+      "provider": "mta-amx-core"
+    },
+    {
+      "name": "DisablePlayerRaceCheckpoint",
+      "occurrences": 1,
+      "provider": "mta-amx-core"
+    },
+    {
+      "name": "EditAttachedObject",
+      "occurrences": 1,
+      "provider": "mta-amx-core"
+    },
+    {
+      "name": "EditDynamicObject",
+      "occurrences": 1,
+      "provider": "streamer"
+    },
+    {
+      "name": "EnableStuntBonusForAll",
+      "occurrences": 1,
+      "provider": "mta-amx-core"
+    },
+    {
+      "name": "EnableStuntBonusForPlayer",
+      "occurrences": 1,
+      "provider": "mta-amx-core"
+    },
+    {
+      "name": "EnableVehicleFriendlyFire",
+      "occurrences": 1,
+      "provider": "mta-amx-core"
+    },
+    {
+      "name": "existproperty",
+      "occurrences": 1,
+      "provider": "mta-amx-core"
+    },
+    {
+      "name": "fblockwrite",
+      "occurrences": 1,
+      "provider": "mta-amx-core"
+    },
+    {
+      "name": "fclose",
+      "occurrences": 1,
+      "provider": "mta-amx-core"
+    },
+    {
+      "name": "fexist",
+      "occurrences": 1,
+      "provider": "mta-amx-core"
+    },
+    {
+      "name": "fgetchar",
+      "occurrences": 1,
+      "provider": "mta-amx-core"
+    },
+    {
+      "name": "FindModelFileNameFromCRC",
+      "occurrences": 1,
+      "provider": "mrp-mta-compat"
+    },
+    {
+      "name": "FindTextureFileNameFromCRC",
+      "occurrences": 1,
+      "provider": "mrp-mta-compat"
+    },
+    {
+      "name": "flength",
+      "occurrences": 1,
+      "provider": "mta-amx-core"
+    },
+    {
+      "name": "float",
+      "occurrences": 2,
+      "provider": "mta-amx-core"
+    },
+    {
+      "name": "floatabs",
+      "occurrences": 1,
+      "provider": "mta-amx-core"
+    },
+    {
+      "name": "floatadd",
+      "occurrences": 2,
+      "provider": "mta-amx-core"
+    },
+    {
+      "name": "floatcmp",
+      "occurrences": 1,
+      "provider": "mta-amx-core"
+    },
+    {
+      "name": "floatcos",
+      "occurrences": 1,
+      "provider": "mta-amx-core"
+    },
+    {
+      "name": "floatdiv",
+      "occurrences": 2,
+      "provider": "mta-amx-core"
+    },
+    {
+      "name": "floatlog",
+      "occurrences": 1,
+      "provider": "mta-amx-core"
+    },
+    {
+      "name": "floatmul",
+      "occurrences": 2,
+      "provider": "mta-amx-core"
+    },
+    {
+      "name": "floatpower",
+      "occurrences": 1,
+      "provider": "mta-amx-core"
+    },
+    {
+      "name": "floatround",
+      "occurrences": 1,
+      "provider": "mta-amx-core"
+    },
+    {
+      "name": "floatsin",
+      "occurrences": 1,
+      "provider": "mta-amx-core"
+    },
+    {
+      "name": "floatsqroot",
+      "occurrences": 1,
+      "provider": "mta-amx-core"
+    },
+    {
+      "name": "floatstr",
+      "occurrences": 1,
+      "provider": "mta-amx-core"
+    },
+    {
+      "name": "floatsub",
+      "occurrences": 2,
+      "provider": "mta-amx-core"
+    },
+    {
+      "name": "fopen",
+      "occurrences": 1,
+      "provider": "mta-amx-core"
+    },
+    {
+      "name": "format",
+      "occurrences": 4,
+      "provider": "mta-amx-core"
+    },
+    {
+      "name": "fputchar",
+      "occurrences": 1,
+      "provider": "mta-amx-core"
+    },
+    {
+      "name": "fread",
+      "occurrences": 1,
+      "provider": "mta-amx-core"
+    },
+    {
+      "name": "fremove",
+      "occurrences": 1,
+      "provider": "mta-amx-core"
+    },
+    {
+      "name": "fseek",
+      "occurrences": 1,
+      "provider": "mta-amx-core"
+    },
+    {
+      "name": "funcidx",
+      "occurrences": 2,
+      "provider": "mta-amx-core"
+    },
+    {
+      "name": "fwrite",
+      "occurrences": 1,
+      "provider": "mta-amx-core"
+    },
+    {
+      "name": "GangZoneCreate",
+      "occurrences": 1,
+      "provider": "mta-amx-core"
+    },
+    {
+      "name": "GangZoneDestroy",
+      "occurrences": 1,
+      "provider": "mta-amx-core"
+    },
+    {
+      "name": "GangZoneFlashForAll",
+      "occurrences": 1,
+      "provider": "mta-amx-core"
+    },
+    {
+      "name": "GangZoneFlashForPlayer",
+      "occurrences": 1,
+      "provider": "mta-amx-core"
+    },
+    {
+      "name": "GangZoneHideForPlayer",
+      "occurrences": 1,
+      "provider": "mta-amx-core"
+    },
+    {
+      "name": "GangZoneShowForAll",
+      "occurrences": 1,
+      "provider": "mta-amx-core"
+    },
+    {
+      "name": "GangZoneShowForPlayer",
+      "occurrences": 1,
+      "provider": "mta-amx-core"
+    },
+    {
+      "name": "GangZoneStopFlashForAll",
+      "occurrences": 1,
+      "provider": "mta-amx-core"
+    },
+    {
+      "name": "GetActorPos",
+      "occurrences": 1,
+      "provider": "mta-amx-core"
+    },
+    {
+      "name": "GetActorVirtualWorld",
+      "occurrences": 1,
+      "provider": "mta-amx-core"
+    },
+    {
+      "name": "GetAnimationName",
+      "occurrences": 2,
+      "provider": "mta-amx-core"
+    },
+    {
+      "name": "getarg",
+      "occurrences": 1,
+      "provider": "mta-amx-core"
+    },
+    {
+      "name": "GetConsoleVarAsBool",
+      "occurrences": 1,
+      "provider": "mta-amx-core"
+    },
+    {
+      "name": "GetConsoleVarAsInt",
+      "occurrences": 1,
+      "provider": "mta-amx-core"
+    },
+    {
+      "name": "GetConsoleVarAsString",
+      "occurrences": 1,
+      "provider": "mta-amx-core"
+    },
+    {
+      "name": "getdate",
+      "occurrences": 1,
+      "provider": "mta-amx-core"
+    },
+    {
+      "name": "GetDynamicActorPos",
+      "occurrences": 1,
+      "provider": "streamer"
+    },
+    {
+      "name": "GetDynamicActorVirtualWorld",
+      "occurrences": 1,
+      "provider": "streamer"
+    },
+    {
+      "name": "GetDynamicObjectPos",
+      "occurrences": 1,
+      "provider": "streamer"
+    },
+    {
+      "name": "GetDynamicObjectRot",
+      "occurrences": 1,
+      "provider": "streamer"
+    },
+    {
+      "name": "GetMaxPlayers",
+      "occurrences": 1,
+      "provider": "mta-amx-core"
+    },
+    {
+      "name": "GetObjectModel",
+      "occurrences": 1,
+      "provider": "mta-amx-core"
+    },
+    {
+      "name": "GetPlayerAmmo",
+      "occurrences": 2,
+      "provider": "mta-amx-core"
+    },
+    {
+      "name": "GetPlayerAnimationIndex",
+      "occurrences": 2,
+      "provider": "mta-amx-core"
+    },
+    {
+      "name": "GetPlayerArmour",
+      "occurrences": 1,
+      "provider": "mta-amx-core"
+    },
+    {
+      "name": "GetPlayerCameraFrontVector",
+      "occurrences": 1,
+      "provider": "mta-amx-core"
+    },
+    {
+      "name": "GetPlayerCameraMode",
+      "occurrences": 2,
+      "provider": "mta-amx-core"
+    },
+    {
+      "name": "GetPlayerCameraPos",
+      "occurrences": 1,
+      "provider": "mta-amx-core"
+    },
+    {
+      "name": "GetPlayerColor",
+      "occurrences": 1,
+      "provider": "mta-amx-core"
+    },
+    {
+      "name": "GetPlayerDistanceFromPoint",
+      "occurrences": 1,
+      "provider": "mta-amx-core"
+    },
+    {
+      "name": "GetPlayerDrunkLevel",
+      "occurrences": 1,
+      "provider": "mta-amx-core"
+    },
+    {
+      "name": "GetPlayerFacingAngle",
+      "occurrences": 1,
+      "provider": "mta-amx-core"
+    },
+    {
+      "name": "GetPlayerFightingStyle",
+      "occurrences": 1,
+      "provider": "mta-amx-core"
+    },
+    {
+      "name": "GetPlayerHealth",
+      "occurrences": 1,
+      "provider": "mta-amx-core"
+    },
+    {
+      "name": "GetPlayerInterior",
+      "occurrences": 1,
+      "provider": "mta-amx-core"
+    },
+    {
+      "name": "GetPlayerIp",
+      "occurrences": 1,
+      "provider": "mta-amx-core"
+    },
+    {
+      "name": "GetPlayerKeys",
+      "occurrences": 2,
+      "provider": "mta-amx-core"
+    },
+    {
+      "name": "GetPlayerLastShotVectors",
+      "occurrences": 1,
+      "provider": "mta-amx-core"
+    },
+    {
+      "name": "GetPlayerMoney",
+      "occurrences": 2,
+      "provider": "mta-amx-core"
+    },
+    {
+      "name": "GetPlayerName",
+      "occurrences": 2,
+      "provider": "mta-amx-core"
+    },
+    {
+      "name": "GetPlayerObjectModel",
+      "occurrences": 1,
+      "provider": "mta-amx-core"
+    },
+    {
+      "name": "GetPlayerObjectPos",
+      "occurrences": 1,
+      "provider": "mta-amx-core"
+    },
+    {
+      "name": "GetPlayerPing",
+      "occurrences": 1,
+      "provider": "mta-amx-core"
+    },
+    {
+      "name": "GetPlayerPoolSize",
+      "occurrences": 1,
+      "provider": "mta-amx-core"
+    },
+    {
+      "name": "GetPlayerPos",
+      "occurrences": 2,
+      "provider": "mta-amx-core"
+    },
+    {
+      "name": "GetPlayerSkin",
+      "occurrences": 1,
+      "provider": "mta-amx-core"
+    },
+    {
+      "name": "GetPlayerSpecialAction",
+      "occurrences": 2,
+      "provider": "mta-amx-core"
+    },
+    {
+      "name": "GetPlayerState",
+      "occurrences": 3,
+      "provider": "mta-amx-core"
+    },
+    {
+      "name": "GetPlayerSurfingObjectID",
+      "occurrences": 1,
+      "provider": "mta-amx-core"
+    },
+    {
+      "name": "GetPlayerSurfingVehicleID",
+      "occurrences": 1,
+      "provider": "mta-amx-core"
+    },
+    {
+      "name": "GetPlayerTargetPlayer",
+      "occurrences": 1,
+      "provider": "mta-amx-core"
+    },
+    {
+      "name": "GetPlayerTeam",
+      "occurrences": 2,
+      "provider": "mta-amx-core"
+    },
+    {
+      "name": "GetPlayerTime",
+      "occurrences": 1,
+      "provider": "mta-amx-core"
+    },
+    {
+      "name": "GetPlayerVehicleID",
+      "occurrences": 2,
+      "provider": "mta-amx-core"
+    },
+    {
+      "name": "GetPlayerVehicleSeat",
+      "occurrences": 2,
+      "provider": "mta-amx-core"
+    },
+    {
+      "name": "GetPlayerVelocity",
+      "occurrences": 1,
+      "provider": "mta-amx-core"
+    },
+    {
+      "name": "GetPlayerVersion",
+      "occurrences": 1,
+      "provider": "mta-amx-core"
+    },
+    {
+      "name": "GetPlayerVirtualWorld",
+      "occurrences": 1,
+      "provider": "mta-amx-core"
+    },
+    {
+      "name": "GetPlayerVisibleDynamicCP",
+      "occurrences": 1,
+      "provider": "streamer"
+    },
+    {
+      "name": "GetPlayerWeapon",
+      "occurrences": 1,
+      "provider": "mta-amx-core"
+    },
+    {
+      "name": "GetPlayerWeaponData",
+      "occurrences": 1,
+      "provider": "mta-amx-core"
+    },
+    {
+      "name": "GetPlayerWeaponState",
+      "occurrences": 1,
+      "provider": "mta-amx-core"
+    },
+    {
+      "name": "getproperty",
+      "occurrences": 1,
+      "provider": "mta-amx-core"
+    },
+    {
+      "name": "GetPVarFloat",
+      "occurrences": 1,
+      "provider": "mta-amx-core"
+    },
+    {
+      "name": "GetPVarInt",
+      "occurrences": 1,
+      "provider": "mta-amx-core"
+    },
+    {
+      "name": "GetPVarString",
+      "occurrences": 1,
+      "provider": "mta-amx-core"
+    },
+    {
+      "name": "GetPVarType",
+      "occurrences": 1,
+      "provider": "mta-amx-core"
+    },
+    {
+      "name": "GetSVarInt",
+      "occurrences": 1,
+      "provider": "mta-amx-core"
+    },
+    {
+      "name": "GetTickCount",
+      "occurrences": 2,
+      "provider": "mta-amx-core"
+    },
+    {
+      "name": "gettime",
+      "occurrences": 2,
+      "provider": "mta-amx-core"
+    },
+    {
+      "name": "GetVehicleComponentInSlot",
+      "occurrences": 1,
+      "provider": "mta-amx-core"
+    },
+    {
+      "name": "GetVehicleComponentType",
+      "occurrences": 1,
+      "provider": "mta-amx-core"
+    },
+    {
+      "name": "GetVehicleDamageStatus",
+      "occurrences": 1,
+      "provider": "mta-amx-core"
+    },
+    {
+      "name": "GetVehicleDistanceFromPoint",
+      "occurrences": 1,
+      "provider": "mta-amx-core"
+    },
+    {
+      "name": "GetVehicleHealth",
+      "occurrences": 1,
+      "provider": "mta-amx-core"
+    },
+    {
+      "name": "GetVehicleModel",
+      "occurrences": 2,
+      "provider": "mta-amx-core"
+    },
+    {
+      "name": "GetVehicleModelInfo",
+      "occurrences": 1,
+      "provider": "mta-amx-core"
+    },
+    {
+      "name": "GetVehicleParamsEx",
+      "occurrences": 1,
+      "provider": "mta-amx-core"
+    },
+    {
+      "name": "GetVehiclePoolSize",
+      "occurrences": 1,
+      "provider": "mta-amx-core"
+    },
+    {
+      "name": "GetVehiclePos",
+      "occurrences": 2,
+      "provider": "mta-amx-core"
+    },
+    {
+      "name": "GetVehicleRotationQuat",
+      "occurrences": 1,
+      "provider": "mta-amx-core"
+    },
+    {
+      "name": "GetVehicleTrailer",
+      "occurrences": 1,
+      "provider": "mta-amx-core"
+    },
+    {
+      "name": "GetVehicleVelocity",
+      "occurrences": 1,
+      "provider": "mta-amx-core"
+    },
+    {
+      "name": "GetVehicleVirtualWorld",
+      "occurrences": 1,
+      "provider": "mta-amx-core"
+    },
+    {
+      "name": "GetVehicleZAngle",
+      "occurrences": 1,
+      "provider": "mta-amx-core"
+    },
+    {
+      "name": "GetWeaponName",
+      "occurrences": 1,
+      "provider": "mta-amx-core"
+    },
+    {
+      "name": "GivePlayerMoney",
+      "occurrences": 2,
+      "provider": "mta-amx-core"
+    },
+    {
+      "name": "GivePlayerWeapon",
+      "occurrences": 1,
+      "provider": "mta-amx-core"
+    },
+    {
+      "name": "gpci",
+      "occurrences": 1,
+      "provider": "mta-amx-core"
+    },
+    {
+      "name": "heapspace",
+      "occurrences": 1,
+      "provider": "mta-amx-core"
+    },
+    {
+      "name": "HTTP",
+      "occurrences": 1,
+      "provider": "mta-amx-core"
+    },
+    {
+      "name": "InterpolateCameraLookAt",
+      "occurrences": 1,
+      "provider": "mta-amx-core"
+    },
+    {
+      "name": "InterpolateCameraPos",
+      "occurrences": 1,
+      "provider": "mta-amx-core"
+    },
+    {
+      "name": "IsPlayerAdmin",
+      "occurrences": 2,
+      "provider": "mta-amx-core"
+    },
+    {
+      "name": "IsPlayerAttachedObjectSlotUsed",
+      "occurrences": 2,
+      "provider": "mta-amx-core"
+    },
+    {
+      "name": "IsPlayerConnected",
+      "occurrences": 2,
+      "provider": "mta-amx-core"
+    },
+    {
+      "name": "IsPlayerInAnyVehicle",
+      "occurrences": 2,
+      "provider": "mta-amx-core"
+    },
+    {
+      "name": "IsPlayerInDynamicArea",
+      "occurrences": 1,
+      "provider": "streamer"
+    },
+    {
+      "name": "IsPlayerInRangeOfPoint",
+      "occurrences": 2,
+      "provider": "mta-amx-core"
+    },
+    {
+      "name": "IsPlayerInVehicle",
+      "occurrences": 1,
+      "provider": "mta-amx-core"
+    },
+    {
+      "name": "IsPlayerNPC",
+      "occurrences": 1,
+      "provider": "mta-amx-core"
+    },
+    {
+      "name": "IsPlayerStreamedIn",
+      "occurrences": 1,
+      "provider": "mta-amx-core"
+    },
+    {
+      "name": "IsPointInDynamicArea",
+      "occurrences": 1,
+      "provider": "streamer"
+    },
+    {
+      "name": "IsTrailerAttachedToVehicle",
+      "occurrences": 1,
+      "provider": "mta-amx-core"
+    },
+    {
+      "name": "IsValidActor",
+      "occurrences": 1,
+      "provider": "mta-amx-core"
+    },
+    {
+      "name": "IsValidDynamic3DTextLabel",
+      "occurrences": 1,
+      "provider": "streamer"
+    },
+    {
+      "name": "IsValidDynamicArea",
+      "occurrences": 1,
+      "provider": "streamer"
+    },
+    {
+      "name": "IsValidDynamicMapIcon",
+      "occurrences": 1,
+      "provider": "streamer"
+    },
+    {
+      "name": "IsValidDynamicObject",
+      "occurrences": 1,
+      "provider": "streamer"
+    },
+    {
+      "name": "IsValidDynamicPickup",
+      "occurrences": 1,
+      "provider": "streamer"
+    },
+    {
+      "name": "IsValidPlayerObject",
+      "occurrences": 1,
+      "provider": "mta-amx-core"
+    },
+    {
+      "name": "IsValidVehicle",
+      "occurrences": 1,
+      "provider": "mta-amx-core"
+    },
+    {
+      "name": "IsVehicleStreamedIn",
+      "occurrences": 1,
+      "provider": "mta-amx-core"
+    },
+    {
+      "name": "JsonCleanup",
+      "occurrences": 1,
+      "provider": "requests"
+    },
+    {
+      "name": "JsonGetInt",
+      "occurrences": 1,
+      "provider": "requests"
+    },
+    {
+      "name": "JsonGetString",
+      "occurrences": 1,
+      "provider": "requests"
+    },
+    {
+      "name": "JsonObject",
+      "occurrences": 1,
+      "provider": "requests"
+    },
+    {
+      "name": "Kick",
+      "occurrences": 3,
+      "provider": "mta-amx-core"
+    },
+    {
+      "name": "KillTimer",
+      "occurrences": 2,
+      "provider": "mta-amx-core"
+    },
+    {
+      "name": "LinkVehicleToInterior",
+      "occurrences": 1,
+      "provider": "mta-amx-core"
+    },
+    {
+      "name": "Log",
+      "occurrences": 1,
+      "provider": "log-plugin"
+    },
+    {
+      "name": "ManualVehicleEngineAndLights",
+      "occurrences": 1,
+      "provider": "mta-amx-core"
+    },
+    {
+      "name": "max",
+      "occurrences": 1,
+      "provider": "mta-amx-core"
+    },
+    {
+      "name": "MEM_clone",
+      "occurrences": 1,
+      "provider": "pawn-memory"
+    },
+    {
+      "name": "MEM_copy",
+      "occurrences": 1,
+      "provider": "pawn-memory"
+    },
+    {
+      "name": "MEM_delete",
+      "occurrences": 1,
+      "provider": "pawn-memory"
+    },
+    {
+      "name": "MEM_get_arr",
+      "occurrences": 1,
+      "provider": "pawn-memory"
+    },
+    {
+      "name": "MEM_get_size",
+      "occurrences": 1,
+      "provider": "pawn-memory"
+    },
+    {
+      "name": "MEM_get_val",
+      "occurrences": 1,
+      "provider": "pawn-memory"
+    },
+    {
+      "name": "MEM_new",
+      "occurrences": 1,
+      "provider": "pawn-memory"
+    },
+    {
+      "name": "MEM_new_arr",
+      "occurrences": 1,
+      "provider": "pawn-memory"
+    },
+    {
+      "name": "MEM_new_val",
+      "occurrences": 1,
+      "provider": "pawn-memory"
+    },
+    {
+      "name": "MEM_set_arr",
+      "occurrences": 1,
+      "provider": "pawn-memory"
+    },
+    {
+      "name": "MEM_set_val",
+      "occurrences": 1,
+      "provider": "pawn-memory"
+    },
+    {
+      "name": "MEM_UM_get_addr",
+      "occurrences": 1,
+      "provider": "pawn-memory"
+    },
+    {
+      "name": "MEM_UM_zero",
+      "occurrences": 1,
+      "provider": "pawn-memory"
+    },
+    {
+      "name": "memcpy",
+      "occurrences": 1,
+      "provider": "mta-amx-core"
+    },
+    {
+      "name": "min",
+      "occurrences": 1,
+      "provider": "mta-amx-core"
+    },
+    {
+      "name": "MoveDynamicObject",
+      "occurrences": 1,
+      "provider": "streamer"
+    },
+    {
+      "name": "MovePlayerObject",
+      "occurrences": 1,
+      "provider": "mta-amx-core"
+    },
+    {
+      "name": "mysql_connect",
+      "occurrences": 1,
+      "provider": "mysql"
+    },
+    {
+      "name": "mysql_debug",
+      "occurrences": 1,
+      "provider": "mysql"
+    },
+    {
+      "name": "mysql_fetch_field_row",
+      "occurrences": 1,
+      "provider": "mysql"
+    },
+    {
+      "name": "mysql_fetch_int",
+      "occurrences": 1,
+      "provider": "mysql"
+    },
+    {
+      "name": "mysql_fetch_row_format",
+      "occurrences": 1,
+      "provider": "mysql"
+    },
+    {
+      "name": "mysql_free_result",
+      "occurrences": 1,
+      "provider": "mysql"
+    },
+    {
+      "name": "mysql_insert_id",
+      "occurrences": 1,
+      "provider": "mysql"
+    },
+    {
+      "name": "mysql_num_rows",
+      "occurrences": 1,
+      "provider": "mysql"
+    },
+    {
+      "name": "mysql_ping",
+      "occurrences": 1,
+      "provider": "mysql"
+    },
+    {
+      "name": "mysql_query",
+      "occurrences": 1,
+      "provider": "mysql"
+    },
+    {
+      "name": "mysql_real_escape_string",
+      "occurrences": 1,
+      "provider": "mysql"
+    },
+    {
+      "name": "mysql_reconnect",
+      "occurrences": 1,
+      "provider": "mysql"
+    },
+    {
+      "name": "mysql_retrieve_row",
+      "occurrences": 1,
+      "provider": "mysql"
+    },
+    {
+      "name": "mysql_store_result",
+      "occurrences": 1,
+      "provider": "mysql"
+    },
+    {
+      "name": "NetStats_GetConnectedTime",
+      "occurrences": 1,
+      "provider": "mta-amx-core"
+    },
+    {
+      "name": "NetStats_MessagesRecvPerSecond",
+      "occurrences": 1,
+      "provider": "mta-amx-core"
+    },
+    {
+      "name": "NetStats_PacketLossPercent",
+      "occurrences": 1,
+      "provider": "mta-amx-core"
+    },
+    {
+      "name": "numargs",
+      "occurrences": 1,
+      "provider": "mta-amx-core"
+    },
+    {
+      "name": "PlayAudioStreamForPlayer",
+      "occurrences": 1,
+      "provider": "mta-amx-core"
+    },
+    {
+      "name": "PlayCrimeReportForPlayer",
+      "occurrences": 1,
+      "provider": "mta-amx-core"
+    },
+    {
+      "name": "PlayerPlaySound",
+      "occurrences": 1,
+      "provider": "mta-amx-core"
+    },
+    {
+      "name": "PlayerSpectatePlayer",
+      "occurrences": 1,
+      "provider": "mta-amx-core"
+    },
+    {
+      "name": "PlayerSpectateVehicle",
+      "occurrences": 1,
+      "provider": "mta-amx-core"
+    },
+    {
+      "name": "PlayerTextDrawAlignment",
+      "occurrences": 2,
+      "provider": "mta-amx-core"
+    },
+    {
+      "name": "PlayerTextDrawBackgroundColor",
+      "occurrences": 2,
+      "provider": "mta-amx-core"
+    },
+    {
+      "name": "PlayerTextDrawBoxColor",
+      "occurrences": 2,
+      "provider": "mta-amx-core"
+    },
+    {
+      "name": "PlayerTextDrawColor",
+      "occurrences": 2,
+      "provider": "mta-amx-core"
+    },
+    {
+      "name": "PlayerTextDrawDestroy",
+      "occurrences": 2,
+      "provider": "mta-amx-core"
+    },
+    {
+      "name": "PlayerTextDrawFont",
+      "occurrences": 2,
+      "provider": "mta-amx-core"
+    },
+    {
+      "name": "PlayerTextDrawHide",
+      "occurrences": 2,
+      "provider": "mta-amx-core"
+    },
+    {
+      "name": "PlayerTextDrawLetterSize",
+      "occurrences": 2,
+      "provider": "mta-amx-core"
+    },
+    {
+      "name": "PlayerTextDrawSetOutline",
+      "occurrences": 2,
+      "provider": "mta-amx-core"
+    },
+    {
+      "name": "PlayerTextDrawSetPreviewModel",
+      "occurrences": 1,
+      "provider": "mta-amx-core"
+    },
+    {
+      "name": "PlayerTextDrawSetPreviewRot",
+      "occurrences": 1,
+      "provider": "mta-amx-core"
+    },
+    {
+      "name": "PlayerTextDrawSetPreviewVehCol",
+      "occurrences": 1,
+      "provider": "mta-amx-core"
+    },
+    {
+      "name": "PlayerTextDrawSetProportional",
+      "occurrences": 2,
+      "provider": "mta-amx-core"
+    },
+    {
+      "name": "PlayerTextDrawSetSelectable",
+      "occurrences": 1,
+      "provider": "mta-amx-core"
+    },
+    {
+      "name": "PlayerTextDrawSetShadow",
+      "occurrences": 2,
+      "provider": "mta-amx-core"
+    },
+    {
+      "name": "PlayerTextDrawSetString",
+      "occurrences": 1,
+      "provider": "mta-amx-core"
+    },
+    {
+      "name": "PlayerTextDrawShow",
+      "occurrences": 2,
+      "provider": "mta-amx-core"
+    },
+    {
+      "name": "PlayerTextDrawTextSize",
+      "occurrences": 2,
+      "provider": "mta-amx-core"
+    },
+    {
+      "name": "PlayerTextDrawUseBox",
+      "occurrences": 2,
+      "provider": "mta-amx-core"
+    },
+    {
+      "name": "PR_Init",
+      "occurrences": 1,
+      "provider": "mrp-mta-compat"
+    },
+    {
+      "name": "PR_RegHandler",
+      "occurrences": 1,
+      "provider": "mrp-mta-compat"
+    },
+    {
+      "name": "PR_SendRPC",
+      "occurrences": 1,
+      "provider": "mrp-mta-compat"
+    },
+    {
+      "name": "print",
+      "occurrences": 3,
+      "provider": "mta-amx-core"
+    },
+    {
+      "name": "PrintBacktrace",
+      "occurrences": 1,
+      "provider": "crashdetect"
+    },
+    {
+      "name": "printf",
+      "occurrences": 1,
+      "provider": "mta-amx-core"
+    },
+    {
+      "name": "Profiler_Dump",
+      "occurrences": 1,
+      "provider": "profiler"
+    },
+    {
+      "name": "Profiler_GetState",
+      "occurrences": 1,
+      "provider": "profiler"
+    },
+    {
+      "name": "Profiler_Start",
+      "occurrences": 1,
+      "provider": "profiler"
+    },
+    {
+      "name": "Profiler_Stop",
+      "occurrences": 1,
+      "provider": "profiler"
+    },
+    {
+      "name": "PutPlayerInVehicle",
+      "occurrences": 1,
+      "provider": "mta-amx-core"
+    },
+    {
+      "name": "random",
+      "occurrences": 1,
+      "provider": "mta-amx-core"
+    },
+    {
+      "name": "RedirectDownload",
+      "occurrences": 1,
+      "provider": "mrp-mta-compat"
+    },
+    {
+      "name": "Redis_Command",
+      "occurrences": 1,
+      "provider": "redis"
+    },
+    {
+      "name": "Redis_Connect",
+      "occurrences": 1,
+      "provider": "redis"
+    },
+    {
+      "name": "Redis_Exists",
+      "occurrences": 1,
+      "provider": "redis"
+    },
+    {
+      "name": "Redis_GetInt",
+      "occurrences": 1,
+      "provider": "redis"
+    },
+    {
+      "name": "Redis_GetString",
+      "occurrences": 1,
+      "provider": "redis"
+    },
+    {
+      "name": "Redis_SetInt",
+      "occurrences": 1,
+      "provider": "redis"
+    },
+    {
+      "name": "Redis_SetString",
+      "occurrences": 1,
+      "provider": "redis"
+    },
+    {
+      "name": "regex_exbuild",
+      "occurrences": 1,
+      "provider": "libRegEx"
+    },
+    {
+      "name": "regex_exmatch",
+      "occurrences": 1,
+      "provider": "libRegEx"
+    },
+    {
+      "name": "regex_match",
+      "occurrences": 1,
+      "provider": "libRegEx"
+    },
+    {
+      "name": "regex_replace",
+      "occurrences": 1,
+      "provider": "libRegEx"
+    },
+    {
+      "name": "regex_search",
+      "occurrences": 1,
+      "provider": "libRegEx"
+    },
+    {
+      "name": "regex_syntax",
+      "occurrences": 1,
+      "provider": "libRegEx"
+    },
+    {
+      "name": "RemoveBuildingForPlayer",
+      "occurrences": 2,
+      "provider": "mta-amx-core"
+    },
+    {
+      "name": "RemovePlayerAttachedObject",
+      "occurrences": 2,
+      "provider": "mta-amx-core"
+    },
+    {
+      "name": "RemovePlayerFromVehicle",
+      "occurrences": 1,
+      "provider": "mta-amx-core"
+    },
+    {
+      "name": "RepairVehicle",
+      "occurrences": 1,
+      "provider": "mta-amx-core"
+    },
+    {
+      "name": "RequestHeaders",
+      "occurrences": 1,
+      "provider": "requests"
+    },
+    {
+      "name": "RequestJSON",
+      "occurrences": 1,
+      "provider": "requests"
+    },
+    {
+      "name": "RequestsClient",
+      "occurrences": 1,
+      "provider": "requests"
+    },
+    {
+      "name": "ResetPlayerMoney",
+      "occurrences": 2,
+      "provider": "mta-amx-core"
+    },
+    {
+      "name": "ResetPlayerWeapons",
+      "occurrences": 1,
+      "provider": "mta-amx-core"
+    },
+    {
+      "name": "SelectObject",
+      "occurrences": 1,
+      "provider": "mta-amx-core"
+    },
+    {
+      "name": "SelectTextDraw",
+      "occurrences": 1,
+      "provider": "mta-amx-core"
+    },
+    {
+      "name": "SendClientCheck",
+      "occurrences": 1,
+      "provider": "mta-amx-core"
+    },
+    {
+      "name": "SendClientMessage",
+      "occurrences": 2,
+      "provider": "mta-amx-core"
+    },
+    {
+      "name": "SendClientMessageToAll",
+      "occurrences": 1,
+      "provider": "mta-amx-core"
+    },
+    {
+      "name": "SendPlayerMessageToAll",
+      "occurrences": 1,
+      "provider": "mta-amx-core"
+    },
+    {
+      "name": "SendRconCommand",
+      "occurrences": 2,
+      "provider": "mta-amx-core"
+    },
+    {
+      "name": "SetActorVirtualWorld",
+      "occurrences": 1,
+      "provider": "mta-amx-core"
+    },
+    {
+      "name": "setarg",
+      "occurrences": 1,
+      "provider": "mta-amx-core"
+    },
+    {
+      "name": "SetCameraBehindPlayer",
+      "occurrences": 2,
+      "provider": "mta-amx-core"
+    },
+    {
+      "name": "SetDynamicActorFacingAngle",
+      "occurrences": 1,
+      "provider": "streamer"
+    },
+    {
+      "name": "SetDynamicActorPos",
+      "occurrences": 1,
+      "provider": "streamer"
+    },
+    {
+      "name": "SetDynamicActorVirtualWorld",
+      "occurrences": 1,
+      "provider": "streamer"
+    },
+    {
+      "name": "SetDynamicObjectMaterial",
+      "occurrences": 1,
+      "provider": "streamer"
+    },
+    {
+      "name": "SetDynamicObjectMaterialText",
+      "occurrences": 1,
+      "provider": "streamer"
+    },
+    {
+      "name": "SetDynamicObjectPos",
+      "occurrences": 1,
+      "provider": "streamer"
+    },
+    {
+      "name": "SetDynamicObjectRot",
+      "occurrences": 1,
+      "provider": "streamer"
+    },
+    {
+      "name": "SetGameModeText",
+      "occurrences": 1,
+      "provider": "mta-amx-core"
+    },
+    {
+      "name": "SetNameTagDrawDistance",
+      "occurrences": 1,
+      "provider": "mta-amx-core"
+    },
+    {
+      "name": "SetPlayerAmmo",
+      "occurrences": 1,
+      "provider": "mta-amx-core"
+    },
+    {
+      "name": "SetPlayerArmedWeapon",
+      "occurrences": 1,
+      "provider": "mta-amx-core"
+    },
+    {
+      "name": "SetPlayerArmour",
+      "occurrences": 1,
+      "provider": "mta-amx-core"
+    },
+    {
+      "name": "SetPlayerAttachedObject",
+      "occurrences": 1,
+      "provider": "mta-amx-core"
+    },
+    {
+      "name": "SetPlayerCameraLookAt",
+      "occurrences": 1,
+      "provider": "mta-amx-core"
+    },
+    {
+      "name": "SetPlayerCameraPos",
+      "occurrences": 1,
+      "provider": "mta-amx-core"
+    },
+    {
+      "name": "SetPlayerChatBubble",
+      "occurrences": 1,
+      "provider": "mta-amx-core"
+    },
+    {
+      "name": "SetPlayerCheckpoint",
+      "occurrences": 1,
+      "provider": "mta-amx-core"
+    },
+    {
+      "name": "SetPlayerColor",
+      "occurrences": 1,
+      "provider": "mta-amx-core"
+    },
+    {
+      "name": "SetPlayerDrunkLevel",
+      "occurrences": 1,
+      "provider": "mta-amx-core"
+    },
+    {
+      "name": "SetPlayerFacingAngle",
+      "occurrences": 1,
+      "provider": "mta-amx-core"
+    },
+    {
+      "name": "SetPlayerFightingStyle",
+      "occurrences": 1,
+      "provider": "mta-amx-core"
+    },
+    {
+      "name": "SetPlayerHealth",
+      "occurrences": 1,
+      "provider": "mta-amx-core"
+    },
+    {
+      "name": "SetPlayerInterior",
+      "occurrences": 1,
+      "provider": "mta-amx-core"
+    },
+    {
+      "name": "SetPlayerName",
+      "occurrences": 1,
+      "provider": "mta-amx-core"
+    },
+    {
+      "name": "SetPlayerObjectMaterial",
+      "occurrences": 1,
+      "provider": "mta-amx-core"
+    },
+    {
+      "name": "SetPlayerPos",
+      "occurrences": 2,
+      "provider": "mta-amx-core"
+    },
+    {
+      "name": "SetPlayerPosFindZ",
+      "occurrences": 1,
+      "provider": "mta-amx-core"
+    },
+    {
+      "name": "SetPlayerRaceCheckpoint",
+      "occurrences": 1,
+      "provider": "mta-amx-core"
+    },
+    {
+      "name": "SetPlayerScore",
+      "occurrences": 1,
+      "provider": "mta-amx-core"
+    },
+    {
+      "name": "SetPlayerSkillLevel",
+      "occurrences": 1,
+      "provider": "mta-amx-core"
+    },
+    {
+      "name": "SetPlayerSkin",
+      "occurrences": 1,
+      "provider": "mta-amx-core"
+    },
+    {
+      "name": "SetPlayerSpecialAction",
+      "occurrences": 2,
+      "provider": "mta-amx-core"
+    },
+    {
+      "name": "SetPlayerTeam",
+      "occurrences": 2,
+      "provider": "mta-amx-core"
+    },
+    {
+      "name": "SetPlayerTime",
+      "occurrences": 1,
+      "provider": "mta-amx-core"
+    },
+    {
+      "name": "SetPlayerVelocity",
+      "occurrences": 1,
+      "provider": "mta-amx-core"
+    },
+    {
+      "name": "SetPlayerVirtualWorld",
+      "occurrences": 2,
+      "provider": "mta-amx-core"
+    },
+    {
+      "name": "SetPlayerWantedLevel",
+      "occurrences": 1,
+      "provider": "mta-amx-core"
+    },
+    {
+      "name": "SetPlayerWeather",
+      "occurrences": 1,
+      "provider": "mta-amx-core"
+    },
+    {
+      "name": "SetPlayerWorldBounds",
+      "occurrences": 1,
+      "provider": "mta-amx-core"
+    },
+    {
+      "name": "setproperty",
+      "occurrences": 1,
+      "provider": "mta-amx-core"
+    },
+    {
+      "name": "SetPVarFloat",
+      "occurrences": 1,
+      "provider": "mta-amx-core"
+    },
+    {
+      "name": "SetPVarInt",
+      "occurrences": 1,
+      "provider": "mta-amx-core"
+    },
+    {
+      "name": "SetPVarString",
+      "occurrences": 1,
+      "provider": "mta-amx-core"
+    },
+    {
+      "name": "SetSpawnInfo",
+      "occurrences": 1,
+      "provider": "mta-amx-core"
+    },
+    {
+      "name": "SetSVarInt",
+      "occurrences": 1,
+      "provider": "mta-amx-core"
+    },
+    {
+      "name": "SetTimer",
+      "occurrences": 1,
+      "provider": "mta-amx-core"
+    },
+    {
+      "name": "SetTimerEx",
+      "occurrences": 3,
+      "provider": "mta-amx-core"
+    },
+    {
+      "name": "SetVehicleAngularVelocity",
+      "occurrences": 1,
+      "provider": "mta-amx-core"
+    },
+    {
+      "name": "SetVehicleHealth",
+      "occurrences": 1,
+      "provider": "mta-amx-core"
+    },
+    {
+      "name": "SetVehicleNumberPlate",
+      "occurrences": 1,
+      "provider": "mta-amx-core"
+    },
+    {
+      "name": "SetVehicleParamsEx",
+      "occurrences": 1,
+      "provider": "mta-amx-core"
+    },
+    {
+      "name": "SetVehicleParamsForPlayer",
+      "occurrences": 1,
+      "provider": "mta-amx-core"
+    },
+    {
+      "name": "SetVehiclePos",
+      "occurrences": 1,
+      "provider": "mta-amx-core"
+    },
+    {
+      "name": "SetVehicleToRespawn",
+      "occurrences": 1,
+      "provider": "mta-amx-core"
+    },
+    {
+      "name": "SetVehicleVelocity",
+      "occurrences": 1,
+      "provider": "mta-amx-core"
+    },
+    {
+      "name": "SetVehicleVirtualWorld",
+      "occurrences": 1,
+      "provider": "mta-amx-core"
+    },
+    {
+      "name": "SetVehicleZAngle",
+      "occurrences": 1,
+      "provider": "mta-amx-core"
+    },
+    {
+      "name": "SetWeather",
+      "occurrences": 1,
+      "provider": "mta-amx-core"
+    },
+    {
+      "name": "SetWorldTime",
+      "occurrences": 2,
+      "provider": "mta-amx-core"
+    },
+    {
+      "name": "ShowNameTags",
+      "occurrences": 1,
+      "provider": "mta-amx-core"
+    },
+    {
+      "name": "ShowPlayerDialog",
+      "occurrences": 1,
+      "provider": "mta-amx-core"
+    },
+    {
+      "name": "ShowPlayerMarkers",
+      "occurrences": 1,
+      "provider": "mta-amx-core"
+    },
+    {
+      "name": "ShowPlayerNameTagForPlayer",
+      "occurrences": 1,
+      "provider": "mta-amx-core"
+    },
+    {
+      "name": "SpawnPlayer",
+      "occurrences": 1,
+      "provider": "mta-amx-core"
+    },
+    {
+      "name": "sscanf",
+      "occurrences": 1,
+      "provider": "sscanf"
+    },
+    {
+      "name": "SSCANF_Init",
+      "occurrences": 1,
+      "provider": "sscanf"
+    },
+    {
+      "name": "SSCANF_IsConnected",
+      "occurrences": 1,
+      "provider": "sscanf"
+    },
+    {
+      "name": "SSCANF_Join",
+      "occurrences": 1,
+      "provider": "sscanf"
+    },
+    {
+      "name": "SSCANF_Leave",
+      "occurrences": 1,
+      "provider": "sscanf"
+    },
+    {
+      "name": "SSCANF_Option",
+      "occurrences": 1,
+      "provider": "sscanf"
+    },
+    {
+      "name": "StartRecordingPlayerData",
+      "occurrences": 1,
+      "provider": "mta-amx-core"
+    },
+    {
+      "name": "StopAudioStreamForPlayer",
+      "occurrences": 1,
+      "provider": "mta-amx-core"
+    },
+    {
+      "name": "StopDynamicObject",
+      "occurrences": 1,
+      "provider": "streamer"
+    },
+    {
+      "name": "StopPlayerObject",
+      "occurrences": 1,
+      "provider": "mta-amx-core"
+    },
+    {
+      "name": "StopRecordingPlayerData",
+      "occurrences": 1,
+      "provider": "mta-amx-core"
+    },
+    {
+      "name": "strcat",
+      "occurrences": 1,
+      "provider": "mta-amx-core"
+    },
+    {
+      "name": "strcmp",
+      "occurrences": 2,
+      "provider": "mta-amx-core"
+    },
+    {
+      "name": "strdel",
+      "occurrences": 1,
+      "provider": "mta-amx-core"
+    },
+    {
+      "name": "Streamer_AppendArrayData",
+      "occurrences": 1,
+      "provider": "streamer"
+    },
+    {
+      "name": "Streamer_CountItems",
+      "occurrences": 1,
+      "provider": "streamer"
+    },
+    {
+      "name": "Streamer_CountVisibleItems",
+      "occurrences": 1,
+      "provider": "streamer"
+    },
+    {
+      "name": "Streamer_GetAllVisibleItems",
+      "occurrences": 1,
+      "provider": "streamer"
+    },
+    {
+      "name": "Streamer_GetDistanceToItem",
+      "occurrences": 1,
+      "provider": "streamer"
+    },
+    {
+      "name": "Streamer_GetFloatData",
+      "occurrences": 1,
+      "provider": "streamer"
+    },
+    {
+      "name": "Streamer_GetIntData",
+      "occurrences": 1,
+      "provider": "streamer"
+    },
+    {
+      "name": "Streamer_GetItemPos",
+      "occurrences": 1,
+      "provider": "streamer"
+    },
+    {
+      "name": "Streamer_GetItemStreamerID",
+      "occurrences": 1,
+      "provider": "streamer"
+    },
+    {
+      "name": "Streamer_GetTickRate",
+      "occurrences": 1,
+      "provider": "streamer"
+    },
+    {
+      "name": "Streamer_IsInArrayData",
+      "occurrences": 1,
+      "provider": "streamer"
+    },
+    {
+      "name": "Streamer_IsItemVisible",
+      "occurrences": 1,
+      "provider": "streamer"
+    },
+    {
+      "name": "Streamer_RemoveArrayData",
+      "occurrences": 1,
+      "provider": "streamer"
+    },
+    {
+      "name": "Streamer_SetCellDistance",
+      "occurrences": 1,
+      "provider": "streamer"
+    },
+    {
+      "name": "Streamer_SetCellSize",
+      "occurrences": 1,
+      "provider": "streamer"
+    },
+    {
+      "name": "Streamer_SetIntData",
+      "occurrences": 1,
+      "provider": "streamer"
+    },
+    {
+      "name": "Streamer_SetItemPos",
+      "occurrences": 1,
+      "provider": "streamer"
+    },
+    {
+      "name": "Streamer_SetMaxItems",
+      "occurrences": 1,
+      "provider": "streamer"
+    },
+    {
+      "name": "Streamer_SetTickRate",
+      "occurrences": 1,
+      "provider": "streamer"
+    },
+    {
+      "name": "Streamer_SetVisibleItems",
+      "occurrences": 1,
+      "provider": "streamer"
+    },
+    {
+      "name": "Streamer_ToggleAllItems",
+      "occurrences": 1,
+      "provider": "streamer"
+    },
+    {
+      "name": "Streamer_Update",
+      "occurrences": 1,
+      "provider": "streamer"
+    },
+    {
+      "name": "Streamer_UpdateEx",
+      "occurrences": 1,
+      "provider": "streamer"
+    },
+    {
+      "name": "Streamer_VisibleItems",
+      "occurrences": 1,
+      "provider": "streamer"
+    },
+    {
+      "name": "strfind",
+      "occurrences": 1,
+      "provider": "mta-amx-core"
+    },
+    {
+      "name": "strins",
+      "occurrences": 2,
+      "provider": "mta-amx-core"
+    },
+    {
+      "name": "strlen",
+      "occurrences": 2,
+      "provider": "mta-amx-core"
+    },
+    {
+      "name": "strmid",
+      "occurrences": 1,
+      "provider": "mta-amx-core"
+    },
+    {
+      "name": "strpack",
+      "occurrences": 1,
+      "provider": "mta-amx-core"
+    },
+    {
+      "name": "strunpack",
+      "occurrences": 1,
+      "provider": "mta-amx-core"
+    },
+    {
+      "name": "strval",
+      "occurrences": 2,
+      "provider": "mta-amx-core"
+    },
+    {
+      "name": "TextDrawAlignment",
+      "occurrences": 2,
+      "provider": "mta-amx-core"
+    },
+    {
+      "name": "TextDrawBackgroundColor",
+      "occurrences": 2,
+      "provider": "mta-amx-core"
+    },
+    {
+      "name": "TextDrawBoxColor",
+      "occurrences": 2,
+      "provider": "mta-amx-core"
+    },
+    {
+      "name": "TextDrawColor",
+      "occurrences": 2,
+      "provider": "mta-amx-core"
+    },
+    {
+      "name": "TextDrawCreate",
+      "occurrences": 1,
+      "provider": "mta-amx-core"
+    },
+    {
+      "name": "TextDrawDestroy",
+      "occurrences": 2,
+      "provider": "mta-amx-core"
+    },
+    {
+      "name": "TextDrawFont",
+      "occurrences": 2,
+      "provider": "mta-amx-core"
+    },
+    {
+      "name": "TextDrawHideForAll",
+      "occurrences": 2,
+      "provider": "mta-amx-core"
+    },
+    {
+      "name": "TextDrawHideForPlayer",
+      "occurrences": 2,
+      "provider": "mta-amx-core"
+    },
+    {
+      "name": "TextDrawLetterSize",
+      "occurrences": 2,
+      "provider": "mta-amx-core"
+    },
+    {
+      "name": "TextDrawSetOutline",
+      "occurrences": 2,
+      "provider": "mta-amx-core"
+    },
+    {
+      "name": "TextDrawSetPreviewModel",
+      "occurrences": 1,
+      "provider": "mta-amx-core"
+    },
+    {
+      "name": "TextDrawSetPreviewRot",
+      "occurrences": 1,
+      "provider": "mta-amx-core"
+    },
+    {
+      "name": "TextDrawSetPreviewVehCol",
+      "occurrences": 1,
+      "provider": "mta-amx-core"
+    },
+    {
+      "name": "TextDrawSetProportional",
+      "occurrences": 2,
+      "provider": "mta-amx-core"
+    },
+    {
+      "name": "TextDrawSetSelectable",
+      "occurrences": 1,
+      "provider": "mta-amx-core"
+    },
+    {
+      "name": "TextDrawSetShadow",
+      "occurrences": 2,
+      "provider": "mta-amx-core"
+    },
+    {
+      "name": "TextDrawSetString",
+      "occurrences": 1,
+      "provider": "mta-amx-core"
+    },
+    {
+      "name": "TextDrawShowForAll",
+      "occurrences": 1,
+      "provider": "mta-amx-core"
+    },
+    {
+      "name": "TextDrawShowForPlayer",
+      "occurrences": 1,
+      "provider": "mta-amx-core"
+    },
+    {
+      "name": "TextDrawTextSize",
+      "occurrences": 2,
+      "provider": "mta-amx-core"
+    },
+    {
+      "name": "TextDrawUseBox",
+      "occurrences": 2,
+      "provider": "mta-amx-core"
+    },
+    {
+      "name": "TogglePlayerControllable",
+      "occurrences": 1,
+      "provider": "mta-amx-core"
+    },
+    {
+      "name": "TogglePlayerDynamicCP",
+      "occurrences": 1,
+      "provider": "streamer"
+    },
+    {
+      "name": "TogglePlayerSpectating",
+      "occurrences": 1,
+      "provider": "mta-amx-core"
+    },
+    {
+      "name": "tolower",
+      "occurrences": 1,
+      "provider": "mta-amx-core"
+    },
+    {
+      "name": "UpdateDynamic3DTextLabelText",
+      "occurrences": 1,
+      "provider": "streamer"
+    },
+    {
+      "name": "UpdateVehicleDamageStatus",
+      "occurrences": 1,
+      "provider": "mta-amx-core"
+    },
+    {
+      "name": "UsePlayerPedAnims",
+      "occurrences": 1,
+      "provider": "mta-amx-core"
+    },
+    {
+      "name": "VectorSize",
+      "occurrences": 1,
+      "provider": "mta-amx-core"
+    },
+    {
+      "name": "WP_Hash",
+      "occurrences": 1,
+      "provider": "Whirlpool"
+    }
+  ]
+}
