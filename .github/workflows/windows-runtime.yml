@@ -74,13 +74,24 @@ jobs:
             "--port=3306", "--bind-address=127.0.0.1", "--default-authentication-plugin=mysql_native_password"
           ) -RedirectStandardOutput C:\mrp-test\mysql.out.log -RedirectStandardError C:\mrp-test\mysql.err.log -PassThru
           Set-Content C:\mrp-test\mysql.pid $mysql.Id
+          $mysqlReady = $false
           for ($attempt = 0; $attempt -lt 60; $attempt++) {
-            & "$mysqlHome\bin\mysqladmin.exe" -h127.0.0.1 -uroot ping 2>$null
-            if ($LASTEXITCODE -eq 0) { break }
+            & "$mysqlHome\bin\mysqladmin.exe" "--protocol=TCP" "--host=127.0.0.1" "--port=3306" "--user=root" "--connect-timeout=2" ping
+            if ($LASTEXITCODE -eq 0) {
+              $mysqlReady = $true
+              break
+            }
+            if ($mysql.HasExited) {
+              Get-Content C:\mrp-test\mysql.err.log
+              throw "MySQL exited before becoming ready"
+            }
             Start-Sleep -Seconds 1
           }
-          if ($LASTEXITCODE -ne 0) { throw "MySQL did not become ready" }
-          & "$mysqlHome\bin\mysql.exe" -h127.0.0.1 -uroot -e "CREATE DATABASE mrucznik; CREATE USER 'samp'@'%' IDENTIFIED WITH mysql_native_password BY 'funia'; GRANT ALL ON mrucznik.* TO 'samp'@'%'; FLUSH PRIVILEGES;"
+          if (-not $mysqlReady) {
+            Get-Content C:\mrp-test\mysql.err.log
+            throw "MySQL did not become ready"
+          }
+          & "$mysqlHome\bin\mysql.exe" "--protocol=TCP" "--host=127.0.0.1" "--port=3306" "--user=root" -e "CREATE DATABASE mrucznik; CREATE USER 'samp'@'%' IDENTIFIED WITH mysql_native_password BY 'funia'; GRANT ALL ON mrucznik.* TO 'samp'@'%'; FLUSH PRIVILEGES;"
           foreach ($file in Get-ChildItem ./database/schema/*.sql | Where-Object Name -NotLike 'view_*' | Sort-Object Name) {
             cmd /d /s /c "`"$mysqlHome\bin\mysql.exe`" -h127.0.0.1 -uroot mrucznik < `"$($file.FullName)`""
             if ($LASTEXITCODE -ne 0) { throw "Table schema import failed: $($file.Name)" }
