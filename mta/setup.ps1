@@ -27,6 +27,26 @@ $ObjectPreviewSha256 = "17f3455d20083782e897fe9bb7ce45f0349d1fd2fc74975a990db1f8
 $ObjectPreviewPage = "https://community.multitheftauto.com/index.php?p=resources&resource=11836&s=download&selectincludes=1"
 $ObjectPreviewUrl = "https://community.multitheftauto.com/modules/resources/doDownload.php?file=object_preview_0.7.0.zip&name=object_preview.zip"
 
+function Invoke-BoundedDownload {
+    param(
+        [Parameter(Mandatory = $true)]
+        [string]$Uri,
+
+        [Parameter(Mandatory = $true)]
+        [string]$OutFile
+    )
+
+    for ($Attempt = 1; $Attempt -le 3; $Attempt++) {
+        & curl.exe --fail --location --silent --show-error `
+            --connect-timeout 30 --max-time 300 `
+            --output $OutFile $Uri
+        if ($LASTEXITCODE -eq 0) { return }
+        Remove-Item $OutFile -Force -ErrorAction SilentlyContinue
+        if ($Attempt -lt 3) { Start-Sleep -Seconds 2 }
+    }
+    throw "Nie udało się pobrać $Uri po 3 próbach."
+}
+
 if (-not (Test-Path (Join-Path $MtaServerRoot "MTA Server.exe"))) {
     throw "Nie znaleziono 32-bitowego MTA Server.exe w: $MtaServerRoot"
 }
@@ -77,7 +97,7 @@ foreach ($Plugin in $PluginLock.plugins) {
     $PackageName = "$($Plugin.name)-$($Plugin.version)"
     $PackagePath = Join-Path $Work "$PackageName.download"
     Write-Host "Pobieranie $PackageName"
-    Invoke-WebRequest -Uri $Plugin.url -OutFile $PackagePath
+    Invoke-BoundedDownload -Uri $Plugin.url -OutFile $PackagePath
     $PackageHash = (Get-FileHash -Algorithm SHA256 $PackagePath).Hash.ToLowerInvariant()
     if ($PackageHash -ne $Plugin.sha256) {
         throw "Niepoprawna suma SHA-256 $PackageName`: $PackageHash"
