@@ -19,8 +19,19 @@ if (Test-Path $Build) { Remove-Item -Recurse -Force $Build }
 New-Item -ItemType Directory -Force $Build | Out-Null
 New-Item -ItemType Directory -Force $OutputDirectory | Out-Null
 
-& (Join-Path $VcpkgRoot "vcpkg.exe") install bullet3:x86-windows-static
-if ($LASTEXITCODE -ne 0) { throw "Nie udało się zbudować Bullet x86." }
+$BulletReady = $false
+for ($Attempt = 1; $Attempt -le 3; $Attempt++) {
+    & (Join-Path $VcpkgRoot "vcpkg.exe") install bullet3:x86-windows-static
+    if ($LASTEXITCODE -eq 0) {
+        $BulletReady = $true
+        break
+    }
+    if ($Attempt -lt 3) {
+        Write-Warning "vcpkg nie powiodl sie (proba $Attempt/3); ponawiam za 10 sekund."
+        Start-Sleep -Seconds 10
+    }
+}
+if (-not $BulletReady) { throw "Nie udało się zbudować Bullet x86 po trzech próbach." }
 
 cmake -S $Source -B $Build -A Win32 `
     "-DCMAKE_TOOLCHAIN_FILE=$Toolchain" `
