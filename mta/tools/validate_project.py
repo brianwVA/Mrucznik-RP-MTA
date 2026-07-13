@@ -119,6 +119,26 @@ def main() -> int:
 
     if '"amx-mrucznik"' not in setup:
         fail("Installer does not autostart the Mrucznik gamemode")
+    startup_loop = re.search(r"foreach \(\$ResourceName in @\(([^)]+)\)\)", setup)
+    startup_order = re.findall(r'"([^"]+)"', startup_loop.group(1)) if startup_loop else []
+    expected_startup_order = [
+        "object_preview", "mrp_models", "amx", "mrp_bridge", "amx-mrucznik"
+    ]
+    if startup_order != expected_startup_order:
+        fail("MTA resources are not installed in a safe startup order")
+
+    bridge_server = (
+        mta / "server/mods/deathmatch/resources/mrp_bridge/server/main.lua"
+    ).read_text(encoding="utf-8")
+    bridge_client = (
+        mta / "server/mods/deathmatch/resources/mrp_bridge/client/main.lua"
+    ).read_text(encoding="utf-8")
+    if 'getResourceState(amx) ~= "running"' not in bridge_server:
+        fail("Bridge can start the Pawn gamemode before AMX is ready")
+    if "setPlayerNametagShowing" in bridge_server:
+        fail("Bridge must not override SA-MP nametag behavior")
+    if 'setPlayerHudComponentVisible("money"' in bridge_client:
+        fail("Bridge must not hide the SA-MP money HUD")
     print("MTA project structure is valid")
     return 0
 

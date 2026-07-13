@@ -1,0 +1,189 @@
+name: MTA Windows runtime smoke test
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - "mta/**"
+      - "serverfiles.tar.gz"
+      - "database/**"
+      - ".github/workflows/windows-runtime.yml"
+  pull_request:
+    paths:
+      - "mta/**"
+      - "serverfiles.tar.gz"
+      - "database/**"
+      - ".github/workflows/windows-runtime.yml"
+
+jobs:
+  runtime:
+    runs-on: windows-2022
+    timeout-minutes: 90
+    env:
+      MTA_INSTALLER_URL: https://mirror-cdn.multitheftauto.com/mtasa/main/mtasa-1.6.exe
+      MTA_INSTALLER_SHA256: b58328e72922321de59531acd139ff829cfc29270108e000956b5a1bd7c928b1
+      MYSQL_URL: https://cdn.mysql.com/archives/mysql-8.0/mysql-8.0.36-winx64.zip
+      MYSQL_SHA256: a1bc2ad567eef672be20b591ad25b14f221e60bde3ae3eb235128d91e4166557
+      REDIS_URL: https://github.com/tporadowski/redis/releases/download/v5.0.14.1/Redis-x64-5.0.14.1.zip
+      REDIS_SHA256: 018ea18a35876383cbb5f4cd0258adfc87747cf9d619bce1cf73a2e36f720ccf
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: false
+          lfs: true
+
+      - name: Verify Git LFS runtime payload
+        shell: pwsh
+        run: |
+          $length = (Get-Item ./serverfiles.tar.gz).Length
+          if ($length -lt 700MB) { throw "serverfiles.tar.gz is still an LFS pointer ($length bytes)" }
+
+      - name: Download and verify runtime dependencies
+        shell: pwsh
+        run: |
+          New-Item -ItemType Directory -Force C:\mrp-test\downloads | Out-Null
+          $downloads = @(
+            @{ Url = $env:MTA_INSTALLER_URL; Path = "C:\mrp-test\downloads\mtasa.exe"; Hash = $env:MTA_INSTALLER_SHA256 },
+            @{ Url = $env:MYSQL_URL; Path = "C:\mrp-test\downloads\mysql.zip"; Hash = $env:MYSQL_SHA256 },
+            @{ Url = $env:REDIS_URL; Path = "C:\mrp-test\downloads\redis.zip"; Hash = $env:REDIS_SHA256 }
+          )
+          foreach ($download in $downloads) {
+            Invoke-WebRequest -UseBasicParsing -Uri $download.Url -OutFile $download.Path
+            $actual = (Get-FileHash -Algorithm SHA256 $download.Path).Hash.ToLowerInvariant()
+            if ($actual -ne $download.Hash) { throw "Checksum mismatch for $($download.Path): $actual" }
+          }
+
+      - name: Start MySQL 8 and import exact database
+        shell: pwsh
+        run: |
+          Expand-Archive C:\mrp-test\downloads\mysql.zip C:\mrp-test\mysql
+          $mysqlHome = (Get-ChildItem C:\mrp-test\mysql -Directory | Select-Object -First 1).FullName
+          $mysqlData = "C:\mrp-test\mysql-data"
+          New-Item -ItemType Directory -Force $mysqlData | Out-Null
+          & "$mysqlHome\bin\mysqld.exe" --initialize-insecure --basedir="$mysqlHome" --datadir="$mysqlData"
+          $mysql = Start-Process "$mysqlHome\bin\mysqld.exe" -ArgumentList @(
+            "--standalone", "--console", "--basedir=$mysqlHome", "--datadir=$mysqlData",
+            "--port=3306", "--bind-address=127.0.0.1", "--default-authentication-plugin=mysql_native_password"
+          ) -RedirectStandardOutput C:\mrp-test\mysql.out.log -RedirectStandardError C:\mrp-test\mysql.err.log -PassThru
+          Set-Content C:\mrp-test\mysql.pid $mysql.Id
+          for ($attempt = 0; $attempt -lt 60; $attempt++) {
+            & "$mysqlHome\bin\mysqladmin.exe" -h127.0.0.1 -uroot ping 2>$null
+            if ($LASTEXITCODE -eq 0) { break }
+            Start-Sleep -Seconds 1
+          }
+          if ($LASTEXITCODE -ne 0) { throw "MySQL did not become ready" }
+          & "$mysqlHome\bin\mysql.exe" -h127.0.0.1 -uroot -e "CREATE DATABASE mrucznik; CREATE USER 'samp'@'%' IDENTIFIED WITH mysql_native_password BY 'funia'; GRANT ALL ON mrucznik.* TO 'samp'@'%'; FLUSH PRIVILEGES;"
+          foreach ($file in Get-ChildItem ./database/schema/*.sql | Sort-Object Name) {
+            cmd /d /s /c "`"$mysqlHome\bin\mysql.exe`" -h127.0.0.1 -uroot mrucznik < `"$($file.FullName)`""
+            if ($LASTEXITCODE -ne 0) { throw "Schema import failed: $($file.Name)" }
+          }
+          foreach ($file in Get-ChildItem ./database/data/*.sql | Sort-Object Name) {
+            cmd /d /s /c "`"$mysqlHome\bin\mysql.exe`" -h127.0.0.1 -uroot mrucznik < `"$($file.FullName)`""
+            if ($LASTEXITCODE -ne 0) { throw "Data import failed: $($file.Name)" }
+          }
+          cmd /d /s /c "`"$mysqlHome\bin\mysql.exe`" -h127.0.0.1 -uroot < `"$((Resolve-Path ./database/routines.sql).Path)`""
+          if ($LASTEXITCODE -ne 0) { throw "Routine import failed" }
+
+      - name: Start Redis and seed Mrucznik readiness key
+        shell: pwsh
+        run: |
+          Expand-Archive C:\mrp-test\downloads\redis.zip C:\mrp-test\redis
+          $redisServer = (Get-ChildItem C:\mrp-test\redis -Filter redis-server.exe -Recurse | Select-Object -First 1).FullName
+          $redisCli = (Get-ChildItem C:\mrp-test\redis -Filter redis-cli.exe -Recurse | Select-Object -First 1).FullName
+          $redis = Start-Process $redisServer -ArgumentList @("--bind", "127.0.0.1", "--port", "6379") -RedirectStandardOutput C:\mrp-test\redis.out.log -RedirectStandardError C:\mrp-test\redis.err.log -PassThru
+          Set-Content C:\mrp-test\redis.pid $redis.Id
+          for ($attempt = 0; $attempt -lt 30; $attempt++) {
+            & $redisCli -h 127.0.0.1 ping 2>$null
+            if ($LASTEXITCODE -eq 0) { break }
+            Start-Sleep -Seconds 1
+          }
+          if ($LASTEXITCODE -ne 0) { throw "Redis did not become ready" }
+          & $redisCli -h 127.0.0.1 SET server:mrucznik-redis 1
+          if ($LASTEXITCODE -ne 0) { throw "Redis seed failed" }
+
+      - name: Build exact ColAndreas fork
+        shell: pwsh
+        run: >-
+          ./mta/build-colandreas.ps1
+          -VcpkgRoot $env:VCPKG_INSTALLATION_ROOT
+          -OutputDirectory C:\mrp-test\colandreas
+
+      - name: Install MTA and complete Mrucznik runtime
+        shell: pwsh
+        run: |
+          $installer = Start-Process C:\mrp-test\downloads\mtasa.exe -ArgumentList @("/S", "/D=C:\mrp-test\mta") -Wait -PassThru
+          if ($installer.ExitCode -ne 0) { throw "MTA installer exited with $($installer.ExitCode)" }
+          $serverExe = Get-ChildItem C:\mrp-test\mta -Filter "MTA Server.exe" -Recurse | Select-Object -First 1
+          if (-not $serverExe) { throw "MTA Server.exe was not installed" }
+          $serverRoot = $serverExe.Directory.FullName
+          Set-Content C:\mrp-test\server-root.txt $serverRoot
+          ./mta/setup.ps1 -MtaServerRoot $serverRoot -ColAndreasDll C:\mrp-test\colandreas\ColAndreas.dll `
+            -MysqlHost 127.0.0.1 -MysqlUser samp -MysqlDatabase mrucznik -MysqlPassword funia `
+            -RedisHost 127.0.0.1 -RedisPort 6379
+
+      - name: Grant AMX ACL and run the real server
+        shell: pwsh
+        run: |
+          $serverRoot = Get-Content C:\mrp-test\server-root.txt -Raw
+          $serverRoot = $serverRoot.Trim()
+          $aclPath = Join-Path $serverRoot "mods\deathmatch\acl.xml"
+          [xml]$acl = Get-Content $aclPath
+          $admin = $acl.acl.group | Where-Object { $_.name -eq "Admin" }
+          if (-not $admin) { throw "Admin ACL group is missing" }
+          if (-not ($admin.object | Where-Object { $_.name -eq "resource.amx" })) {
+            $object = $acl.CreateElement("object")
+            $object.SetAttribute("name", "resource.amx")
+            [void]$admin.AppendChild($object)
+          }
+          $acl.Save($aclPath)
+
+          $serverExe = Join-Path $serverRoot "MTA Server.exe"
+          $startInfo = [System.Diagnostics.ProcessStartInfo]::new()
+          $startInfo.FileName = $serverExe
+          $startInfo.WorkingDirectory = $serverRoot
+          $startInfo.UseShellExecute = $false
+          $startInfo.RedirectStandardInput = $true
+          $startInfo.RedirectStandardOutput = $true
+          $startInfo.RedirectStandardError = $true
+          $process = [System.Diagnostics.Process]::new()
+          $process.StartInfo = $startInfo
+          if (-not $process.Start()) { throw "Could not launch MTA Server.exe" }
+          $stdout = $process.StandardOutput.ReadToEndAsync()
+          $stderr = $process.StandardError.ReadToEndAsync()
+          Start-Sleep -Seconds 45
+          if ($process.HasExited) {
+            throw "MTA server exited during the 45-second startup window with code $($process.ExitCode)"
+          }
+          $process.StandardInput.WriteLine("shutdown")
+          if (-not $process.WaitForExit(15000)) { $process.Kill(); $process.WaitForExit() }
+          $output = $stdout.Result + "`n" + $stderr.Result
+          Set-Content C:\mrp-test\mta-console.log $output
+
+          $logs = $output
+          Get-ChildItem (Join-Path $serverRoot "mods\deathmatch\logs") -File -ErrorAction SilentlyContinue | ForEach-Object {
+            $logs += "`n===== $($_.Name) =====`n" + (Get-Content $_.FullName -Raw)
+          }
+          Set-Content C:\mrp-test\mta-combined.log $logs
+          if ($logs -notmatch "Loading 'Mrucznik-RP\.amx'") { throw "Mrucznik-RP.amx was not loaded" }
+          if ($logs -match "Error loading 'Mrucznik-RP\.amx'|amx module .* isn't loaded") { throw "AMX runtime failed to load the gamemode" }
+          if ($logs -match "Unable to load filterscript '(animy|realtime|sobeitblock|SAN_extPSq)'") { throw "An original filterscript failed to load" }
+
+      - name: Upload runtime diagnostics
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: mta-runtime-logs
+          path: |
+            C:\mrp-test\*.log
+            C:\mrp-test\server-root.txt
+          if-no-files-found: warn
+
+      - name: Stop database processes
+        if: always()
+        shell: pwsh
+        run: |
+          foreach ($pidFile in @("C:\mrp-test\mysql.pid", "C:\mrp-test\redis.pid")) {
+            if (Test-Path $pidFile) {
+              Stop-Process -Id ([int](Get-Content $pidFile -Raw)) -Force -ErrorAction SilentlyContinue
+            }
+          }
