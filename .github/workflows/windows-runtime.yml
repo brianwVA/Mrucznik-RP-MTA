@@ -81,16 +81,20 @@ jobs:
           }
           if ($LASTEXITCODE -ne 0) { throw "MySQL did not become ready" }
           & "$mysqlHome\bin\mysql.exe" -h127.0.0.1 -uroot -e "CREATE DATABASE mrucznik; CREATE USER 'samp'@'%' IDENTIFIED WITH mysql_native_password BY 'funia'; GRANT ALL ON mrucznik.* TO 'samp'@'%'; FLUSH PRIVILEGES;"
-          foreach ($file in Get-ChildItem ./database/schema/*.sql | Sort-Object Name) {
+          foreach ($file in Get-ChildItem ./database/schema/*.sql | Where-Object Name -NotLike 'view_*' | Sort-Object Name) {
             cmd /d /s /c "`"$mysqlHome\bin\mysql.exe`" -h127.0.0.1 -uroot mrucznik < `"$($file.FullName)`""
-            if ($LASTEXITCODE -ne 0) { throw "Schema import failed: $($file.Name)" }
+            if ($LASTEXITCODE -ne 0) { throw "Table schema import failed: $($file.Name)" }
+          }
+          cmd /d /s /c "`"$mysqlHome\bin\mysql.exe`" -h127.0.0.1 -uroot < `"$((Resolve-Path ./database/routines.sql).Path)`""
+          if ($LASTEXITCODE -ne 0) { throw "Routine import failed" }
+          foreach ($file in Get-ChildItem ./database/schema/view_*.sql | Sort-Object Name) {
+            cmd /d /s /c "`"$mysqlHome\bin\mysql.exe`" -h127.0.0.1 -uroot mrucznik < `"$($file.FullName)`""
+            if ($LASTEXITCODE -ne 0) { throw "View schema import failed: $($file.Name)" }
           }
           foreach ($file in Get-ChildItem ./database/data/*.sql | Sort-Object Name) {
             cmd /d /s /c "`"$mysqlHome\bin\mysql.exe`" -h127.0.0.1 -uroot mrucznik < `"$($file.FullName)`""
             if ($LASTEXITCODE -ne 0) { throw "Data import failed: $($file.Name)" }
           }
-          cmd /d /s /c "`"$mysqlHome\bin\mysql.exe`" -h127.0.0.1 -uroot < `"$((Resolve-Path ./database/routines.sql).Path)`""
-          if ($LASTEXITCODE -ne 0) { throw "Routine import failed" }
 
       - name: Start Redis and seed Mrucznik readiness key
         shell: pwsh

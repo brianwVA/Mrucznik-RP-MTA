@@ -40,17 +40,21 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get install --yes mysql-client
-      - name: Import schema, seed data and routines
+      - name: Import tables, routines, views and seed data
         env:
           MYSQL_PWD: mrucznik-root
         run: |
           for file in database/schema/*.sql; do
+            case "$(basename "$file")" in view_*) continue ;; esac
+            mysql --protocol=TCP -h127.0.0.1 -uroot mrucznik < "$file"
+          done
+          mysql --protocol=TCP -h127.0.0.1 -uroot < database/routines.sql
+          for file in database/schema/view_*.sql; do
             mysql --protocol=TCP -h127.0.0.1 -uroot mrucznik < "$file"
           done
           for file in database/data/*.sql; do
             mysql --protocol=TCP -h127.0.0.1 -uroot mrucznik < "$file"
           done
-          mysql --protocol=TCP -h127.0.0.1 -uroot < database/routines.sql
       - name: Verify imported contract
         env:
           MYSQL_PWD: mrucznik-root
