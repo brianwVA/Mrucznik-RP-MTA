@@ -24,6 +24,7 @@ if ($LASTEXITCODE -ne 0) { throw "Nie udało się zbudować Bullet x86." }
 
 cmake -S $Source -B $Build -A Win32 `
     "-DCMAKE_TOOLCHAIN_FILE=$Toolchain" `
+    -DCMAKE_POLICY_VERSION_MINIMUM=3.5 `
     -DVCPKG_TARGET_TRIPLET=x86-windows-static `
     -DBuildWizard=OFF
 if ($LASTEXITCODE -ne 0) { throw "Konfiguracja ColAndreas nie powiodła się." }
