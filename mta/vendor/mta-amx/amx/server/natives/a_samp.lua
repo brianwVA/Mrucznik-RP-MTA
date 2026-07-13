@@ -1216,8 +1216,26 @@ end
 
 function SendClientCheck(amx, player, opcode, addr, offset, bytes)
 	-- SA-MP memory addresses are meaningless in the MTA client.  MTA's own
-	-- anti-cheat performs the equivalent integrity checks, while this call is
-	-- acknowledged so legacy filterscripts keep their original control flow.
+	-- anti-cheat performs the equivalent integrity checks.  The active
+	-- sobeitblock filterscript still requires both callbacks, however; without
+	-- them it marks every connected player as a cheater after ten updates.
+	-- Report the clean values expected by that exact, pinned filterscript so its
+	-- original state machine completes while MTA remains the integrity authority.
+	local response
+	if opcode == 5 and addr == 0x5E8606 then
+		response = 204
+	elseif opcode == 69 and addr == 0x3A9ED then
+		response = 136
+	end
+
+	if response and player and isElement(player) then
+		setTimer(function()
+			if isElement(player) then
+				procCallOnAll('OnClientCheckResponse', getElemID(player), opcode, addr, response)
+			end
+		end, 50, 1)
+	end
+
 	return player and true or false
 end
 

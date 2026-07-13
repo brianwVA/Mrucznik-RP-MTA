@@ -12,6 +12,8 @@ import argparse
 import csv
 import json
 import re
+import struct
+import tarfile
 from pathlib import Path
 
 
@@ -19,6 +21,14 @@ COMMAND_RE = re.compile(r"(?:YCMD|CMD|COMMAND):([A-Za-z0-9_]+)\s*\(")
 ALIAS_RE = re.compile(r'Command_AddAlt\s*\([^,]+,\s*"([^"]+)"\s*\)')
 GLOBAL_RE = re.compile(r"Group_SetGlobalCommand\s*\([^,]+,\s*true\s*\)")
 GROUP_RE = re.compile(r"Group_SetCommand\s*\(\s*([A-Za-z0-9_]+)")
+AMX_HEADER = struct.Struct("<I H B B h h 12i")
+ACTIVE_AMX_MEMBERS = (
+    "serverfiles/gamemodes/Mrucznik-RP.amx",
+    "serverfiles/filterscripts/animy.amx",
+    "serverfiles/filterscripts/realtime.amx",
+    "serverfiles/filterscripts/sobeitblock.amx",
+    "serverfiles/filterscripts/SAN_extPSq.amx",
+)
 
 
 def decode_source(path: Path) -> str:
@@ -122,15 +132,83 @@ def validate(commands: dict[str, dict]) -> None:
                 command.setdefault("alias_conflicts", []).append(owner)
 
 
-def write_outputs(commands: dict[str, dict], output_dir: Path) -> None:
+def amx_publics(amx: bytes) -> set[str]:
+    if len(amx) < AMX_HEADER.size:
+        raise ValueError("AMX header is truncated")
+    header = AMX_HEADER.unpack_from(amx)
+    size, magic, defsize = header[0], header[1], header[5]
+    publics, natives = header[11], header[12]
+    if magic != 0xF1E0 or size > len(amx) or defsize < 8:
+        raise ValueError("Unsupported or corrupt AMX header")
+    names = set()
+    for offset in range(publics, natives, defsize):
+        _, name_offset = struct.unpack_from("<II", amx, offset)
+        end = amx.find(b"\0", name_offset)
+        if not (0 <= name_offset < end):
+            raise ValueError("Invalid AMX public name offset")
+        names.add(amx[name_offset:end].decode("ascii"))
+    return names
+
+
+def compiled_commands(repo: Path, output_dir: Path) -> set[str] | None:
+    archive = repo / "serverfiles.tar.gz"
+    if archive.exists() and archive.stat().st_size > 1024:
+        commands: set[str] = set()
+        with tarfile.open(archive, "r:gz") as tar:
+            for member_name in ACTIVE_AMX_MEMBERS:
+                source = tar.extractfile(member_name)
+                if not source:
+                    raise FileNotFoundError(f"{member_name} is missing from serverfiles.tar.gz")
+                commands.update(
+                    name[4:].lower()
+                    for name in amx_publics(source.read())
+                    if name.startswith("@yC_")
+                )
+        return commands
+
+    previous = output_dir / "commands.json"
+    if previous.exists():
+        document = json.loads(previous.read_text(encoding="utf-8"))
+        return {
+            command["name"]
+            for command in document.get("commands", [])
+            if command.get("compiled_runtime") is True
+        }
+    return None
+
+
+def write_outputs(
+    commands: dict[str, dict], output_dir: Path, runtime_commands: set[str] | None
+) -> None:
     output_dir.mkdir(parents=True, exist_ok=True)
     ordered = [commands[name] for name in sorted(commands)]
+    source_names = set(commands)
+    if runtime_commands is not None:
+        unknown_runtime = runtime_commands - source_names
+        if unknown_runtime:
+            raise ValueError(f"Compiled AMX commands missing from source: {sorted(unknown_runtime)}")
+        for command in ordered:
+            command["compiled_runtime"] = command["name"] in runtime_commands
+            if not command["compiled_runtime"]:
+                command["runtime"] = "source-only-inactive"
+                command["native_mta_status"] = "not-loaded-by-v2.8.8"
     definition_count = sum(max(1, len(command.get("variants", []))) for command in ordered)
+    runtime_count = len(runtime_commands) if runtime_commands is not None else None
+    runtime_alias_count = (
+        sum(len(command["aliases"]) for command in ordered if command["compiled_runtime"])
+        if runtime_commands is not None
+        else None
+    )
     document = {
         "schema_version": 1,
         "source": "MrucznikRolePlay/Mrucznik-RP-gamemode@master",
         "command_count": len(ordered),
         "definition_count": definition_count,
+        "runtime_command_count": runtime_count,
+        "runtime_alias_count": runtime_alias_count,
+        "inactive_source_command_count": (
+            len(ordered) - runtime_count if runtime_count is not None else None
+        ),
         "commands": ordered,
     }
     (output_dir / "commands.json").write_text(
@@ -138,7 +216,7 @@ def write_outputs(commands: dict[str, dict], output_dir: Path) -> None:
     )
     with (output_dir / "commands.csv").open("w", encoding="utf-8", newline="") as handle:
         writer = csv.writer(handle)
-        writer.writerow(("name", "aliases", "permissions", "module", "source", "native_mta_status"))
+        writer.writerow(("name", "aliases", "permissions", "module", "source", "compiled_runtime", "native_mta_status"))
         for command in ordered:
             writer.writerow(
                 (
@@ -147,6 +225,7 @@ def write_outputs(commands: dict[str, dict], output_dir: Path) -> None:
                     " ".join(command["permissions"]),
                     command["module"],
                     command["implementation_source"] or command["wrapper_source"],
+                    command.get("compiled_runtime"),
                     command["native_mta_status"],
                 )
             )
@@ -163,8 +242,15 @@ def main() -> None:
     commands = metadata_commands(repo)
     code_commands(repo, commands)
     validate(commands)
-    write_outputs(commands, args.output.resolve())
-    print(f"Generated {len(commands)} commands in {args.output.resolve()}")
+    output = args.output.resolve()
+    runtime_commands = compiled_commands(repo, output)
+    write_outputs(commands, output, runtime_commands)
+    runtime_message = (
+        f", {len(runtime_commands)} active in compiled AMX"
+        if runtime_commands is not None
+        else ""
+    )
+    print(f"Generated {len(commands)} source commands{runtime_message} in {output}")
 
 
 if __name__ == "__main__":

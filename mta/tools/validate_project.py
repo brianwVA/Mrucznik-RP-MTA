@@ -22,6 +22,17 @@ def main() -> int:
     plugins = json.loads((mta / "plugins.lock.json").read_text(encoding="utf-8"))
     if commands["command_count"] != 787 or commands["definition_count"] != 788:
         fail("Unexpected command inventory size")
+    if commands.get("runtime_command_count") != 745:
+        fail("Unexpected compiled AMX command inventory size")
+    if commands.get("inactive_source_command_count") != 42:
+        fail("Unexpected inactive source command inventory size")
+    runtime_commands = {
+        command["name"]
+        for command in commands["commands"]
+        if command.get("compiled_runtime") is True
+    }
+    if len(runtime_commands) != commands["runtime_command_count"]:
+        fail("Compiled command flags do not match the runtime inventory")
     if models["model_count"] != 81:
         fail("Unexpected 0.3.DL ped model inventory size")
     if natives["native_entry_count"] != 579 or natives["unique_native_count"] != 489:
@@ -116,6 +127,30 @@ def main() -> int:
                     f"Imported native remains a placeholder: "
                     f"{match.group(1)} ({lua_path})"
                 )
+
+    # The loaded sobeitblock AMX treats a missing SendClientCheck callback as a
+    # cheat result. These exact clean responses are therefore a runtime
+    # contract, not an optional stub, even though SA-MP process addresses have
+    # no direct meaning inside the MTA client.
+    samp_natives = (
+        mta / "vendor/mta-amx/amx/server/natives/a_samp.lua"
+    ).read_text(encoding="utf-8")
+    client_check = re.search(
+        r"function SendClientCheck\([^)]*\)(.*?)(?=\nfunction\s+|\Z)",
+        samp_natives,
+        re.DOTALL,
+    )
+    required_client_check_tokens = {
+        "OnClientCheckResponse",
+        "0x5E8606",
+        "204",
+        "0x3A9ED",
+        "136",
+    }
+    if not client_check or not required_client_check_tokens.issubset(
+        set(re.findall(r"OnClientCheckResponse|0x[0-9A-Fa-f]+|\b\d+\b", client_check.group(1)))
+    ):
+        fail("SendClientCheck does not preserve the active sobeitblock callback contract")
 
     if '"amx-mrucznik"' not in setup:
         fail("Installer does not autostart the Mrucznik gamemode")

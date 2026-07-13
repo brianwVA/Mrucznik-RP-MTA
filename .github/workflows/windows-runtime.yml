@@ -38,6 +38,14 @@ jobs:
           $length = (Get-Item ./serverfiles.tar.gz).Length
           if ($length -lt 700MB) { throw "serverfiles.tar.gz is still an LFS pointer ($length bytes)" }
 
+      - name: Verify compiled command and native contracts
+        shell: pwsh
+        run: |
+          python mta/tools/check_command_catalog.py
+          python mta/tools/build_native_catalog.py
+          python mta/tools/validate_project.py
+          git diff --exit-code -- mta/compatibility
+
       - name: Download and verify runtime dependencies
         shell: pwsh
         run: |
