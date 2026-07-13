@@ -628,8 +628,9 @@ function SetPlayerObjectMaterial(objID, index, model, txdLib, txdName, color)
 	local materials = getElementData(obj, 'amx:materials') or {}
 	materials[index] = { model = model, txdLib = txdLib, txdName = txdName, color = color }
 	setElementData(obj, 'amx:materials', materials, false)
-	-- Keep the material description on the element.  mrp_models can resolve it
-	-- to a packaged texture when a matching asset is present in the deployment.
+	-- Keep the material description on the element. mrp_models resolves stock
+	-- GTA textures through engineGetModelTextures and packaged custom textures
+	-- from the deployment.
 	local models = getResourceFromName('mrp_models')
 	if models and getResourceState(models) == 'running' then
 		call(models, 'applyObjectMaterial', obj, index, model, txdLib, txdName, color)

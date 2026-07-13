@@ -11,31 +11,65 @@ local function materialAssetPath(txdLib, txdName)
 	return false
 end
 
+local function modelTexture(model, txdName)
+	model = tonumber(model)
+	if not model or model < 1 then return false end
+	local textureName = tostring(txdName)
+	local textures = engineGetModelTextures(model, textureName)
+	if not textures then return false end
+	if textures[textureName] then return textures[textureName] end
+	local expected = textureName:lower()
+	for name, texture in pairs(textures) do
+		if tostring(name):lower() == expected then return texture end
+	end
+	return false
+end
+
+local function materialColor(color)
+	color = tonumber(color) or 0
+	if color == 0 then return 1, 1, 1, 1 end
+	if color < 0 then color = color + 0x100000000 end
+	local alpha = math.floor(color / 0x1000000) % 0x100
+	local red = math.floor(color / 0x10000) % 0x100
+	local green = math.floor(color / 0x100) % 0x100
+	local blue = color % 0x100
+	return red / 255, green / 255, blue / 255, alpha / 255
+end
+
 function applyObjectMaterial(object, index, model, txdLib, txdName, color)
 	if not isElement(object) then return false end
 	index = tonumber(index) or 0
 	local textures = engineGetModelTextureNames(getElementModel(object)) or {}
 	local sourceTexture = textures[index + 1]
-	local asset = sourceTexture and materialAssetPath(txdLib, txdName)
-	if not asset then return false end
+	if not sourceTexture then return false end
+	local asset = materialAssetPath(txdLib, txdName)
+	local texture = asset and dxCreateTexture(asset, "argb", true, "clamp")
+	local ownsTexture = texture and true or false
+	if not texture then texture = modelTexture(model, txdName) end
+	if not texture then return false end
 
 	objectMaterialShaders[object] = objectMaterialShaders[object] or {}
 	local previous = objectMaterialShaders[object][index]
 	if previous then
 		engineRemoveShaderFromWorldTexture(previous.shader, previous.sourceTexture, object)
 		if isElement(previous.shader) then destroyElement(previous.shader) end
-		if isElement(previous.texture) then destroyElement(previous.texture) end
+		if previous.ownsTexture and isElement(previous.texture) then destroyElement(previous.texture) end
 	end
 	local shader = dxCreateShader("client/material_replace.fx", 0, 0, false, "object")
-	local texture = dxCreateTexture(asset, "argb", true, "clamp")
 	if not shader or not texture then
 		if isElement(shader) then destroyElement(shader) end
-		if isElement(texture) then destroyElement(texture) end
+		if ownsTexture and isElement(texture) then destroyElement(texture) end
 		return false
 	end
 	dxSetShaderValue(shader, "replacementTexture", texture)
+	dxSetShaderValue(shader, "materialColor", materialColor(color))
 	engineApplyShaderToWorldTexture(shader, sourceTexture, object)
-	objectMaterialShaders[object][index] = { shader = shader, texture = texture, sourceTexture = sourceTexture }
+	objectMaterialShaders[object][index] = {
+		shader = shader,
+		texture = texture,
+		ownsTexture = ownsTexture,
+		sourceTexture = sourceTexture,
+	}
 	return true
 end
 
@@ -44,7 +78,7 @@ addEventHandler("onClientElementDestroy", root, function()
 	if not materials then return end
 	for _, material in pairs(materials) do
 		if isElement(material.shader) then destroyElement(material.shader) end
-		if isElement(material.texture) then destroyElement(material.texture) end
+		if material.ownsTexture and isElement(material.texture) then destroyElement(material.texture) end
 	end
 	objectMaterialShaders[source] = nil
 end)

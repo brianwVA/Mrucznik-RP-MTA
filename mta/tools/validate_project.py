@@ -197,6 +197,19 @@ def main() -> int:
         or "g_CommandMapping" in raw_input.group(1)
     ):
         fail("Raw input does not dispatch exact command names to the original Pawn handler")
+
+    models_client = (
+        mta / "server/mods/deathmatch/resources/mrp_models/client/main.lua"
+    ).read_text(encoding="utf-8")
+    material_shader = (
+        mta / "server/mods/deathmatch/resources/mrp_models/client/material_replace.fx"
+    ).read_text(encoding="utf-8")
+    if "engineGetModelTextures(model" not in models_client:
+        fail("Player-object materials cannot resolve stock GTA model textures")
+    if 'dxSetShaderValue(shader, "materialColor"' not in models_client:
+        fail("Player-object material ARGB colors are not forwarded to the shader")
+    if "materialColor" not in material_shader or "replaceMaterial" not in material_shader:
+        fail("Player-object material shader does not apply its SA-MP color")
     print("MTA project structure is valid")
     return 0
 
