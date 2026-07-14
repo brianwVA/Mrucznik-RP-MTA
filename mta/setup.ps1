@@ -136,6 +136,7 @@ $FilterScriptSetting.value = $FilterScripts -join " "
 $AmxMeta.Save((Join-Path $AmxResource "meta.xml"))
 
 tar -xzf $ServerFilesArchive -C $Work `
+    --exclude=serverfiles/scriptfiles/DANGEROUS_SERVER_ROOT `
     serverfiles/gamemodes/Mrucznik-RP.amx `
     serverfiles/filterscripts/animy.amx `
     serverfiles/filterscripts/realtime.amx `
