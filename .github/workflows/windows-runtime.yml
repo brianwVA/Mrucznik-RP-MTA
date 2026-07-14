@@ -69,10 +69,16 @@ jobs:
           $mysqlData = "C:\mrp-test\mysql-data"
           New-Item -ItemType Directory -Force $mysqlData | Out-Null
           & "$mysqlHome\bin\mysqld.exe" --initialize-insecure --basedir="$mysqlHome" --datadir="$mysqlData"
+          # The hosted runner kills child processes carrying its tracking token
+          # after a step finishes.  MySQL must remain alive while the native
+          # modules are built in the following steps and while MTA boots.
+          $runnerTrackingId = $env:RUNNER_TRACKING_ID
+          $env:RUNNER_TRACKING_ID = ""
           $mysql = Start-Process "$mysqlHome\bin\mysqld.exe" -ArgumentList @(
             "--standalone", "--console", "--basedir=$mysqlHome", "--datadir=$mysqlData",
             "--port=3306", "--bind-address=127.0.0.1", "--default-authentication-plugin=mysql_native_password"
           ) -RedirectStandardOutput C:\mrp-test\mysql.out.log -RedirectStandardError C:\mrp-test\mysql.err.log -PassThru
+          $env:RUNNER_TRACKING_ID = $runnerTrackingId
           Set-Content C:\mrp-test\mysql.pid $mysql.Id
           $mysqlReady = $false
           for ($attempt = 0; $attempt -lt 60; $attempt++) {
@@ -113,7 +119,10 @@ jobs:
           Expand-Archive C:\mrp-test\downloads\redis.zip C:\mrp-test\redis
           $redisServer = (Get-ChildItem C:\mrp-test\redis -Filter redis-server.exe -Recurse | Select-Object -First 1).FullName
           $redisCli = (Get-ChildItem C:\mrp-test\redis -Filter redis-cli.exe -Recurse | Select-Object -First 1).FullName
+          $runnerTrackingId = $env:RUNNER_TRACKING_ID
+          $env:RUNNER_TRACKING_ID = ""
           $redis = Start-Process $redisServer -ArgumentList @("--bind", "127.0.0.1", "--port", "6379") -RedirectStandardOutput C:\mrp-test\redis.out.log -RedirectStandardError C:\mrp-test\redis.err.log -PassThru
+          $env:RUNNER_TRACKING_ID = $runnerTrackingId
           Set-Content C:\mrp-test\redis.pid $redis.Id
           for ($attempt = 0; $attempt -lt 30; $attempt++) {
             & $redisCli -h 127.0.0.1 ping 2>$null
@@ -158,6 +167,38 @@ jobs:
       - name: Grant AMX ACL and run the real server
         shell: pwsh
         run: |
+          # Verify the long-lived database again immediately before MTA.  This
+          # also makes the smoke test resilient to runner-side process cleanup
+          # between the build and runtime steps.
+          $mysqlHome = (Get-ChildItem C:\mrp-test\mysql -Directory | Select-Object -First 1).FullName
+          & "$mysqlHome\bin\mysqladmin.exe" "--protocol=TCP" "--host=127.0.0.1" "--port=3306" "--user=root" "--connect-timeout=2" ping
+          if ($LASTEXITCODE -ne 0) {
+            $runnerTrackingId = $env:RUNNER_TRACKING_ID
+            $env:RUNNER_TRACKING_ID = ""
+            $mysql = Start-Process "$mysqlHome\bin\mysqld.exe" -ArgumentList @(
+              "--standalone", "--console", "--basedir=$mysqlHome", "--datadir=C:\mrp-test\mysql-data",
+              "--port=3306", "--bind-address=127.0.0.1", "--default-authentication-plugin=mysql_native_password"
+            ) -RedirectStandardOutput C:\mrp-test\mysql-runtime.out.log -RedirectStandardError C:\mrp-test\mysql-runtime.err.log -PassThru
+            $env:RUNNER_TRACKING_ID = $runnerTrackingId
+            Set-Content C:\mrp-test\mysql.pid $mysql.Id
+            $mysqlReady = $false
+            for ($attempt = 0; $attempt -lt 60; $attempt++) {
+              & "$mysqlHome\bin\mysqladmin.exe" "--protocol=TCP" "--host=127.0.0.1" "--port=3306" "--user=root" "--connect-timeout=2" ping
+              if ($LASTEXITCODE -eq 0) {
+                $mysqlReady = $true
+                break
+              }
+              if ($mysql.HasExited) {
+                Get-Content C:\mrp-test\mysql-runtime.err.log
+                throw "MySQL exited before the MTA runtime test"
+              }
+              Start-Sleep -Seconds 1
+            }
+            if (-not $mysqlReady) { throw "MySQL was not ready for the MTA runtime test" }
+          }
+          & "$mysqlHome\bin\mysql.exe" "--protocol=TCP" "--host=127.0.0.1" "--port=3306" "--user=samp" "--password=funia" "--database=mrucznik" -Nse "SELECT COUNT(*) FROM mru_config"
+          if ($LASTEXITCODE -ne 0) { throw "The exact samp MySQL credentials could not query the imported database" }
+
           $serverRoot = Get-Content C:\mrp-test\server-root.txt -Raw
           $serverRoot = $serverRoot.Trim()
           $aclPath = Join-Path $serverRoot "mods\deathmatch\acl.xml"
