@@ -22,4 +22,5 @@ if (Test-Path $PidPath) {
 
 if (-not $KeepMysql) { Stop-MrpMysql -State $State }
 Write-Host "Mrucznik RP MTA zatrzymany."
-
+$global:LASTEXITCODE = 0
+return

@@ -66,4 +66,5 @@ if ($Combined -match "FATAL ERROR MYSQL|cannot connect to redis|connect\(\) fail
 
 Write-Host "TEST OK: pełny Mrucznik RP uruchomił się na MTA."
 Write-Host "Log testu: $ConsoleLog"
-
+$global:LASTEXITCODE = 0
+return

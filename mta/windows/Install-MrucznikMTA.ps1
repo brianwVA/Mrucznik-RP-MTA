@@ -162,7 +162,7 @@ Start-MrpMysql -State $LoadedState
 $ImportMarker = Join-Path $InstallRoot ".database-imported"
 if (-not (Test-Path $ImportMarker)) {
     $MysqlExe = Join-Path $MysqlHome "bin\mysql.exe"
-    & $MysqlExe --protocol=TCP -h127.0.0.1 -P$MysqlPort -uroot -e `
+    & $MysqlExe --protocol=TCP -h127.0.0.1 "--port=$MysqlPort" -uroot -e `
         "DROP DATABASE IF EXISTS mrucznik; DROP USER IF EXISTS 'samp'@'%'; CREATE DATABASE mrucznik; CREATE USER 'samp'@'%' IDENTIFIED WITH mysql_native_password BY 'funia'; GRANT ALL ON mrucznik.* TO 'samp'@'%'; FLUSH PRIVILEGES;"
     if ($LASTEXITCODE -ne 0) { throw "Nie udało się utworzyć lokalnej bazy i użytkownika." }
     foreach ($File in Get-ChildItem (Join-Path $PayloadRoot "database\schema\*.sql") |
@@ -204,3 +204,5 @@ if (-not $SkipRuntimeTest) {
 }
 Write-Host "Start: $InstallRoot\Start-MrucznikMTA.ps1"
 Write-Host "Połączenie z klienta MTA: 127.0.0.1:22003"
+$global:LASTEXITCODE = 0
+return
