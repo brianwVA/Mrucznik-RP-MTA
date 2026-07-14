@@ -31,6 +31,11 @@ $ObjectPreviewPage = "https://community.multitheftauto.com/index.php?p=resources
 $ObjectPreviewUrl = "https://community.multitheftauto.com/modules/resources/doDownload.php?file=object_preview_0.7.0.zip&name=object_preview.zip"
 $Vc2010RedistUrl = "https://download.microsoft.com/download/1/6/5/165255E7-1014-4D0A-B094-B6A430A6BFFC/vcredist_x86.exe"
 $Vc2010RedistSha256 = "99dce3c841cc6028560830f7866c9ce2928c98cf3256892ef8e6cf755147b0d8"
+$SampObjectAssets = @(
+    @{ Name = "wall025.dff"; Sha256 = "3f41e84551b6d7ed04f66cbe5fcaad2e8cb1734ace8380a4b8a56200c3e8e87c" },
+    @{ Name = "all_walls.txd"; Sha256 = "3c37105bc9bd3612ad6fcf5e79e35312ae7c401b6a95b74cae43cf236f363241" },
+    @{ Name = "19377.col"; Sha256 = "beb1aca6de4ac61601ff016f5fc79954f0e0a1335010e7dde5989bd53316e67c" }
+)
 
 function Invoke-BoundedDownload {
     param(
@@ -178,10 +183,19 @@ New-Item -ItemType Directory -Force $BaselineResource | Out-Null
 Copy-Item (Join-Path $Work "serverfiles\gamemodes\Mrucznik-RP.amx") $BaselineResource -Force
 Copy-Item (Join-Path $PSScriptRoot "server\mods\deathmatch\resources\amx-mrucznik\meta.xml") $BaselineResource -Force
 
-foreach ($FilterScript in $FilterScripts) {
+$PackagedFilterScripts = [ordered]@{
+    "animy" = "serverfiles\filterscripts\animy.amx"
+    "realtime" = "serverfiles\filterscripts\realtime.amx"
+    "sobeitblock" = "serverfiles\filterscripts\sobeitblock.amx"
+    "SAN_extPSq" = "serverfiles\filterscripts\SAN_extPSq.amx"
+    "fs-count-A" = "serverfiles\scriptfiles\fs-count-A.amx"
+    "callbackfix" = "serverfiles\scriptfiles\callbackfix.amx"
+}
+foreach ($FilterEntry in $PackagedFilterScripts.GetEnumerator()) {
+    $FilterScript = $FilterEntry.Key
     $FilterResource = Join-Path $ResourcesRoot "amx-fs-$FilterScript"
     New-Item -ItemType Directory -Force $FilterResource | Out-Null
-    Copy-Item (Join-Path $Work "serverfiles\filterscripts\$FilterScript.amx") $FilterResource -Force
+    Copy-Item (Join-Path $Work $FilterEntry.Value) $FilterResource -Force
     $FilterMeta = New-Object System.Xml.XmlDocument
     $MetaNode = $FilterMeta.CreateElement("meta")
     [void]$FilterMeta.AppendChild($MetaNode)
@@ -196,6 +210,14 @@ foreach ($FilterScript in $FilterScripts) {
 }
 
 Copy-Item -Path (Join-Path $Work "serverfiles\scriptfiles\*") -Destination (Join-Path $AmxResource "scriptfiles") -Recurse -Force
+$ColAndreasDatabase = Join-Path $Work "serverfiles\scriptfiles\colandreas\ColAndreas.cadb"
+$InstalledColAndreasDatabase = Join-Path $MtaServerRoot "scriptfiles\colandreas\ColAndreas.cadb"
+New-Item -ItemType Directory -Force (Split-Path -Parent $InstalledColAndreasDatabase) | Out-Null
+Copy-Item $ColAndreasDatabase $InstalledColAndreasDatabase -Force
+if ((Get-FileHash -Algorithm SHA256 $InstalledColAndreasDatabase).Hash -ne
+    (Get-FileHash -Algorithm SHA256 $ColAndreasDatabase).Hash) {
+    throw "Instalacja ColAndreas.cadb nie zachowała oczekiwanych bajtów."
+}
 $MysqlConfig = Join-Path $AmxResource "scriptfiles\MySQL\connect.ini"
 @(
     "Host=$MysqlHost"
@@ -222,6 +244,16 @@ New-Item -ItemType Directory -Force $ModelAssets | Out-Null
 Copy-Item -Path (Join-Path $Work "serverfiles\models\*.dff") -Destination $ModelAssets -Force
 Copy-Item -Path (Join-Path $Work "serverfiles\models\*.txd") -Destination $ModelAssets -Force
 Copy-Item -Path (Join-Path $Work "serverfiles\models\vc4samp") -Destination $ModelAssets -Recurse -Force
+$SampModelAssets = Join-Path $ModelAssets "samp"
+New-Item -ItemType Directory -Force $SampModelAssets | Out-Null
+foreach ($Asset in $SampObjectAssets) {
+    $Destination = Join-Path $SampModelAssets $Asset.Name
+    Invoke-BoundedDownload -Uri "https://gtastuff.com/api/file?name=$($Asset.Name)" -OutFile $Destination
+    $AssetHash = (Get-FileHash -Algorithm SHA256 $Destination).Hash.ToLowerInvariant()
+    if ($AssetHash -ne $Asset.Sha256) {
+        throw "Niepoprawna suma SHA-256 obiektu SA-MP $($Asset.Name)`: $AssetHash"
+    }
+}
 
 [xml]$ModelsMeta = Get-Content (Join-Path $ModelsResource "meta.xml")
 Get-ChildItem $ModelAssets -File -Recurse | Sort-Object FullName | ForEach-Object {

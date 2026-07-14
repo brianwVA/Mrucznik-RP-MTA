@@ -488,5 +488,16 @@
       "dff": "mrucznikskin78.dff",
       "txd": "mrucznikskin78.txd"
     }
+  ],
+  "samp_object_count": 1,
+  "samp_objects": [
+    {
+      "model": 19377,
+      "name": "wall025",
+      "base": 1337,
+      "dff": "wall025.dff",
+      "txd": "all_walls.txd",
+      "col": "19377.col"
+    }
   ]
 }

@@ -18,6 +18,8 @@ AMX_MEMBERS = {
     "realtime": "serverfiles/filterscripts/realtime.amx",
     "sobeitblock": "serverfiles/filterscripts/sobeitblock.amx",
     "SAN_extPSq": "serverfiles/filterscripts/SAN_extPSq.amx",
+    "fs-count-A": "serverfiles/scriptfiles/fs-count-A.amx",
+    "callbackfix": "serverfiles/scriptfiles/callbackfix.amx",
 }
 CUSTOM_NATIVES = {
     "AddSimpleModel",

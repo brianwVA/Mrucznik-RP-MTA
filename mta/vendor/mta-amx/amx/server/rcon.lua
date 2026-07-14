@@ -268,11 +268,17 @@ local function cmdKick(id)
 	end
 end
 
+local function filterscriptResourceName(fsname)
+	-- fixes.inc loads helper filterscripts from ../scriptfiles.  MTA resources
+	-- cannot contain path separators, so resolve the SA-MP path to its basename.
+	return tostring(fsname):gsub('\\', '/'):match('([^/]+)$')
+end
+
 local function cmdLoadFS(fsname)
 	if not fsname then
 		return 'loadfs <fsname>'
 	end
-	local res = getResourceFromName('amx-fs-' .. fsname)
+	local res = getResourceFromName('amx-fs-' .. filterscriptResourceName(fsname))
 	if not res then
 		return 'Filterscript \'' .. fsname .. '\' load failed.'
 	end
@@ -308,7 +314,7 @@ local function cmdReloadFS(fsname)
 	if not fsname then
 		return 'reloadfs <fsname>'
 	end
-	local res = getResourceFromName('amx-fs-' .. fsname)
+	local res = getResourceFromName('amx-fs-' .. filterscriptResourceName(fsname))
 	if not res then
 		return 'Filterscript \'' .. fsname .. '\' load failed.'
 	end
@@ -335,7 +341,7 @@ local function cmdUnloadFS(fsname)
 	if not fsname then
 		return 'unloadfs <fsname>'
 	end
-	local res = getResourceFromName('amx-fs-' .. fsname)
+	local res = getResourceFromName('amx-fs-' .. filterscriptResourceName(fsname))
 	if not res then
 		return 'Filterscript \'' .. fsname .. '\' unload failed.'
 	end

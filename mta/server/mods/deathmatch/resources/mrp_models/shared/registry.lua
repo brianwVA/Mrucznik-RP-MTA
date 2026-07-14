@@ -82,3 +82,8 @@ MRP_MODELS = {
     [20453] = { base = 11, dff = "assets/mrucznikskin77.dff", txd = "assets/mrucznikskin77.txd" },
     [20454] = { base = 7, dff = "assets/mrucznikskin78.dff", txd = "assets/mrucznikskin78.txd" },
 }
+
+-- SA-MP objects used by the compiled gamemode but absent from GTA:SA/MTA.
+MRP_OBJECT_MODELS = {
+    [19377] = { base = 1337, dff = "assets/samp/wall025.dff", txd = "assets/samp/all_walls.txd", col = "assets/samp/19377.col" },
+}

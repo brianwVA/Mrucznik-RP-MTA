@@ -4,6 +4,9 @@ function getBaseModel(customModel)
 end
 
 local objectModels = {}
+for model, definition in pairs(MRP_OBJECT_MODELS or {}) do
+    objectModels[model] = definition
+end
 
 local function assetPath(path)
     path = tostring(path):gsub("\\", "/"):gsub("^/+", "")
@@ -23,6 +26,7 @@ function registerObjectModel(customModel, baseModel, dff, txd, virtualWorld, tim
         base = baseModel,
         dff = assetPath(dff),
         txd = assetPath(txd),
+        col = false,
         world = tonumber(virtualWorld) or -1,
         timeOn = tonumber(timeOn),
         timeOff = tonumber(timeOff),

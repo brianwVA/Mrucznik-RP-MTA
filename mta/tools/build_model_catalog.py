@@ -55,13 +55,41 @@ def main() -> None:
         lines.append(
             f'    [{model["custom"]}] = {{ base = {model["base"]}, dff = "assets/{model["dff"]}", txd = "assets/{model["txd"]}" }},\n'
         )
-    lines.append("}\n")
+    lines.extend(
+        [
+            "}\n",
+            "\n",
+            "-- SA-MP objects used by the compiled gamemode but absent from GTA:SA/MTA.\n",
+            "MRP_OBJECT_MODELS = {\n",
+            '    [19377] = { base = 1337, dff = "assets/samp/wall025.dff", txd = "assets/samp/all_walls.txd", col = "assets/samp/19377.col" },\n',
+            "}\n",
+        ]
+    )
     args.output.write_text("".join(lines), encoding="utf-8")
 
     report = Path(__file__).resolve().parents[1] / "compatibility/models.json"
     report.parent.mkdir(parents=True, exist_ok=True)
     report.write_text(
-        json.dumps({"schema_version": 1, "model_count": len(models), "models": models}, indent=2) + "\n",
+        json.dumps(
+            {
+                "schema_version": 1,
+                "model_count": len(models),
+                "models": models,
+                "samp_object_count": 1,
+                "samp_objects": [
+                    {
+                        "model": 19377,
+                        "name": "wall025",
+                        "base": 1337,
+                        "dff": "wall025.dff",
+                        "txd": "all_walls.txd",
+                        "col": "19377.col",
+                    }
+                ],
+            },
+            indent=2,
+        )
+        + "\n",
         encoding="utf-8",
     )
     print(f"Generated {len(models)} custom ped models")

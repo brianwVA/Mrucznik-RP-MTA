@@ -1,7 +1,8 @@
 # Mrucznik Role Play — port MTA:SA
 
 Ten fork zawiera kompletną bazę zgodności dla **MTA:SA 1.6**. Uruchamia dokładny
-gamemode `Mrucznik-RP.amx` v2.8.8 oraz cztery aktywne filterscripty wewnątrz MTA,
+gamemode `Mrucznik-RP.amx` v2.8.8, cztery aktywne filterscripty i dwa dynamiczne
+skrypty pomocnicze `fixes.inc` wewnątrz MTA,
 a różnice silników obsługuje przypięta i przetestowana warstwa zgodności Lua.
 
 - 745 komend aktywnych w wydanym AMX oraz 547 aliasów zachowuje oryginalne

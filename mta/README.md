@@ -38,7 +38,9 @@ natywów Pawn. Instalator weryfikuje sumy SHA-256
 warstwy AMX, oficjalnego Visual C++ 2010 x86 wymaganego przez profiler, zasobu
 Object Preview 0.7.0 i wszystkich gotowych pluginów, wypakowuje dokładny
 `Mrucznik-RP.amx` z oryginalnego archiwum Git LFS oraz kopiuje `scriptfiles`,
-cztery aktywne filterscripty, 81 skinów i komplet 4426 plików Vice City. Publiczne hasło `funia` służy wyłącznie
+cztery aktywne i dwa dynamiczne filterscripty, bazę kolizji ColAndreas, 81 skinów,
+obiekt SA-MP 19377 z dokładnym DFF/TXD/COL oraz komplet 4426 plików Vice City.
+Publiczne hasło `funia` służy wyłącznie
 lokalnej bazie deweloperskiej; dane produkcyjne i tokeny nie są wpisywane do
 repozytorium.
 
@@ -47,7 +49,8 @@ wpisuje je do ustawienia `amx.plugins`. Parametry MySQL są zapisywane wyłączn
 w instalacji serwera MTA. Ręcznie trzeba zezwolić zasobowi `amx` na żądane
 prawa ACL, a następnie zrestartować `amx` i `amx-mrucznik`. Gamemode
 `amx-mrucznik` oraz cztery aktywne filterscripty są skonfigurowane do
-automatycznego startu. Pawn.RakNet i
+automatycznego startu; `fs-count-A` i `callbackfix` są ładowane dynamicznie
+przez oryginalny kod Pawn. Pawn.RakNet i
 `bscrashfix`, które ingerują w proces lub protokół serwera SA-MP, są zastąpione
 przez warstwę zgodności i zabezpieczenia MTA.
 
@@ -68,7 +71,7 @@ Pierwszy test porównuje zatwierdzony katalog z aktualnym kodem Pawn i tablicą
 publicznych handlerów dokładnego AMX. Repozytorium zawiera 787 nazw komend, z
 których 745 jest faktycznie aktywnych w wydaniu v2.8.8; 42 stare lub warunkowe
 definicje źródłowe są raportowane osobno. Drugi test odczytuje
-tablicę 579 importów natywnych głównego AMX i czterech filterscriptów bezpośrednio
-z dokładnych plików w archiwum Git LFS.
+tablicę 583 importów natywnych głównego AMX i wszystkich sześciu filterscriptów
+bezpośrednio z dokładnych plików w archiwum Git LFS.
 Brak choć jednej aktywnej komendy, aliasu, grupy uprawnień albo wymaganego natywu powoduje
 błąd walidacji projektu.

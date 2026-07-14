@@ -4,9 +4,11 @@
     "serverfiles/filterscripts/animy.amx",
     "serverfiles/filterscripts/realtime.amx",
     "serverfiles/filterscripts/sobeitblock.amx",
-    "serverfiles/filterscripts/SAN_extPSq.amx"
+    "serverfiles/filterscripts/SAN_extPSq.amx",
+    "serverfiles/scriptfiles/fs-count-A.amx",
+    "serverfiles/scriptfiles/callbackfix.amx"
   ],
-  "native_entry_count": 579,
+  "native_entry_count": 583,
   "unique_native_count": 489,
   "programs": [
     {
@@ -33,6 +35,16 @@
       "name": "SAN_extPSq",
       "native_entry_count": 10,
       "unique_native_count": 10
+    },
+    {
+      "name": "fs-count-A",
+      "native_entry_count": 1,
+      "unique_native_count": 1
+    },
+    {
+      "name": "callbackfix",
+      "native_entry_count": 3,
+      "unique_native_count": 3
     }
   ],
   "provider_counts": {
@@ -205,7 +217,7 @@
     },
     {
       "name": "CallRemoteFunction",
-      "occurrences": 4,
+      "occurrences": 5,
       "provider": "mta-amx-core"
     },
     {
@@ -1995,7 +2007,7 @@
     },
     {
       "name": "setproperty",
-      "occurrences": 1,
+      "occurrences": 3,
       "provider": "mta-amx-core"
     },
     {
@@ -2180,7 +2192,7 @@
     },
     {
       "name": "strcmp",
-      "occurrences": 2,
+      "occurrences": 3,
       "provider": "mta-amx-core"
     },
     {

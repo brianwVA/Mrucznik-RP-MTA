@@ -123,9 +123,17 @@ local function loadCustomObjectModel(customModel)
         outputDebugString("[MRP models] Brak wolnego ID obiektu " .. customModel, 1)
         return false
     end
+    -- MTA requires custom object assets in COL -> TXD -> DFF order.
+    local col = definition.col and engineLoadCOL(definition.col) or false
     local txd = engineLoadTXD(definition.txd)
     local dff = engineLoadDFF(definition.dff)
-    if not txd or not dff or not engineImportTXD(txd, runtimeModel) or not engineReplaceModel(dff, runtimeModel) then
+    if (definition.col and not col)
+        or not txd
+        or not dff
+        or (col and not engineReplaceCOL(col, runtimeModel))
+        or not engineImportTXD(txd, runtimeModel)
+        or not engineReplaceModel(dff, runtimeModel)
+    then
         engineFreeModel(runtimeModel)
         outputDebugString("[MRP models] Nie udało się załadować obiektu " .. customModel, 1)
         return false

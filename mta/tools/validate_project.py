@@ -35,11 +35,18 @@ def main() -> int:
         fail("Compiled command flags do not match the runtime inventory")
     if models["model_count"] != 81:
         fail("Unexpected 0.3.DL ped model inventory size")
-    if natives["native_entry_count"] != 579 or natives["unique_native_count"] != 489:
+    if models.get("samp_object_count") != 1:
+        fail("Unexpected SA-MP object model inventory size")
+    if natives["native_entry_count"] != 583 or natives["unique_native_count"] != 489:
         fail("Unexpected compiled AMX native inventory size")
     programs = {program["name"]: program for program in natives["programs"]}
     if programs.get("Mrucznik-RP", {}).get("native_entry_count") != 556:
         fail("Unexpected gamemode native inventory size")
+    if set(programs) != {
+        "Mrucznik-RP", "animy", "realtime", "sobeitblock", "SAN_extPSq",
+        "fs-count-A", "callbackfix",
+    }:
+        fail("Native catalog does not cover every runtime AMX")
     if plugins.get("platform") != "windows-x86" or len(plugins.get("plugins", [])) != 12:
         fail("Unexpected Windows plugin lock inventory")
     plugin_names = [plugin["name"] for plugin in plugins["plugins"]]
@@ -91,6 +98,19 @@ def main() -> int:
         fail("MTA AMX archive checksum is not pinned")
     if "17f3455d20083782e897fe9bb7ce45f0349d1fd2fc74975a990db1f8344f7625" not in setup:
         fail("Object Preview archive checksum is not pinned")
+    for asset_hash in {
+        "3f41e84551b6d7ed04f66cbe5fcaad2e8cb1734ace8380a4b8a56200c3e8e87c",
+        "3c37105bc9bd3612ad6fcf5e79e35312ae7c401b6a95b74cae43cf236f363241",
+        "beb1aca6de4ac61601ff016f5fc79954f0e0a1335010e7dde5989bd53316e67c",
+    }:
+        if asset_hash not in setup:
+            fail("SA-MP wall025 assets are not checksum-pinned")
+    if "scriptfiles\\colandreas\\ColAndreas.cadb" not in setup:
+        fail("Installer does not place the ColAndreas database at process-relative path")
+    if '"fs-count-A" = "serverfiles\\scriptfiles\\fs-count-A.amx"' not in setup:
+        fail("Installer does not package the dynamic fixes.inc filterscript")
+    if '"callbackfix" = "serverfiles\\scriptfiles\\callbackfix.amx"' not in setup:
+        fail("Installer does not package the dynamic callback filterscript")
     if "6a55e642f88de29531c1c6cc57516e16a94247a1" not in (
         mta / "vendor/mta-amx/UPSTREAM.md"
     ).read_text(encoding="utf-8"):
@@ -206,6 +226,8 @@ def main() -> int:
     ).read_text(encoding="utf-8")
     if "engineGetModelTextures(model" not in models_client:
         fail("Player-object materials cannot resolve stock GTA model textures")
+    if "engineLoadCOL(definition.col)" not in models_client or "engineReplaceCOL(col, runtimeModel)" not in models_client:
+        fail("SA-MP object models do not load their exact collision data")
     if 'dxSetShaderValue(shader, "materialColor"' not in models_client:
         fail("Player-object material ARGB colors are not forwarded to the shader")
     if "materialColor" not in material_shader or "replaceMaterial" not in material_shader:
