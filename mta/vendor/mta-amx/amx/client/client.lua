@@ -960,7 +960,9 @@ addEventHandler('onClientElementStreamIn', root,
 			if source == localPlayer then return end
 			triggerServerEvent('onPlayerStream_Ev', localPlayer, source, true)
 		elseif getElementType(source) == 'ped' then
-			if isElementLocal(source) then return end
+			-- Model previews are client-only peds. Sending them as an event
+			-- argument makes MTA reject the event before the server sees it.
+			if isElementLocal(source) or getElementData(source, 'mrp:modelPreview') then return end
 			if getElementData(source, 'ActorPed') then
 				triggerServerEvent('onActorStream_Ev', localPlayer, source, true)
 			else
@@ -993,7 +995,7 @@ addEventHandler('onClientElementStreamOut', root,
 			if source == localPlayer then return end
 			triggerServerEvent('onPlayerStream_Ev', localPlayer, source, false)
 		elseif getElementType(source) == 'ped' then
-			if isElementLocal(source) then return end
+			if isElementLocal(source) or getElementData(source, 'mrp:modelPreview') then return end
 			if getElementData(source, 'ActorPed') then
 				triggerServerEvent('onActorStream_Ev', localPlayer, source, false)
 			else

@@ -212,6 +212,7 @@ function createPreviewElement(logicalModel)
     end
 
     if element then
+        setElementData(element, "mrp:modelPreview", true, false)
         setElementDimension(element, 65535)
         setElementCollisionsEnabled(element, false)
         setElementFrozen(element, true)
@@ -219,22 +220,23 @@ function createPreviewElement(logicalModel)
     return element or false
 end
 
-local function applyModel(player)
-    if not isElement(player) then
+local function applyModel(ped)
+    if not isElement(ped) then
         return
     end
-    local customModel = getElementData(player, "mrp:customSkin")
+    local customModel = getElementData(ped, "mrp:customSkin")
     if not customModel then
         return
     end
     local runtimeModel = loadCustomModel(customModel)
     if runtimeModel then
-        setElementModel(player, runtimeModel)
+        setElementModel(ped, runtimeModel)
     end
 end
 
 addEventHandler("onClientElementDataChange", root, function(dataName)
-    if dataName == "mrp:customSkin" and getElementType(source) == "player" then
+    local elementType = getElementType(source)
+    if dataName == "mrp:customSkin" and (elementType == "player" or elementType == "ped") then
         applyModel(source)
     elseif dataName == "mrp:customObjectModel" and getElementType(source) == "object" then
         applyObjectModel(source, getElementData(source, "mrp:customObjectModel"))
@@ -242,7 +244,8 @@ addEventHandler("onClientElementDataChange", root, function(dataName)
 end)
 
 addEventHandler("onClientElementStreamIn", root, function()
-    if getElementType(source) == "player" then
+    local elementType = getElementType(source)
+    if elementType == "player" or elementType == "ped" then
         applyModel(source)
     elseif getElementType(source) == "object" then
         local customModel = getElementData(source, "mrp:customObjectModel")
@@ -256,6 +259,9 @@ addEventHandler("onClientResourceStart", resourceRoot, function()
     triggerServerEvent("mrp:requestObjectModels", resourceRoot)
     for _, player in ipairs(getElementsByType("player")) do
         applyModel(player)
+    end
+    for _, ped in ipairs(getElementsByType("ped")) do
+        applyModel(ped)
     end
 end)
 

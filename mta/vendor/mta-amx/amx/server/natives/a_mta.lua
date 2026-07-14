@@ -196,7 +196,13 @@ end
 -- Bots
 
 function CreateBot(amx, model, x, y, z, name)
-	local bot = createPed(g_SkinReplace[model] or model, x, y, z)
+	local resolvedModel, customSkin = mrpResolveSkin(g_SkinReplace[model] or model)
+	local bot = createPed(resolvedModel, x, y, z)
+	if not bot then
+		outputDebugString('[MTA AMX] Nie udalo sie utworzyc bota ze skinem ' .. tostring(model), 2)
+		return INVALID_PLAYER_ID
+	end
+	mrpApplyCustomSkin(bot, customSkin)
 	addPedClothes(bot, 'vest', 'vest', 0)
 	setElementData(bot, 'ShowNameTag', true)
 	if name and name:len() >= 1 then

@@ -1,5 +1,11 @@
 function CreateActor(amx, model, x, y, z, rotation)
-	local actor = createPed(g_SkinReplace[model] or model, x, y, z, rotation, false)
+	local resolvedModel, customSkin = mrpResolveSkin(g_SkinReplace[model] or model)
+	local actor = createPed(resolvedModel, x, y, z, rotation, false)
+	if not actor then
+		outputDebugString('[MTA AMX] Nie udalo sie utworzyc actora ze skinem ' .. tostring(model), 2)
+		return INVALID_ACTOR_ID
+	end
+	mrpApplyCustomSkin(actor, customSkin)
 	addPedClothes(actor, 'vest', 'vest', 0)
 	setElementData(actor, 'ActorPed', true)
 	setElementData(actor, 'Invulnerable', true)
