@@ -41,7 +41,7 @@ $MsBuild = & $VsWhere -latest -products * -requires Microsoft.Component.MSBuild 
 if (-not $MsBuild) { throw "Nie znaleziono MSBuild.exe." }
 
 & $MsBuild (Join-Path $BuildSource "Build\king.sln") /m `
-    /p:Configuration=Release /p:Platform=x86
+    /p:Configuration=Release /p:Platform=Win32
 if ($LASTEXITCODE -ne 0) { throw "Kompilacja king.dll nie powiodła się." }
 
 $Dll = Get-ChildItem $BuildSource -Filter "king.dll" -Recurse | Select-Object -First 1
