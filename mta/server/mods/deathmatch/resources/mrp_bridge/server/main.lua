@@ -4,7 +4,7 @@ local function configureWorld()
     setGameSpeed(1)
 end
 
-local function ensureBaseline()
+local function ensureBaseline(restartRunning)
     local amx = getResourceFromName("amx")
     if not amx or getResourceState(amx) ~= "running" then
         outputDebugString("[MRP] Oczekiwanie na uruchomienie warstwy AMX.")
@@ -15,10 +15,18 @@ local function ensureBaseline()
         outputDebugString("[MRP] Brak zasobu " .. MRP.baselineResource .. ". Uruchom mta/setup.ps1.", 1)
         return false
     end
-    if getResourceState(baseline) == "loaded" then
+    local state = getResourceState(baseline)
+    if state == "running" then
+        if restartRunning then
+            return restartResource(baseline)
+        end
+        return true
+    end
+    if state == "loaded" then
         return startResource(baseline)
     end
-    return getResourceState(baseline) == "running"
+    outputDebugString("[MRP] Nie można uruchomić " .. MRP.baselineResource .. "; stan: " .. state, 1)
+    return false
 end
 
 addEventHandler("onResourceStart", resourceRoot, function()
@@ -31,7 +39,10 @@ end)
 addEventHandler("onResourceStart", root, function(startedResource)
     if getResourceName(startedResource) ~= "amx" then return end
     setTimer(function()
-        if ensureBaseline() then
+        -- The map resource may already have been marked as running while the
+        -- AMX gamemode was still changing. Restart it so amx.lua observes a
+        -- fresh onResourceStart event and loads Mrucznik-RP.amx.
+        if ensureBaseline(true) then
             outputDebugString("[MRP] Warstwa AMX gotowa; uruchomiono gamemode Pawn.")
         end
     end, 250, 1)
