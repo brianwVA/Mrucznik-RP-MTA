@@ -26,6 +26,20 @@ git lfs pull
 MTA AMX wymaga obecnie serwera **MTA 1.6 Windows x86 (32-bit)**. Oryginalne
 źródła i dokumentacja SA-MP pozostają poniżej jako referencja zachowania.
 
+## Gotowa paczka Windows
+
+Automatyczny instalator, skrypty start/stop/test oraz gotowy prompt dla Codexa
+znajdują się w [`mta/windows`](mta/windows). Paczka nie wymaga lokalnej
+kompilacji Visual Studio, CMake ani vcpkg; korzysta z przypiętych binariów x86 i
+samodzielnie przygotowuje MTA, MySQL, bazę, ACL oraz pełny test runtime.
+
+Po wypakowaniu paczki na Windows uruchom PowerShell jako administrator:
+
+```powershell
+Set-ExecutionPolicy -Scope Process Bypass -Force
+.\Install-MrucznikMTA.ps1
+```
+
 ## Oryginalna dokumentacja SA-MP
 
 # Mrucznik-RP-2.6

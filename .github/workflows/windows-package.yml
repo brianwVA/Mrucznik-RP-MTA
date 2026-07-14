@@ -1,0 +1,75 @@
+name: Windows package installer
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - "mta/windows/**"
+      - "mta/setup.ps1"
+      - "mta/plugins.lock.json"
+      - "mta/server/**"
+      - "mta/vendor/mta-amx/amx/**"
+      - "database/**"
+      - "serverfiles.tar.gz"
+      - ".github/workflows/windows-package.yml"
+  pull_request:
+    paths:
+      - "mta/windows/**"
+      - "mta/setup.ps1"
+      - "mta/plugins.lock.json"
+      - "mta/server/**"
+      - "mta/vendor/mta-amx/amx/**"
+      - "database/**"
+      - "serverfiles.tar.gz"
+      - ".github/workflows/windows-package.yml"
+
+jobs:
+  install-and-run:
+    runs-on: windows-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: false
+          lfs: true
+
+      - name: Verify package payload
+        shell: pwsh
+        run: |
+          $expected = @{
+            "mta/windows/binaries/king.dll" = "0d79740654407d8805e970fc6e4803db7bb6e9f8753d2d6c14244556adb10a88"
+            "mta/windows/binaries/ColAndreas.dll" = "bf188f7b9fd8be45cd21872a399cab9a0a82b6df55f620359bc4c38c2c7f0e57"
+            "mta/windows/binaries/7z2601-x64.exe" = "d64a0468f5b5b0b0fc5b2188450bcd655b70809d97b1c4535f2884635094377d"
+          }
+          foreach ($entry in $expected.GetEnumerator()) {
+            $actual = (Get-FileHash -Algorithm SHA256 $entry.Key).Hash.ToLowerInvariant()
+            if ($actual -ne $entry.Value) { throw "Checksum mismatch for $($entry.Key): $actual" }
+          }
+          if ((Get-Item serverfiles.tar.gz).Length -lt 700MB) {
+            throw "serverfiles.tar.gz is an LFS pointer"
+          }
+
+      - name: Install package and execute full runtime test
+        shell: pwsh
+        run: >-
+          ./mta/windows/Install-MrucznikMTA.ps1
+          -InstallRoot C:\Mrucznik-RP-MTA
+
+      - name: Upload package diagnostics
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: mrucznik-windows-package-logs
+          path: |
+            C:\Mrucznik-RP-MTA\logs\*.log
+            C:\Mrucznik-RP-MTA\installation.json
+          if-no-files-found: warn
+
+      - name: Stop local services
+        if: always()
+        shell: pwsh
+        run: |
+          if (Test-Path C:\Mrucznik-RP-MTA\Stop-MrucznikMTA.ps1) {
+            & C:\Mrucznik-RP-MTA\Stop-MrucznikMTA.ps1 -InstallRoot C:\Mrucznik-RP-MTA
+          }
+

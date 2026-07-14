@@ -46,15 +46,15 @@ function Invoke-BoundedDownload {
         [string]$OutFile
     )
 
-    for ($Attempt = 1; $Attempt -le 3; $Attempt++) {
+    for ($Attempt = 1; $Attempt -le 6; $Attempt++) {
         & curl.exe --fail --location --silent --show-error `
             --connect-timeout 30 --max-time 300 `
             --output $OutFile $Uri
         if ($LASTEXITCODE -eq 0) { return }
         Remove-Item $OutFile -Force -ErrorAction SilentlyContinue
-        if ($Attempt -lt 3) { Start-Sleep -Seconds 2 }
+        if ($Attempt -lt 6) { Start-Sleep -Seconds ([Math]::Min($Attempt * 5, 20)) }
     }
-    throw "Nie udało się pobrać $Uri po 3 próbach."
+    throw "Nie udało się pobrać $Uri po 6 próbach."
 }
 
 if (-not (Test-Path (Join-Path $MtaServerRoot "MTA Server.exe"))) {
