@@ -84,6 +84,23 @@ local function loadResourceAMXs(res)
 end
 addEventHandler('onResourceStart', root, loadResourceAMXs)
 
+-- MTA can mark an AMX map resource as running while it is still changing from
+-- the default gamemode to this compatibility resource. In that case its
+-- onResourceStart event predates the handler above and the Pawn file would be
+-- skipped. Load any already-running non-filterscript AMX resource once the
+-- compatibility layer itself has finished starting.
+addEventHandler('onResourceStart', resourceRoot,
+	function()
+		for _, res in ipairs(getResources()) do
+			local name = getResourceName(res)
+			if getResourceState(res) == 'running' and name:match('^amx%-') and not name:match('^amx%-fs%-') then
+				loadResourceAMXs(res)
+			end
+		end
+	end,
+	false
+)
+
 function loadAMX(fileName, res)
 	local resName = getResourceName(res)
 	if not resName:match('^amx%-') then
