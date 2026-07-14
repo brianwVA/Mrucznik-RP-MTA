@@ -173,7 +173,12 @@ function loadAMX(fileName, res)
 	else
 		procCallInternal(amx, 'OnFilterScriptInit')
 	end
-	procCallInternal(amx, amx.main)
+	-- Filterscripts without a Pawn main() store AMX_EXEC_MAIN (0xffffffff)
+	-- in the header. Their OnFilterScriptInit callback has already run, so do
+	-- not pass that sentinel back as a public-function index.
+	if amx.main ~= 0xffffffff then
+		procCallInternal(amx, amx.main)
+	end
 
 	for id, player in pairs(g_Players) do
 		procCallInternal(amx, 'OnPlayerConnect', id)

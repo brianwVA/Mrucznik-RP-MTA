@@ -202,9 +202,27 @@ jobs:
           if ($exitedEarly) {
             throw "MTA server exited during the 45-second startup window with code $earlyExitCode"
           }
+          if ($logs -notmatch "Server started and is ready to accept connections!") {
+            throw "MTA server never reached the ready state"
+          }
+          foreach ($plugin in @(
+            "crashdetect", "sscanf", "streamer", "mysql", "libRegEx", "Whirlpool",
+            "log-plugin", "pawn-memory", "requests", "redis", "discord-connector",
+            "profiler", "ColAndreas"
+          )) {
+            if ($logs -notmatch "Loading plugin $([regex]::Escape($plugin))(\r?\n|$)") {
+              throw "Required plugin $plugin was not loaded"
+            }
+          }
+          foreach ($amxFile in @("animy", "realtime", "sobeitblock", "SAN_extPSq", "Mrucznik-RP")) {
+            if ($logs -notmatch "Loading '$([regex]::Escape($amxFile))\.amx'") {
+              throw "Required AMX $amxFile.amx was not loaded"
+            }
+          }
           if ($logs -notmatch "Loading 'Mrucznik-RP\.amx'") { throw "Mrucznik-RP.amx was not loaded" }
-          if ($logs -match "Error loading 'Mrucznik-RP\.amx'|amx module .* isn't loaded") { throw "AMX runtime failed to load the gamemode" }
+          if ($logs -match "Error loading 'Mrucznik-RP\.amx'|can't be loaded due to missing functions|amx module .* isn't loaded") { throw "AMX runtime failed to load the gamemode" }
           if ($logs -match "Unable to load filterscript '(animy|realtime|sobeitblock|SAN_extPSq)'") { throw "An original filterscript failed to load" }
+          if ($logs -match "Run time error [0-9]+") { throw "Pawn reported a runtime error during startup" }
 
       - name: Upload runtime diagnostics
         if: always()
