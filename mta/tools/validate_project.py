@@ -114,6 +114,8 @@ def main() -> int:
         fail("Installer does not package the dynamic callback filterscript")
     if 'Join-Path $MtaServerRoot "models"' not in setup:
         fail("Installer does not place DFF files at the ColAndreas process-relative path")
+    if "$RootMysqlConfig" not in setup or "$RootRedisConfig" not in setup:
+        fail("Installer does not mirror Pawn database configs to the process-relative path")
     if "6a55e642f88de29531c1c6cc57516e16a94247a1" not in (
         mta / "vendor/mta-amx/UPSTREAM.md"
     ).read_text(encoding="utf-8"):
@@ -220,6 +222,12 @@ def main() -> int:
         or "g_CommandMapping" in raw_input.group(1)
     ):
         fail("Raw input does not dispatch exact command names to the original Pawn handler")
+
+    amx_loader = (
+        mta / "vendor/mta-amx/amx/server/amx.lua"
+    ).read_text(encoding="utf-8")
+    if "debug.sethook(nil)" not in amx_loader or "debug.sethook(watchdogHook" not in amx_loader:
+        fail("Heavy Pawn initialization is not isolated from and restored to the MTA watchdog")
 
     models_client = (
         mta / "server/mods/deathmatch/resources/mrp_models/client/main.lua"

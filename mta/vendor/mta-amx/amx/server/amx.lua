@@ -168,7 +168,22 @@ function loadAMX(fileName, res)
 		toggleGlitches()
 		initGameModeGlobals()
 		ShowPlayerMarkers(amx, g_PlayerMarkersMode)
-		procCallOnAll('OnGameModeInit')
+		-- The exact Mrucznik map synchronously registers thousands of Vice City
+		-- models and collision objects.  That legitimate one-time initialization
+		-- exceeds MTA's Lua watchdog, although Pawn is still making progress.
+		-- Suspend the hook only for this trusted, pinned callback and restore it
+		-- immediately afterwards.
+		local watchdogHook, watchdogMask, watchdogCount = debug.gethook()
+		debug.sethook(nil)
+		local initResult
+		local ok, initError = xpcall(
+			function() initResult = procCallOnAll('OnGameModeInit') end,
+			debug.traceback
+		)
+		if watchdogHook then
+			debug.sethook(watchdogHook, watchdogMask, watchdogCount)
+		end
+		if not ok then error(initError, 0) end
 		table.each(g_Players, 'elem', gameModeInit)
 	else
 		procCallInternal(amx, 'OnFilterScriptInit')

@@ -236,6 +236,11 @@ $RedisConfig = Join-Path $AmxResource "scriptfiles\redis.ini"
     "port=$RedisPort"
     "password=$RedisPassword"
 ) | Set-Content -Path $RedisConfig -Encoding ASCII
+$RootMysqlConfig = Join-Path $MtaServerRoot "scriptfiles\MySQL\connect.ini"
+$RootRedisConfig = Join-Path $MtaServerRoot "scriptfiles\redis.ini"
+New-Item -ItemType Directory -Force (Split-Path -Parent $RootMysqlConfig) | Out-Null
+Copy-Item $MysqlConfig $RootMysqlConfig -Force
+Copy-Item $RedisConfig $RootRedisConfig -Force
 
 $BridgeResource = Join-Path $ResourcesRoot "mrp_bridge"
 New-Item -ItemType Directory -Force $BridgeResource | Out-Null
@@ -259,6 +264,8 @@ foreach ($Asset in $SampObjectAssets) {
         throw "Niepoprawna suma SHA-256 obiektu SA-MP $($Asset.Name)`: $AssetHash"
     }
 }
+$ConvertedConcertHall = Join-Path $Work "serverfiles\models\vc4samp\dff\concerth04.dff"
+Copy-Item $ConvertedConcertHall (Join-Path $MtaServerRoot "models\concerth04.dff") -Force
 
 [xml]$ModelsMeta = Get-Content (Join-Path $ModelsResource "meta.xml")
 Get-ChildItem $ModelAssets -File -Recurse | Sort-Object FullName | ForEach-Object {

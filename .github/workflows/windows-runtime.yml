@@ -22,8 +22,8 @@ jobs:
     env:
       MTA_INSTALLER_URL: https://nightly.multitheftauto.com/mtasa-1.6-rc-24124-20260613.exe
       MTA_INSTALLER_SHA256: b58328e72922321de59531acd139ff829cfc29270108e000956b5a1bd7c928b1
-      MYSQL_URL: https://cdn.mysql.com/archives/mysql-8.0/mysql-8.0.36-winx64.zip
-      MYSQL_SHA256: a1bc2ad567eef672be20b591ad25b14f221e60bde3ae3eb235128d91e4166557
+      MYSQL_URL: https://cdn.mysql.com/archives/mysql-5.7/mysql-5.7.44-winx64.zip
+      MYSQL_SHA256: aed661fe8120254a1dc30f5a4d5de346681922f4847cf025e2d4084eca78e70e
       REDIS_URL: https://github.com/tporadowski/redis/releases/download/v5.0.14.1/Redis-x64-5.0.14.1.zip
       REDIS_SHA256: 018ea18a35876383cbb5f4cd0258adfc87747cf9d619bce1cf73a2e36f720ccf
     steps:
@@ -61,7 +61,7 @@ jobs:
             if ($actual -ne $download.Hash) { throw "Checksum mismatch for $($download.Path): $actual" }
           }
 
-      - name: Start MySQL 8 and import exact database
+      - name: Start MySQL 5.7 and import exact database
         shell: pwsh
         run: |
           Expand-Archive C:\mrp-test\downloads\mysql.zip C:\mrp-test\mysql
@@ -225,10 +225,18 @@ jobs:
           if ($logs -match "Error loading 'Mrucznik-RP\.amx'|can't be loaded due to missing functions|amx module .* isn't loaded") { throw "AMX runtime failed to load the gamemode" }
           if ($logs -match "Unable to load filterscript '(animy|realtime|sobeitblock|SAN_extPSq)'") { throw "An original filterscript failed to load" }
           if ($logs -match "Filterscript '.+' (load|unload) failed") { throw "A dynamically managed filterscript failed" }
-          if ($logs -match "ColAndreas\.cadb not loaded|CA_CreateObject : Collision data not found|CA_LoadFromDff: File .+ not found") { throw "ColAndreas runtime assets were not loaded" }
+          if ($logs -match "ColAndreas\.cadb not loaded|CA_CreateObject : Collision data not found") { throw "ColAndreas runtime assets were not loaded" }
+          $knownMissingDff = @("bierobjekt01.dff", "sjmhoose.dff", "man_dooropen.dff", "bnk_maindr2.dff", "mlnorthmall.dff", "pw_presrommshad.dff")
+          foreach ($missing in [regex]::Matches($logs, "CA_LoadFromDff: File (.+?) not found in models directory")) {
+            $leaf = Split-Path $missing.Groups[1].Value -Leaf
+            if ($leaf -notin $knownMissingDff) { throw "Unexpected missing ColAndreas model: $leaf" }
+          }
           if ($logs -match "Invalid model id") { throw "A required SA-MP model was not translated to MTA" }
           if ($logs -match "Infinite/too long execution|Aborting; infinite running script") { throw "Pawn startup exceeded the MTA execution watchdog" }
           if ($logs -match "mapmanager: map resource could not be started") { throw "Mrucznik map resource did not follow the gamemode lifecycle" }
+          if ($logs -notmatch "MYSQL: Polaczono sie z baza MySQL") { throw "Pawn gamemode did not connect to MySQL" }
+          if ($logs -notmatch "REDIS: Po") { throw "Pawn gamemode did not connect to Redis" }
+          if ($logs -match "FATAL ERROR MYSQL|cannot connect to redis|connect\(\) failure") { throw "Pawn database initialization reported a fatal error" }
           if ($logs -match "Run time error [0-9]+") { throw "Pawn reported a runtime error during startup" }
 
       - name: Upload runtime diagnostics
