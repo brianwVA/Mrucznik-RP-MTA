@@ -6,9 +6,24 @@
     "serverfiles/filterscripts/sobeitblock.amx",
     "serverfiles/filterscripts/SAN_extPSq.amx",
     "serverfiles/scriptfiles/fs-count-A.amx",
+    "serverfiles/scriptfiles/fs-count-B.amx",
+    "serverfiles/scriptfiles/fs-count-C.amx",
+    "serverfiles/scriptfiles/fs-count-D.amx",
+    "serverfiles/scriptfiles/fs-count-E.amx",
+    "serverfiles/scriptfiles/fs-count-F.amx",
+    "serverfiles/scriptfiles/fs-count-G.amx",
+    "serverfiles/scriptfiles/fs-count-H.amx",
+    "serverfiles/scriptfiles/fs-count-I.amx",
+    "serverfiles/scriptfiles/fs-count-J.amx",
+    "serverfiles/scriptfiles/fs-count-K.amx",
+    "serverfiles/scriptfiles/fs-count-L.amx",
+    "serverfiles/scriptfiles/fs-count-M.amx",
+    "serverfiles/scriptfiles/fs-count-N.amx",
+    "serverfiles/scriptfiles/fs-count-O.amx",
+    "serverfiles/scriptfiles/fs-count-P.amx",
     "serverfiles/scriptfiles/callbackfix.amx"
   ],
-  "native_entry_count": 583,
+  "native_entry_count": 598,
   "unique_native_count": 489,
   "programs": [
     {
@@ -38,6 +53,81 @@
     },
     {
       "name": "fs-count-A",
+      "native_entry_count": 1,
+      "unique_native_count": 1
+    },
+    {
+      "name": "fs-count-B",
+      "native_entry_count": 1,
+      "unique_native_count": 1
+    },
+    {
+      "name": "fs-count-C",
+      "native_entry_count": 1,
+      "unique_native_count": 1
+    },
+    {
+      "name": "fs-count-D",
+      "native_entry_count": 1,
+      "unique_native_count": 1
+    },
+    {
+      "name": "fs-count-E",
+      "native_entry_count": 1,
+      "unique_native_count": 1
+    },
+    {
+      "name": "fs-count-F",
+      "native_entry_count": 1,
+      "unique_native_count": 1
+    },
+    {
+      "name": "fs-count-G",
+      "native_entry_count": 1,
+      "unique_native_count": 1
+    },
+    {
+      "name": "fs-count-H",
+      "native_entry_count": 1,
+      "unique_native_count": 1
+    },
+    {
+      "name": "fs-count-I",
+      "native_entry_count": 1,
+      "unique_native_count": 1
+    },
+    {
+      "name": "fs-count-J",
+      "native_entry_count": 1,
+      "unique_native_count": 1
+    },
+    {
+      "name": "fs-count-K",
+      "native_entry_count": 1,
+      "unique_native_count": 1
+    },
+    {
+      "name": "fs-count-L",
+      "native_entry_count": 1,
+      "unique_native_count": 1
+    },
+    {
+      "name": "fs-count-M",
+      "native_entry_count": 1,
+      "unique_native_count": 1
+    },
+    {
+      "name": "fs-count-N",
+      "native_entry_count": 1,
+      "unique_native_count": 1
+    },
+    {
+      "name": "fs-count-O",
+      "native_entry_count": 1,
+      "unique_native_count": 1
+    },
+    {
+      "name": "fs-count-P",
       "native_entry_count": 1,
       "unique_native_count": 1
     },
@@ -2007,7 +2097,7 @@
     },
     {
       "name": "setproperty",
-      "occurrences": 3,
+      "occurrences": 18,
       "provider": "mta-amx-core"
     },
     {

@@ -214,7 +214,9 @@ jobs:
               throw "Required plugin $plugin was not loaded"
             }
           }
-          foreach ($amxFile in @("animy", "realtime", "sobeitblock", "SAN_extPSq", "fs-count-A", "callbackfix", "Mrucznik-RP")) {
+          $requiredAmx = @("animy", "realtime", "sobeitblock", "SAN_extPSq", "callbackfix", "Mrucznik-RP")
+          $requiredAmx += 65..80 | ForEach-Object { "fs-count-$([char]$_)" }
+          foreach ($amxFile in $requiredAmx) {
             if ($logs -notmatch "Loading '$([regex]::Escape($amxFile))\.amx'") {
               throw "Required AMX $amxFile.amx was not loaded"
             }
@@ -223,8 +225,9 @@ jobs:
           if ($logs -match "Error loading 'Mrucznik-RP\.amx'|can't be loaded due to missing functions|amx module .* isn't loaded") { throw "AMX runtime failed to load the gamemode" }
           if ($logs -match "Unable to load filterscript '(animy|realtime|sobeitblock|SAN_extPSq)'") { throw "An original filterscript failed to load" }
           if ($logs -match "Filterscript '.+' (load|unload) failed") { throw "A dynamically managed filterscript failed" }
-          if ($logs -match "ColAndreas\.cadb not loaded|CA_CreateObject : Collision data not found") { throw "ColAndreas collision database was not loaded" }
+          if ($logs -match "ColAndreas\.cadb not loaded|CA_CreateObject : Collision data not found|CA_LoadFromDff: File .+ not found") { throw "ColAndreas runtime assets were not loaded" }
           if ($logs -match "Invalid model id") { throw "A required SA-MP model was not translated to MTA" }
+          if ($logs -match "Infinite/too long execution|Aborting; infinite running script") { throw "Pawn startup exceeded the MTA execution watchdog" }
           if ($logs -match "Run time error [0-9]+") { throw "Pawn reported a runtime error during startup" }
 
       - name: Upload runtime diagnostics

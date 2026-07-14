@@ -37,15 +37,16 @@ def main() -> int:
         fail("Unexpected 0.3.DL ped model inventory size")
     if models.get("samp_object_count") != 1:
         fail("Unexpected SA-MP object model inventory size")
-    if natives["native_entry_count"] != 583 or natives["unique_native_count"] != 489:
+    if natives["native_entry_count"] != 598 or natives["unique_native_count"] != 489:
         fail("Unexpected compiled AMX native inventory size")
     programs = {program["name"]: program for program in natives["programs"]}
     if programs.get("Mrucznik-RP", {}).get("native_entry_count") != 556:
         fail("Unexpected gamemode native inventory size")
-    if set(programs) != {
+    expected_programs = {
         "Mrucznik-RP", "animy", "realtime", "sobeitblock", "SAN_extPSq",
-        "fs-count-A", "callbackfix",
-    }:
+        "callbackfix", *(f"fs-count-{suffix}" for suffix in "ABCDEFGHIJKLMNOP"),
+    }
+    if set(programs) != expected_programs:
         fail("Native catalog does not cover every runtime AMX")
     if plugins.get("platform") != "windows-x86" or len(plugins.get("plugins", [])) != 12:
         fail("Unexpected Windows plugin lock inventory")
@@ -107,10 +108,12 @@ def main() -> int:
             fail("SA-MP wall025 assets are not checksum-pinned")
     if "scriptfiles\\colandreas\\ColAndreas.cadb" not in setup:
         fail("Installer does not place the ColAndreas database at process-relative path")
-    if '"fs-count-A" = "serverfiles\\scriptfiles\\fs-count-A.amx"' not in setup:
-        fail("Installer does not package the dynamic fixes.inc filterscript")
-    if '"callbackfix" = "serverfiles\\scriptfiles\\callbackfix.amx"' not in setup:
+    if 'foreach ($Suffix in [char[]](65..80))' not in setup:
+        fail("Installer does not package every dynamic fixes.inc filterscript")
+    if '$PackagedFilterScripts["callbackfix"]' not in setup:
         fail("Installer does not package the dynamic callback filterscript")
+    if 'Join-Path $MtaServerRoot "models"' not in setup:
+        fail("Installer does not place DFF files at the ColAndreas process-relative path")
     if "6a55e642f88de29531c1c6cc57516e16a94247a1" not in (
         mta / "vendor/mta-amx/UPSTREAM.md"
     ).read_text(encoding="utf-8"):

@@ -188,8 +188,10 @@ $PackagedFilterScripts = [ordered]@{
     "realtime" = "serverfiles\filterscripts\realtime.amx"
     "sobeitblock" = "serverfiles\filterscripts\sobeitblock.amx"
     "SAN_extPSq" = "serverfiles\filterscripts\SAN_extPSq.amx"
-    "fs-count-A" = "serverfiles\scriptfiles\fs-count-A.amx"
-    "callbackfix" = "serverfiles\scriptfiles\callbackfix.amx"
+}
+$PackagedFilterScripts["callbackfix"] = "serverfiles\scriptfiles\callbackfix.amx"
+foreach ($Suffix in [char[]](65..80)) {
+    $PackagedFilterScripts["fs-count-$Suffix"] = "serverfiles\scriptfiles\fs-count-$Suffix.amx"
 }
 foreach ($FilterEntry in $PackagedFilterScripts.GetEnumerator()) {
     $FilterScript = $FilterEntry.Key
@@ -218,6 +220,9 @@ if ((Get-FileHash -Algorithm SHA256 $InstalledColAndreasDatabase).Hash -ne
     (Get-FileHash -Algorithm SHA256 $ColAndreasDatabase).Hash) {
     throw "Instalacja ColAndreas.cadb nie zachowała oczekiwanych bajtów."
 }
+$ColAndreasModels = Join-Path $MtaServerRoot "models"
+New-Item -ItemType Directory -Force $ColAndreasModels | Out-Null
+Copy-Item -Path (Join-Path $Work "serverfiles\models\*") -Destination $ColAndreasModels -Recurse -Force
 $MysqlConfig = Join-Path $AmxResource "scriptfiles\MySQL\connect.ini"
 @(
     "Host=$MysqlHost"
