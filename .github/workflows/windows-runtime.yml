@@ -228,6 +228,7 @@ jobs:
           if ($logs -match "ColAndreas\.cadb not loaded|CA_CreateObject : Collision data not found|CA_LoadFromDff: File .+ not found") { throw "ColAndreas runtime assets were not loaded" }
           if ($logs -match "Invalid model id") { throw "A required SA-MP model was not translated to MTA" }
           if ($logs -match "Infinite/too long execution|Aborting; infinite running script") { throw "Pawn startup exceeded the MTA execution watchdog" }
+          if ($logs -match "mapmanager: map resource could not be started") { throw "Mrucznik map resource did not follow the gamemode lifecycle" }
           if ($logs -match "Run time error [0-9]+") { throw "Pawn reported a runtime error during startup" }
 
       - name: Upload runtime diagnostics

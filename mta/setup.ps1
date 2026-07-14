@@ -279,7 +279,7 @@ if (-not ($ServerConfig.config.module | Where-Object { $_.src -eq "king.dll" }))
     $ModuleNode.SetAttribute("src", "king.dll")
     [void]$ServerConfig.config.AppendChild($ModuleNode)
 }
-foreach ($ResourceName in @("object_preview", "mrp_models", "amx", "mrp_bridge", "amx-mrucznik")) {
+foreach ($ResourceName in @("object_preview", "mrp_models", "amx", "mrp_bridge")) {
     $ResourceNode = $ServerConfig.config.resource | Where-Object { $_.src -eq $ResourceName }
     if (-not $ResourceNode) {
         $ResourceNode = $ServerConfig.CreateElement("resource")

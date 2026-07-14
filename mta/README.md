@@ -49,9 +49,10 @@ Instalator sam pobiera zgodne pluginy wymienione w `mta/plugins.lock.json` i
 wpisuje je do ustawienia `amx.plugins`. Parametry MySQL są zapisywane wyłącznie
 w instalacji serwera MTA. Ręcznie trzeba zezwolić zasobowi `amx` na żądane
 prawa ACL, a następnie zrestartować `amx` i `amx-mrucznik`. Gamemode
-`amx-mrucznik` oraz cztery aktywne filterscripty są skonfigurowane do
-automatycznego startu; `fs-count-A`…`fs-count-P` i `callbackfix` są ładowane dynamicznie
-przez oryginalny kod Pawn. Pawn.RakNet i
+Warstwa AMX oraz cztery aktywne filterscripty są skonfigurowane do
+automatycznego startu; mapę `amx-mrucznik` uruchamia mapmanager/most dopiero po
+gotowości AMX, a `fs-count-A`…`fs-count-P` i `callbackfix` ładuje dynamicznie
+oryginalny kod Pawn. Pawn.RakNet i
 `bscrashfix`, które ingerują w proces lub protokół serwera SA-MP, są zastąpione
 przez warstwę zgodności i zabezpieczenia MTA.
 

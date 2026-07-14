@@ -180,7 +180,7 @@ def main() -> int:
     startup_loop = re.search(r"foreach \(\$ResourceName in @\(([^)]+)\)\)", setup)
     startup_order = re.findall(r'"([^"]+)"', startup_loop.group(1)) if startup_loop else []
     expected_startup_order = [
-        "object_preview", "mrp_models", "amx", "mrp_bridge", "amx-mrucznik"
+        "object_preview", "mrp_models", "amx", "mrp_bridge"
     ]
     if startup_order != expected_startup_order:
         fail("MTA resources are not installed in a safe startup order")
