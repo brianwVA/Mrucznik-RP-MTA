@@ -22,7 +22,6 @@ setmetatable(g_Vehicles, defaultEmptyTableMt)
 
 g_Menus = {}
 g_PlayerObjects = {}
-g_PlayerObjectCollisionProxies = {}
 g_TextDraws = {}
 g_TextLabels = {}
 g_Blips = {}
@@ -152,7 +151,6 @@ function destroyGlobalElements()
 
 	table.each(g_Blips, destroyElement)
 	table.each(g_PlayerObjects, destroyElement)
-	table.each(g_PlayerObjectCollisionProxies, destroyElement)
 end
 
 function gamemodeUnload()
@@ -554,10 +552,6 @@ function AttachPlayerObjectToPlayer(objID, attachPlayer, offsetX, offsetY, offse
 		return
 	end
 	attachElements(obj, attachPlayer, offsetX, offsetY, offsetZ, rX, rY, rZ)
-	local proxy = g_PlayerObjectCollisionProxies[objID]
-	if isElement(proxy) then
-		attachElements(proxy, attachPlayer, offsetX, offsetY, offsetZ, rX, rY, rZ)
-	end
 end
 
 function AttachPlayerObjectToVehicle(objID, attachVehicle, offsetX, offsetY, offsetZ, rX, rY, rZ)
@@ -566,11 +560,26 @@ function AttachPlayerObjectToVehicle(objID, attachVehicle, offsetX, offsetY, off
 		return
 	end
 	attachElements(obj, attachVehicle, offsetX, offsetY, offsetZ, rX, rY, rZ)
-	local proxy = g_PlayerObjectCollisionProxies[objID]
-	if isElement(proxy) then
-		attachElements(proxy, attachVehicle, offsetX, offsetY, offsetZ, rX, rY, rZ)
+end
+
+local function syncPlayerObjectWorld(obj)
+	if not isElement(obj) then return end
+	setElementDimension(obj, getElementDimension(localPlayer))
+	setElementInterior(obj, getElementInterior(localPlayer))
+end
+
+local function syncAllPlayerObjectWorlds()
+	for _, obj in pairs(g_PlayerObjects) do
+		syncPlayerObjectWorld(obj)
 	end
 end
+
+-- Streamer represents SA-MP dynamic objects as client-only PlayerObjects.
+-- Client-created MTA elements default to dimension/interior 0, so without this
+-- synchronization every custom interior disappears as soon as the player is
+-- moved to its virtual world (LSPD=25, DMV=50, etc.).
+addEventHandler('onClientElementDimensionChange', localPlayer, syncAllPlayerObjectWorlds)
+addEventHandler('onClientElementInteriorChange', localPlayer, syncAllPlayerObjectWorlds)
 
 function CreatePlayerObject(objID, model, x, y, z, rX, rY, rZ, customModel)
 	model = tonumber(model)
@@ -588,6 +597,7 @@ function CreatePlayerObject(objID, model, x, y, z, rX, rY, rZ, customModel)
 		setElementAlpha(g_PlayerObjects[objID], 0)
 		setElementCollisionsEnabled(g_PlayerObjects[objID], false)
 	end
+	syncPlayerObjectWorld(g_PlayerObjects[objID])
 	if customModel then
 		customModel = tonumber(customModel)
 		-- Client-side Streamer objects are not synchronized elements, so mark the
@@ -597,18 +607,6 @@ function CreatePlayerObject(objID, model, x, y, z, rX, rY, rZ, customModel)
 		local models = getResourceFromName('mrp_models')
 		if models and getResourceState(models) == 'running' then
 			call(models, 'applyObjectModel', g_PlayerObjects[objID], customModel)
-		end
-		-- SA-MP's generic wall/floor panels are the structural collision of many
-		-- interiors. MTA 1.6 renders their dynamically replaced DFF correctly but
-		-- can miss the tiny custom COL on client-only Streamer objects. Keep an
-		-- invisible stock collision panel in exactly the same transform.
-		if customModel and customModel >= 19377 and customModel <= 19379 then
-			local proxy = createObject(3095, x, y, z, rX, rY, rZ)
-			if proxy then
-				setElementAlpha(proxy, 0)
-				setElementCollisionsEnabled(proxy, true)
-				g_PlayerObjectCollisionProxies[objID] = proxy
-			end
 		end
 	end
 end
@@ -620,9 +618,6 @@ function DestroyPlayerObject(objID)
 	end
 	destroyElement(obj)
 	g_PlayerObjects[objID] = nil
-	local proxy = g_PlayerObjectCollisionProxies[objID]
-	if isElement(proxy) then destroyElement(proxy) end
-	g_PlayerObjectCollisionProxies[objID] = nil
 end
 
 function MovePlayerObject(objID, x, y, z, speed, rX, rY, rZ)
@@ -644,8 +639,6 @@ function MovePlayerObject(objID, x, y, z, speed, rX, rY, rZ)
 	if rZ <= -1000.0 then cRotZ = 0.0 end
 
 	moveObject(obj, time, x, y, z, cRotX, cRotY, cRotZ)
-	local proxy = g_PlayerObjectCollisionProxies[objID]
-	if isElement(proxy) then moveObject(proxy, time, x, y, z, cRotX, cRotY, cRotZ) end
 	return math.floor(time)
 end
 
@@ -655,8 +648,6 @@ function SetPlayerObjectPos(objID, x, y, z)
 		return
 	end
 	setElementPosition(obj, x, y, z)
-	local proxy = g_PlayerObjectCollisionProxies[objID]
-	if isElement(proxy) then setElementPosition(proxy, x, y, z) end
 end
 
 function SetPlayerObjectRot(objID, rX, rY, rZ)
@@ -665,8 +656,6 @@ function SetPlayerObjectRot(objID, rX, rY, rZ)
 		return
 	end
 	setElementRotation(obj, rX, rY, rZ)
-	local proxy = g_PlayerObjectCollisionProxies[objID]
-	if isElement(proxy) then setElementRotation(proxy, rX, rY, rZ) end
 end
 
 function SetPlayerObjectMaterial(objID, index, model, txdLib, txdName, color)
@@ -691,8 +680,6 @@ function StopPlayerObject(objID)
 		return
 	end
 	stopObject(obj)
-	local proxy = g_PlayerObjectCollisionProxies[objID]
-	if isElement(proxy) then stopObject(proxy) end
 end
 -----------------------------
 -- Audio & SFX
@@ -2468,38 +2455,125 @@ function createListDialog(titleText, message, button1txt, button2txt)
 	return listGrid
 end
 
-function createInputDialog(titleText, message, button1txt, button2txt)
+local sampInputDialog
+
+local function closeSampInputDialog(response)
+	if not inputDialog then return end
+	local value = isElement(inputEdit) and guiGetText(inputEdit) or ''
+	triggerServerEvent('onDialogResponse_Ev', localPlayer, inputDialog, response, -1, value)
+	if isElement(inputWindow) then guiSetVisible(inputWindow, false) end
+	sampInputDialog = nil
+	guiSetInputEnabled(false)
+	if g_ClassSelectionInfo and g_ClassSelectionInfo.gui then
+		showCursor(true)
+	elseif not g_TextDrawSelectMode and (not g_CurrentMenu or g_CurrentMenu.disabled) then
+		showCursor(false)
+	end
+	inputDialog = nil
+end
+
+local function pointInRect(px, py, rect)
+	return rect and px >= rect.x and px <= rect.x + rect.w and py >= rect.y and py <= rect.y + rect.h
+end
+
+local function renderSampInputDialog()
+	local dialog = sampInputDialog
+	if not dialog or not inputDialog then return end
+
+	local sw, sh = guiGetScreenSize()
+	local scale = math.max(0.8, math.min(1.35, sh / 1080))
+	local w, h = 600 * scale, 330 * scale
+	local x, y = (sw - w) / 2, (sh - h) / 2
+	local pad = 22 * scale
+	local inputY, inputH = y + h - 94 * scale, 32 * scale
+	local buttonW, buttonH, gap = 112 * scale, 31 * scale, 14 * scale
+	local buttonsWidth = buttonW * (dialog.button2 ~= '' and 2 or 1) + (dialog.button2 ~= '' and gap or 0)
+	local buttonX = x + (w - buttonsWidth) / 2
+	local buttonY = y + h - 48 * scale
+
+	dxDrawRectangle(x - 2, y - 2, w + 4, h + 4, tocolor(185, 185, 185, 255), true)
+	dxDrawRectangle(x, y, w, h, tocolor(8, 8, 8, 238), true)
+	dxDrawRectangle(x, y, w, 38 * scale, tocolor(28, 28, 28, 250), true)
+	dxDrawText(dialog.title, x + pad, y, x + w - pad, y + 38 * scale,
+		tocolor(238, 238, 238, 255), 1.05 * scale, 'default-bold', 'left', 'center', true, false, true)
+	dxDrawRectangle(x + pad, y + 42 * scale, w - pad * 2, 1, tocolor(105, 105, 105, 255), true)
+
+	local message = dialog.message:gsub('{(%x%x%x%x%x%x)}', '#%1')
+	dxDrawText(message, x + pad, y + 55 * scale, x + w - pad, inputY - 14 * scale,
+		tocolor(225, 225, 225, 255), 0.95 * scale, 'default', 'left', 'top', true, true, true, true)
+
+	dxDrawRectangle(x + pad - 1, inputY - 1, w - pad * 2 + 2, inputH + 2, tocolor(180, 180, 180, 255), true)
+	dxDrawRectangle(x + pad, inputY, w - pad * 2, inputH, tocolor(20, 20, 20, 255), true)
+	local value = isElement(inputEdit) and guiGetText(inputEdit) or ''
+	if dialog.masked then
+		value = string.rep('*', utf8.len(value) or #value)
+	end
+	if getTickCount() % 1000 < 500 then value = value .. '|' end
+	dxDrawText(value, x + pad + 8 * scale, inputY, x + w - pad - 8 * scale, inputY + inputH,
+		tocolor(255, 255, 255, 255), 1.0 * scale, 'default', 'left', 'center', true, false, true)
+
+	dialog.button1Rect = { x = buttonX, y = buttonY, w = buttonW, h = buttonH }
+	dialog.button2Rect = dialog.button2 ~= '' and { x = buttonX + buttonW + gap, y = buttonY, w = buttonW, h = buttonH } or nil
+	for _, button in ipairs({
+		{ rect = dialog.button1Rect, text = dialog.button1 },
+		{ rect = dialog.button2Rect, text = dialog.button2 }
+	}) do
+		if button.rect then
+			dxDrawRectangle(button.rect.x - 1, button.rect.y - 1, button.rect.w + 2, button.rect.h + 2, tocolor(190, 190, 190, 255), true)
+			dxDrawRectangle(button.rect.x, button.rect.y, button.rect.w, button.rect.h, tocolor(55, 55, 55, 255), true)
+			dxDrawText(button.text, button.rect.x, button.rect.y, button.rect.x + button.rect.w, button.rect.y + button.rect.h,
+				tocolor(245, 245, 245, 255), 0.92 * scale, 'default-bold', 'center', 'center', true, false, true)
+		end
+	end
+end
+addEventHandler('onClientRender', root, renderSampInputDialog)
+
+addEventHandler('onClientClick', root, function(button, state, x, y)
+	if not sampInputDialog or button ~= 'left' or state ~= 'down' then return end
+	if pointInRect(x, y, sampInputDialog.button1Rect) then
+		closeSampInputDialog(1)
+	elseif pointInRect(x, y, sampInputDialog.button2Rect) then
+		closeSampInputDialog(0)
+	elseif isElement(inputEdit) then
+		guiFocus(inputEdit)
+	end
+end)
+
+addEventHandler('onClientKey', root, function(key, pressed)
+	if not sampInputDialog or not pressed then return end
+	if key == 'enter' then
+		cancelEvent()
+		closeSampInputDialog(1)
+	elseif key == 'escape' and sampInputDialog.button2 ~= '' then
+		cancelEvent()
+		closeSampInputDialog(0)
+	end
+end)
+
+function createInputDialog(titleText, message, button1txt, button2txt, masked)
 	if isElement(inputWindow) then
-		removeEventHandler('onClientGUIClick', root, OnInputDialogButton1Click) -- Remove handlers so they are not registered more than once
-		removeEventHandler('onClientGUIClick', root, OnInputDialogButton2Click)
 		destroyElement(inputWindow) -- Assuming inputWindow is the parent of everything, it should remove the whole hierarchy
 	end
 
 	inputDialog = nil
-	inputWindow = guiCreateWindow(screenWidth / 2 - 541 / 2, screenHeight / 2 - 352 / 2, 541, 352, titleText, false)
+	-- A transparent CEGUI edit captures Unicode and clipboard input while the
+	-- visible dialog is rendered in the compact, classic SA-MP style below.
+	inputWindow = guiCreateWindow(-1000, -1000, 2, 2, '', false)
 	guiWindowSetMovable(inputWindow, false)
 	guiWindowSetSizable(inputWindow, false)
-	inputLabel = guiCreateColoredLabel(0.1, 0.1, 1.0, 0.8, message, inputWindow, true)
-	inputEdit = guiCreateEdit(0.0, 0.7, 1.0, 0.1, '', true, inputWindow)
-
-	local xpos = 0.0
-	if #button1txt == 0 or #button2txt == 0 then
-		xpos = 0.40 -- Center
-	end
-
-	inputButton1 = guiCreateButton(xpos ~= 0.0 and xpos or 0.3, 0.9, 0.15, 0.1, button1txt, true, inputWindow) -- x, y, width, height
-	inputButton2 = guiCreateButton(xpos ~= 0.0 and xpos or 0.5, 0.9, 0.15, 0.1, button2txt, true, inputWindow)
-
-	if #button1txt == 0 then
-		guiSetVisible(inputButton1, false)
-	end
-	if #button2txt == 0 then
-		guiSetVisible(inputButton2, false)
-	end
-
+	guiSetAlpha(inputWindow, 0)
+	inputEdit = guiCreateEdit(0, 0, 1, 1, '', true, inputWindow)
+	guiEditSetMaxLength(inputEdit, 255)
+	guiEditSetMasked(inputEdit, masked and true or false)
+	guiSetInputMode('no_binds_when_editing')
+	sampInputDialog = {
+		title = titleText,
+		message = message,
+		button1 = button1txt,
+		button2 = button2txt,
+		masked = masked and true or false
+	}
 	guiSetVisible(inputWindow, false)
-	addEventHandler('onClientGUIClick', inputButton1, OnInputDialogButton1Click, false)
-	addEventHandler('onClientGUIClick', inputButton2, OnInputDialogButton2Click, false)
 end
 
 function createMessageDialog(titleText, message, button1txt, button2txt)
@@ -2581,27 +2655,13 @@ end
 
 function OnInputDialogButton1Click(button, state)
 	if button == 'left' then
-		triggerServerEvent('onDialogResponse_Ev', localPlayer, inputDialog, 1, -1, guiGetText(inputEdit))
-		guiSetVisible(inputWindow, false)
-		if g_ClassSelectionInfo and g_ClassSelectionInfo.gui then
-			showCursor(true)
-		elseif not g_TextDrawSelectMode and (not g_CurrentMenu or g_CurrentMenu.disabled) then
-			showCursor(false)
-		end
-		inputDialog = nil
+		closeSampInputDialog(1)
 	end
 end
 
 function OnInputDialogButton2Click(button, state)
 	if button == 'left' then
-		triggerServerEvent('onDialogResponse_Ev', localPlayer, inputDialog, 0, -1, guiGetText(inputEdit))
-		guiSetVisible(inputWindow, false)
-		if g_ClassSelectionInfo and g_ClassSelectionInfo.gui then
-			showCursor(true)
-		elseif not g_TextDrawSelectMode and (not g_CurrentMenu or g_CurrentMenu.disabled) then
-			showCursor(false)
-		end
-		inputDialog = nil
+		closeSampInputDialog(0)
 	end
 end
 
@@ -2638,6 +2698,8 @@ function ShowPlayerDialog(dialogid, dialogtype, caption, info, button1, button2)
 	end
 	if inputDialog then
 		guiSetVisible(inputWindow, false)
+		sampInputDialog = nil
+		guiSetInputEnabled(false)
 		inputDialog = nil
 	end
 	if listDialog then
@@ -2663,9 +2725,10 @@ function ShowPlayerDialog(dialogid, dialogtype, caption, info, button1, button2)
 		guiSetVisible(msgWindow, true)
 		msgDialog = dialogid
 	elseif dialogtype == 1 or dialogtype == 3 then
-		createInputDialog(caption, colorizeString(info), button1, button2)
-		guiEditSetMasked(inputEdit, dialogtype == 3)
+		createInputDialog(caption, info, button1, button2, dialogtype == 3)
 		guiSetVisible(inputWindow, true)
+		guiFocus(inputEdit)
+		guiSetInputEnabled(true)
 		inputDialog = dialogid
 	elseif dialogtype == 2 or dialogtype == 4 or dialogtype == 5 then -- DIALOG_STYLE_LIST, DIALOG_STYLE_TABLIST, DIALOG_STYLE_TABLIST_HEADER
 		info = info:gsub('(=?{[0-9A-Fa-f]*})', '')
