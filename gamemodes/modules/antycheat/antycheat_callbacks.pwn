@@ -47,6 +47,7 @@ hook OnPlayerConnect(playerid)
 forward OnCheatDetected(playerid, ip_address[], type, code);
 public OnCheatDetected(playerid, ip_address[], type, code)
 {
+	if(gPlayerLogged[playerid] == 0) return 1;
 	if(IsPlayerPaused(playerid)) return 1;
 	if(type == 0) //Type of cheating (when 0 it returns the ID, when 1 - IP)
 	{

@@ -25,6 +25,9 @@ function mrpResolveObjectModel(model)
     if base then
         return base, model
     end
+    if not tonumber(model) or model < 321 or model > 18630 then
+        return 1337, false
+    end
     return model, false
 end
 

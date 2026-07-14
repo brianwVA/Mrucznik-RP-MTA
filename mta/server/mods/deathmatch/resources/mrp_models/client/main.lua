@@ -2,6 +2,7 @@ local loadedModels = {}
 local objectModels = {}
 local loadedObjectModels = {}
 local objectMaterialShaders = {}
+local pendingObjectModels = {}
 
 local function materialAssetPath(txdLib, txdName)
 	local base = "assets/materials/" .. tostring(txdLib) .. "/" .. tostring(txdName)
@@ -13,7 +14,7 @@ end
 
 local function modelTexture(model, txdName)
 	model = tonumber(model)
-	if not model or model < 1 then return false end
+	if not model or model < 321 or model > 18630 then return false end
 	local textureName = tostring(txdName)
 	local textures = engineGetModelTextures(model, textureName)
 	if not textures then return false end
@@ -74,6 +75,7 @@ function applyObjectMaterial(object, index, model, txdLib, txdName, color)
 end
 
 addEventHandler("onClientElementDestroy", root, function()
+	pendingObjectModels[source] = nil
 	local materials = objectMaterialShaders[source]
 	if not materials then return end
 	for _, material in pairs(materials) do
@@ -118,7 +120,11 @@ local function loadCustomObjectModel(customModel)
         return loadedObjectModels[customModel]
     end
 
-    local runtimeModel = engineRequestModel("object", definition.base)
+    local baseModel = tonumber(definition.base) or 1337
+    if baseModel < 321 or baseModel > 18630 then
+        baseModel = 1337
+    end
+    local runtimeModel = engineRequestModel("object", baseModel)
     if not runtimeModel then
         outputDebugString("[MRP models] Brak wolnego ID obiektu " .. customModel, 1)
         return false
@@ -146,11 +152,38 @@ function applyObjectModel(object, customModel)
     if not isElement(object) then
         return false
     end
+    customModel = tonumber(customModel)
+    if not customModel then
+        return false
+    end
+    -- Streamer can create client-only player objects before the asynchronous
+    -- model registry reaches the client. Remember those objects and retry once
+    -- the matching definition is available; otherwise collision floors can
+    -- remain as the temporary placeholder for the whole session.
+    if not objectModels[customModel] then
+        pendingObjectModels[object] = customModel
+        return false
+    end
     local runtimeModel = loadCustomObjectModel(customModel)
     if not runtimeModel then
         return false
     end
-    return setElementModel(object, runtimeModel)
+    local applied = setElementModel(object, runtimeModel)
+    if applied then
+        pendingObjectModels[object] = nil
+    end
+    return applied
+end
+
+local function retryPendingObjectModels(customModel)
+    customModel = tonumber(customModel)
+    for object, pendingModel in pairs(pendingObjectModels) do
+        if not isElement(object) then
+            pendingObjectModels[object] = nil
+        elseif not customModel or pendingModel == customModel then
+            applyObjectModel(object, pendingModel)
+        end
+    end
 end
 
 function createPreviewElement(logicalModel)
@@ -229,11 +262,13 @@ end)
 addEvent("mrp:onObjectModelRegistered", true)
 addEventHandler("mrp:onObjectModelRegistered", resourceRoot, function(customModel, definition)
     objectModels[tonumber(customModel)] = definition
+    retryPendingObjectModels(customModel)
 end)
 
 addEvent("mrp:onObjectModelsReady", true)
 addEventHandler("mrp:onObjectModelsReady", resourceRoot, function(models)
     objectModels = models or {}
+    retryPendingObjectModels()
     for _, object in ipairs(getElementsByType("object")) do
         local customModel = getElementData(object, "mrp:customObjectModel")
         if customModel then

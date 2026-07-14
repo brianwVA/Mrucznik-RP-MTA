@@ -17,12 +17,20 @@ Set-ExecutionPolicy -Scope Process Bypass -Force
 .\Install-MrucznikMTA.ps1
 ```
 
+Dla pełnych map i interiorów podaj katalog GTA z zainstalowanym SA-MP 0.3.7
+(wymagany jest także Python 3 w `PATH`):
+
+```powershell
+.\Install-MrucznikMTA.ps1 -GtaPath "C:\GTA San Andreas"
+```
+
 Instalator:
 
 - sprawdza binaria `king.dll`, `ColAndreas.dll` i lokalny instalator 7-Zip;
 - pobiera przypięte MTA 1.6 x86 i MySQL 5.7.44 oraz sprawdza SHA-256;
 - tworzy i importuje bazę `mrucznik` z użytkownikiem `samp` / `funia`;
 - instaluje dokładny AMX, filterscripty, pluginy, modele i zasoby MTA;
+- z `-GtaPath` importuje pełny katalog obiektów SA-MP, w tym podłogi LSPD;
 - nadaje wymagane ACL;
 - wykonuje 70-sekundowy test pełnego startu gamemodu.
 

@@ -217,20 +217,25 @@ SendDiscordOrgMessage(orgid, message[])
 
 SendDiscordServerOnInfo()
 {
+	if(DC_PlayersCountChannel == 0) return 1;
 	new message[64];
 	utf8encode(message, "Serwer ju¿ dzia³a, wbijaj!");
 	DCC_SendChannelMessage(DC_PlayersCountChannel, message);
+	return 1;
 }
 
 SendDiscordServerOffInfo()
 {
+	if(DC_PlayersCountChannel == 0) return 1;
 	new message[64];
 	utf8encode(message, "Serwer zosta³ wy³¹czony :(");
 	DCC_SendChannelMessage(DC_PlayersCountChannel, message);
+	return 1;
 }
 
 SendDiscordConnectInfo(playerid)
 {
+	if(DC_PlayersCountChannel == 0) return 1;
 	new message[256];
 	new players = GetPlayersCount();
 	if(players <= 1)
@@ -245,13 +250,15 @@ SendDiscordConnectInfo(playerid)
 	}
 
 	DCC_SendChannelMessage(DC_PlayersCountChannel, message);
+	return 1;
 }
 
 SendDiscordDisconnectInfo(playerid, reason[])
 {
+	if(DC_PlayersCountChannel == 0) return 1;
 	if(!gPlayerLogged[playerid])
 	{
-		return;
+		return 1;
 	}
 
 	new message[256];
@@ -267,6 +274,7 @@ SendDiscordDisconnectInfo(playerid, reason[])
 			GetNick(playerid), reason, players));
 	}
 	DCC_SendChannelMessage(DC_PlayersCountChannel, message);
+	return 1;
 }
 
 //-----------------<[ Timery: ]>-------------------

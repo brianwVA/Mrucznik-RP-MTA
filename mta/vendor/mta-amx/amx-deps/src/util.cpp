@@ -55,6 +55,29 @@ const char* getenv_portable(const char* name)
 
 std::string ToUTF8(const char * str)
 {
+#ifdef WIN32
+	if (!str || !*str)
+		return str ? std::string() : std::string();
+
+	// Mrucznik's Pawn sources and database use Windows-1250.  Relying on
+	// mbstowcs() made the result depend on the process locale and produced
+	// mojibake (for example "Ä…") on MTA clients.
+	int wideLen = MultiByteToWideChar(1250, 0, str, -1, NULL, 0);
+	if (wideLen <= 0)
+		return std::string(str);
+
+	std::wstring wide(wideLen, L'\0');
+	MultiByteToWideChar(1250, 0, str, -1, &wide[0], wideLen);
+
+	int utf8Len = WideCharToMultiByte(CP_UTF8, 0, wide.c_str(), -1, NULL, 0, NULL, NULL);
+	if (utf8Len <= 0)
+		return std::string(str);
+
+	std::string result(utf8Len, '\0');
+	WideCharToMultiByte(CP_UTF8, 0, wide.c_str(), -1, &result[0], utf8Len, NULL, NULL);
+	result.resize(utf8Len - 1);
+	return result;
+#else
 	int strLen = strlen(str);
 	int newstrLen = mbstowcs(NULL, str, strLen);
 	wchar_t *dest = new wchar_t[newstrLen+1];
@@ -64,10 +87,31 @@ std::string ToUTF8(const char * str)
 	std::string newstr = utf8_wcstombs(dest);
 	delete[] dest;
 	return newstr;
+#endif
 }
 
 std::string ToOriginalCP(const char * str)
 {
+#ifdef WIN32
+	if (!str || !*str)
+		return str ? std::string() : std::string();
+
+	int wideLen = MultiByteToWideChar(CP_UTF8, MB_ERR_INVALID_CHARS, str, -1, NULL, 0);
+	if (wideLen <= 0)
+		return std::string(str);
+
+	std::wstring wide(wideLen, L'\0');
+	MultiByteToWideChar(CP_UTF8, MB_ERR_INVALID_CHARS, str, -1, &wide[0], wideLen);
+
+	int cpLen = WideCharToMultiByte(1250, 0, wide.c_str(), -1, NULL, 0, NULL, NULL);
+	if (cpLen <= 0)
+		return std::string(str);
+
+	std::string result(cpLen, '\0');
+	WideCharToMultiByte(1250, 0, wide.c_str(), -1, &result[0], cpLen, NULL, NULL);
+	result.resize(cpLen - 1);
+	return result;
+#else
 	/*iconv_t conv = iconv_open("CP1251","UTF-8");
 	iconv(conv, (const char**)&str, (size_t*)&strLen, &pOut, (size_t*)&newstrLen);
 	iconv_close(conv);*/
@@ -84,6 +128,7 @@ std::string ToOriginalCP(const char * str)
 	std::string retstr = dest;
 	delete[] dest;
 	return retstr;
+#endif
 }
 
 void lua_pushamxstring(lua_State* luaVM, AMX* amx, cell *physaddr) {

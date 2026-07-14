@@ -7,6 +7,10 @@ function CreateObject(amx, model, x, y, z, rX, rY, rZ, drawDistance)
 		setElementCollisionsEnabled(obj, false)
 		outputDebugString(string.format('[MTA AMX - WARNING]: Invalid model id %d (replaced with invisible and non-collidable), some object ids are not supported, consider updating your scripts', model))
 	end
+	if obj and not customModel and (not tonumber(model) or model < 321 or model > 18630) then
+		setElementAlpha(obj, 0)
+		setElementCollisionsEnabled(obj, false)
+	end
 	mrpApplyCustomObjectModel(obj, customModel)
 	return addElem(g_Objects, obj)
 end
@@ -274,9 +278,10 @@ function StopPlayerObject(amx, player, objID)
 		return false
 	end
 	if obj.moving then
+		local moving = obj.moving
 		obj.x, obj.y, obj.z = getPlayerObjectPos(amx, player, objID)
-		if isTimer(obj.moving.timer) then
-			killTimer(obj.moving.timer)
+		if isTimer(moving.timer) then
+			killTimer(moving.timer)
 		end
 		obj.moving = nil
 	end

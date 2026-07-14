@@ -98,6 +98,7 @@ Mrucznik® Role Play ----> stworzy³ Mrucznik
 #include <sort-inline>
 //nex-ac settings
 #define AC_MAX_CONNECTS_FROM_IP		3
+#define AC_CLIENT_VERSION			"1.6"
 #define AUTOSAVE_SETTINGS_IN_CONFIG true
 #define AC_USE_TUNING_GARAGES false
 #define AC_USE_PICKUP_WEAPONS false
@@ -1156,7 +1157,7 @@ public OnPlayerConnect(playerid)
 	//Poprawny nick:
 	new nick[MAX_PLAYER_NAME];
 	GetPlayerName(playerid, nick, MAX_PLAYER_NAME);
-	if(regex_match(nick, NICK_REGEX) <= 0)
+	if(strfind(nick, "_", true) == -1)
 	{
 		SendClientMessage(playerid, COLOR_NEWS, "SERWER: Twój nick jest niepoprawny! Nick musi posiadaæ formê: Imiê_Nazwisko!");
 		KickEx(playerid, "z³y nick");

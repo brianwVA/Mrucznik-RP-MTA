@@ -37,7 +37,7 @@ jobs:
         shell: pwsh
         run: |
           $expected = @{
-            "mta/windows/binaries/king.dll" = "0d79740654407d8805e970fc6e4803db7bb6e9f8753d2d6c14244556adb10a88"
+            "mta/windows/binaries/king.dll" = "c58a0d9a3ab208af135fb6f691e781cf18c4e53e1d9c7c888bdba68b41a73388"
             "mta/windows/binaries/ColAndreas.dll" = "bf188f7b9fd8be45cd21872a399cab9a0a82b6df55f620359bc4c38c2c7f0e57"
             "mta/windows/binaries/7z2601-x64.exe" = "d64a0468f5b5b0b0fc5b2188450bcd655b70809d97b1c4535f2884635094377d"
           }

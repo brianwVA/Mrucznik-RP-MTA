@@ -27,7 +27,8 @@ docker compose -f mta/docker-compose.database.yml up -d
   -KingDll ".\artifacts\king.dll" `
   -MysqlHost "127.0.0.1" -MysqlUser "samp" `
   -MysqlDatabase "mrucznik" -MysqlPassword "funia" `
-  -RedisHost "127.0.0.1" -RedisPort 6379
+  -RedisHost "127.0.0.1" -RedisPort 6379 `
+  -GtaPath "C:\GTA San Andreas"
 ```
 
 DLL ColAndreas jest artefaktem workflow `Build ColAndreas x86`; lokalnie można ją
@@ -41,6 +42,10 @@ Object Preview 0.7.0 i wszystkich gotowych pluginów, wypakowuje dokładny
 cztery aktywne filterscripty, pełny łańcuch dynamicznych skryptów `fixes.inc`,
 bazę kolizji i modele DFF dla ColAndreas, 81 skinów,
 obiekt SA-MP 19377 z dokładnym DFF/TXD/COL oraz komplet 4426 plików Vice City.
+Parametr `-GtaPath` dodatkowo importuje pełny katalog obiektów SA-MP 0.3.7
+(DFF, TXD i COL); jest wymagany dla rozbudowanych map, między innymi obu
+interiorów LSPD. Pliki są pobierane z lokalnej, legalnie posiadanej instalacji
+GTA/SA-MP i dlatego nie są przechowywane w repozytorium.
 Publiczne hasło `funia` służy wyłącznie
 lokalnej bazie deweloperskiej; dane produkcyjne i tokeny nie są wpisywane do
 repozytorium.

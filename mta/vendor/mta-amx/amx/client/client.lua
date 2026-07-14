@@ -507,12 +507,14 @@ end
 function InterpolateCameraPos(FromX, FromY, FromZ, ToX, ToY, ToZ, time, cut)
 	--outputConsole(string.format('InterpolateCameraPos called with args %f %f %f %f %f %f %d %d', FromX, FromY, FromZ, ToX, ToY, ToZ, time, cut))
 	sm.objCamPos = setupCameraObject(FromX, FromY, FromZ, ToX, ToY, ToZ, time, cut)
+	removeEventHandler('onClientPreRender', root, camRender)
 	addEventHandler('onClientPreRender', root, camRender)
 end
 
 function InterpolateCameraLookAt(FromX, FromY, FromZ, ToX, ToY, ToZ, time, cut)
 	--outputConsole(string.format('InterpolateCameraLookAt called with args %f %f %f %f %f %f %d %d', FromX, FromY, FromZ, ToX, ToY, ToZ, time, cut))
 	sm.objLookAt = setupCameraObject(FromX, FromY, FromZ, ToX, ToY, ToZ, time, cut)
+	removeEventHandler('onClientPreRender', root, camRender)
 	addEventHandler('onClientPreRender', root, camRender)
 end
 -----------------------------
@@ -561,13 +563,26 @@ function AttachPlayerObjectToVehicle(objID, attachVehicle, offsetX, offsetY, off
 end
 
 function CreatePlayerObject(objID, model, x, y, z, rX, rY, rZ, customModel)
-	g_PlayerObjects[objID] = createObject(model, x, y, z, rX, rY, rZ)
+	model = tonumber(model)
+	-- Custom SA-MP/DL objects are created from a harmless stock placeholder and
+	-- replaced by mrp_models below.  engineGetModelNameFromID logs a warning for
+	-- unsupported logical IDs, so it must not be used as a validation probe.
+	local validModel = not customModel and model and model >= 321 and model <= 18630
+	local createModel = validModel and model or 1337
+	g_PlayerObjects[objID] = createObject(createModel, x, y, z, rX, rY, rZ)
 	if not g_PlayerObjects[objID] then
 		g_PlayerObjects[objID] = createObject(1337, x, y, z, rX, rY, rZ) -- Create a dummy object anyway since createobject can also be used to make camera attachments
 		setElementAlpha(g_PlayerObjects[objID], 0)
 		setElementCollisionsEnabled(g_PlayerObjects[objID], false)
+	elseif not validModel and not customModel then
+		setElementAlpha(g_PlayerObjects[objID], 0)
+		setElementCollisionsEnabled(g_PlayerObjects[objID], false)
 	end
 	if customModel then
+		-- Client-side Streamer objects are not synchronized elements, so mark the
+		-- logical model locally as well. mrp_models can then reapply it after its
+		-- asynchronous registry has finished loading.
+		setElementData(g_PlayerObjects[objID], 'mrp:customObjectModel', customModel, false)
 		local models = getResourceFromName('mrp_models')
 		if models and getResourceState(models) == 'running' then
 			call(models, 'applyObjectModel', g_PlayerObjects[objID], customModel)

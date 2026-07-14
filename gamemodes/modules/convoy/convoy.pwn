@@ -152,7 +152,7 @@ DropConvoyBox(carid)
 	new driverid = GetVehicleDriverID(carid);
 	if(driverid != -1) ChatDo(driverid, "Z pojazdu konwojowego wypada dynia.");
 
-	new bonus = bonus = random(BOX_BONUS)+BOX_BONUS_BASE;
+	new bonus = random(BOX_BONUS) + BOX_BONUS_BASE;
 	DropBoxFromCar(CONVOY_BOX_OBJECT, BOX_TYPE_CONVOY, bonus, carid);
 }
 

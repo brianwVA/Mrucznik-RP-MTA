@@ -1,4 +1,4 @@
-Set-StrictMode -Version 2.0
+﻿Set-StrictMode -Version 2.0
 
 function Get-MrpInstallState {
     param([Parameter(Mandatory = $true)][string]$InstallRoot)
@@ -15,9 +15,19 @@ function Test-MrpMysql {
 
     $MysqlAdmin = Join-Path $State.mysqlHome "bin\mysqladmin.exe"
     if (-not (Test-Path $MysqlAdmin)) { return $false }
-    & $MysqlAdmin --protocol=TCP --host=127.0.0.1 --port=$($State.mysqlPort) `
-        --user=root --connect-timeout=2 ping 2>$null | Out-Null
-    return $LASTEXITCODE -eq 0
+    $PreviousErrorActionPreference = $ErrorActionPreference
+    try {
+        # An unavailable server is the expected state before startup. Windows
+        # PowerShell 5.1 must not promote mysqladmin's stderr to a terminating
+        # error; availability is determined solely by the native exit code.
+        $ErrorActionPreference = "Continue"
+        & $MysqlAdmin --protocol=TCP --host=127.0.0.1 --port=$($State.mysqlPort) `
+            --user=root --connect-timeout=2 ping 2>$null | Out-Null
+        return $LASTEXITCODE -eq 0
+    }
+    finally {
+        $ErrorActionPreference = $PreviousErrorActionPreference
+    }
 }
 
 function Start-MrpMysql {

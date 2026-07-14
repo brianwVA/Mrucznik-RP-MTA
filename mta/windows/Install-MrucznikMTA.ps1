@@ -1,7 +1,8 @@
-[CmdletBinding()]
+﻿[CmdletBinding()]
 param(
     [string]$InstallRoot = "C:\Mrucznik-RP-MTA",
     [int]$MysqlPort = 3306,
+    [string]$GtaPath = "",
     [switch]$SkipRuntimeTest
 )
 
@@ -13,7 +14,7 @@ $MtaSha256 = "b58328e72922321de59531acd139ff829cfc29270108e000956b5a1bd7c928b1"
 $MysqlUrl = "https://cdn.mysql.com/archives/mysql-5.7/mysql-5.7.44-winx64.zip"
 $MysqlSha256 = "aed661fe8120254a1dc30f5a4d5de346681922f4847cf025e2d4084eca78e70e"
 $SevenZipSha256 = "d64a0468f5b5b0b0fc5b2188450bcd655b70809d97b1c4535f2884635094377d"
-$KingSha256 = "0d79740654407d8805e970fc6e4803db7bb6e9f8753d2d6c14244556adb10a88"
+$KingSha256 = "c58a0d9a3ab208af135fb6f691e781cf18c4e53e1d9c7c888bdba68b41a73388"
 $ColAndreasSha256 = "bf188f7b9fd8be45cd21872a399cab9a0a82b6df55f620359bc4c38c2c7f0e57"
 
 function Get-PackageLayout {
@@ -185,7 +186,8 @@ $MysqlHostForMta = if ($MysqlPort -eq 3306) { "127.0.0.1" } else { "127.0.0.1;po
     -ColAndreasDll (Join-Path $BinariesRoot "ColAndreas.dll") `
     -KingDll (Join-Path $BinariesRoot "king.dll") `
     -MysqlHost $MysqlHostForMta -MysqlUser "samp" -MysqlDatabase "mrucznik" `
-    -MysqlPassword "funia" -RedisHost "127.0.0.1" -RedisPort 6379
+    -MysqlPassword "funia" -RedisHost "127.0.0.1" -RedisPort 6379 `
+    -GtaPath $GtaPath
 
 $AclPath = Join-Path $ServerRoot "mods\deathmatch\acl.xml"
 [xml]$Acl = Get-Content $AclPath

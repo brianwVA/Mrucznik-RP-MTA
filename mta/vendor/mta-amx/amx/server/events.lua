@@ -59,7 +59,9 @@ function gameModeInit(player)
 			if procCallOnAll('OnPlayerRequestClass', playerID, 0) then
 				putPlayerInClassSelection(player)
 			else
-				outputDebugString('Not allowed to select a class', 1)
+				-- This gamemode owns the login UI and intentionally rejects the
+				-- stock class-selection screen.  It is expected, not an error.
+				outputDebugString('[MTA AMX] Class selection handled by gamemode', 3)
 				g_Players[playerID].doingclasssel = true
 			end
 		end,
@@ -325,7 +327,7 @@ addEventHandler('onPlayerSpawn', root,
 	function()
 		local playerID = getElemID(source)
 
-		if g_Players[playerID].doingclasssel then
+		if g_Players[playerID].doingclasssel or g_Players[playerID].viewingintro then
 			return
 		end
 
@@ -549,7 +551,10 @@ addEventHandler('onPlayerWasted', root,
 					if procCallOnAll('OnPlayerRequestClass', playerID, 0) then
 						putPlayerInClassSelection(player)
 					else
-						outputDebugString('Not allowed to select a class', 1)
+						-- Some role-play gamemodes deliberately reject class selection and
+						-- expect the player to return using their last SetSpawnInfo data.
+						-- Leaving the player wasted here makes them appear permanently dead.
+						spawnPlayerBySelectedClass(player)
 					end
 				end, 3000, 1
 			)

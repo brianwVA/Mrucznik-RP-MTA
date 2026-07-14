@@ -1,4 +1,4 @@
-[CmdletBinding()]
+﻿[CmdletBinding()]
 param(
     [Parameter(Mandatory = $true)]
     [string]$MtaServerRoot,
@@ -15,7 +15,8 @@ param(
     [string]$MysqlPassword = "funia",
     [string]$RedisHost = "127.0.0.1",
     [int]$RedisPort = 6379,
-    [string]$RedisPassword = ""
+    [string]$RedisPassword = "",
+    [string]$GtaPath = ""
 )
 
 $ErrorActionPreference = "Stop"
@@ -127,7 +128,8 @@ $LoadNames = New-Object System.Collections.Generic.List[string]
 
 foreach ($Plugin in $PluginLock.plugins) {
     $PackageName = "$($Plugin.name)-$($Plugin.version)"
-    $PackagePath = Join-Path $Work "$PackageName.download"
+    $PackageExtension = if ($Plugin.archive -eq "zip") { ".zip" } else { ".download" }
+    $PackagePath = Join-Path $Work "$PackageName$PackageExtension"
     Write-Host "Pobieranie $PackageName"
     Invoke-BoundedDownload -Uri $Plugin.url -OutFile $PackagePath
     $PackageHash = (Get-FileHash -Algorithm SHA256 $PackagePath).Hash.ToLowerInvariant()
@@ -275,6 +277,17 @@ Get-ChildItem $ModelAssets -File -Recurse | Sort-Object FullName | ForEach-Objec
     [void]$ModelsMeta.meta.AppendChild($FileNode)
 }
 $ModelsMeta.Save((Join-Path $ModelsResource "meta.xml"))
+
+if ($GtaPath) {
+    $Importer = Join-Path $PSScriptRoot "tools\import_samp_objects.py"
+    $Python = Get-Command python.exe -ErrorAction SilentlyContinue
+    if (-not $Python) { throw "Import obiektów SA-MP wymaga Python 3 w PATH." }
+    if (-not (Test-Path (Join-Path $GtaPath "SAMP\SAMP.ide"))) {
+        throw "Wskazany katalog GTA nie zawiera SAMP\SAMP.ide: $GtaPath"
+    }
+    & $Python.Source $Importer --gta $GtaPath --resource $ModelsResource
+    if ($LASTEXITCODE -ne 0) { throw "Import pełnego katalogu obiektów SA-MP nie powiódł się." }
+}
 
 $ServerConfigPath = Join-Path $MtaServerRoot "mods\deathmatch\mtaserver.conf"
 if (-not (Test-Path $ServerConfigPath)) {
