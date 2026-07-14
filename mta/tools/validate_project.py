@@ -124,6 +124,14 @@ def main() -> int:
         mta / "vendor/colandreas/UPSTREAM.md"
     ).read_text(encoding="utf-8"):
         fail("Vendored ColAndreas commit is not documented")
+    amx_module = (mta / "vendor/mta-amx/amx-deps/src/ml_base.cpp").read_text(
+        encoding="utf-8"
+    )
+    amx_build = (mta / "vendor/mta-amx/amx-deps/src/premake5.lua").read_text(
+        encoding="utf-8"
+    )
+    if "WSAStartup(MAKEWORD(2, 2)" not in amx_module or '"Ws2_32"' not in amx_build:
+        fail("AMX module does not initialize Winsock for legacy network plugins")
 
     compatibility = (mta / "vendor/mta-amx/amx/server/mrp_compat.lua").read_text(
         encoding="utf-8"
@@ -226,7 +234,11 @@ def main() -> int:
     amx_loader = (
         mta / "vendor/mta-amx/amx/server/amx.lua"
     ).read_text(encoding="utf-8")
-    if "debug.sethook(nil)" not in amx_loader or "debug.sethook(watchdogHook" not in amx_loader:
+    if (
+        "debug.sethook(nil)" not in amx_loader
+        or "type(watchdogHook) == 'function'" not in amx_loader
+        or "debug.sethook(watchdogHook" not in amx_loader
+    ):
         fail("Heavy Pawn initialization is not isolated from and restored to the MTA watchdog")
 
     models_client = (

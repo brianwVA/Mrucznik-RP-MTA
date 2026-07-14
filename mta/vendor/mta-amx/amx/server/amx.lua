@@ -180,7 +180,10 @@ function loadAMX(fileName, res)
 			function() initResult = procCallOnAll('OnGameModeInit') end,
 			debug.traceback
 		)
-		if watchdogHook then
+		-- MTA exposes its native watchdog as the string "external hook".
+		-- Lua cannot reinstall that sentinel with debug.sethook; it is managed by
+		-- the host.  Restore only ordinary Lua hooks returned as functions.
+		if type(watchdogHook) == 'function' then
 			debug.sethook(watchdogHook, watchdogMask, watchdogCount)
 		end
 		if not ok then error(initError, 0) end

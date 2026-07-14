@@ -59,7 +59,7 @@ solution "king"
 			linkoptions { "-Wl,-rpath=x64" }
 
 		filter "system:windows"
-			links { "lua5.1", "sqlite3" }
+			links { "lua5.1", "sqlite3", "Ws2_32" }
 
 		filter {}
 			links "amx"

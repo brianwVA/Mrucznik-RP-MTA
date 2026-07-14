@@ -233,6 +233,7 @@ jobs:
           }
           if ($logs -match "Invalid model id") { throw "A required SA-MP model was not translated to MTA" }
           if ($logs -match "Infinite/too long execution|Aborting; infinite running script") { throw "Pawn startup exceeded the MTA execution watchdog" }
+          if ($logs -match "bad argument #1 to 'sethook'|amx\\server\\amx\.lua:[0-9]+:.*sethook") { throw "AMX watchdog hook handling failed" }
           if ($logs -match "mapmanager: map resource could not be started") { throw "Mrucznik map resource did not follow the gamemode lifecycle" }
           if ($logs -notmatch "MYSQL: Polaczono sie z baza MySQL") { throw "Pawn gamemode did not connect to MySQL" }
           if ($logs -notmatch "REDIS: Po") { throw "Pawn gamemode did not connect to Redis" }

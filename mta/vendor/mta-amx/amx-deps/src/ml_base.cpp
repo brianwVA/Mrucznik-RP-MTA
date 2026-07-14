@@ -28,6 +28,10 @@ ILuaModuleManager10 *pModuleManager = NULL;
 lua_State *mainVM = NULL;
 extern map < AMX *, AMXPROPS > loadedAMXs;
 
+#ifdef WIN32
+static bool winsockInitialized = false;
+#endif
+
 enum PLUGIN_DATA_TYPE
 {
 	PLUGIN_DATA_LOGPRINTF		= 0x00,	// void (*logprintf)(char* format, ...)
@@ -88,6 +92,14 @@ void *amxFunctions[] = {
 
 MTAEXPORT bool InitModule(ILuaModuleManager10 *pManager, char *szModuleName, char *szAuthor, float *fVersion)
 {
+	#ifdef WIN32
+	WSADATA winsockData;
+	if (WSAStartup(MAKEWORD(2, 2), &winsockData) != 0) {
+		return false;
+	}
+	winsockInitialized = true;
+	#endif
+
 	pModuleManager = pManager;
 
 	// Set the module info
@@ -205,5 +217,11 @@ MTAEXPORT bool DoPulse(void)
 
 MTAEXPORT bool ShutdownModule(void)
 {
+	#ifdef WIN32
+	if (winsockInitialized) {
+		WSACleanup();
+		winsockInitialized = false;
+	}
+	#endif
 	return true;
 }
