@@ -1,0 +1,38 @@
+name: Build patched MTA AMX module x86
+
+on:
+  push:
+    paths:
+      - "mta/vendor/mta-amx/amx-deps/src/**"
+      - "mta/build-amx.ps1"
+      - ".github/workflows/build-amx.yml"
+  pull_request:
+    paths:
+      - "mta/vendor/mta-amx/amx-deps/src/**"
+      - "mta/build-amx.ps1"
+      - ".github/workflows/build-amx.yml"
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: false
+          lfs: false
+      - name: Build patched AMX module
+        shell: pwsh
+        run: >-
+          ./mta/build-amx.ps1
+          -OutputDirectory ./artifacts/amx
+      - name: Verify artifact
+        shell: pwsh
+        run: |
+          if (-not (Test-Path ./artifacts/amx/king.dll)) { throw "Missing DLL" }
+          Get-FileHash -Algorithm SHA256 ./artifacts/amx/king.dll
+      - uses: actions/upload-artifact@v4
+        with:
+          name: king-mrucznik-mta-amx-windows-x86
+          path: artifacts/amx/king.dll
+          if-no-files-found: error

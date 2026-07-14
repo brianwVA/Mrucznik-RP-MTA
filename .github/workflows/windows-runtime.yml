@@ -131,6 +131,12 @@ jobs:
           -VcpkgRoot $env:VCPKG_INSTALLATION_ROOT
           -OutputDirectory C:\mrp-test\colandreas
 
+      - name: Build patched AMX module
+        shell: pwsh
+        run: >-
+          ./mta/build-amx.ps1
+          -OutputDirectory C:\mrp-test\amx-module
+
       - name: Install MTA and complete Mrucznik runtime
         shell: pwsh
         run: |
@@ -145,6 +151,7 @@ jobs:
           $serverRoot = $serverExe.Directory.FullName
           Set-Content C:\mrp-test\server-root.txt $serverRoot
           ./mta/setup.ps1 -MtaServerRoot $serverRoot -ColAndreasDll C:\mrp-test\colandreas\ColAndreas.dll `
+            -KingDll C:\mrp-test\amx-module\king.dll `
             -MysqlHost 127.0.0.1 -MysqlUser samp -MysqlDatabase mrucznik -MysqlPassword funia `
             -RedisHost 127.0.0.1 -RedisPort 6379
 

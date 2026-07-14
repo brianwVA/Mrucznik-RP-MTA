@@ -61,7 +61,10 @@ static cell AMX_NATIVE_CALL n_samp(AMX *amx, const cell *params, const char* fnN
 	}
 }
 
-constexpr size_t MAX_SAMP_NATIVES = 700; // Should be enough for now
+// The upstream table contains 702 entries and Mrucznik adds further 0.3.DL
+// and plugin compatibility natives. Keep enough generated wrappers for the
+// complete runtime instead of silently truncating the registration table.
+constexpr size_t MAX_SAMP_NATIVES = 1024;
 
 const char** boundNativeNames[MAX_SAMP_NATIVES];
 AMX_NATIVE boundNatives[MAX_SAMP_NATIVES];
@@ -482,7 +485,7 @@ void initSAMPSyscalls() {
 	lua_pushnil(mainVM);
 	while(lua_next(mainVM, -2)) {
 		if (i >= MAX_SAMP_NATIVES) {
-			pModuleManager->ErrorPrintf("syscall count exceeded MAX_SAMP_NATIVES (%d) definition - Recompile with higher value");
+			pModuleManager->ErrorPrintf("syscall count exceeded MAX_SAMP_NATIVES (%d) definition - Recompile with higher value", MAX_SAMP_NATIVES);
 			break;
 		}
 

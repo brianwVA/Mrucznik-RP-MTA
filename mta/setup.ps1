@@ -6,6 +6,9 @@ param(
     [Parameter(Mandatory = $true)]
     [string]$ColAndreasDll,
 
+    [Parameter(Mandatory = $true)]
+    [string]$KingDll,
+
     [string]$MysqlHost = "127.0.0.1",
     [string]$MysqlUser = "samp",
     [string]$MysqlDatabase = "mrucznik",
@@ -59,6 +62,9 @@ if (-not (Test-Path $PluginLockPath)) {
 if (-not (Test-Path $ColAndreasDll)) {
     throw "Brak ColAndreas.dll z workflow build-colandreas: $ColAndreasDll"
 }
+if (-not (Test-Path $KingDll)) {
+    throw "Brak king.dll z workflow build-amx: $KingDll"
+}
 
 $Work = Join-Path $env:TEMP "mrp-mta-setup"
 if (Test-Path $Work) { Remove-Item -Recurse -Force $Work }
@@ -71,6 +77,7 @@ if ($ActualHash -ne $AmxSha256) {
     throw "Niepoprawna suma SHA-256 amx.zip: $ActualHash"
 }
 Expand-Archive -Path $AmxZip -DestinationPath $MtaServerRoot -Force
+Copy-Item $KingDll (Join-Path $MtaServerRoot "king.dll") -Force
 
 $ObjectPreviewZip = Join-Path $Work "object_preview.zip"
 Invoke-WebRequest -UseBasicParsing -Uri $ObjectPreviewPage -SessionVariable ObjectPreviewSession | Out-Null

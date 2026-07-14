@@ -23,13 +23,17 @@ docker compose -f mta/docker-compose.database.yml up -d
 .\mta\setup.ps1 `
   -MtaServerRoot "C:\Program Files (x86)\MTA San Andreas 1.6\server" `
   -ColAndreasDll ".\artifacts\ColAndreas.dll" `
+  -KingDll ".\artifacts\king.dll" `
   -MysqlHost "127.0.0.1" -MysqlUser "samp" `
   -MysqlDatabase "mrucznik" -MysqlPassword "funia" `
   -RedisHost "127.0.0.1" -RedisPort 6379
 ```
 
 DLL ColAndreas jest artefaktem workflow `Build ColAndreas x86`; lokalnie można ją
-utworzyć przez `mta/build-colandreas.ps1`. Instalator weryfikuje sumy SHA-256
+utworzyć przez `mta/build-colandreas.ps1`. Zmodyfikowany moduł `king.dll` jest
+artefaktem workflow `Build patched MTA AMX module x86` i lokalnie powstaje przez
+`mta/build-amx.ps1`. Ma zwiększony, wymagany przez pełny katalog Mrucznika limit
+natywów Pawn. Instalator weryfikuje sumy SHA-256
 warstwy AMX, zasobu Object Preview 0.7.0 i wszystkich gotowych pluginów, wypakowuje dokładny
 `Mrucznik-RP.amx` z oryginalnego archiwum Git LFS oraz kopiuje `scriptfiles`,
 cztery aktywne filterscripty, 81 skinów i komplet 4426 plików Vice City. Publiczne hasło `funia` służy wyłącznie
