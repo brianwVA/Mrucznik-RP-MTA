@@ -49,10 +49,27 @@ jobs:
             throw "serverfiles.tar.gz is an LFS pointer"
           }
 
+      - name: Assemble exact transfer-package layout
+        shell: pwsh
+        run: |
+          $package = "C:\mrp-transfer-package"
+          New-Item -ItemType Directory -Force "$package\binaries" | Out-Null
+          New-Item -ItemType Directory -Force "$package\payload" | Out-Null
+          Copy-Item ./mta/windows/*.ps1 $package
+          Copy-Item ./mta/windows/*.md $package
+          Copy-Item ./mta/windows/binaries/* "$package\binaries" -Recurse
+          Copy-Item ./serverfiles.tar.gz "$package\payload\serverfiles.tar.gz"
+          Copy-Item ./database "$package\payload\database" -Recurse
+          Copy-Item ./mta "$package\payload\mta" -Recurse
+          Remove-Item "$package\payload\mta\windows" -Recurse -Force
+          if (-not (Test-Path "$package\payload\mta\setup.ps1")) {
+            throw "Transfer package layout is incomplete"
+          }
+
       - name: Install package and execute full runtime test
         shell: pwsh
         run: >-
-          ./mta/windows/Install-MrucznikMTA.ps1
+          C:\mrp-transfer-package\Install-MrucznikMTA.ps1
           -InstallRoot C:\Mrucznik-RP-MTA
 
       - name: Upload package diagnostics
@@ -72,4 +89,3 @@ jobs:
           if (Test-Path C:\Mrucznik-RP-MTA\Stop-MrucznikMTA.ps1) {
             & C:\Mrucznik-RP-MTA\Stop-MrucznikMTA.ps1 -InstallRoot C:\Mrucznik-RP-MTA
           }
-

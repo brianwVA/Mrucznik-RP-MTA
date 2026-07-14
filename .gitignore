@@ -123,3 +123,6 @@ mta/server/mods/deathmatch/resources/amx/scriptfiles/
 # Turnkey Windows package contains three pinned and checksum-verified binaries.
 !mta/windows/binaries/*.dll
 !mta/windows/binaries/*.exe
+
+# Locally assembled transfer packages are release artifacts, not source files.
+dist/
