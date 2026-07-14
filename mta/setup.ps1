@@ -77,7 +77,14 @@ if ($ActualHash -ne $AmxSha256) {
     throw "Niepoprawna suma SHA-256 amx.zip: $ActualHash"
 }
 Expand-Archive -Path $AmxZip -DestinationPath $MtaServerRoot -Force
-Copy-Item $KingDll (Join-Path $MtaServerRoot "king.dll") -Force
+$ModuleDirectory = Join-Path $MtaServerRoot "mods\deathmatch\modules"
+New-Item -ItemType Directory -Force $ModuleDirectory | Out-Null
+$InstalledKingDll = Join-Path $ModuleDirectory "king.dll"
+Copy-Item $KingDll $InstalledKingDll -Force
+if ((Get-FileHash -Algorithm SHA256 $InstalledKingDll).Hash -ne
+    (Get-FileHash -Algorithm SHA256 $KingDll).Hash) {
+    throw "Podmiana modułu king.dll nie zachowała oczekiwanych bajtów."
+}
 
 $ObjectPreviewZip = Join-Path $Work "object_preview.zip"
 Invoke-WebRequest -UseBasicParsing -Uri $ObjectPreviewPage -SessionVariable ObjectPreviewSession | Out-Null
