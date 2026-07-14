@@ -29,6 +29,8 @@ $AmxUrl = "https://github.com/multitheftauto/amx/releases/download/$AmxVersion/a
 $ObjectPreviewSha256 = "17f3455d20083782e897fe9bb7ce45f0349d1fd2fc74975a990db1f8344f7625"
 $ObjectPreviewPage = "https://community.multitheftauto.com/index.php?p=resources&resource=11836&s=download&selectincludes=1"
 $ObjectPreviewUrl = "https://community.multitheftauto.com/modules/resources/doDownload.php?file=object_preview_0.7.0.zip&name=object_preview.zip"
+$Vc2010RedistUrl = "https://download.microsoft.com/download/1/6/5/165255E7-1014-4D0A-B094-B6A430A6BFFC/vcredist_x86.exe"
+$Vc2010RedistSha256 = "99dce3c841cc6028560830f7866c9ce2928c98cf3256892ef8e6cf755147b0d8"
 
 function Invoke-BoundedDownload {
     param(
@@ -69,6 +71,17 @@ if (-not (Test-Path $KingDll)) {
 $Work = Join-Path $env:TEMP "mrp-mta-setup"
 if (Test-Path $Work) { Remove-Item -Recurse -Force $Work }
 New-Item -ItemType Directory -Force $Work | Out-Null
+
+$Vc2010Redist = Join-Path $Work "vcredist2010-x86.exe"
+Invoke-BoundedDownload -Uri $Vc2010RedistUrl -OutFile $Vc2010Redist
+$ActualHash = (Get-FileHash -Algorithm SHA256 $Vc2010Redist).Hash.ToLowerInvariant()
+if ($ActualHash -ne $Vc2010RedistSha256) {
+    throw "Niepoprawna suma SHA-256 vcredist2010-x86.exe: $ActualHash"
+}
+$VcInstall = Start-Process $Vc2010Redist -ArgumentList @("/q", "/norestart") -Wait -PassThru
+if ($VcInstall.ExitCode -notin @(0, 1638, 3010)) {
+    throw "Instalacja Visual C++ 2010 x86 zakończyła się kodem $($VcInstall.ExitCode)."
+}
 
 $AmxZip = Join-Path $Work "amx.zip"
 Invoke-WebRequest -Uri $AmxUrl -OutFile $AmxZip

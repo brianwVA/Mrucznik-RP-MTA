@@ -8,6 +8,7 @@ Port zachowuje oryginalny gamemode Pawn jako wykonywalną bazę zgodności wewn�
 - PowerShell 5.1 lub nowszy
 - repozytorium pobrane wraz z Git LFS
 - MySQL zgodny z dostarczonym schematem
+- uprawnienia administratora do cichej instalacji oficjalnego Visual C++ 2010 x86
 
 Wersja x86 jest obecnie wymagana przez wydanie binarne modułu MTA AMX. Nie należy traktować jej jako finalnej platformy produkcyjnej; służy do testów zgodności podczas natywnej migracji Lua.
 
@@ -34,7 +35,8 @@ utworzyć przez `mta/build-colandreas.ps1`. Zmodyfikowany moduł `king.dll` jest
 artefaktem workflow `Build patched MTA AMX module x86` i lokalnie powstaje przez
 `mta/build-amx.ps1`. Ma zwiększony, wymagany przez pełny katalog Mrucznika limit
 natywów Pawn. Instalator weryfikuje sumy SHA-256
-warstwy AMX, zasobu Object Preview 0.7.0 i wszystkich gotowych pluginów, wypakowuje dokładny
+warstwy AMX, oficjalnego Visual C++ 2010 x86 wymaganego przez profiler, zasobu
+Object Preview 0.7.0 i wszystkich gotowych pluginów, wypakowuje dokładny
 `Mrucznik-RP.amx` z oryginalnego archiwum Git LFS oraz kopiuje `scriptfiles`,
 cztery aktywne filterscripty, 81 skinów i komplet 4426 plików Vice City. Publiczne hasło `funia` służy wyłącznie
 lokalnej bazie deweloperskiej; dane produkcyjne i tokeny nie są wpisywane do
