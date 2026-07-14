@@ -36,18 +36,6 @@
       }
     },
     {
-      "name": "mysql",
-      "version": "R5-1",
-      "url": "https://github.com/gumbalowsky/mysql-R5/releases/download/v1/mysql-r5-win.zip",
-      "sha256": "9f2ed594ae5e2ac122bf3bb2e56bd7372e7a8e1354b90bf85ce1feb65e27ac1d",
-      "archive": "zip",
-      "load_name": "mysql",
-      "files": {
-        "plugins/mysql.dll": "plugins/mysql.dll",
-        "libmysql.dll": "plugins/libmysql.dll"
-      }
-    },
-    {
       "name": "libRegEx",
       "version": "0.2.4",
       "url": "https://github.com/MrucznikRolePlay/Regular-Expressions-Plugin-sampctl/releases/download/v0.2.4/regex-v0.2-win.zip",
@@ -107,17 +95,6 @@
       }
     },
     {
-      "name": "redis",
-      "version": "1.2.0",
-      "url": "https://github.com/Southclaws/pawn-redis/releases/download/1.2.0/redis.dll",
-      "sha256": "37d7adc8ade3cd24a54d77878ef8f262a4d092bef7c829e3718f92b26e47a09a",
-      "archive": "file",
-      "load_name": "redis",
-      "files": {
-        ".": "plugins/redis.dll"
-      }
-    },
-    {
       "name": "discord-connector",
       "version": "0.3.6-pre",
       "url": "https://github.com/maddinat0r/samp-discord-connector/releases/download/v0.3.6-pre/discord-connector-v0.3.6-pre-win32.zip",
@@ -161,6 +138,14 @@
     {
       "name": "bscrashfix",
       "reason": "Łata pamięć serwera SA-MP; poprawki nie dotyczą procesu serwera MTA."
+    },
+    {
+      "name": "mysql R5",
+      "reason": "Natywne API R5 zachowuje mrp_databases, używając wbudowanego sterownika MySQL MTA."
+    },
+    {
+      "name": "pawn-redis",
+      "reason": "Używany przez AMX interfejs key-value, kody statusu i TTL zachowuje trwały adapter mrp_databases."
     }
   ]
 }

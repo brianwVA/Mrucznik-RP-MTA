@@ -48,7 +48,7 @@ def main() -> int:
     }
     if set(programs) != expected_programs:
         fail("Native catalog does not cover every runtime AMX")
-    if plugins.get("platform") != "windows-x86" or len(plugins.get("plugins", [])) != 12:
+    if plugins.get("platform") != "windows-x86" or len(plugins.get("plugins", [])) != 10:
         fail("Unexpected Windows plugin lock inventory")
     plugin_names = [plugin["name"] for plugin in plugins["plugins"]]
     load_names = [plugin["load_name"] for plugin in plugins["plugins"]]
@@ -74,7 +74,7 @@ def main() -> int:
         if plugins.get("allowed_overwrites", {}).get(destination) != owners[-1]:
             fail(f"Undeclared plugin overwrite for {destination}: {owners}")
     replaced = {item["name"] for item in plugins.get("replaced_by_mta", [])}
-    if replaced != {"Pawn.RakNet", "bscrashfix"}:
+    if replaced != {"Pawn.RakNet", "bscrashfix", "mysql R5", "pawn-redis"}:
         fail("Unexpected set of SA-MP process plugins replaced by MTA")
     built_load_names = {plugin["load_name"] for plugin in plugins.get("built_plugins", [])}
     imported_providers = set(natives["provider_counts"]) - {
@@ -132,11 +132,9 @@ def main() -> int:
     )
     if "WSAStartup(MAKEWORD(2, 2)" not in amx_module or '"Ws2_32"' not in amx_build:
         fail("AMX module does not initialize Winsock for legacy network plugins")
-    if "registerWithDatabaseTrace" not in amx_module or "[MRP DB TRACE]" not in amx_module:
-        fail("AMX module does not expose safe database connection diagnostics")
-
-    compatibility = (mta / "vendor/mta-amx/amx/server/mrp_compat.lua").read_text(
-        encoding="utf-8"
+    compatibility = "\n".join(
+        (mta / f"vendor/mta-amx/amx/server/{name}").read_text(encoding="utf-8")
+        for name in ("mrp_compat.lua", "mrp_databases.lua")
     )
     compatibility_natives = {
         native["name"]

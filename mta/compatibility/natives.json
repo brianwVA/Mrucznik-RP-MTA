@@ -144,12 +144,10 @@
     "discord-connector": 2,
     "libRegEx": 6,
     "log-plugin": 3,
-    "mrp-mta-compat": 14,
+    "mrp-mta-compat": 35,
     "mta-amx-core": 331,
-    "mysql": 14,
     "pawn-memory": 13,
     "profiler": 4,
-    "redis": 7,
     "requests": 7,
     "sscanf": 6,
     "streamer": 70
@@ -1468,72 +1466,72 @@
     {
       "name": "mysql_connect",
       "occurrences": 1,
-      "provider": "mysql"
+      "provider": "mrp-mta-compat"
     },
     {
       "name": "mysql_debug",
       "occurrences": 1,
-      "provider": "mysql"
+      "provider": "mrp-mta-compat"
     },
     {
       "name": "mysql_fetch_field_row",
       "occurrences": 1,
-      "provider": "mysql"
+      "provider": "mrp-mta-compat"
     },
     {
       "name": "mysql_fetch_int",
       "occurrences": 1,
-      "provider": "mysql"
+      "provider": "mrp-mta-compat"
     },
     {
       "name": "mysql_fetch_row_format",
       "occurrences": 1,
-      "provider": "mysql"
+      "provider": "mrp-mta-compat"
     },
     {
       "name": "mysql_free_result",
       "occurrences": 1,
-      "provider": "mysql"
+      "provider": "mrp-mta-compat"
     },
     {
       "name": "mysql_insert_id",
       "occurrences": 1,
-      "provider": "mysql"
+      "provider": "mrp-mta-compat"
     },
     {
       "name": "mysql_num_rows",
       "occurrences": 1,
-      "provider": "mysql"
+      "provider": "mrp-mta-compat"
     },
     {
       "name": "mysql_ping",
       "occurrences": 1,
-      "provider": "mysql"
+      "provider": "mrp-mta-compat"
     },
     {
       "name": "mysql_query",
       "occurrences": 1,
-      "provider": "mysql"
+      "provider": "mrp-mta-compat"
     },
     {
       "name": "mysql_real_escape_string",
       "occurrences": 1,
-      "provider": "mysql"
+      "provider": "mrp-mta-compat"
     },
     {
       "name": "mysql_reconnect",
       "occurrences": 1,
-      "provider": "mysql"
+      "provider": "mrp-mta-compat"
     },
     {
       "name": "mysql_retrieve_row",
       "occurrences": 1,
-      "provider": "mysql"
+      "provider": "mrp-mta-compat"
     },
     {
       "name": "mysql_store_result",
       "occurrences": 1,
-      "provider": "mysql"
+      "provider": "mrp-mta-compat"
     },
     {
       "name": "NetStats_GetConnectedTime",
@@ -1743,37 +1741,37 @@
     {
       "name": "Redis_Command",
       "occurrences": 1,
-      "provider": "redis"
+      "provider": "mrp-mta-compat"
     },
     {
       "name": "Redis_Connect",
       "occurrences": 1,
-      "provider": "redis"
+      "provider": "mrp-mta-compat"
     },
     {
       "name": "Redis_Exists",
       "occurrences": 1,
-      "provider": "redis"
+      "provider": "mrp-mta-compat"
     },
     {
       "name": "Redis_GetInt",
       "occurrences": 1,
-      "provider": "redis"
+      "provider": "mrp-mta-compat"
     },
     {
       "name": "Redis_GetString",
       "occurrences": 1,
-      "provider": "redis"
+      "provider": "mrp-mta-compat"
     },
     {
       "name": "Redis_SetInt",
       "occurrences": 1,
-      "provider": "redis"
+      "provider": "mrp-mta-compat"
     },
     {
       "name": "Redis_SetString",
       "occurrences": 1,
-      "provider": "redis"
+      "provider": "mrp-mta-compat"
     },
     {
       "name": "regex_exbuild",

@@ -32,67 +32,6 @@ extern map < AMX *, AMXPROPS > loadedAMXs;
 static bool winsockInitialized = false;
 #endif
 
-static AMX_NATIVE originalMysqlConnect = NULL;
-static AMX_NATIVE originalRedisConnect = NULL;
-
-static string readPawnString(AMX *amx, cell address)
-{
-	cell *physicalAddress = NULL;
-	int length = 0;
-	if (amx_GetAddr(amx, address, &physicalAddress) != AMX_ERR_NONE || !physicalAddress)
-		return "<invalid>";
-	amx_StrLen(physicalAddress, &length);
-	vector<char> value(length + 1, '\0');
-	amx_GetString(value.data(), physicalAddress, 0, value.size());
-	return string(value.data());
-}
-
-static cell AMX_NATIVE_CALL traceMysqlConnect(AMX *amx, const cell *params)
-{
-	string host = readPawnString(amx, params[1]);
-	string user = readPawnString(amx, params[2]);
-	string database = readPawnString(amx, params[3]);
-	printf("[MRP DB TRACE] mysql_connect host='%s' user='%s' database='%s' password_length=%u\n",
-		host.c_str(), user.c_str(), database.c_str(),
-		(unsigned int)readPawnString(amx, params[4]).size());
-	return originalMysqlConnect ? originalMysqlConnect(amx, params) : 0;
-}
-
-static cell AMX_NATIVE_CALL traceRedisConnect(AMX *amx, const cell *params)
-{
-	string host = readPawnString(amx, params[1]);
-	printf("[MRP DB TRACE] Redis_Connect host='%s' port=%d password_length=%u\n",
-		host.c_str(), (int)params[2],
-		(unsigned int)readPawnString(amx, params[3]).size());
-	return originalRedisConnect ? originalRedisConnect(amx, params) : 1;
-}
-
-static int AMXAPI registerWithDatabaseTrace(AMX *amx, const AMX_NATIVE_INFO *nativeList, int number)
-{
-	vector<AMX_NATIVE_INFO> traced;
-	int count = number;
-	if (count < 0) {
-		count = 0;
-		while (nativeList[count].name != NULL)
-			count++;
-	}
-	traced.reserve(count + (number < 0 ? 1 : 0));
-	for (int index = 0; index < count; index++) {
-		AMX_NATIVE_INFO native = nativeList[index];
-		if (strcmp(native.name, "mysql_connect") == 0) {
-			originalMysqlConnect = native.func;
-			native.func = traceMysqlConnect;
-		} else if (strcmp(native.name, "Redis_Connect") == 0) {
-			originalRedisConnect = native.func;
-			native.func = traceRedisConnect;
-		}
-		traced.push_back(native);
-	}
-	if (number < 0)
-		traced.push_back({ NULL, NULL });
-	return amx_Register(amx, traced.data(), number);
-}
-
 enum PLUGIN_DATA_TYPE
 {
 	PLUGIN_DATA_LOGPRINTF		= 0x00,	// void (*logprintf)(char* format, ...)
@@ -138,7 +77,7 @@ void *amxFunctions[] = {
 	(void*)&amx_PushArray,
 	(void*)&amx_PushString,
 	(void*)&amx_RaiseError,
-	(void*)&registerWithDatabaseTrace,
+	(void*)&amx_Register,
 	(void*)&amx_Release,
 	(void*)&amx_SetCallback,
 	(void*)&amx_SetDebugHook,

@@ -39,6 +39,27 @@ CUSTOM_NATIVES = {
     "BS_SetWriteOffset",
     "BS_WriteValue",
     "BS_ReadValue",
+    "mysql_connect",
+    "mysql_debug",
+    "mysql_fetch_field_row",
+    "mysql_fetch_int",
+    "mysql_fetch_row_format",
+    "mysql_free_result",
+    "mysql_insert_id",
+    "mysql_num_rows",
+    "mysql_ping",
+    "mysql_query",
+    "mysql_real_escape_string",
+    "mysql_reconnect",
+    "mysql_retrieve_row",
+    "mysql_store_result",
+    "Redis_Command",
+    "Redis_Connect",
+    "Redis_Exists",
+    "Redis_GetInt",
+    "Redis_GetString",
+    "Redis_SetInt",
+    "Redis_SetString",
 }
 
 
@@ -103,10 +124,6 @@ def provider(name: str) -> str:
         return "pawn-memory"
     if name.startswith("DCC_"):
         return "discord-connector"
-    if name.startswith("mysql_"):
-        return "mysql"
-    if name.startswith("Redis_"):
-        return "redis"
     if name.startswith("regex_"):
         return "libRegEx"
     if name.startswith("Profiler_"):

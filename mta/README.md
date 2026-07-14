@@ -7,7 +7,7 @@ Port zachowuje oryginalny gamemode Pawn jako wykonywalną bazę zgodności wewn�
 - MTA:SA Server 1.6, Windows x86 (32-bit)
 - PowerShell 5.1 lub nowszy
 - repozytorium pobrane wraz z Git LFS
-- MySQL 5.7 zgodny z dostarczonym schematem i starym pluginem R5
+- MySQL 5.7 zgodny z dostarczonym schematem i API starego pluginu R5
 - uprawnienia administratora do cichej instalacji oficjalnego Visual C++ 2010 x86
 
 Wersja x86 jest obecnie wymagana przez wydanie binarne modułu MTA AMX. Nie należy traktować jej jako finalnej platformy produkcyjnej; służy do testów zgodności podczas natywnej migracji Lua.
@@ -46,7 +46,10 @@ lokalnej bazie deweloperskiej; dane produkcyjne i tokeny nie są wpisywane do
 repozytorium.
 
 Instalator sam pobiera zgodne pluginy wymienione w `mta/plugins.lock.json` i
-wpisuje je do ustawienia `amx.plugins`. Parametry MySQL są zapisywane wyłącznie
+wpisuje je do ustawienia `amx.plugins`. Nieutrzymywane binaria MySQL R5 i
+pawn-redis zastępuje `mrp_databases.lua`: zachowuje ich API oczekiwane przez
+AMX, a używa sterownika MySQL MTA i trwałego magazynu key-value z TTL.
+Parametry MySQL są zapisywane wyłącznie
 w instalacji serwera MTA. Ręcznie trzeba zezwolić zasobowi `amx` na żądane
 prawa ACL, a następnie zrestartować `amx` i `amx-mrucznik`. Gamemode
 Warstwa AMX oraz cztery aktywne filterscripty są skonfigurowane do
