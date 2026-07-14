@@ -178,11 +178,12 @@ jobs:
           $stdout = $process.StandardOutput.ReadToEndAsync()
           $stderr = $process.StandardError.ReadToEndAsync()
           Start-Sleep -Seconds 45
-          if ($process.HasExited) {
-            throw "MTA server exited during the 45-second startup window with code $($process.ExitCode)"
+          $exitedEarly = $process.HasExited
+          $earlyExitCode = if ($exitedEarly) { $process.ExitCode } else { $null }
+          if (-not $exitedEarly) {
+            $process.StandardInput.WriteLine("shutdown")
+            if (-not $process.WaitForExit(15000)) { $process.Kill(); $process.WaitForExit() }
           }
-          $process.StandardInput.WriteLine("shutdown")
-          if (-not $process.WaitForExit(15000)) { $process.Kill(); $process.WaitForExit() }
           $output = $stdout.Result + "`n" + $stderr.Result
           Set-Content C:\mrp-test\mta-console.log $output
 
@@ -191,6 +192,9 @@ jobs:
             $logs += "`n===== $($_.Name) =====`n" + (Get-Content $_.FullName -Raw)
           }
           Set-Content C:\mrp-test\mta-combined.log $logs
+          if ($exitedEarly) {
+            throw "MTA server exited during the 45-second startup window with code $earlyExitCode"
+          }
           if ($logs -notmatch "Loading 'Mrucznik-RP\.amx'") { throw "Mrucznik-RP.amx was not loaded" }
           if ($logs -match "Error loading 'Mrucznik-RP\.amx'|amx module .* isn't loaded") { throw "AMX runtime failed to load the gamemode" }
           if ($logs -match "Unable to load filterscript '(animy|realtime|sobeitblock|SAN_extPSq)'") { throw "An original filterscript failed to load" }
