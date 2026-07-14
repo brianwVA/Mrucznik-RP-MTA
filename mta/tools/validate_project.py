@@ -132,6 +132,8 @@ def main() -> int:
     )
     if "WSAStartup(MAKEWORD(2, 2)" not in amx_module or '"Ws2_32"' not in amx_build:
         fail("AMX module does not initialize Winsock for legacy network plugins")
+    if "registerWithDatabaseTrace" not in amx_module or "[MRP DB TRACE]" not in amx_module:
+        fail("AMX module does not expose safe database connection diagnostics")
 
     compatibility = (mta / "vendor/mta-amx/amx/server/mrp_compat.lua").read_text(
         encoding="utf-8"
