@@ -281,7 +281,8 @@ if (-not (Test-Path $ServerConfigPath)) {
     throw "Brak mods\deathmatch\mtaserver.conf w instalacji MTA."
 }
 [xml]$ServerConfig = Get-Content $ServerConfigPath
-if (-not ($ServerConfig.config.module | Where-Object { $_.src -eq "king.dll" })) {
+$ExistingModules = @($ServerConfig.SelectNodes("/config/module"))
+if (-not ($ExistingModules | Where-Object { $_.src -eq "king.dll" })) {
     $ModuleNode = $ServerConfig.CreateElement("module")
     $ModuleNode.SetAttribute("src", "king.dll")
     [void]$ServerConfig.config.AppendChild($ModuleNode)
