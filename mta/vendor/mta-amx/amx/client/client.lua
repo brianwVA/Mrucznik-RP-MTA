@@ -22,6 +22,7 @@ setmetatable(g_Vehicles, defaultEmptyTableMt)
 
 g_Menus = {}
 g_PlayerObjects = {}
+g_PlayerObjectCollisionProxies = {}
 g_TextDraws = {}
 g_TextLabels = {}
 g_Blips = {}
@@ -151,6 +152,7 @@ function destroyGlobalElements()
 
 	table.each(g_Blips, destroyElement)
 	table.each(g_PlayerObjects, destroyElement)
+	table.each(g_PlayerObjectCollisionProxies, destroyElement)
 end
 
 function gamemodeUnload()
@@ -552,6 +554,10 @@ function AttachPlayerObjectToPlayer(objID, attachPlayer, offsetX, offsetY, offse
 		return
 	end
 	attachElements(obj, attachPlayer, offsetX, offsetY, offsetZ, rX, rY, rZ)
+	local proxy = g_PlayerObjectCollisionProxies[objID]
+	if isElement(proxy) then
+		attachElements(proxy, attachPlayer, offsetX, offsetY, offsetZ, rX, rY, rZ)
+	end
 end
 
 function AttachPlayerObjectToVehicle(objID, attachVehicle, offsetX, offsetY, offsetZ, rX, rY, rZ)
@@ -560,6 +566,10 @@ function AttachPlayerObjectToVehicle(objID, attachVehicle, offsetX, offsetY, off
 		return
 	end
 	attachElements(obj, attachVehicle, offsetX, offsetY, offsetZ, rX, rY, rZ)
+	local proxy = g_PlayerObjectCollisionProxies[objID]
+	if isElement(proxy) then
+		attachElements(proxy, attachVehicle, offsetX, offsetY, offsetZ, rX, rY, rZ)
+	end
 end
 
 function CreatePlayerObject(objID, model, x, y, z, rX, rY, rZ, customModel)
@@ -579,6 +589,7 @@ function CreatePlayerObject(objID, model, x, y, z, rX, rY, rZ, customModel)
 		setElementCollisionsEnabled(g_PlayerObjects[objID], false)
 	end
 	if customModel then
+		customModel = tonumber(customModel)
 		-- Client-side Streamer objects are not synchronized elements, so mark the
 		-- logical model locally as well. mrp_models can then reapply it after its
 		-- asynchronous registry has finished loading.
@@ -586,6 +597,18 @@ function CreatePlayerObject(objID, model, x, y, z, rX, rY, rZ, customModel)
 		local models = getResourceFromName('mrp_models')
 		if models and getResourceState(models) == 'running' then
 			call(models, 'applyObjectModel', g_PlayerObjects[objID], customModel)
+		end
+		-- SA-MP's generic wall/floor panels are the structural collision of many
+		-- interiors. MTA 1.6 renders their dynamically replaced DFF correctly but
+		-- can miss the tiny custom COL on client-only Streamer objects. Keep an
+		-- invisible stock collision panel in exactly the same transform.
+		if customModel and customModel >= 19377 and customModel <= 19379 then
+			local proxy = createObject(3095, x, y, z, rX, rY, rZ)
+			if proxy then
+				setElementAlpha(proxy, 0)
+				setElementCollisionsEnabled(proxy, true)
+				g_PlayerObjectCollisionProxies[objID] = proxy
+			end
 		end
 	end
 end
@@ -597,6 +620,9 @@ function DestroyPlayerObject(objID)
 	end
 	destroyElement(obj)
 	g_PlayerObjects[objID] = nil
+	local proxy = g_PlayerObjectCollisionProxies[objID]
+	if isElement(proxy) then destroyElement(proxy) end
+	g_PlayerObjectCollisionProxies[objID] = nil
 end
 
 function MovePlayerObject(objID, x, y, z, speed, rX, rY, rZ)
@@ -618,6 +644,8 @@ function MovePlayerObject(objID, x, y, z, speed, rX, rY, rZ)
 	if rZ <= -1000.0 then cRotZ = 0.0 end
 
 	moveObject(obj, time, x, y, z, cRotX, cRotY, cRotZ)
+	local proxy = g_PlayerObjectCollisionProxies[objID]
+	if isElement(proxy) then moveObject(proxy, time, x, y, z, cRotX, cRotY, cRotZ) end
 	return math.floor(time)
 end
 
@@ -627,6 +655,8 @@ function SetPlayerObjectPos(objID, x, y, z)
 		return
 	end
 	setElementPosition(obj, x, y, z)
+	local proxy = g_PlayerObjectCollisionProxies[objID]
+	if isElement(proxy) then setElementPosition(proxy, x, y, z) end
 end
 
 function SetPlayerObjectRot(objID, rX, rY, rZ)
@@ -635,6 +665,8 @@ function SetPlayerObjectRot(objID, rX, rY, rZ)
 		return
 	end
 	setElementRotation(obj, rX, rY, rZ)
+	local proxy = g_PlayerObjectCollisionProxies[objID]
+	if isElement(proxy) then setElementRotation(proxy, rX, rY, rZ) end
 end
 
 function SetPlayerObjectMaterial(objID, index, model, txdLib, txdName, color)
@@ -659,6 +691,8 @@ function StopPlayerObject(objID)
 		return
 	end
 	stopObject(obj)
+	local proxy = g_PlayerObjectCollisionProxies[objID]
+	if isElement(proxy) then stopObject(proxy) end
 end
 -----------------------------
 -- Audio & SFX
@@ -939,6 +973,7 @@ addEventHandler('onClientElementStreamIn', root,
 			if source == localPlayer then return end
 			triggerServerEvent('onPlayerStream_Ev', localPlayer, source, true)
 		elseif getElementType(source) == 'ped' then
+			if isElementLocal(source) then return end
 			if getElementData(source, 'ActorPed') then
 				triggerServerEvent('onActorStream_Ev', localPlayer, source, true)
 			else
@@ -971,6 +1006,7 @@ addEventHandler('onClientElementStreamOut', root,
 			if source == localPlayer then return end
 			triggerServerEvent('onPlayerStream_Ev', localPlayer, source, false)
 		elseif getElementType(source) == 'ped' then
+			if isElementLocal(source) then return end
 			if getElementData(source, 'ActorPed') then
 				triggerServerEvent('onActorStream_Ev', localPlayer, source, false)
 			else
