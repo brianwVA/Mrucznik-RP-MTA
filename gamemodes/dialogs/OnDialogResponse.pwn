@@ -11750,10 +11750,10 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
                 GetVehicleZAngle(veh, A);
                 CarData[car][c_Pos][0] = X;
                 CarData[car][c_Pos][1] = Y;
-                CarData[car][c_Pos][2] = Z;
+				CarData[car][c_Pos][2] = Z;
 				CarData[car][c_VW] = VW; //Zapisywanie VirtualWorldu
-                CarData[car][c_Rot] = A;
-                Car_Save(CarData[car][c_ID], CAR_SAVE_STATE);
+				CarData[car][c_Rot] = A;
+				Car_Save(car, CAR_SAVE_STATE);
                 Car_Unspawn(veh);
                 Car_Spawn(car);
                 new string[128];
