@@ -583,17 +583,18 @@ addEventHandler('onClientElementInteriorChange', localPlayer, syncAllPlayerObjec
 
 function CreatePlayerObject(objID, model, x, y, z, rX, rY, rZ, customModel)
 	model = tonumber(model)
-	-- A numeric range is not enough: GTA:SA object IDs contain holes. Passing
-	-- one of those holes to createObject produces the on-screen "Invalid model
-	-- id" warning. Custom SA-MP/DL objects still use the safe placeholder.
-	local validModel = not customModel and model and engineGetModelNameFromID(model) ~= false
+	-- GTA:SA object IDs contain holes. Validate against the local model bitmap:
+	-- probing engineGetModelNameFromID with an invalid ID emits a client warning.
+	local validModel = not customModel and mrpIsValidObjectModel(model)
 	local createModel = validModel and model or 1337
 	g_PlayerObjects[objID] = createObject(createModel, x, y, z, rX, rY, rZ)
 	if not g_PlayerObjects[objID] then
 		g_PlayerObjects[objID] = createObject(1337, x, y, z, rX, rY, rZ) -- Create a dummy object anyway since createobject can also be used to make camera attachments
 		setElementAlpha(g_PlayerObjects[objID], 0)
 		setElementCollisionsEnabled(g_PlayerObjects[objID], false)
-	elseif not validModel and not customModel then
+	elseif customModel or not validModel then
+		-- Never expose the 1337 placeholder. Custom models are made visible by
+		-- mrp_models only after their DFF/TXD/COL have loaded successfully.
 		setElementAlpha(g_PlayerObjects[objID], 0)
 		setElementCollisionsEnabled(g_PlayerObjects[objID], false)
 	end

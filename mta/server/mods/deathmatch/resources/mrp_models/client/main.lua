@@ -171,6 +171,10 @@ function applyObjectModel(object, customModel)
     local applied = setElementModel(object, runtimeModel)
     if applied then
         pendingObjectModels[object] = nil
+        -- PlayerObjects use an invisible, non-collidable 1337 placeholder.
+        -- Reveal the element only after the requested model really exists.
+        setElementAlpha(object, 255)
+        setElementCollisionsEnabled(object, true)
     end
     return applied
 end

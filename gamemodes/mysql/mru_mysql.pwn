@@ -697,6 +697,13 @@ public MruMySQL_LoadAccount(playerid)
 		mysql_fetch_field_row(lStr, "Pos_z"); PlayerInfo[playerid][pPos_z] = floatstr(lStr);
 		mysql_fetch_field_row(lStr, "VW"); PlayerInfo[playerid][pVW] = strval(lStr);
 		mysql_fetch_field_row(lStr, "Int"); PlayerInfo[playerid][pInt] = strval(lStr);
+		// Licencje s¹ stanem trwa³ym. Odczyt po nazwach kolumn chroni je przed
+		// przesuniêciem pól w d³ugim, historycznym formacie sscanf.
+		mysql_fetch_field_row(lStr, "CarLic"); PlayerInfo[playerid][pCarLic] = strval(lStr);
+		mysql_fetch_field_row(lStr, "FlyLic"); PlayerInfo[playerid][pFlyLic] = strval(lStr);
+		mysql_fetch_field_row(lStr, "BoatLic"); PlayerInfo[playerid][pBoatLic] = strval(lStr);
+		mysql_fetch_field_row(lStr, "FishLic"); PlayerInfo[playerid][pFishLic] = strval(lStr);
+		mysql_fetch_field_row(lStr, "GunLic"); PlayerInfo[playerid][pGunLic] = strval(lStr);
 		mysql_free_result();
 
 
@@ -1328,6 +1335,17 @@ stock MruMySQL_SetAccInt(kolumna[], nick[], wartosc)
 	mysql_real_escape_string(kolumna, kolumna);
 	format(string, sizeof(string), "UPDATE `mru_konta` SET `%s` = '%d' WHERE `Nick` = '%s'", kolumna, wartosc, nick);
 	mysql_query(string);
+	return 1;
+}
+
+stock MruMySQL_SavePlayerDocuments(playerid)
+{
+	new query[256];
+	format(query, sizeof(query), "UPDATE `mru_konta` SET `Dowod`='%d', `CarLic`='%d', `FlyLic`='%d', `BoatLic`='%d', `FishLic`='%d', `GunLic`='%d' WHERE `UID`='%d'",
+		PlayerInfo[playerid][pDowod], PlayerInfo[playerid][pCarLic], PlayerInfo[playerid][pFlyLic],
+		PlayerInfo[playerid][pBoatLic], PlayerInfo[playerid][pFishLic], PlayerInfo[playerid][pGunLic],
+		PlayerInfo[playerid][pUID]);
+	mysql_query(query);
 	return 1;
 }
 

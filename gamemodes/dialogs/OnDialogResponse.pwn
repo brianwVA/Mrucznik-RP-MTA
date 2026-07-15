@@ -4386,6 +4386,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
                 	PlayerInfo[playerid][pSprawdzczyzdalprawko] = 1;
                		ShowPlayerDialogEx(playerid, 2, DIALOG_STYLE_MSGBOX, "Zda³eœ!", "Gratulujemy!\r\nZda³eœ test na Prawo Jazdy.\r\nZg³oœ siê do Urzêdnika w celu\r\nodebrania tych dokumentów!", "OK", "");
                 	PlayerInfo[playerid][pCarLic] = 2;
+					MruMySQL_SavePlayerDocuments(playerid);
             	}
            		else
            		{
@@ -13810,6 +13811,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 					Log(payLog, INFO, "%s kupi³ licencje na latanie za %d$", GetPlayerLogName(playerid), DmvLicenseCost[listitem]);
 				}
 			}
+			MruMySQL_SavePlayerDocuments(playerid);
 			Sejf_Add(FRAC_GOV, DmvLicenseCost[listitem]);
 			ZabierzKase(playerid, DmvLicenseCost[listitem]);
 		}

@@ -86,7 +86,8 @@
 			"-Z+"
 		],
 		"includes": [
-			"./include"
+			"./include",
+			"./dependencies/sscanf"
 		],
 		"compiler": {}
 	}
