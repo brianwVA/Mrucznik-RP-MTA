@@ -70,7 +70,7 @@ jobs:
         shell: pwsh
         run: >-
           C:\mrp-transfer-package\Install-MrucznikMTA.ps1
-          -InstallRoot C:\Mrucznik-RP-MTA
+          -InstallRoot C:\M-RP-MTA
 
       - name: Upload package diagnostics
         if: always()
@@ -78,14 +78,14 @@ jobs:
         with:
           name: mrucznik-windows-package-logs
           path: |
-            C:\Mrucznik-RP-MTA\logs\*.log
-            C:\Mrucznik-RP-MTA\installation.json
+            C:\M-RP-MTA\logs\*.log
+            C:\M-RP-MTA\installation.json
           if-no-files-found: warn
 
       - name: Stop local services
         if: always()
         shell: pwsh
         run: |
-          if (Test-Path C:\Mrucznik-RP-MTA\Stop-MrucznikMTA.ps1) {
-            & C:\Mrucznik-RP-MTA\Stop-MrucznikMTA.ps1 -InstallRoot C:\Mrucznik-RP-MTA
+          if (Test-Path C:\M-RP-MTA\Stop-MrucznikMTA.ps1) {
+            & C:\M-RP-MTA\Stop-MrucznikMTA.ps1 -InstallRoot C:\M-RP-MTA
           }

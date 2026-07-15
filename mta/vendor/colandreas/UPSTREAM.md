@@ -1,4 +1,4 @@
-# ColAndreas used by Mrucznik RP
+# ColAndreas used by M-RP
 
 This directory is a source snapshot of
 [`MrucznikRolePlay/ColAndreas`](https://github.com/MrucznikRolePlay/ColAndreas)

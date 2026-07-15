@@ -1,4 +1,4 @@
-# Mrucznik Role Play dla MTA:SA
+# M-RP dla MTA:SA
 
 Port zachowuje oryginalny gamemode Pawn jako wykonywalną bazę zgodności wewnątrz MTA 1.6. Równoległy zasób `mrp_bridge` implementuje różnice silników i jest miejscem stopniowego przenoszenia funkcji do natywnego Lua bez zmiany zachowania widocznego dla gracza.
 
@@ -79,7 +79,7 @@ python3 mta/tools/build_native_catalog.py
 
 Pierwszy test porównuje zatwierdzony katalog z aktualnym kodem Pawn i tablicą
 publicznych handlerów dokładnego AMX. Repozytorium zawiera 787 nazw komend, z
-których 745 jest faktycznie aktywnych w wydaniu v2.8.8; 42 stare lub warunkowe
+których 745 jest faktycznie aktywnych w wydaniu v2.9; 42 stare lub warunkowe
 definicje źródłowe są raportowane osobno. Drugi test odczytuje
 tablicę 598 importów natywnych głównego AMX i wszystkich 21 filterscriptów
 bezpośrednio z dokładnych plików w archiwum Git LFS.

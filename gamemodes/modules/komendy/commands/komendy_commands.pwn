@@ -491,7 +491,7 @@
 #include "unwarn\cmd_unwarn.pwn"
 #include "up\cmd_up.pwn"
 #include "uprawnienia\cmd_uprawnienia.pwn"
-#include "ustawcena\cmd_ustawcena.pwn"
+#include "ustawcena\cmd_ustawcenabiletu.pwn"
 #include "ustawmistrz\cmd_ustawmistrz.pwn"
 #include "usunbron\cmd_usunbron.pwn"
 #include "usunopis\cmd_usunopis.pwn"

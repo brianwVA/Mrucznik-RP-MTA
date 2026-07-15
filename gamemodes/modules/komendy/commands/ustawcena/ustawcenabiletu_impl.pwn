@@ -1,5 +1,5 @@
-//------------------------------------------<< Generated source >>-------------------------------------------//
-//                                                 ustawcena                                                 //
+//-----------------------------------------------<< Source >>------------------------------------------------//
+//                                           ustawcenabiletu                                                 //
 //----------------------------------------------------*------------------------------------------------------//
 //----[                                                                                                 ]----//
 //----[         |||||             |||||                       ||||||||||       ||||||||||               ]----//
@@ -16,52 +16,57 @@
 //----[  |||             |||||             |||                |||       |||    |||                      ]----//
 //----[                                                                                                 ]----//
 //----------------------------------------------------*------------------------------------------------------//
-// Kod wygenerowany automatycznie narzêdziem Mrucznik CTL
+// Autor: mrucznik
+// Data utworzenia: 15.09.2024
 
-// ================= UWAGA! =================
+
 //
-// WSZELKIE ZMIANY WPROWADZONE DO TEGO PLIKU
-// ZOSTAN¥ NADPISANE PO WYWO£ANIU KOMENDY
-// > mrucznikctl build
-//
-// ================= UWAGA! =================
 
-
-//-------<[ include ]>-------
-#include "ustawcena_impl.pwn"
-
-//-------<[ initialize ]>-------
-command_ustawcenabiletu()
+//------------------<[ Implementacja: ]>-------------------
+command_ustawcenabiletu_Impl(playerid, params[256])
 {
-    new command = Command_GetID("ustawcenabiletu");
-
-    //aliases
-    
-
-    //permissions
-    Group_SetGlobalCommand(command, true);
-    
-
-    //prefix
-    
+    if(IsPlayerConnected(playerid))
+	{
+		new moneys; 
+		if( sscanf(params, "d", moneys))
+		{
+			sendErrorMessage(playerid, "U¿yj /ustawcenabiletu [CENA]");
+			return 1;
+		}
+		
+		new sendername[MAX_PLAYER_NAME];
+		new string[128];
+		GetPlayerName(playerid, sendername, sizeof(sendername));
+		if(moneys >= 1000)
+		{
+			if(moneys <= 200000)
+			{
+				if(GetPlayerFraction(playerid) == 10)
+				{
+					format(string, sizeof(string), "Maszynista %s ustawi³ cenê podró¿y poci¹giem na %d$.", sendername, moneys);
+					OOCNews(TEAM_GROVE_COLOR,string);
+					CenaBiletuPociag = moneys;				
+				}
+				else
+				{
+					sendErrorMessage(playerid, "Nie jesteœ z KT!"); 
+					return 1;
+				}
+			}
+			else
+			{
+				sendErrorMessage(playerid, "Maksymalna kwota jak¹ mo¿esz ustaliæ to 200.000$");
+				return 1;
+			}
+		}
+		else
+		{
+			sendErrorMessage(playerid, "Cena od 1.000$ do 200.000$!"); 
+			return 1;
+		}
+	
+	}
+	return 1;
 }
 
-//-------<[ command ]>-------
-YCMD:ustawcenabiletu(playerid, params[], help)
-{
-    if (help)
-    {
-        sendTipMessage(playerid, "");
-        return 1;
-    }
-    //fetching params
-    new param[256];
-    if(sscanf(params, "S()[256]", param))
-    {
-        sendTipMessage(playerid, "U¿yj /ustawcenabiletu [cena]");
-        return 1;
-    }
-    
-    //command body
-    return command_ustawcenabiletu_Impl(playerid, param);
-}
+//end

@@ -1,4 +1,4 @@
--- Mrucznik RP additions for SA-MP 0.3.DL model IDs.
+-- M-RP additions for SA-MP 0.3.DL model IDs.
 
 function mrpResolveSkin(skin)
     local models = getResourceFromName("mrp_models")

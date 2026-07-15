@@ -38,7 +38,7 @@
 // 	AddNewSkin(SKIN_TYPE_FRACTION, 20108, SKIN_WOMEN, SKIN_WHITE, 0); 
 
 // 	//SKINY PRZEZNACZONE POD UNIKATY 20.301-20.400
-// 	AddNewSkin(SKIN_TYPE_PREMIUM, 20301, SKIN_MEN, SKIN_BLACK, 0);//[By: Mrucznik-rp -> User mrN] [Added: 2.6.1]
+// 	AddNewSkin(SKIN_TYPE_PREMIUM, 20301, SKIN_MEN, SKIN_BLACK, 0);//[By: M-RP -> User mrN] [Added: 2.6.1]
 // 	AddNewSkin(SKIN_TYPE_PREMIUM, 20302, SKIN_MEN, SKIN_WHITE, 0);// [FACET[STALIN]] [STARY] [By:____] [Added: 2.6.1]
 // 	AddNewSkin(SKIN_TYPE_PREMIUM, 20303, SKIN_MEN, SKIN_WHITE, 0);// [FACET] [ŒREDNI] [By:____] [Added: 2.6.1]
 // 	AddNewSkin(SKIN_TYPE_PREMIUM, 20304, SKIN_WOMEN, SKIN_WHITE, 0);// [KOBIETA/FACET] [M£ODA/ŒREDNIA/STARA] [By: https://vk.com/slivprivata/skins] [Added: 2.6.11] 

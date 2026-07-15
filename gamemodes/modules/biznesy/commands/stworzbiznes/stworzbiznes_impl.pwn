@@ -31,7 +31,7 @@ command_stworzbiznes_Impl(playerid)
         {
             SetPVarInt(playerid, "FreeBizID", GetFreeBizID()); 
             sendTipMessage(playerid, "Rozpoczynam proces tworzenia biznesu!"); 
-            ShowPlayerDialogEx(playerid, D_BIZ_WRITE, DIALOG_STYLE_INPUT, "Mrucznik Role Play", "WprowadŸ poni¿ej kwotê za jak¹\ngracz bêdzie móg³ nabyæ biznes", "Dalej", "WyjdŸ"); 
+            ShowPlayerDialogEx(playerid, D_BIZ_WRITE, DIALOG_STYLE_INPUT, "M-RP", "WprowadŸ poni¿ej kwotê za jak¹\ngracz bêdzie móg³ nabyæ biznes", "Dalej", "WyjdŸ");
         }
         else if(GetPVarInt(playerid, "ActionCreateBiz") == 1)
         {

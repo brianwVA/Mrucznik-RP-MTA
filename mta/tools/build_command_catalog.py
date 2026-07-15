@@ -191,7 +191,7 @@ def write_outputs(
             command["compiled_runtime"] = command["name"] in runtime_commands
             if not command["compiled_runtime"]:
                 command["runtime"] = "source-only-inactive"
-                command["native_mta_status"] = "not-loaded-by-v2.8.8"
+                command["native_mta_status"] = "not-loaded-by-v2.9"
     definition_count = sum(max(1, len(command.get("variants", []))) for command in ordered)
     runtime_count = len(runtime_commands) if runtime_commands is not None else None
     runtime_alias_count = (

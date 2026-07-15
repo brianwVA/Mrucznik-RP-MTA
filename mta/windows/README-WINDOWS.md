@@ -1,4 +1,4 @@
-# Mrucznik RP MTA — gotowa paczka Windows
+# M-RP MTA — gotowa paczka Windows
 
 Paczka instaluje lokalnie przetestowany port Mrucznika na 32-bitowym serwerze
 MTA 1.6 oraz MySQL 5.7. Nie wymaga Visual Studio, CMake, vcpkg, Git ani Git LFS.
@@ -34,10 +34,10 @@ Instalator:
 - nadaje wymagane ACL;
 - wykonuje 70-sekundowy test pełnego startu gamemodu.
 
-Domyślny katalog instalacji to `C:\Mrucznik-RP-MTA`. Można go zmienić:
+Domyślny katalog instalacji to `C:\M-RP-MTA`. Można go zmienić:
 
 ```powershell
-.\Install-MrucznikMTA.ps1 -InstallRoot "D:\Serwery\Mrucznik-RP-MTA"
+.\Install-MrucznikMTA.ps1 -InstallRoot "D:\Serwery\M-RP-MTA"
 ```
 
 ## Uruchamianie
@@ -45,7 +45,7 @@ Domyślny katalog instalacji to `C:\Mrucznik-RP-MTA`. Można go zmienić:
 Po instalacji:
 
 ```powershell
-cd C:\Mrucznik-RP-MTA
+cd C:\M-RP-MTA
 .\Start-MrucznikMTA.ps1
 ```
 
@@ -65,8 +65,8 @@ Ponowny test runtime:
 ```
 
 Log testu znajduje się w
-`C:\Mrucznik-RP-MTA\logs\mta-smoke-test.log`, a logi MTA w katalogu wskazanym
-przez `serverRoot` w `C:\Mrucznik-RP-MTA\installation.json`.
+`C:\M-RP-MTA\logs\mta-smoke-test.log`, a logi MTA w katalogu wskazanym
+przez `serverRoot` w `C:\M-RP-MTA\installation.json`.
 
 ## Ważne
 

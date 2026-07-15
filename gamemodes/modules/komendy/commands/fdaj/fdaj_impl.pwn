@@ -48,7 +48,7 @@ command_fdaj_Impl(playerid, params[256])
 		}
 		else
 		{
-			return ShowPlayerInfoDialog(playerid, "Mrucznik Role Play", "Dostêpne style walk:\n\n4 - FIGHT_STYLE_NORMAL\n5 - FIGHT_STYLE_BOXING\n6 - FIGHT_STYLE_KUNGFU\n7 - FIGHT_STYLE_KNEEHEAD\n15 - FIGHT_STYLE_GRABKICK\n16 - FIGHT_STYLE_ELBOW"); 
+			return ShowPlayerInfoDialog(playerid, "M-RP", "Dostêpne style walk:\n\n4 - FIGHT_STYLE_NORMAL\n5 - FIGHT_STYLE_BOXING\n6 - FIGHT_STYLE_KUNGFU\n7 - FIGHT_STYLE_KNEEHEAD\n15 - FIGHT_STYLE_GRABKICK\n16 - FIGHT_STYLE_ELBOW");
 		}
 	}
 	return 1;

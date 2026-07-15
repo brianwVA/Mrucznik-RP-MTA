@@ -264,7 +264,7 @@ LoadTXD()
 	TextDrawSetSelectable(RealtimeTXD, 0);
 
 	new txd[58];
-	format(txd, sizeof(txd), "Mrucznik-RP %s", VERSION);
+	format(txd, sizeof(txd), "M-RP %s", VERSION);
 	ServerVersionTXD = TextDrawCreate(36.000000, 436.000000, txd);
 	TextDrawFont(ServerVersionTXD, 2);
 	TextDrawLetterSize(ServerVersionTXD, 0.166666, 1.049999);

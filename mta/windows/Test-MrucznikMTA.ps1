@@ -1,6 +1,6 @@
 ﻿[CmdletBinding()]
 param(
-    [string]$InstallRoot = "C:\Mrucznik-RP-MTA",
+    [string]$InstallRoot = "C:\M-RP-MTA",
     [int]$StartupSeconds = 70
 )
 
@@ -64,7 +64,7 @@ if ($Combined -match "FATAL ERROR MYSQL|cannot connect to redis|connect\(\) fail
     throw "Test wykrył krytyczny błąd runtime. Sprawdź $ConsoleLog."
 }
 
-Write-Host "TEST OK: pełny Mrucznik RP uruchomił się na MTA."
+Write-Host "TEST OK: pełny M-RP uruchomił się na MTA."
 Write-Host "Log testu: $ConsoleLog"
 $global:LASTEXITCODE = 0
 return

@@ -1,6 +1,6 @@
 ﻿[CmdletBinding()]
 param(
-    [string]$InstallRoot = "C:\Mrucznik-RP-MTA",
+    [string]$InstallRoot = "C:\M-RP-MTA",
     [int]$MysqlPort = 3306,
     [string]$GtaPath = "",
     [switch]$SkipRuntimeTest

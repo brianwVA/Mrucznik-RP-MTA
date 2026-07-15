@@ -4986,7 +4986,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			}
 		    if(!response)
 		    {
-		        ShowPlayerDialogEx(playerid, 70, DIALOG_STYLE_MSGBOX, "Witaj na Mrucznik Role Play", "Witaj na serwerze Mrucznik Role Play\nJeœli jesteœ tu nowy, to przygotowaliœmy dla ciebie 2 poradniki\nZa chwilê bêdziesz móg³ je obejrzeæ, lecz najpierw musisz opisaæ postaæ któr¹ bêdziesz gra³\n¯yczymy mi³ej gry.", "Dalej", "");
+		        ShowPlayerDialogEx(playerid, 70, DIALOG_STYLE_MSGBOX, "Witaj na M-RP", "Witaj na serwerze M-RP\nJeœli jesteœ tu nowy, to przygotowaliœmy dla ciebie 2 poradniki\nZa chwilê bêdziesz móg³ je obejrzeæ, lecz najpierw musisz opisaæ postaæ któr¹ bêdziesz gra³\n¯yczymy mi³ej gry.", "Dalej", "");
 		    }
 		}
 		if(dialogid == 72)
@@ -5053,7 +5053,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				TogglePlayerControllable(playerid, 0);
 				SetPlayerVirtualWorld(playerid, 0);
 				GUIExit[playerid] = 0;
-		   		SendClientMessage(playerid, COLOR_YELLOW, "Witaj na Mrucznik Role Play serwer.");
+				SendClientMessage(playerid, COLOR_YELLOW, "Witaj na M-RP serwer.");
 				SendClientMessage(playerid, COLOR_WHITE, "Nie jest to serwer Full-RP ale obowi¹zuj¹ tu podstawowe zasady RP.");
 				SendClientMessage(playerid, COLOR_WHITE, "Jeœli ich nie znasz przybli¿e ci najwa¿niejsz¹ zasade.");
 				SendClientMessage(playerid, COLOR_LIGHTBLUE, "Obowi¹zuje absolutny zakaz DeathMatch`u(DM)");
@@ -10124,7 +10124,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 					}
 					case 1://Zmieñ cenê kredytu
 					{
-						ShowPlayerDialogEx(playerid, 1096, DIALOG_STYLE_LIST, "Mrucznik Role Play - Basen Tsunami", "1. Dzieciêcy\n2. Podstawowy\n3.Zaawansowany\n4.Premium", "Akceptuj", "Wróæ"); 
+						ShowPlayerDialogEx(playerid, 1096, DIALOG_STYLE_LIST, "M-RP - Basen Tsunami", "1. Dzieciêcy\n2. Podstawowy\n3.Zaawansowany\n4.Premium", "Akceptuj", "Wróæ");
 					}
 					case 2://Ustal muzykê
 					{
@@ -10160,26 +10160,26 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 					case 0:
 					{
 						format(string, sizeof(string), "{C0C0C0}Wpisz poni¿ej now¹ kwotê dla pakietu {00FFFF}dzieciêcego\n{C0C0C0}Aktualna cena to: {37AC45}%d$", onePoolPrice);
-						ShowPlayerDialogEx(playerid, 1097, DIALOG_STYLE_INPUT, "Mrucznik Role Play - Basen Tsunami", string, "Akceptuj", "Odrzuæ"); 
+						ShowPlayerDialogEx(playerid, 1097, DIALOG_STYLE_INPUT, "M-RP - Basen Tsunami", string, "Akceptuj", "Odrzuæ");
 						SetPVarInt(playerid, "wyborPoziomuKredytow", 1);
 					}
 					case 1:
 					{	
 						format(string, sizeof(string), "{C0C0C0}Wpisz poni¿ej now¹ kwotê dla pakietu {00FFFF}dzieciêcego\n{C0C0C0}Aktualna cena to: {37AC45}%d$", twoPoolPrice);
-						ShowPlayerDialogEx(playerid, 1097, DIALOG_STYLE_INPUT, "Mrucznik Role Play - Basen Tsunami", string, "Akceptuj", "Odrzuæ"); 
+						ShowPlayerDialogEx(playerid, 1097, DIALOG_STYLE_INPUT, "M-RP - Basen Tsunami", string, "Akceptuj", "Odrzuæ");
 						SetPVarInt(playerid, "wyborPoziomuKredytow", 2);
 					}
 					case 2:
 					{
 						format(string, sizeof(string), "{C0C0C0}Wpisz poni¿ej now¹ kwotê dla pakietu {00FFFF}dzieciêcego\n{C0C0C0}Aktualna cena to: {37AC45}%d$", threePoolPrice);
-						ShowPlayerDialogEx(playerid, 1097, DIALOG_STYLE_INPUT, "Mrucznik Role Play - Basen Tsunami", string, "Akceptuj", "Odrzuæ"); 
+						ShowPlayerDialogEx(playerid, 1097, DIALOG_STYLE_INPUT, "M-RP - Basen Tsunami", string, "Akceptuj", "Odrzuæ");
 						SetPVarInt(playerid, "wyborPoziomuKredytow", 3);
 					}
 					case 3:
 					{
 						
 						format(string, sizeof(string), "{C0C0C0}Wpisz poni¿ej now¹ kwotê dla pakietu {00FFFF}dzieciêcego\n{C0C0C0}Aktualna cena to: {37AC45}%d$", fourPoolPrice);
-						ShowPlayerDialogEx(playerid, 1097, DIALOG_STYLE_INPUT, "Mrucznik Role Play - Basen Tsunami", string, "Akceptuj", "Odrzuæ"); 
+						ShowPlayerDialogEx(playerid, 1097, DIALOG_STYLE_INPUT, "M-RP - Basen Tsunami", string, "Akceptuj", "Odrzuæ");
 						SetPVarInt(playerid, "wyborPoziomuKredytow", 4);
 					}
 				}
@@ -11785,7 +11785,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 		if(response)
 		{
 			sendTipMessage(playerid, "Zmieniasz has³o:");
-			ShowPlayerDialogEx(playerid, D_HASLO_ZMIEN, DIALOG_STYLE_INPUT, "Mrucznik Role Play", "WprowadŸ poni¿ej nowe has³o, którego bêdziesz u¿ywa³\ndo gry na naszym serwisie!", "ZatwierdŸ", "Odrzuæ"); 
+			ShowPlayerDialogEx(playerid, D_HASLO_ZMIEN, DIALOG_STYLE_INPUT, "M-RP", "WprowadŸ poni¿ej nowe has³o, którego bêdziesz u¿ywa³\ndo gry na naszym serwisie!", "ZatwierdŸ", "Odrzuæ");
 		}
 		return 1;
 	}
@@ -13606,7 +13606,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 	{
 		if(!response)
 		{
-			ShowPlayerDialogEx(playerid, D_PERSONALIZE, DIALOG_STYLE_LIST, "Mrucznik Role Play", "Pojazd\nChat\nAdmin\nInne", "Akceptuj", "Wyjdz");
+			ShowPlayerDialogEx(playerid, D_PERSONALIZE, DIALOG_STYLE_LIST, "M-RP", "Pojazd\nChat\nAdmin\nInne", "Akceptuj", "Wyjdz");
 			return 1;
 		}
 		if(response)
@@ -13818,7 +13818,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 	{
 		if(!response)
 		{
-			ShowPlayerDialogEx(playerid, D_PERSONALIZE, DIALOG_STYLE_LIST, "Mrucznik Role Play", "Pojazd\nChat\nAdmin\nInne", "Akceptuj", "Wyjdz");
+			ShowPlayerDialogEx(playerid, D_PERSONALIZE, DIALOG_STYLE_LIST, "M-RP", "Pojazd\nChat\nAdmin\nInne", "Akceptuj", "Wyjdz");
 			return 1;	
 		}
 		if(response)
@@ -13871,7 +13871,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 	{
 		if(!response)
 		{
-			ShowPlayerDialogEx(playerid, D_PERSONALIZE, DIALOG_STYLE_LIST, "Mrucznik Role Play", "Pojazd\nChat\nAdmin\nInne", "Akceptuj", "Wyjdz");
+			ShowPlayerDialogEx(playerid, D_PERSONALIZE, DIALOG_STYLE_LIST, "M-RP", "Pojazd\nChat\nAdmin\nInne", "Akceptuj", "Wyjdz");
 			return 1;
 		}
 		if(response)
@@ -13911,7 +13911,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 	{
 		if(!response)
 		{
-			ShowPlayerDialogEx(playerid, D_PERSONALIZE, DIALOG_STYLE_LIST, "Mrucznik Role Play", "Pojazd\nChat\nAdmin\nInne", "Akceptuj", "Wyjdz");
+			ShowPlayerDialogEx(playerid, D_PERSONALIZE, DIALOG_STYLE_LIST, "M-RP", "Pojazd\nChat\nAdmin\nInne", "Akceptuj", "Wyjdz");
 			return 1;
 		}
 		if(response)

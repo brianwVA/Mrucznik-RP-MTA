@@ -8,7 +8,7 @@
 */
 //Opis:
 /*
-Skrypt na 10 lecie Mrucznik Role Play
+Skrypt na 10 lecie M-RP
 */
 //Adnotacje:
 /*
@@ -239,7 +239,7 @@ public OnFilterScriptExit()
 public OnPlayerConnect(playerid)
 {
 	SendClientMessage(playerid, -1, "Na serwerze znajduje siê skrypt: COLOR CHALLANGE!");
-	SendClientMessage(playerid, -1, "Weso³ego 10-lecia serwera Mrucznik Role Play!");
+	SendClientMessage(playerid, -1, "Weso³ego 10-lecia serwera M-RP!");
 	//ccTXD[playerid] = CreatePlayerTextDraw(playerid, 320.0, 240.0, "GRACZE: ?/20");
 	//PlayerTextDrawShow(playerid, ccTXD[playerid]);
 	return 1;

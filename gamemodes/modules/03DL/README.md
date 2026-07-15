@@ -1,4 +1,4 @@
-# Mrucznik-RP-2.6 - 03DL
+# M-RP-2.6 - 03DL
 
 ## Procedura wrzucania skinów na serwer
 

@@ -204,7 +204,7 @@ foreach ($FilterEntry in $PackagedFilterScripts.GetEnumerator()) {
     $MetaNode = $FilterMeta.CreateElement("meta")
     [void]$FilterMeta.AppendChild($MetaNode)
     $InfoNode = $FilterMeta.CreateElement("info")
-    $InfoNode.SetAttribute("name", "Mrucznik RP filterscript $FilterScript")
+    $InfoNode.SetAttribute("name", "M-RP filterscript $FilterScript")
     $InfoNode.SetAttribute("type", "script")
     [void]$MetaNode.AppendChild($InfoNode)
     $AmxNode = $FilterMeta.CreateElement("amx")
@@ -312,7 +312,7 @@ foreach ($ResourceName in @("object_preview", "mrp_models", "amx", "mrp_bridge")
 }
 $ServerConfig.Save($ServerConfigPath)
 
-Write-Host "Pliki Mrucznik RP zostały zainstalowane w $MtaServerRoot"
+Write-Host "Pliki M-RP zostały zainstalowane w $MtaServerRoot"
 Write-Host "Pluginy zgodności zostały pobrane i zweryfikowane na podstawie plugins.lock.json"
 Write-Host "MySQL: $MysqlUser@$MysqlHost/$MysqlDatabase"
 Write-Host "Redis: $RedisHost`:$RedisPort"

@@ -74,7 +74,7 @@ command_glosowanie_Impl(playerid, params[256])
 			sendErrorMessage(playerid, "G³osowa³eœ ju¿ w tej ankiecie"); 
 			return 1;
 		}
-		ShowPlayerDialogEx(playerid, 9666, DIALOG_STYLE_MSGBOX, "Mrucznik Role Play", "G³osowanie\nKliknij poni¿ej przycisk wed³ug w³asnego uznania\nPamiêtaj! Mo¿esz oddaæ tylko jeden g³os!\n", "Tak", "Nie");
+		ShowPlayerDialogEx(playerid, 9666, DIALOG_STYLE_MSGBOX, "M-RP", "G³osowanie\nKliknij poni¿ej przycisk wed³ug w³asnego uznania\nPamiêtaj! Mo¿esz oddaæ tylko jeden g³os!\n", "Tak", "Nie");
 	}
 	return 1;
 }

@@ -1456,7 +1456,7 @@ public MySQL_Refresh()
         if(MySQL_timeout)
         {
             new str[64];
-            format(str, 64, "gamemodetext Mrucznik-RP %s", VERSION);
+            format(str, 64, "gamemodetext M-RP %s", VERSION);
             SendRconCommand(str);
             MySQL_timeout = false;
         }

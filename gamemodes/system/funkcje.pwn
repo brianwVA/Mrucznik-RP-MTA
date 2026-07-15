@@ -705,7 +705,7 @@ MruDialog(playerid, title[], text[])
 MruTitle(text[])
 {
 	new title_str[128];
-	format(title_str, 128, "Mrucznik-RP » {00b33c}%s", text);
+	format(title_str, 128, "M-RP » {00b33c}%s", text);
 	return title_str;
 }
 
@@ -7329,7 +7329,7 @@ timer StartLogin[100](playerid, sessionID)
 	{
         //Logowanie
 		new string[256];
-		SendClientMessage(playerid, COLOR_YELLOW, "Witaj na serwerze Mrucznik Role Play! Zaloguj siê aby rozpocz¹æ grê.");
+		SendClientMessage(playerid, COLOR_YELLOW, "Witaj na serwerze M-RP! Zaloguj siê aby rozpocz¹æ grê.");
 		format(string, sizeof(string), "Nick %s jest zarejestrowany.\nZaloguj siê wpisuj¹c w okienko poni¿ej has³o.\nJeœli nie znasz has³a do tego konta, wejdŸ pod innym nickiem", nick);
 		ShowPlayerDialogEx(playerid, D_LOGIN, DIALOG_STYLE_PASSWORD, "Logowanie", string, "Zaloguj", "WyjdŸ");
 		gPlayerAccount[playerid] = 1; //logowanie
@@ -7337,7 +7337,7 @@ timer StartLogin[100](playerid, sessionID)
     else if(result == -999)
     {
         new string[256];
-		SendClientMessage(playerid, COLOR_YELLOW, "Witaj na serwerze Mrucznik Role Play! Zaloguj siê aby rozpocz¹æ grê.");
+		SendClientMessage(playerid, COLOR_YELLOW, "Witaj na serwerze M-RP! Zaloguj siê aby rozpocz¹æ grê.");
 		format(string, sizeof(string), "Nick podobny do %s jest zarejestrowany.\n{FF0000}Podobny nick jest ju¿ w bazie, sprawdŸ wielkosæ znaków.", nick);
         SendClientMessage(playerid, COLOR_RED, string);
         SendClientMessage(playerid, COLOR_RED, string);
@@ -7348,9 +7348,9 @@ timer StartLogin[100](playerid, sessionID)
 	{
         if(VAR_MySQLREGISTER)
         {
-    		SendClientMessage(playerid, COLOR_YELLOW, "Witaj na serwerze Mrucznik Role Play! Zarejestruj swoje konto aby rozpocz¹æ grê.");
-    		ShowPlayerDialogEx(playerid, D_REGISTER, DIALOG_STYLE_INPUT, "Rejestracja konta", "Witaj. Aby zacz¹æ grê na serwerze musisz siê zarejestrowaæ.\nAby to zrobiæ wpisz w okienko poni¿ej has³o które chcesz u¿ywaæ w swoim koncie.\nZapamiêtaj je gdy¿ bêdziesz musia³ go u¿ywaæ za ka¿dym razem kiedy wejdziesz na serwer", "Rejestruj", "WyjdŸ");
-    		gPlayerAccount[playerid] = 0;//rejestracja
+        SendClientMessage(playerid, COLOR_YELLOW, "Witaj na serwerze M-RP! Zarejestruj swoje konto aby rozpocz¹æ grê.");
+        ShowPlayerDialogEx(playerid, D_REGISTER, DIALOG_STYLE_INPUT, "Rejestracja konta", "Witaj. Aby zacz¹æ grê na serwerze musisz siê zarejestrowaæ.\nAby to zrobiæ wpisz w okienko poni¿ej has³o które chcesz u¿ywaæ w swoim koncie.\nZapamiêtaj je gdy¿ bêdziesz musia³ go u¿ywaæ za ka¿dym razem kiedy wejdziesz na serwer", "Rejestruj", "WyjdŸ");
+        gPlayerAccount[playerid] = 0;//rejestracja
         }
         else
         {
@@ -7409,7 +7409,7 @@ UnFrakcja(playerid, para1, bool:respawn = true)
 	if(PlayerInfo[para1][pLider] > 0 && PlayerInfo[para1][pLiderValue] == 1)
 	{
 		SetPVarInt(playerid, "ID_LIDERA", para1);  
-		ShowPlayerDialogEx(playerid, DIALOG_UNFRAKCJA, DIALOG_STYLE_MSGBOX, "Mrucznik Role Play", sprintf("%s jest g³ównym liderem organizacji.\nCzy chcesz zwolniæ WSZYSTKICH liderów z organizacji?\n(Zabierze VLD)", GetNick(para1)), "Tak", "Nie"); 
+		ShowPlayerDialogEx(playerid, DIALOG_UNFRAKCJA, DIALOG_STYLE_MSGBOX, "M-RP", sprintf("%s jest g³ównym liderem organizacji.\nCzy chcesz zwolniæ WSZYSTKICH liderów z organizacji?\n(Zabierze VLD)", GetNick(para1)), "Tak", "Nie");
 		return 1;
 	}
 	GetPlayerName(para1, giveplayer, sizeof(giveplayer));
@@ -10367,7 +10367,7 @@ ShowPersonalization(playerid, value)
 			strins(persona_B, "CB-RADIO\t{80FF00}ON\n", 0);
 		}
 		format(string, sizeof(string), "%s%s", persona_A, persona_B);
-		ShowPlayerDialogEx(playerid, D_PERS_VEH, DIALOG_STYLE_TABLIST, "Mrucznik Role Play", string, "Akceptuj", "Wyjdz");
+		ShowPlayerDialogEx(playerid, D_PERS_VEH, DIALOG_STYLE_TABLIST, "M-RP", string, "Akceptuj", "Wyjdz");
 	}
 	if(value == 2)
 	{
@@ -10402,7 +10402,7 @@ ShowPersonalization(playerid, value)
 			strins(persona_C, "Og³oszenia FRAKCJI\t{80FF00}ON\n", 0);	
 		}
 		format(string, sizeof(string), "%s%s%s", persona_A, persona_B, persona_C);
-		ShowPlayerDialogEx(playerid, D_PERS_CHAT, DIALOG_STYLE_TABLIST, "Mrucznik RP", string, "Akceptuj", "Odrzuæ"); 
+		ShowPlayerDialogEx(playerid, D_PERS_CHAT, DIALOG_STYLE_TABLIST, "M-RP", string, "Akceptuj", "Odrzuæ");
 
 	}
 	if(value == 3)
@@ -10428,7 +10428,7 @@ ShowPersonalization(playerid, value)
 			strins(persona_B,"Death Warning\t{80FF00}ON\n", 0);
 		}
 		format(string, sizeof(string), "%s%s", persona_A, persona_B);
-		ShowPlayerDialogEx(playerid, D_PERS_ADMIN, DIALOG_STYLE_TABLIST, "Mrucznik Role Play", string, "Akceptuj", "Wyjdz");
+		ShowPlayerDialogEx(playerid, D_PERS_ADMIN, DIALOG_STYLE_TABLIST, "M-RP", string, "Akceptuj", "Wyjdz");
 	}
 	if(value == 4)
 	{
@@ -10473,7 +10473,7 @@ ShowPersonalization(playerid, value)
 			strins(persona_D, "Auto-GUI po zmianie broni\t{FF6A6A}OFF\n", 0); 
 		}
 		format(string, sizeof(string), "%s%s%s%s", persona_A, persona_B, persona_C, persona_D);
-		ShowPlayerDialogEx(playerid, D_PERS_INNE, DIALOG_STYLE_TABLIST, "Mrucznik Role Play", string, "Akceptuj", "Wyjdz"); 
+		ShowPlayerDialogEx(playerid, D_PERS_INNE, DIALOG_STYLE_TABLIST, "M-RP", string, "Akceptuj", "Wyjdz");
 	}
 		 
 	return 1;

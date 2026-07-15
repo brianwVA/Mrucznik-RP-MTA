@@ -33,7 +33,7 @@ command_stopanim_Impl(playerid)
         {
 			if(PlayerInfo[playerid][pInjury] > 0 || PlayerInfo[playerid][pBW] > 0)
 			{
-				return ShowPlayerInfoDialog(playerid, "Mrucznik Role Play", "{FF542E}Jesteœ ranny!\n{FFFFFF}Nie mo¿esz zatrzymaæ animacji.");
+				return ShowPlayerInfoDialog(playerid, "M-RP", "{FF542E}Jesteœ ranny!\n{FFFFFF}Nie mo¿esz zatrzymaæ animacji.");
 			}
 	        ClearAnimations(playerid);
 	        SetPlayerSpecialAction(playerid,SPECIAL_ACTION_NONE);

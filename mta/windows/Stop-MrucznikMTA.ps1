@@ -1,6 +1,6 @@
 ﻿[CmdletBinding()]
 param(
-    [string]$InstallRoot = "C:\Mrucznik-RP-MTA",
+    [string]$InstallRoot = "C:\M-RP-MTA",
     [switch]$KeepMysql
 )
 
@@ -23,6 +23,6 @@ Get-CimInstance Win32_Process -Filter "Name='MTA Server.exe'" `
     ForEach-Object { Stop-Process -Id $_.ProcessId -Force }
 
 if (-not $KeepMysql) { Stop-MrpMysql -State $State }
-Write-Host "Mrucznik RP MTA zatrzymany."
+Write-Host "M-RP MTA zatrzymany."
 $global:LASTEXITCODE = 0
 return

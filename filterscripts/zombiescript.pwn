@@ -8,7 +8,7 @@
 */
 //Opis:
 /*
-	Skrypt na 10 lecie Mrucznik Role Play
+	Skrypt na 10 lecie M-RP
 */
 //Adnotacje:
 /*
@@ -130,7 +130,7 @@ public OnFilterScriptExit()
 public OnPlayerConnect(playerid)
 {
     SendClientMessage(playerid, COLOR_GREEN, "Na serwerze znajduje siê skrypt: ZOMBIE APOCALYPSE!");
-    SendClientMessage(playerid, COLOR_GRAD, "Weso³ego 10-lecia serwera Mrucznik Role Play!");
+    SendClientMessage(playerid, COLOR_GRAD, "Weso³ego 10-lecia serwera M-RP!");
     PlayerZombieStatus[playerid] = INVALID_PZOMBIE;
     playerAccessToFS[playerid] = 0;
     PlayerEventPoint[playerid] = 0;
@@ -169,7 +169,7 @@ public OnPlayerConnect(playerid)
     PlayerTextDrawSetPreviewRot(playerid, skinTXD[playerid], -10.000000, 0.000000, -20.000000, 1.000000);
     PlayerTextDrawSetPreviewVehCol(playerid, skinTXD[playerid], 1, 1);*/
 
-    text1[playerid] = CreatePlayerTextDraw(playerid, 6.000000, 166.000000, "Mrucznik Role Play");
+    text1[playerid] = CreatePlayerTextDraw(playerid, 6.000000, 166.000000, "M-RP");
     PlayerTextDrawFont(playerid, text1[playerid], 1);
     PlayerTextDrawLetterSize(playerid, text1[playerid], 0.250000, 1.750000);
     PlayerTextDrawTextSize(playerid, text1[playerid], 400.000000, 17.000000);
@@ -880,7 +880,7 @@ sendPartyMess(color, const text[])
         {
             SendClientMessage(i, color, "======<[Zombie Apocalypse]>======");
             SendClientMessage(i, COLOR_WHITE, text);
-            SendClientMessage(i, color, "======<[Mrucznik Role Play]>======");
+            SendClientMessage(i, color, "======<[M-RP]>======");
         }
     }
     return 1;

@@ -1,6 +1,6 @@
 ﻿[CmdletBinding()]
 param(
-    [string]$InstallRoot = "C:\Mrucznik-RP-MTA",
+    [string]$InstallRoot = "C:\M-RP-MTA",
     [switch]$MysqlOnly,
     [switch]$Wait
 )
@@ -27,7 +27,7 @@ if ($AlreadyRunning) {
 
 $Process = Start-Process $ServerExe -WorkingDirectory $State.serverRoot -PassThru
 Set-Content (Join-Path $InstallRoot "mta.pid") $Process.Id -Encoding ASCII
-Write-Host "Mrucznik RP MTA uruchomiony (PID $($Process.Id))."
+Write-Host "M-RP MTA uruchomiony (PID $($Process.Id))."
 Write-Host "Połącz się klientem MTA z: 127.0.0.1:22003"
 Write-Host "Logi: $($State.serverRoot)\mods\deathmatch\logs"
 if ($Wait) { Wait-Process -Id $Process.Id }

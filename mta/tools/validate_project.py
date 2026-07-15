@@ -40,10 +40,10 @@ def main() -> int:
     if natives["native_entry_count"] != 598 or natives["unique_native_count"] != 489:
         fail("Unexpected compiled AMX native inventory size")
     programs = {program["name"]: program for program in natives["programs"]}
-    if programs.get("Mrucznik-RP", {}).get("native_entry_count") != 556:
+    if programs.get("M-RP", {}).get("native_entry_count") != 556:
         fail("Unexpected gamemode native inventory size")
     expected_programs = {
-        "Mrucznik-RP", "animy", "realtime", "sobeitblock", "SAN_extPSq",
+        "M-RP", "animy", "realtime", "sobeitblock", "SAN_extPSq",
         "callbackfix", *(f"fs-count-{suffix}" for suffix in "ABCDEFGHIJKLMNOP"),
     }
     if set(programs) != expected_programs:

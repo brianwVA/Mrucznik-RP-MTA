@@ -485,7 +485,7 @@ FreezePlayerOnInjury(playerid)
 PlayerEnterVehOnInjury(playerid)
 {
 	Player_RemoveFromVeh(playerid);
-	ShowPlayerInfoDialog(playerid, "Mrucznik Role Play", "{FF542E}Jesteœ ranny!\n{FFFFFF}Nie mo¿esz wsi¹œæ do pojazdu.");
+	ShowPlayerInfoDialog(playerid, "M-RP", "{FF542E}Jesteœ ranny!\n{FFFFFF}Nie mo¿esz wsi¹œæ do pojazdu.");
 	return 1;
 }
 
@@ -544,7 +544,7 @@ RannyTimer(playerid)
 		{
 			PlayerInfo[i][pInjury] = 0;
 			format(string, sizeof(string), "{AAF542}Obudzi³eœ siê! {FFFFFF}Twoja postaæ odnios³a obra¿enia, które zalecamy odgrywaæ.");
-			//ShowPlayerInfoDialog(playerid, "Mrucznik Role Play", string); 
+			//ShowPlayerInfoDialog(playerid, "M-RP", string);
 			SendClientMessage(playerid, COLOR_NEWS, string);
 			//SendClientMessageToAll(COLOR_GRAD2, "#7: O¿ywiam gracza, nikt go nie dobi³");
 			ZdejmijBW(playerid);

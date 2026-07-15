@@ -1,4 +1,4 @@
-//-----------------------------------------[Mapa Mrucznik Role Play]-----------------------------------------//
+//-----------------------------------------[Mapa M-RP]-----------------------------------------//
 //----------------------------------------------------*------------------------------------------------------//
 //---------------------------------(Stworzona na podstawie mapy The Godfather)-------------------------------//
 //-------------------------------------------------(v2.8)----------------------------------------------------//
@@ -20,7 +20,7 @@
 //----------------------------------------------------*------------------------------------------------------//
 /*
 
-Mrucznik® Role Play ----> stworzy³ Mrucznik
+M-RP ----> stworzy³ Mrucznik
 	Inni developerzy:
 		Kubi - zwyk³y skurwysyn
 		Akil - chyba nic nie zrobi³ koniec koñców
@@ -188,7 +188,7 @@ native gpci (playerid, serial [], len);
 main()
 {
 	print("\n----------------------------------");
-	print("M | --- Mrucznik Role Play --- | M");
+	print("M | --- M-RP --- | M");
 	print("R | ---        ****        --- | R");
 	print("U | ---        v2.8        --- | U");
 	print("C | ---        ****        --- | C");
@@ -244,7 +244,7 @@ public OnGameModeInit()
 	AntiDeAMX(); // Hammer time
 
 	//-------<[ SAMP config ]>-------
-	SetGameModeText("Mrucznik-RP "VERSION);
+	SetGameModeText("M-RP "VERSION);
 
 	//-------<[ Gameplay config ]>-------
     SetWeatherEx(3);
@@ -398,7 +398,7 @@ public OnGameModeInit()
 	PlayerHaul[129][pCapasity] = 300;
 	PlayerHaul[130][pCapasity] = 300;
 
-	format(motd, sizeof(motd), "Witaj na serwerze Mrucznik Role Play - %s.", VERSION);
+	format(motd, sizeof(motd), "Witaj na serwerze M-RP - %s.", VERSION);
 	gettime(ghour, gminute, gsecond);
     GLOB_LastHour=ghour;
 	FixHour(ghour);
@@ -900,7 +900,7 @@ public OnPlayerClickTextDraw(playerid, Text:clickedid)
     }
     if(clickedid == TXD_Info) //Display server info
     {
-        if(strlen(ServerInfo) > 1) ShowPlayerDialogEx(playerid, D_SERVERINFO, DIALOG_STYLE_MSGBOX, "Mrucznik-RP » Informacja", ServerInfo, "Schowaj", "Zamknij");
+        if(strlen(ServerInfo) > 1) ShowPlayerDialogEx(playerid, D_SERVERINFO, DIALOG_STYLE_MSGBOX, "M-RP » Informacja", ServerInfo, "Schowaj", "Zamknij");
     }
    	return 1;
 }
@@ -3789,7 +3789,7 @@ OnPlayerRegister(playerid, password[])
 DialogChangePasswordRequired(playerid)
 {
 	SendClientMessage(playerid, COLOR_WHITE, "[SERVER] {FF0000}Wymagana jest zmiana has³a do konta.\n{FF00FF}Istnieje ryzyko, ¿e Twoje has³o wyciek³o w postaci zaszyfrowanej.\nJe¿eli u¿ywa³eœ takiego samego has³a do innych kont/us³ug - radzimy je zmieniæ..");
-	ShowPlayerDialogEx(playerid, D_HASLO_INFO, DIALOG_STYLE_MSGBOX, "Mrucznik Role Play", "{FF00FF}Witaj!\n{FF1010}Wymagana jest zmiana has³a do konta.\n{FF00FF}Istnieje ryzyko, ¿e Twoje has³o wyciek³o w postaci zaszyfrowanej.\nJe¿eli u¿ywa³eœ takiego samego has³a do innych kont/us³ug - radzimy je zmieniæ.", "Dalej", "Wyjdz"); 
+	ShowPlayerDialogEx(playerid, D_HASLO_INFO, DIALOG_STYLE_MSGBOX, "M-RP", "{FF00FF}Witaj!\n{FF1010}Wymagana jest zmiana has³a do konta.\n{FF00FF}Istnieje ryzyko, ¿e Twoje has³o wyciek³o w postaci zaszyfrowanej.\nJe¿eli u¿ywa³eœ takiego samego has³a do innych kont/us³ug - radzimy je zmieniæ.", "Dalej", "Wyjdz");
 }
 
 VerifyPlayerIp(playerid)
@@ -3991,7 +3991,7 @@ OnPlayerLogin(playerid, password[])
 		SetPVarInt(playerid, "last-pos-vw", PlayerInfo[playerid][pVW]);
 
 		//Powitanie:
-		format(string, sizeof(string), "Witaj na serwerze Mrucznik Role Play, %s!",nick);
+		format(string, sizeof(string), "Witaj na serwerze M-RP, %s!",nick);
 		SendClientMessage(playerid, COLOR_WHITE,string);
 		printf("%s has logged in.",nick);
 		SendDiscordConnectInfo(playerid);
@@ -4155,9 +4155,9 @@ OnPlayerLogin(playerid, password[])
         SetSpawnInfo(playerid, 0, PlayerInfo[playerid][pSkin], PlayerInfo[playerid][pPos_x], PlayerInfo[playerid][pPos_y], PlayerInfo[playerid][pPos_z], 1.0, -1, -1, -1, -1, -1, -1);
 		gOoc[playerid] = 1; gNews[playerid] = 1; gFam[playerid] = 1;
 		PlayerInfo[playerid][pMuted] = 1;
-		SendClientMessage(playerid, COLOR_YELLOW, "Witaj na Mrucznik Role Play!");
+		SendClientMessage(playerid, COLOR_YELLOW, "Witaj na M-RP!");
 		SendClientMessage(playerid, COLOR_WHITE, "Aby zacz¹æ grê musisz przejœæ procedury rejestracji.");
-		ShowPlayerDialogEx(playerid, 70, DIALOG_STYLE_MSGBOX, "Witaj na Mrucznik Role Play", "Witaj na serwerze Mrucznik Role Play\nJeœli jesteœ tu nowy, to przygotowaliœmy dla ciebie poradnik\nZa chwilê bêdziesz móg³ go obejrzeæ, lecz najpierw bêdziesz musia³ opisaæ postaæ któr¹ bêdziesz sterowa³\nAby przejœæ dalej wciœnij przycisk 'dalej'", "Dalej", "");
+		ShowPlayerDialogEx(playerid, 70, DIALOG_STYLE_MSGBOX, "Witaj na M-RP", "Witaj na serwerze M-RP\nJeœli jesteœ tu nowy, to przygotowaliœmy dla ciebie poradnik\nZa chwilê bêdziesz móg³ go obejrzeæ, lecz najpierw bêdziesz musia³ opisaæ postaæ któr¹ bêdziesz sterowa³\nAby przejœæ dalej wciœnij przycisk 'dalej'", "Dalej", "");
     }
 	ALockdown_OnPlayerLogin(playerid);
 	return 1;
@@ -4543,7 +4543,7 @@ public OnPlayerKeyStateChange(playerid,newkeys,oldkeys)
 					else
 					{
 						SetPlayerArmedWeapon(playerid, 0); //chowanie spadochronu
-        				return ShowPlayerInfoDialog(playerid, "Mrucznik Role Play", "Schowaj spadochron zanim w coœ uderzysz."); 
+						return ShowPlayerInfoDialog(playerid, "M-RP", "Schowaj spadochron zanim w coœ uderzysz.");
 					}
 				}
 			}

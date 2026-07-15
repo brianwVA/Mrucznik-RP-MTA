@@ -67,7 +67,7 @@ deploy:
   file: gamemodes/Mrucznik-RP.amx
   skip_cleanup: true
   prerelease: false
-  name: Mrucznik-RP $MRP_VERSION build ${TRAVIS_BUILD_NUMBER}
+  name: M-RP $MRP_VERSION build ${TRAVIS_BUILD_NUMBER}
   on:
     repo: Mrucznik/Mrucznik-RP-2.5
     branch: master
