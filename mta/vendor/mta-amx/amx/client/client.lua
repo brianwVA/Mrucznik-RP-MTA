@@ -583,10 +583,10 @@ addEventHandler('onClientElementInteriorChange', localPlayer, syncAllPlayerObjec
 
 function CreatePlayerObject(objID, model, x, y, z, rX, rY, rZ, customModel)
 	model = tonumber(model)
-	-- Custom SA-MP/DL objects are created from a harmless stock placeholder and
-	-- replaced by mrp_models below.  engineGetModelNameFromID logs a warning for
-	-- unsupported logical IDs, so it must not be used as a validation probe.
-	local validModel = not customModel and model and model >= 321 and model <= 18630
+	-- A numeric range is not enough: GTA:SA object IDs contain holes. Passing
+	-- one of those holes to createObject produces the on-screen "Invalid model
+	-- id" warning. Custom SA-MP/DL objects still use the safe placeholder.
+	local validModel = not customModel and model and engineGetModelNameFromID(model) ~= false
 	local createModel = validModel and model or 1337
 	g_PlayerObjects[objID] = createObject(createModel, x, y, z, rX, rY, rZ)
 	if not g_PlayerObjects[objID] then

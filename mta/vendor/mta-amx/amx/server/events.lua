@@ -740,6 +740,21 @@ function respawnStaticVehicle(vehicle)
 	end
 
 	local spawninfo = g_Vehicles[vehID].spawninfo
+	if not spawninfo
+		or type(spawninfo.x) ~= 'number'
+		or type(spawninfo.y) ~= 'number'
+		or type(spawninfo.z) ~= 'number'
+		or (math.abs(spawninfo.x) < 0.01 and math.abs(spawninfo.y) < 0.01 and math.abs(spawninfo.z) < 0.01)
+	then
+		outputDebugString(string.format(
+			'[MTA AMX - VEHICLE]: Blocked invalid respawn for vehicle ID %d (spawn: %s, %s, %s)',
+			vehID,
+			spawninfo and tostring(spawninfo.x) or 'nil',
+			spawninfo and tostring(spawninfo.y) or 'nil',
+			spawninfo and tostring(spawninfo.z) or 'nil'
+		), 2)
+		return false
+	end
 	setTimer(
 		function()
 			if not isElement(vehicle) then return end

@@ -236,9 +236,21 @@ Car_RemovePlayerOwner(playerid, uid)
     }
 }
 
+stock bool:Car_IsSpawnPositionValid(Float:x, Float:y, Float:z)
+{
+    // (0, 0, 0) is not a usable parking position in GTA:SA. In MTA it lands
+    // near Blueberry and makes every damaged vehicle record pile up there.
+    return !(floatabs(x) < 0.01 && floatabs(y) < 0.01 && floatabs(z) < 0.01);
+}
+
 Car_Create(model, Float:x, Float:y, Float:z, Float:angle, color1, color2)
 {
     new lUID, string[256], idx=-1;
+    if(model < 400 || model > 611 || !Car_IsSpawnPositionValid(x, y, z))
+    {
+        printf("[CAR] Odrzucono tworzenie pojazdu: model=%d, pozycja=%f,%f,%f", model, x, y, z);
+        return -1;
+    }
     format(string, sizeof(string), "INSERT INTO `mru_cars` (`model`, `x`, `y`, `z`, `angle`, `color1`, `color2`) VALUES (%d, %.2f, %.2f, %.2f, %.1f, %d, %d)", model, x, y, z, angle, color1, color2);
     if(mysql_query(string))
     {
@@ -248,8 +260,17 @@ Car_Create(model, Float:x, Float:y, Float:z, Float:angle, color1, color2)
         idx = Car_GetFromQueue();
         if(idx == -1) idx = gCars, doadd=true;
 
+        new vehicleid = CreateVehicle(model, x, y, z, angle, color1, color2, -1);
+        if(vehicleid == INVALID_VEHICLE_ID)
+        {
+            format(string, sizeof(string), "DELETE FROM `mru_cars` WHERE `UID`='%d' LIMIT 1", lUID);
+            mysql_query(string);
+            printf("[CAR] Cofniêto rekord UID %d: MTA odrzuci³o utworzenie modelu %d", lUID, model);
+            return -1;
+        }
+
         CarData[idx][c_UID] = lUID;
-        CarData[idx][c_ID] = CreateVehicle(model, x, y, z, angle, color1, color2, -1);
+        CarData[idx][c_ID] = vehicleid;
         CarData[idx][c_Owner] = 0;
         CarData[idx][c_OwnerType] = 0;
         CarData[idx][c_Model] = model;
@@ -668,6 +689,15 @@ Car_Spawn(lUID, bool:loaddesc=true)
 {
     if(GetVehicleModel(CarData[lUID][c_ID]) != 0) return 0;
 
+    if(CarData[lUID][c_Model] < 400 || CarData[lUID][c_Model] > 611 ||
+        !Car_IsSpawnPositionValid(CarData[lUID][c_Pos][0], CarData[lUID][c_Pos][1], CarData[lUID][c_Pos][2]))
+    {
+        printf("[CAR] Pominiêto uszkodzony spawn: UID=%d, model=%d, pozycja=%f,%f,%f",
+            CarData[lUID][c_UID], CarData[lUID][c_Model], CarData[lUID][c_Pos][0],
+            CarData[lUID][c_Pos][1], CarData[lUID][c_Pos][2]);
+        return 0;
+    }
+
     new vehicleid, expire=-1;
 
     if(CarData[lUID][c_OwnerType] == CAR_OWNER_JOB)
@@ -681,6 +711,11 @@ Car_Spawn(lUID, bool:loaddesc=true)
         vehicleid = AddStaticVehicleEx(CarData[lUID][c_Model], CarData[lUID][c_Pos][0],CarData[lUID][c_Pos][1],CarData[lUID][c_Pos][2], CarData[lUID][c_Rot], CarData[lUID][c_Color][0], CarData[lUID][c_Color][1], expire, CarData[lUID][c_Siren]);
     else
        vehicleid = CreateVehicle(CarData[lUID][c_Model], CarData[lUID][c_Pos][0],CarData[lUID][c_Pos][1],CarData[lUID][c_Pos][2], CarData[lUID][c_Rot], CarData[lUID][c_Color][0], CarData[lUID][c_Color][1], expire, CarData[lUID][c_Siren]);
+    if(vehicleid == INVALID_VEHICLE_ID)
+    {
+        printf("[CAR] MTA odrzuci³o spawn UID=%d, model=%d", CarData[lUID][c_UID], CarData[lUID][c_Model]);
+        return 0;
+    }
     VehicleUID[vehicleid][vUID] = lUID;
 
     new rejestracja[32];
@@ -690,8 +725,8 @@ Car_Spawn(lUID, bool:loaddesc=true)
 		format(rejestracja, sizeof(rejestracja), "%s", CarData[lUID][c_Rejestracja]);
 
     SetVehicleNumberPlate(vehicleid, rejestracja);
-	RespawnVehicleEx(vehicleid);
-	//
+    // CreateVehicle ju¿ stawia pojazd na zapisanym spawnie. Natychmiastowy
+    // SetVehicleToRespawn tworzy³ w MTA drugi, opóŸniony spawn wszystkich aut.
     Car_AddTune(vehicleid);
     CarData[lUID][c_ID] = vehicleid;
 
