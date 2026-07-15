@@ -156,6 +156,13 @@ function applyObjectModel(object, customModel)
     if not customModel then
         return false
     end
+    -- The server has to create a real GTA object while a SA-MP custom model is
+    -- being resolved. Model 1337 is only that transport placeholder, not part
+    -- of the map. Hide global and player objects before any asynchronous
+    -- registry/model loading so a failed or delayed replacement never leaves
+    -- rows of dumpsters visible in the world.
+    setElementAlpha(object, 0)
+    setElementCollisionsEnabled(object, false)
     -- Streamer can create client-only player objects before the asynchronous
     -- model registry reaches the client. Remember those objects and retry once
     -- the matching definition is available; otherwise collision floors can

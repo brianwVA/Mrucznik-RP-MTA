@@ -1,6 +1,13 @@
 function CreateObject(amx, model, x, y, z, rX, rY, rZ, drawDistance)
 	local runtimeModel, customModel = mrpResolveObjectModel(model)
 	local obj = createObject(runtimeModel, x, y, z, rX, rY, rZ)
+	if obj and customModel then
+		-- Never synchronize the base 1337 placeholder as a visible world object.
+		-- mrp_models reveals it client-side only after the custom DFF/TXD/COL has
+		-- been loaded and applied successfully.
+		setElementAlpha(obj, 0)
+		setElementCollisionsEnabled(obj, false)
+	end
 	if not obj then
 		obj = createObject(1337, x, y, z, rX, rY, rZ) -- Create a dummy object anyway since createobject can also be used to make camera attachments
 		setElementAlpha(obj, 0)
