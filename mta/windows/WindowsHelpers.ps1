@@ -71,3 +71,57 @@ function Stop-MrpMysql {
     if ($LASTEXITCODE -ne 0) { throw "Nie udało się bezpiecznie zatrzymać MySQL." }
 }
 
+function Repair-MrpModelManifest {
+    param([Parameter(Mandatory = $true)]$State)
+
+    $ResourceRoot = Join-Path $State.serverRoot "mods\deathmatch\resources\mrp_models"
+    $MetaPath = Join-Path $ResourceRoot "meta.xml"
+    if (-not (Test-Path $MetaPath)) { return }
+
+    [xml]$Meta = Get-Content $MetaPath
+    $Changed = $false
+    $RegistryScripts = @("shared/samp_objects.lua", "shared/vc_objects.lua")
+    foreach ($RegistryScript in $RegistryScripts) {
+        $RegistryPath = Join-Path $ResourceRoot $RegistryScript.Replace("/", "\")
+        $HasRegistry = @($Meta.meta.script | Where-Object {
+            $_.src -eq $RegistryScript
+        }).Count -gt 0
+        if (-not (Test-Path $RegistryPath) -or $HasRegistry) { continue }
+        $ScriptNode = $Meta.CreateElement("script")
+        $ScriptNode.SetAttribute("src", $RegistryScript)
+        $ScriptNode.SetAttribute("type", "shared")
+        $ScriptNode.SetAttribute("cache", "false")
+        $BaseRegistryNode = @($Meta.meta.script | Where-Object {
+            $_.src -eq "shared/registry.lua"
+        }) | Select-Object -First 1
+        if ($BaseRegistryNode) {
+            [void]$Meta.meta.InsertAfter($ScriptNode, $BaseRegistryNode)
+        } else {
+            [void]$Meta.meta.AppendChild($ScriptNode)
+        }
+        $Changed = $true
+    }
+
+    $KnownFiles = @{}
+    foreach ($FileNode in @($Meta.meta.file)) {
+        $KnownFiles[[string]$FileNode.src] = $true
+    }
+    $AssetsRoot = Join-Path $ResourceRoot "assets"
+    if (Test-Path $AssetsRoot) {
+        foreach ($Asset in Get-ChildItem $AssetsRoot -File -Recurse | Sort-Object FullName) {
+            $RelativePath = $Asset.FullName.Substring($ResourceRoot.Length + 1).Replace("\", "/")
+            if ($KnownFiles.ContainsKey($RelativePath)) { continue }
+            $FileNode = $Meta.CreateElement("file")
+            $FileNode.SetAttribute("src", $RelativePath)
+            [void]$Meta.meta.AppendChild($FileNode)
+            $KnownFiles[$RelativePath] = $true
+            $Changed = $true
+        }
+    }
+
+    if ($Changed) {
+        $Meta.Save($MetaPath)
+        Write-Host "Naprawiono manifest modeli MTA ($($KnownFiles.Count) plików klienta)."
+    }
+}
+

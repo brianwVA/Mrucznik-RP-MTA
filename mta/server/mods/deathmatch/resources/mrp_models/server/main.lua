@@ -7,6 +7,18 @@ local objectModels = {}
 for model, definition in pairs(MRP_OBJECT_MODELS or {}) do
     objectModels[model] = definition
 end
+local runtimeObjectModels = {}
+
+local function isSharedDefinition(customModel, definition)
+    local shared = (MRP_OBJECT_MODELS or {})[customModel]
+    if not shared then return false end
+    return tonumber(shared.base) == tonumber(definition.base)
+        and shared.dff == definition.dff
+        and shared.txd == definition.txd
+        and tonumber(shared.world or -1) == tonumber(definition.world or -1)
+        and tonumber(shared.timeOn) == tonumber(definition.timeOn)
+        and tonumber(shared.timeOff) == tonumber(definition.timeOff)
+end
 
 local function assetPath(path)
     path = tostring(path):gsub("\\", "/"):gsub("^/+", "")
@@ -36,6 +48,13 @@ function registerObjectModel(customModel, baseModel, dff, txd, virtualWorld, tim
     -- later definition references files that were not shipped.  Do not
     -- overwrite an earlier working definition with an unloadable one.
     if not fileExists(dffPath) or not fileExists(txdPath) then
+        -- The generated shared registry can also repair old IDE filenames
+        -- (for example subcrates.txd -> subcratesvc.txd).  In that case the
+        -- model is already usable and the legacy Pawn registration is a
+        -- harmless duplicate, not a missing model.
+        if objectModels[customModel] then
+            return true
+        end
         outputDebugString(string.format(
             "[MRP models] Pomijam model %d: brak pliku %s%s",
             customModel,
@@ -44,7 +63,7 @@ function registerObjectModel(customModel, baseModel, dff, txd, virtualWorld, tim
         ), 2)
         return false
     end
-    objectModels[customModel] = {
+    local definition = {
         base = baseModel,
         dff = dffPath,
         txd = txdPath,
@@ -53,7 +72,13 @@ function registerObjectModel(customModel, baseModel, dff, txd, virtualWorld, tim
         timeOn = tonumber(timeOn),
         timeOff = tonumber(timeOff),
     }
-    triggerClientEvent(root, "mrp:onObjectModelRegistered", resourceRoot, customModel, objectModels[customModel])
+    objectModels[customModel] = definition
+    if isSharedDefinition(customModel, definition) then
+        runtimeObjectModels[customModel] = nil
+    else
+        runtimeObjectModels[customModel] = definition
+    end
+    triggerClientEvent(root, "mrp:onObjectModelRegistered", resourceRoot, customModel, definition)
     return true
 end
 
@@ -64,5 +89,9 @@ end
 
 addEvent("mrp:requestObjectModels", true)
 addEventHandler("mrp:requestObjectModels", resourceRoot, function()
-    triggerClientEvent(client, "mrp:onObjectModelsReady", resourceRoot, objectModels)
+    -- SA-MP and Vice City definitions are already present in the shared Lua
+    -- catalog.  Sending that multi-megabyte table in one event was unreliable
+    -- and left whole VC districts invisible.  Only genuinely dynamic overrides
+    -- need to cross the network for a player who joins later.
+    triggerClientEvent(client, "mrp:onObjectModelsReady", resourceRoot, runtimeObjectModels)
 end)

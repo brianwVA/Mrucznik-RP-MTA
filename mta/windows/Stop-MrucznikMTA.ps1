@@ -1,6 +1,6 @@
 ﻿[CmdletBinding()]
 param(
-    [string]$InstallRoot = "C:\M-RP-MTA",
+    [string]$InstallRoot = $PSScriptRoot,
     [switch]$KeepMysql
 )
 

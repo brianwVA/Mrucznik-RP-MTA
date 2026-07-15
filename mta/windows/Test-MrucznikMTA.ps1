@@ -1,6 +1,6 @@
 ﻿[CmdletBinding()]
 param(
-    [string]$InstallRoot = "C:\M-RP-MTA",
+    [string]$InstallRoot = $PSScriptRoot,
     [int]$StartupSeconds = 70
 )
 
@@ -8,6 +8,25 @@ $ErrorActionPreference = "Stop"
 . (Join-Path $PSScriptRoot "WindowsHelpers.ps1")
 $State = Get-MrpInstallState -InstallRoot $InstallRoot
 Start-MrpMysql -State $State
+Repair-MrpModelManifest -State $State
+
+$ModelsRoot = Join-Path $State.serverRoot "mods\deathmatch\resources\mrp_models"
+$ModelsMetaPath = Join-Path $ModelsRoot "meta.xml"
+[xml]$ModelsMeta = Get-Content $ModelsMetaPath
+foreach ($Registry in @("shared/samp_objects.lua", "shared/vc_objects.lua")) {
+    $Registered = @($ModelsMeta.meta.script | Where-Object { $_.src -eq $Registry }).Count -eq 1
+    if (-not $Registered) { throw "Manifest modeli nie ładuje $Registry." }
+}
+$ManifestAssets = @{}
+foreach ($FileNode in @($ModelsMeta.meta.file)) {
+    $ManifestAssets[[string]$FileNode.src] = $true
+}
+foreach ($Asset in Get-ChildItem (Join-Path $ModelsRoot "assets") -File -Recurse) {
+    $RelativePath = $Asset.FullName.Substring($ModelsRoot.Length + 1).Replace("\", "/")
+    if (-not $ManifestAssets.ContainsKey($RelativePath)) {
+        throw "Manifest modeli pomija plik klienta: $RelativePath"
+    }
+}
 
 $ServerExe = Join-Path $State.serverRoot "MTA Server.exe"
 $Running = Get-CimInstance Win32_Process -Filter "Name='MTA Server.exe'" `

@@ -1,5 +1,11 @@
 local loadedModels = {}
+-- The complete SA-MP and Vice City catalog is loaded as a shared script before
+-- this file.  Keeping it local avoids a multi-megabyte client event whose
+-- serialization used to leave whole districts as invisible placeholders.
 local objectModels = {}
+for model, definition in pairs(MRP_OBJECT_MODELS or {}) do
+    objectModels[model] = definition
+end
 local loadedObjectModels = {}
 local objectMaterialShaders = {}
 local pendingObjectModels = {}
@@ -175,7 +181,12 @@ function applyObjectModel(object, customModel)
     if not runtimeModel then
         return false
     end
-    local applied = setElementModel(object, runtimeModel)
+    -- Streamer sets the local model data and then calls this export explicitly.
+    -- The data-change handler may therefore have applied the model already.
+    -- setElementModel returns false for that harmless second call; treating it
+    -- as a failure used to hide every correctly loaded VC object again.
+    local applied = getElementModel(object) == runtimeModel
+        or setElementModel(object, runtimeModel)
     if applied then
         pendingObjectModels[object] = nil
         -- PlayerObjects use an invisible, non-collidable 1337 placeholder.
@@ -284,7 +295,12 @@ end)
 
 addEvent("mrp:onObjectModelsReady", true)
 addEventHandler("mrp:onObjectModelsReady", resourceRoot, function(models)
-    objectModels = models or {}
+    -- Merge runtime AddSimpleModel registrations instead of replacing the
+    -- deterministic shared catalog.  This also preserves the catalog if an
+    -- older MTA build truncates a large event payload.
+    for model, definition in pairs(models or {}) do
+        objectModels[tonumber(model)] = definition
+    end
     retryPendingObjectModels()
     for _, object in ipairs(getElementsByType("object")) do
         local customModel = getElementData(object, "mrp:customObjectModel")

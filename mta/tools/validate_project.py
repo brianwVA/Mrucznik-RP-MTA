@@ -256,6 +256,23 @@ def main() -> int:
     models_client = (
         mta / "server/mods/deathmatch/resources/mrp_models/client/main.lua"
     ).read_text(encoding="utf-8")
+    models_server = (
+        mta / "server/mods/deathmatch/resources/mrp_models/server/main.lua"
+    ).read_text(encoding="utf-8")
+    models_meta = ET.parse(
+        mta / "server/mods/deathmatch/resources/mrp_models/meta.xml"
+    ).getroot()
+    model_scripts = [node.get("src") for node in models_meta.findall("script")]
+    if "shared/vc_objects.lua" not in model_scripts:
+        fail("Vice City shared object catalog is not loaded by mrp_models")
+    vc_catalog = (
+        mta / "server/mods/deathmatch/resources/mrp_models/shared/vc_objects.lua"
+    ).read_text(encoding="utf-8")
+    if len(re.findall(r"MRP_OBJECT_MODELS\[-\d+\]", vc_catalog)) != 2747:
+        fail("Unexpected loadable Vice City object inventory size")
+    for repaired_texture in ("docksvc.txd", "subcratesvc.txd"):
+        if repaired_texture not in vc_catalog:
+            fail(f"Vice City texture alias is absent: {repaired_texture}")
     material_shader = (
         mta / "server/mods/deathmatch/resources/mrp_models/client/material_replace.fx"
     ).read_text(encoding="utf-8")
@@ -263,6 +280,17 @@ def main() -> int:
         fail("Player-object materials cannot resolve stock GTA model textures")
     if "engineLoadCOL(definition.col)" not in models_client or "engineReplaceCOL(col, runtimeModel)" not in models_client:
         fail("SA-MP object models do not load their exact collision data")
+    if "pairs(MRP_OBJECT_MODELS or {})" not in models_client:
+        fail("Client does not initialize the complete shared object catalog")
+    if "getElementModel(object) == runtimeModel" not in models_client:
+        fail("Repeated custom-object application can hide an already loaded model")
+    if "MRP model audit" in models_client or "mrpmodelaudit" in models_client:
+        fail("Temporary object-model diagnostics remain enabled")
+    if "runtimeObjectModels" not in models_server or (
+        'triggerClientEvent(client, "mrp:onObjectModelsReady", resourceRoot, runtimeObjectModels)'
+        not in models_server
+    ):
+        fail("Server still transfers the full shared object catalog as one event")
     if 'dxSetShaderValue(shader, "materialColor"' not in models_client:
         fail("Player-object material ARGB colors are not forwarded to the shader")
     if "materialColor" not in material_shader or "replaceMaterial" not in material_shader:

@@ -46,6 +46,23 @@ Parametr `-GtaPath` dodatkowo importuje pełny katalog obiektów SA-MP 0.3.7
 (DFF, TXD i COL); jest wymagany dla rozbudowanych map, między innymi obu
 interiorów LSPD. Pliki są pobierane z lokalnej, legalnie posiadanej instalacji
 GTA/SA-MP i dlatego nie są przechowywane w repozytorium.
+
+Katalog Vice City jest generowany deterministycznie z `vicecity_map.pwn`:
+
+```powershell
+python .\mta\tools\build_vc_model_catalog.py `
+  --source .\gamemodes\modules\vicecity\vicecity_map.pwn `
+  --assets C:\Mrucznik-RP-MTA\mta-distribution\server\mods\deathmatch\resources\mrp_models\assets\vc4samp `
+  --output .\mta\server\mods\deathmatch\resources\mrp_models\shared\vc_objects.lua
+```
+
+Aktualna paczka ładuje 2747 z 2754 rejestrowanych definicji IDE. Siedem
+używanych obiektów lotniska i doków korzysta z zgodnych nazw paczki GTA United
+(`subcratesvc.txd` i `docksvc.txd`). Cztery definicje źródłowe nie mają plików
+w archiwum: trzy nie występują na mapie, a `man_dooropen.dff` występuje raz jako
+otwarte drzwi w interiorze rezydencji. Walidator pilnuje liczby modeli i obu
+naprawionych słowników tekstur.
+
 Publiczne hasło `funia` służy wyłącznie
 lokalnej bazie deweloperskiej; dane produkcyjne i tokeny nie są wpisywane do
 repozytorium.
