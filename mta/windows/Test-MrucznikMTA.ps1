@@ -13,7 +13,11 @@ Repair-MrpModelManifest -State $State
 $ModelsRoot = Join-Path $State.serverRoot "mods\deathmatch\resources\mrp_models"
 $ModelsMetaPath = Join-Path $ModelsRoot "meta.xml"
 [xml]$ModelsMeta = Get-Content $ModelsMetaPath
-foreach ($Registry in @("shared/samp_objects.lua", "shared/vc_objects.lua")) {
+$RequiredRegistries = @("shared/vc_objects.lua")
+if (Test-Path (Join-Path $ModelsRoot "shared\samp_objects.lua")) {
+    $RequiredRegistries += "shared/samp_objects.lua"
+}
+foreach ($Registry in $RequiredRegistries) {
     $Registered = @($ModelsMeta.meta.script | Where-Object { $_.src -eq $Registry }).Count -eq 1
     if (-not $Registered) { throw "Manifest modeli nie ładuje $Registry." }
 }
