@@ -208,13 +208,15 @@ def main() -> int:
     if 'setPlayerHudComponentVisible("money"' in bridge_client:
         fail("Bridge must not hide the SA-MP money HUD")
     required_input_tokens = {
-        'toggleControl("chatbox", false)',
-        'bindKey("t", "down", openInput)',
-        'bindKey("F6", "down", openInput)',
-        'triggerServerEvent("mrp:rawInput"',
+        'toggleControl("chatbox", true)',
+        'key ~= "y"',
+        'cancelEvent()',
+        'triggerServerEvent("mrp:conversationYes"',
+        'addCommandHandler("q"',
+        'triggerServerEvent("mrp:requestQuit"',
     }
     if not all(token in bridge_client for token in required_input_tokens):
-        fail("Bridge does not provide the exact SA-MP chat/command input path")
+        fail("Bridge does not preserve SA-MP chat, Y and /q controls")
 
     amx_events = (
         mta / "vendor/mta-amx/amx/server/events.lua"
@@ -230,6 +232,16 @@ def main() -> int:
         or "g_CommandMapping" in raw_input.group(1)
     ):
         fail("Raw input does not dispatch exact command names to the original Pawn handler")
+    required_compat_events = {
+        "addEvent('mrp:conversationYes', true)",
+        "keyStateChange(client, 'conversation_yes'",
+        "addEvent('mrp:requestQuit', true)",
+        "setElementData(client, 'mrp:requestedQuit'",
+        "kickPlayer(client, 'Quit')",
+        "getElementData(source, 'mrp:requestedQuit') and 1",
+    }
+    if not all(token in amx_events for token in required_compat_events):
+        fail("AMX bridge does not preserve SA-MP Y and /q semantics")
 
     amx_loader = (
         mta / "vendor/mta-amx/amx/server/amx.lua"

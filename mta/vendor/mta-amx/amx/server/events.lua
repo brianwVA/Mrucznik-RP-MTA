@@ -472,6 +472,28 @@ addEventHandler('mrp:rawInput', root,
 	end
 )
 
+-- mrp_bridge suppresses MTA's hard-coded Y team-chat bind and forwards the
+-- original SA-MP KEY_YES state here instead.
+addEvent('mrp:conversationYes', true)
+addEventHandler('mrp:conversationYes', root,
+	function(pressed)
+		if not client or source ~= client or type(pressed) ~= 'boolean' then return end
+		keyStateChange(client, 'conversation_yes', pressed and 'down' or 'up')
+	end
+)
+
+-- /q cannot invoke MTA's protected core `quit` command. Disconnect through
+-- the privileged AMX resource but retain SA-MP's QUIT reason for Pawn cleanup,
+-- position saving and anti-/q systems.
+addEvent('mrp:requestQuit', true)
+addEventHandler('mrp:requestQuit', root,
+	function()
+		if not client or source ~= client then return end
+		setElementData(client, 'mrp:requestedQuit', true, false)
+		kickPlayer(client, 'Quit')
+	end
+)
+
 addEventHandler('onPlayerWeaponSwitch', root,
 	function(prev, current)
 		procCallOnAll('OnPlayerWeaponSwitch', getElemID(source), current, prev)
@@ -594,7 +616,8 @@ addEventHandler('onPlayerQuit', root,
 		end
 
 		local playerID = getElemID(source)
-		procCallOnAll('OnPlayerDisconnect', playerID, quitReasons[reason] or 0)
+		local quitReason = getElementData(source, 'mrp:requestedQuit') and 1 or (quitReasons[reason] or 0)
+		procCallOnAll('OnPlayerDisconnect', playerID, quitReason)
 
 		if g_PlayerObjects[source] then
 			for objID, obj in pairs(g_PlayerObjects[source]) do
