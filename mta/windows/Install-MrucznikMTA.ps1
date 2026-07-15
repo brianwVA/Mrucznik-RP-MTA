@@ -161,8 +161,8 @@ $LoadedState = Get-MrpInstallState -InstallRoot $InstallRoot
 Start-MrpMysql -State $LoadedState
 
 $ImportMarker = Join-Path $InstallRoot ".database-imported"
+$MysqlExe = Join-Path $MysqlHome "bin\mysql.exe"
 if (-not (Test-Path $ImportMarker)) {
-    $MysqlExe = Join-Path $MysqlHome "bin\mysql.exe"
     & $MysqlExe --protocol=TCP "--host=127.0.0.1" "--port=$MysqlPort" "--user=root" -e `
         "DROP DATABASE IF EXISTS mrucznik; DROP USER IF EXISTS 'samp'@'%'; CREATE DATABASE mrucznik; CREATE USER 'samp'@'%' IDENTIFIED WITH mysql_native_password BY 'funia'; GRANT ALL ON mrucznik.* TO 'samp'@'%'; FLUSH PRIVILEGES;"
     if ($LASTEXITCODE -ne 0) { throw "Nie udało się utworzyć lokalnej bazy i użytkownika." }
@@ -178,6 +178,59 @@ if (-not (Test-Path $ImportMarker)) {
         Invoke-MysqlFile -MysqlExe $MysqlExe -File $File.FullName -Database "mrucznik"
     }
     Set-Content $ImportMarker "MySQL 5.7.44 / mrucznik" -Encoding ASCII
+}
+
+# Early MTA compatibility builds could load business strings and integers but
+# lose every floating-point position. Their shutdown handler then persisted
+# those zeroes back to MySQL, leaving visible business names without usable
+# pickups or interiors. Repair only that unmistakable state from the packaged
+# seed while preserving ownership and the live MoneyPocket balance.
+$PositionedBusinessCount = & $MysqlExe --protocol=TCP "--host=127.0.0.1" `
+    "--port=$MysqlPort" "--user=root" --batch --skip-column-names `
+    -e "SELECT COUNT(*) FROM mrucznik.mru_business WHERE enX <> 0 AND enY <> 0;"
+if ($LASTEXITCODE -ne 0) { throw "Nie udało się sprawdzić pozycji biznesów." }
+if ([int]$PositionedBusinessCount -eq 0) {
+    $BackupRoot = Join-Path $InstallRoot "backups"
+    New-Item -ItemType Directory -Force $BackupRoot | Out-Null
+    $BusinessBackup = Join-Path $BackupRoot `
+        ("mru_business-before-restore-{0}.sql" -f (Get-Date -Format "yyyyMMdd-HHmmss"))
+    $MysqlDump = Join-Path $MysqlHome "bin\mysqldump.exe"
+    $DumpCommand = "`"$MysqlDump`" --protocol=TCP --host=127.0.0.1 --port=$MysqlPort " +
+        "--user=root --single-transaction --skip-lock-tables mrucznik mru_business > `"$BusinessBackup`""
+    & cmd.exe /d /s /c $DumpCommand
+    if ($LASTEXITCODE -ne 0 -or (Get-Item $BusinessBackup).Length -lt 1000) {
+        throw "Nie udało się wykonać kopii tabeli mru_business."
+    }
+
+    & $MysqlExe --protocol=TCP "--host=127.0.0.1" "--port=$MysqlPort" "--user=root" -e `
+        "DROP DATABASE IF EXISTS mrucznik_business_seed; CREATE DATABASE mrucznik_business_seed CHARACTER SET utf8 COLLATE utf8_general_ci;"
+    if ($LASTEXITCODE -ne 0) { throw "Nie udało się przygotować wzorca biznesów." }
+    try {
+        Invoke-MysqlFile -MysqlExe $MysqlExe `
+            -File (Join-Path $PayloadRoot "database\schema\mru_business_schema.sql") `
+            -Database "mrucznik_business_seed"
+        Invoke-MysqlFile -MysqlExe $MysqlExe `
+            -File (Join-Path $PayloadRoot "database\data\mru_business_data.sql") `
+            -Database "mrucznik_business_seed"
+
+        $RepairQuery = @"
+UPDATE mrucznik.mru_business AS live
+JOIN mrucznik_business_seed.mru_business AS seed ON seed.ID = live.ID
+SET live.enX = seed.enX, live.enY = seed.enY, live.enZ = seed.enZ,
+    live.enVw = seed.enVw, live.enInt = seed.enInt,
+    live.exX = seed.exX, live.exY = seed.exY, live.exZ = seed.exZ,
+    live.exVW = seed.exVW, live.exINT = seed.exINT,
+    live.pLocal = seed.pLocal, live.Money = seed.Money,
+    live.Cost = seed.Cost, live.Location = seed.Location, live.Icon = seed.Icon;
+"@
+        & $MysqlExe --protocol=TCP "--host=127.0.0.1" "--port=$MysqlPort" `
+            "--user=root" "--execute=$RepairQuery"
+        if ($LASTEXITCODE -ne 0) { throw "Nie udało się odtworzyć danych biznesów." }
+    }
+    finally {
+        & $MysqlExe --protocol=TCP "--host=127.0.0.1" "--port=$MysqlPort" `
+            "--user=root" -e "DROP DATABASE IF EXISTS mrucznik_business_seed;" | Out-Null
+    }
 }
 
 $MysqlHostForMta = if ($MysqlPort -eq 3306) { "127.0.0.1" } else { "127.0.0.1;port=$MysqlPort" }
