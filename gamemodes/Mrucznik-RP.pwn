@@ -173,9 +173,6 @@ native gpci (playerid, serial [], len);
 //-------<[ Timery ]>-------
 #include "system\timery.pwn"
 
-//-------<[ NPC ]>-------
-#include "system\npc.pwn"
-
 //-------<[ Obiekty ]>-------
 #include "obiekty\obiekty.pwn"
 #include "obiekty\pickupy.pwn"

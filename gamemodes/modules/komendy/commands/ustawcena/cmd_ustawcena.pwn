@@ -31,9 +31,9 @@
 #include "ustawcena_impl.pwn"
 
 //-------<[ initialize ]>-------
-command_ustawcena()
+command_ustawcenabiletu()
 {
-    new command = Command_GetID("ustawcena");
+    new command = Command_GetID("ustawcenabiletu");
 
     //aliases
     
@@ -47,7 +47,7 @@ command_ustawcena()
 }
 
 //-------<[ command ]>-------
-YCMD:ustawcena(playerid, params[], help)
+YCMD:ustawcenabiletu(playerid, params[], help)
 {
     if (help)
     {
@@ -58,10 +58,10 @@ YCMD:ustawcena(playerid, params[], help)
     new param[256];
     if(sscanf(params, "S()[256]", param))
     {
-        sendTipMessage(playerid, "U¿yj /ustawcena [] ");
+        sendTipMessage(playerid, "U¿yj /ustawcenabiletu [cena]");
         return 1;
     }
     
     //command body
-    return command_ustawcena_Impl(playerid, param);
+    return command_ustawcenabiletu_Impl(playerid, param);
 }

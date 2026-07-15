@@ -1067,7 +1067,7 @@ hook OnGameModeInit()
     command_unwarn();
     command_up();
     command_uprawnienia();
-    command_ustawcena();
+    command_ustawcenabiletu();
     command_ustawmistrz();
     command_usunbron();
     command_usunopis();

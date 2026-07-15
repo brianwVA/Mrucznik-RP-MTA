@@ -11196,8 +11196,8 @@ stock DumpPlayerStreamInfo(playerid)
 		Log(crashLog, INFO, "Crash %d / CrashObjectsInfo: {%d,%f,%f,%f}", crashid, model, x, y, z);
 	}
 
-	new text3ds[MAX_3DTEXT_PLAYER + 10];
-	new visibletext3ds = Streamer_GetAllVisibleItems(playerid, STREAMER_TYPE_3D_TEXT_LABEL, text3ds);
+	new textLabelIds[_:MAX_3DTEXT_PLAYER + 10];
+	new visibletext3ds = Streamer_GetAllVisibleItems(playerid, STREAMER_TYPE_3D_TEXT_LABEL, textLabelIds);
 	for(new i; i<visibletext3ds; i++)
 	{
 		Streamer_GetItemPos(STREAMER_TYPE_3D_TEXT_LABEL, i, x,y,z);
@@ -11267,4 +11267,3 @@ public AddsOn()
 }
 
 //EOF
-

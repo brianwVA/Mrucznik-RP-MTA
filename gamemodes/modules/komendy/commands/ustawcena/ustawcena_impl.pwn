@@ -23,14 +23,14 @@
 //
 
 //------------------<[ Implementacja: ]>-------------------
-command_ustawcena_Impl(playerid, params[256])
+command_ustawcenabiletu_Impl(playerid, params[256])
 {
     if(IsPlayerConnected(playerid))
 	{
 		new moneys; 
 		if( sscanf(params, "d", moneys))
 		{
-			sendErrorMessage(playerid, "U¿yj /ustawcena [CENA]"); 
+			sendErrorMessage(playerid, "U¿yj /ustawcenabiletu [CENA]");
 			return 1;
 		}
 		
