@@ -20,11 +20,11 @@ def main() -> int:
     models = json.loads((mta / "compatibility/models.json").read_text(encoding="utf-8"))
     natives = json.loads((mta / "compatibility/natives.json").read_text(encoding="utf-8"))
     plugins = json.loads((mta / "plugins.lock.json").read_text(encoding="utf-8"))
-    if commands["command_count"] != 787 or commands["definition_count"] != 788:
+    if commands["command_count"] != 788 or commands["definition_count"] != 788:
         fail("Unexpected command inventory size")
     if commands.get("runtime_command_count") != 745:
         fail("Unexpected compiled AMX command inventory size")
-    if commands.get("inactive_source_command_count") != 42:
+    if commands.get("inactive_source_command_count") != 43:
         fail("Unexpected inactive source command inventory size")
     runtime_commands = {
         command["name"]

@@ -309,6 +309,39 @@ Car_Create(model, Float:x, Float:y, Float:z, Float:angle, color1, color2)
     return idx;
 }
 
+Car_LoadCurrentRow(idx)
+{
+    new value[64];
+
+    mysql_fetch_field_row(value, "UID"); CarData[idx][c_UID] = strval(value);
+    mysql_fetch_field_row(value, "ownertype"); CarData[idx][c_OwnerType] = strval(value);
+    mysql_fetch_field_row(value, "owner"); CarData[idx][c_Owner] = strval(value);
+    mysql_fetch_field_row(value, "model"); CarData[idx][c_Model] = strval(value);
+    mysql_fetch_field_row(value, "x"); CarData[idx][c_Pos][0] = floatstr(value);
+    mysql_fetch_field_row(value, "y"); CarData[idx][c_Pos][1] = floatstr(value);
+    mysql_fetch_field_row(value, "z"); CarData[idx][c_Pos][2] = floatstr(value);
+    mysql_fetch_field_row(value, "angle"); CarData[idx][c_Rot] = floatstr(value);
+    mysql_fetch_field_row(value, "hp"); CarData[idx][c_HP] = floatstr(value);
+    mysql_fetch_field_row(value, "tires"); CarData[idx][c_Tires] = strval(value);
+    mysql_fetch_field_row(value, "color1"); CarData[idx][c_Color][0] = strval(value);
+    mysql_fetch_field_row(value, "color2"); CarData[idx][c_Color][1] = strval(value);
+    mysql_fetch_field_row(value, "nitro"); CarData[idx][c_Nitro] = strval(value);
+    mysql_fetch_field_row(value, "hydraulika"); CarData[idx][c_bHydraulika] = strval(value);
+    mysql_fetch_field_row(value, "felgi"); CarData[idx][c_Felgi] = strval(value);
+    mysql_fetch_field_row(value, "malunek"); CarData[idx][c_Malunek] = strval(value);
+    mysql_fetch_field_row(value, "spoiler"); CarData[idx][c_Spoiler] = strval(value);
+    mysql_fetch_field_row(value, "bumper1"); CarData[idx][c_Bumper][0] = strval(value);
+    mysql_fetch_field_row(value, "bumper2"); CarData[idx][c_Bumper][1] = strval(value);
+    mysql_fetch_field_row(value, "keys"); CarData[idx][c_Keys] = strval(value);
+    mysql_fetch_field_row(value, "neon"); CarData[idx][c_Neon] = strval(value);
+    mysql_fetch_field_row(value, "ranga"); CarData[idx][c_Rang] = strval(value);
+    mysql_fetch_field_row(value, "int"); CarData[idx][c_Int] = strval(value);
+    mysql_fetch_field_row(value, "vw"); CarData[idx][c_VW] = strval(value);
+    mysql_fetch_field_row(value, "pdvehmod"); CarData[idx][c_Siren] = strval(value);
+    mysql_fetch_field_row(CarData[idx][c_Rejestracja], "Rejestracja");
+    return 1;
+}
+
 Car_Load()
 {
     new string[512], lLoad=gCars;
@@ -318,34 +351,7 @@ Car_Load()
     mysql_store_result();
     while(mysql_fetch_row_format(string, "|"))
     {
-        sscanf(string, "p<|>ddddfffffddddlddddddddddds[32]",
-        CarData[gCars][c_UID],
-        CarData[gCars][c_OwnerType],
-        CarData[gCars][c_Owner],
-        CarData[gCars][c_Model],
-        CarData[gCars][c_Pos][0],
-        CarData[gCars][c_Pos][1],
-        CarData[gCars][c_Pos][2],
-        CarData[gCars][c_Rot],
-        CarData[gCars][c_HP],
-        CarData[gCars][c_Tires],
-        CarData[gCars][c_Color][0],
-        CarData[gCars][c_Color][1],
-        CarData[gCars][c_Nitro],
-        CarData[gCars][c_bHydraulika],
-        CarData[gCars][c_Felgi],
-        CarData[gCars][c_Malunek],
-        CarData[gCars][c_Spoiler],
-        CarData[gCars][c_Bumper][0],
-        CarData[gCars][c_Bumper][1],
-        CarData[gCars][c_Keys],
-        CarData[gCars][c_Neon],
-        CarData[gCars][c_Rang],
-        CarData[gCars][c_Int],
-        CarData[gCars][c_VW],
-		CarData[gCars][c_Siren],
-		CarData[gCars][c_Rejestracja]);
-
+        Car_LoadCurrentRow(gCars);
         gCars++;
     }
     mysql_free_result();
@@ -461,33 +467,7 @@ Car_LoadEx(lUID)
     if(mysql_num_rows())
     {
         mysql_fetch_row_format(string, "|");
-        sscanf(string, "p<|>ddddfffffddddlddddddddddds[32]",
-        CarData[lVehID][c_UID],
-        CarData[lVehID][c_OwnerType],
-        CarData[lVehID][c_Owner],
-        CarData[lVehID][c_Model],
-        CarData[lVehID][c_Pos][0],
-        CarData[lVehID][c_Pos][1],
-        CarData[lVehID][c_Pos][2],
-        CarData[lVehID][c_Rot],
-        CarData[lVehID][c_HP],
-        CarData[lVehID][c_Tires],
-        CarData[lVehID][c_Color][0],
-        CarData[lVehID][c_Color][1],
-        CarData[lVehID][c_Nitro],
-        CarData[lVehID][c_bHydraulika],
-        CarData[lVehID][c_Felgi],
-        CarData[lVehID][c_Malunek],
-        CarData[lVehID][c_Spoiler],
-        CarData[lVehID][c_Bumper][0],
-        CarData[lVehID][c_Bumper][1],
-        CarData[lVehID][c_Keys],
-        CarData[lVehID][c_Neon],
-        CarData[lVehID][c_Rang],
-        CarData[lVehID][c_Int],
-        CarData[lVehID][c_VW],
-        CarData[lVehID][c_Siren],
-        CarData[lVehID][c_Rejestracja]);
+        Car_LoadCurrentRow(lVehID);
 
         if(doadd) gCars++;
 
@@ -524,7 +504,9 @@ Car_LoadForPlayer(playerid)
     mysql_store_result();
     while(mysql_fetch_row_format(string, "|"))
     {
-        sscanf(string, "p<|>d", lsID);
+        new uidText[16];
+        mysql_fetch_field_row(uidText, "UID");
+        lsID = strval(uidText);
         format(lsSearch, 8, "%d|", lsID);
         if(strfind(lList, lsSearch) == -1)
         {
@@ -535,33 +517,7 @@ Car_LoadForPlayer(playerid)
                 continue;
             }
 
-            sscanf(string, "p<|>ddddfffffddddlddddddddddds[32]",
-            CarData[lVehID][c_UID],
-            CarData[lVehID][c_OwnerType],
-            CarData[lVehID][c_Owner],
-            CarData[lVehID][c_Model],
-            CarData[lVehID][c_Pos][0],
-            CarData[lVehID][c_Pos][1],
-            CarData[lVehID][c_Pos][2],
-            CarData[lVehID][c_Rot],
-            CarData[lVehID][c_HP],
-            CarData[lVehID][c_Tires],
-            CarData[lVehID][c_Color][0],
-            CarData[lVehID][c_Color][1],
-            CarData[lVehID][c_Nitro],
-            CarData[lVehID][c_bHydraulika],
-            CarData[lVehID][c_Felgi],
-            CarData[lVehID][c_Malunek],
-            CarData[lVehID][c_Spoiler],
-            CarData[lVehID][c_Bumper][0],
-            CarData[lVehID][c_Bumper][1],
-            CarData[lVehID][c_Keys],
-            CarData[lVehID][c_Neon],
-            CarData[lVehID][c_Rang],
-            CarData[lVehID][c_Int],
-            CarData[lVehID][c_VW],
-            CarData[lVehID][c_Siren],
-            CarData[lVehID][c_Rejestracja]);
+            Car_LoadCurrentRow(lVehID);
 
             PlayerInfo[playerid][pCars][lUsed++] = lVehID;
 

@@ -479,7 +479,7 @@ rybypomoc,fishhelp,everyone,pomoc,gamemodes/modules/pomoc/commands/rybypomoc/ryb
 sad,,everyone,komendy,gamemodes/modules/komendy/commands/sad/sad_impl.pwn,True,pending
 samppomoc,samphelp,everyone,pomoc,gamemodes/modules/pomoc/commands/samppomoc/samppomoc_impl.pwn,True,pending
 sanie,,,filterscripts,filterscripts/sanie.pwn,False,not-loaded-by-v2.9
-sasc,,,filterscripts,filterscripts/SAN_extPSq.pwn,False,not-loaded-by-v2.9
+sasc,,,filterscripts,filterscripts/hol.pwn,False,not-loaded-by-v2.9
 say,l local,everyone,komendy,gamemodes/modules/komendy/commands/say/say_impl.pwn,True,pending
 sb,sprawdzbron szukajbroni,everyone,komendy,gamemodes/modules/komendy/commands/sb/sb_impl.pwn,True,pending
 sban,,everyone,komendy,gamemodes/modules/komendy/commands/sban/sban_impl.pwn,True,pending
@@ -649,7 +649,8 @@ unwarn,,everyone,komendy,gamemodes/modules/komendy/commands/unwarn/unwarn_impl.p
 up,,everyone,komendy,gamemodes/modules/komendy/commands/up/up_impl.pwn,True,pending
 uprawnienia,,everyone,komendy,gamemodes/modules/komendy/commands/uprawnienia/uprawnienia_impl.pwn,True,pending
 upusc,drop,everyone,money,gamemodes/modules/money/commands/upusc/upusc_impl.pwn,True,pending
-ustawcena,,everyone,multiple,gamemodes/modules/komendy/commands/ustawcena/ustawcena_impl.pwn,True,pending
+ustawcena,,everyone,urzadls,gamemodes/modules/urzadls/commands/ustawcena/ustawcena_impl.pwn,True,pending
+ustawcenabiletu,,everyone,komendy,gamemodes/modules/komendy/commands/ustawcena/ustawcenabiletu_impl.pwn,False,not-loaded-by-v2.9
 ustawmistrz,setchamp setmistrz,everyone,komendy,gamemodes/modules/komendy/commands/ustawmistrz/ustawmistrz_impl.pwn,True,pending
 usunbiznes,deletebiz deletebusiness usunbiz,everyone,biznesy,gamemodes/modules/biznesy/commands/usunbiznes/usunbiznes_impl.pwn,True,pending
 usunbron,ub,everyone,komendy,gamemodes/modules/komendy/commands/usunbron/usunbron_impl.pwn,True,pending

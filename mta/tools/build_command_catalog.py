@@ -96,7 +96,14 @@ def metadata_commands(repo: Path) -> dict[str, dict]:
 def code_commands(repo: Path, commands: dict[str, dict]) -> None:
     roots = (repo / "gamemodes", repo / "filterscripts", repo / "include")
     for root in roots:
-        for path in sorted(root.rglob("*")):
+        # pathlib ordering is case-sensitive on Linux and case-insensitive on
+        # Windows. A stable key keeps duplicate legacy commands (for example
+        # /sasc in two filterscripts) deterministic in local builds and CI.
+        paths = sorted(
+            root.rglob("*"),
+            key=lambda path: path.relative_to(repo).as_posix().casefold(),
+        )
+        for path in paths:
             if path.suffix.lower() not in {".pwn", ".inc"}:
                 continue
             text = decode_source(path)
