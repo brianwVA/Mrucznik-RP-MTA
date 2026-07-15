@@ -37,6 +37,15 @@ $Running = Get-CimInstance Win32_Process -Filter "Name='MTA Server.exe'" `
     -ErrorAction SilentlyContinue | Where-Object { $_.ExecutablePath -eq $ServerExe }
 if ($Running) { throw "Zatrzymaj działający serwer przed testem: .\Stop-MrucznikMTA.ps1 -KeepMysql" }
 
+# Keep historical diagnostics, but only evaluate bytes written by this run.
+# Reading complete server.log files made a fixed, old "Run time error" fail
+# every later smoke test forever.
+$RuntimeLogs = Join-Path $State.serverRoot "mods\deathmatch\logs"
+$LogOffsets = @{}
+Get-ChildItem $RuntimeLogs -File -ErrorAction SilentlyContinue | ForEach-Object {
+    $LogOffsets[$_.FullName] = $_.Length
+}
+
 $StartInfo = [System.Diagnostics.ProcessStartInfo]::new()
 $StartInfo.FileName = $ServerExe
 $StartInfo.WorkingDirectory = $State.serverRoot
@@ -66,9 +75,30 @@ New-Item -ItemType Directory -Force $LogRoot | Out-Null
 $ConsoleLog = Join-Path $LogRoot "mta-smoke-test.log"
 Set-Content $ConsoleLog $Output -Encoding UTF8
 $Combined = $Output
-Get-ChildItem (Join-Path $State.serverRoot "mods\deathmatch\logs") -File `
-    -ErrorAction SilentlyContinue | ForEach-Object {
-        $Combined += "`r`n===== $($_.Name) =====`r`n" + (Get-Content $_.FullName -Raw)
+Get-ChildItem $RuntimeLogs -File -ErrorAction SilentlyContinue | ForEach-Object {
+        $Offset = if ($LogOffsets.ContainsKey($_.FullName) -and $LogOffsets[$_.FullName] -le $_.Length) {
+            [long]$LogOffsets[$_.FullName]
+        } else {
+            0L
+        }
+        $Stream = [System.IO.File]::Open(
+            $_.FullName,
+            [System.IO.FileMode]::Open,
+            [System.IO.FileAccess]::Read,
+            [System.IO.FileShare]::ReadWrite
+        )
+        try {
+            [void]$Stream.Seek($Offset, [System.IO.SeekOrigin]::Begin)
+            $Reader = [System.IO.StreamReader]::new($Stream, [System.Text.Encoding]::UTF8, $true, 4096, $true)
+            try {
+                $NewLogText = $Reader.ReadToEnd()
+            } finally {
+                $Reader.Dispose()
+            }
+        } finally {
+            $Stream.Dispose()
+        }
+        $Combined += "`r`n===== $($_.Name) (current run) =====`r`n" + $NewLogText
     }
 
 $Required = @(

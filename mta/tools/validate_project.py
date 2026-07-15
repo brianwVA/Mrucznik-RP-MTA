@@ -280,6 +280,14 @@ def main() -> int:
         fail("Player-object materials cannot resolve stock GTA model textures")
     if "engineLoadCOL(definition.col)" not in models_client or "engineReplaceCOL(col, runtimeModel)" not in models_client:
         fail("SA-MP object models do not load their exact collision data")
+    if "loadEmbeddedObjectCOL" not in models_client or "engineLoadCOL(raw)" not in models_client:
+        fail("Vice City objects do not load the COL data embedded by SA-MP")
+    if "engineSetModelVisibleTime(runtimeModel, timeOn, timeOff)" not in models_client:
+        fail("Vice City day/night models ignore their original visibility times")
+    if 'addEventHandler("onClientResourceStop", resourceRoot' not in models_client or (
+        "engineFreeModel(runtimeModel)" not in models_client
+    ):
+        fail("Custom model IDs are leaked across mrp_models resource restarts")
     if "pairs(MRP_OBJECT_MODELS or {})" not in models_client:
         fail("Client does not initialize the complete shared object catalog")
     if "getElementModel(object) == runtimeModel" not in models_client:

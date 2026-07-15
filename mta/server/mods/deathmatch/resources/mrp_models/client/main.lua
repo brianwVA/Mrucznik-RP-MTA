@@ -10,6 +10,53 @@ local loadedObjectModels = {}
 local objectMaterialShaders = {}
 local pendingObjectModels = {}
 
+local function littleEndianUInt32(data, position)
+    local b1, b2, b3, b4 = data:byte(position, position + 3)
+    if not b4 then return false end
+    return b1 + b2 * 0x100 + b3 * 0x10000 + b4 * 0x1000000
+end
+
+local function loadEmbeddedObjectCOL(path)
+    -- SA-MP 0.3.DL stores a raw COL chunk at the end of the Vice City DFF.
+    -- MTA only auto-loads embedded collision for vehicles; custom objects need
+    -- engineLoadCOL/engineReplaceCOL explicitly.
+    local prefix = "assets/vc4samp/dff/"
+    if type(path) ~= "string" or path:sub(1, #prefix) ~= prefix then
+        return false, false
+    end
+    local file = fileOpen(path, true)
+    if not file then return false, false end
+    local data = fileRead(file, fileGetSize(file))
+    fileClose(file)
+    if not data then return false, false end
+
+    local bestPosition, bestLength
+    for _, signature in ipairs({ "COLL", "COL2", "COL3", "COL4" }) do
+        local from = 1
+        while true do
+            local position = data:find(signature, from, true)
+            if not position then break end
+            local payloadLength = littleEndianUInt32(data, position + 4)
+            local totalLength = payloadLength and payloadLength + 8 or 0
+            local available = #data - position + 1
+            -- Three source files are four zero bytes shorter than declared by
+            -- their COL header. SA-MP tolerates it, so pad only that short tail.
+            if totalLength > 8 and available <= totalLength and totalLength - available <= 4 then
+                bestPosition, bestLength = position, totalLength
+            end
+            from = position + 1
+        end
+    end
+    if not bestPosition then return false, false end
+    local raw = data:sub(bestPosition)
+    if #raw < bestLength then
+        raw = raw .. string.rep("\0", bestLength - #raw)
+    elseif #raw > bestLength then
+        raw = raw:sub(1, bestLength)
+    end
+    return engineLoadCOL(raw), true
+end
+
 local function materialAssetPath(txdLib, txdName)
 	local base = "assets/materials/" .. tostring(txdLib) .. "/" .. tostring(txdName)
 	for _, extension in ipairs({ ".dds", ".png", ".jpg" }) do
@@ -136,10 +183,15 @@ local function loadCustomObjectModel(customModel)
         return false
     end
     -- MTA requires custom object assets in COL -> TXD -> DFF order.
-    local col = definition.col and engineLoadCOL(definition.col) or false
+    local col, hasEmbeddedCOL = false, false
+    if definition.col then
+        col = engineLoadCOL(definition.col)
+    else
+        col, hasEmbeddedCOL = loadEmbeddedObjectCOL(definition.dff)
+    end
     local txd = engineLoadTXD(definition.txd)
     local dff = engineLoadDFF(definition.dff)
-    if (definition.col and not col)
+    if ((definition.col or hasEmbeddedCOL) and not col)
         or not txd
         or not dff
         or (col and not engineReplaceCOL(col, runtimeModel))
@@ -149,6 +201,10 @@ local function loadCustomObjectModel(customModel)
         engineFreeModel(runtimeModel)
         outputDebugString("[MRP models] Nie udało się załadować obiektu " .. customModel, 1)
         return false
+    end
+    local timeOn, timeOff = tonumber(definition.timeOn), tonumber(definition.timeOff)
+    if timeOn and timeOff then
+        engineSetModelVisibleTime(runtimeModel, timeOn, timeOff)
     end
     loadedObjectModels[customModel] = runtimeModel
     return runtimeModel
@@ -179,6 +235,7 @@ function applyObjectModel(object, customModel)
     end
     local runtimeModel = loadCustomObjectModel(customModel)
     if not runtimeModel then
+        pendingObjectModels[object] = customModel
         return false
     end
     -- Streamer sets the local model data and then calls this export explicitly.
@@ -284,6 +341,18 @@ addEventHandler("onClientResourceStart", resourceRoot, function()
     end
     for _, ped in ipairs(getElementsByType("ped")) do
         applyModel(ped)
+    end
+end)
+
+addEventHandler("onClientResourceStop", resourceRoot, function()
+    -- engineRequestModel allocations survive a resource stop unless they are
+    -- explicitly released. Repeated updates used to drain the client model
+    -- pool and could make later VC districts disappear.
+    for _, runtimeModel in pairs(loadedObjectModels) do
+        engineFreeModel(runtimeModel)
+    end
+    for _, runtimeModel in pairs(loadedModels) do
+        engineFreeModel(runtimeModel)
     end
 end)
 
