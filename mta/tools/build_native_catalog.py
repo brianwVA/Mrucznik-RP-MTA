@@ -13,7 +13,7 @@ from pathlib import Path
 
 HEADER = struct.Struct("<I H B B h h 12i")
 AMX_MEMBERS = {
-    "Mrucznik-RP": "serverfiles/gamemodes/Mrucznik-RP.amx",
+    "M-RP": "serverfiles/gamemodes/Mrucznik-RP.amx",
     "animy": "serverfiles/filterscripts/animy.amx",
     "realtime": "serverfiles/filterscripts/realtime.amx",
     "sobeitblock": "serverfiles/filterscripts/sobeitblock.amx",
@@ -65,13 +65,17 @@ CUSTOM_NATIVES = {
 
 def read_amx_programs(root: Path, explicit: Path | None) -> dict[str, bytes]:
     if explicit:
-        return {"Mrucznik-RP": explicit.read_bytes()}
+        return {"M-RP": explicit.read_bytes()}
     archive = root / "serverfiles.tar.gz"
     if not archive.exists() or archive.stat().st_size < 1024:
         raise FileNotFoundError("serverfiles.tar.gz is missing; run git lfs pull")
     with tarfile.open(archive, "r:gz") as tar:
         programs = {}
+        compiled_gamemode = root / "gamemodes/Mrucznik-RP.amx"
         for name, member_name in AMX_MEMBERS.items():
+            if name == "M-RP" and compiled_gamemode.exists() and compiled_gamemode.stat().st_size > 1024:
+                programs[name] = compiled_gamemode.read_bytes()
+                continue
             member = tar.getmember(member_name)
             source = tar.extractfile(member)
             if not source:

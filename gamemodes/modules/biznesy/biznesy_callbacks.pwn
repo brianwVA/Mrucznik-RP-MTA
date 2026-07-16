@@ -167,7 +167,7 @@ biznesy_OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				value = FunkcjaK(inputtext); 
 				SetPVarInt(playerid, "SetBizCost", value); 
 				SetPVarInt(playerid, "MustBe", 1); 
-				ShowPlayerDialogEx(playerid, D_BIZ_WRITE, DIALOG_STYLE_INPUT, "Mrucznik Role Play", "WprowadŸ poni¿ej maksymalny zysk\nktóry gracz bêdzie móg³ otrzymaæ co godzine.", "Dalej", "WyjdŸ"); 
+				ShowPlayerDialogEx(playerid, D_BIZ_WRITE, DIALOG_STYLE_INPUT, "M-RP", "WprowadŸ poni¿ej maksymalny zysk\nktóry gracz bêdzie móg³ otrzymaæ co godzine.", "Dalej", "WyjdŸ");
 				return 1;
 			}
 			if(GetPVarInt(playerid, "MustBe") == 1)
@@ -175,7 +175,7 @@ biznesy_OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				value = FunkcjaK(inputtext); 
 				SetPVarInt(playerid, "SetBizMoney", value); 
 				SetPVarInt(playerid, "MustBe", 2); 
-				ShowPlayerDialogEx(playerid, D_BIZ_WRITE, DIALOG_STYLE_INPUT, "Mrucznik Role Play", "Wpisz poni¿ej nazwê biznesu", "Dalej", "WyjdŸ"); 
+				ShowPlayerDialogEx(playerid, D_BIZ_WRITE, DIALOG_STYLE_INPUT, "M-RP", "Wpisz poni¿ej nazwê biznesu", "Dalej", "WyjdŸ");
 				return 1;
 			}
 			if(GetPVarInt(playerid, "MustBe") == 2)
@@ -195,7 +195,7 @@ biznesy_OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				}
 				else
 				{
-					ShowPlayerDialogEx(playerid, D_BIZ_WRITE, DIALOG_STYLE_INPUT, "Mrucznik Role Play", "Wpisz poni¿ej nazwê biznesu\nMINIMALNIE 3 ZNAKI", "Dalej", "WyjdŸ"); 
+					ShowPlayerDialogEx(playerid, D_BIZ_WRITE, DIALOG_STYLE_INPUT, "M-RP", "Wpisz poni¿ej nazwê biznesu\nMINIMALNIE 3 ZNAKI", "Dalej", "WyjdŸ");
 				}
 				return 1;
 			}

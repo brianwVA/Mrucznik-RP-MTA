@@ -59,7 +59,9 @@ function gameModeInit(player)
 			if procCallOnAll('OnPlayerRequestClass', playerID, 0) then
 				putPlayerInClassSelection(player)
 			else
-				outputDebugString('Not allowed to select a class', 1)
+				-- This gamemode owns the login UI and intentionally rejects the
+				-- stock class-selection screen.  It is expected, not an error.
+				outputDebugString('[MTA AMX] Class selection handled by gamemode', 3)
 				g_Players[playerID].doingclasssel = true
 			end
 		end,
@@ -145,6 +147,7 @@ addCommandHandler('changeclass', classSelKey)
 
 function keyStateChange(player, key, state)
 	local id = getElemID(player)
+	if not id or not g_Players[id] then return end
 	g_Players[id].keys[key] = (state == 'down')
 	if g_KeyMapping[key] then
 		local oldState = g_Players[id].keys.old or 0
@@ -325,7 +328,7 @@ addEventHandler('onPlayerSpawn', root,
 	function()
 		local playerID = getElemID(source)
 
-		if g_Players[playerID].doingclasssel then
+		if g_Players[playerID].doingclasssel or g_Players[playerID].viewingintro then
 			return
 		end
 
@@ -470,6 +473,42 @@ addEventHandler('mrp:rawInput', root,
 	end
 )
 
+-- mrp_bridge suppresses MTA's hard-coded Y team-chat bind and forwards the
+-- original SA-MP KEY_YES state here instead.
+addEvent('mrp:conversationYes', true)
+addEventHandler('mrp:conversationYes', root,
+	function(pressed)
+		if not client or source ~= client or type(pressed) ~= 'boolean' then return end
+		keyStateChange(client, 'conversation_yes', pressed and 'down' or 'up')
+	end
+)
+
+-- Canceling TAB client-side is required to suppress MTA's stock scoreboard,
+-- but it also cancels the GTA "action" bind used by SA-MP KEY_ACTION. Restore
+-- that state explicitly so scripts keep receiving the original key behavior.
+addEvent('mrp:tabAction', true)
+addEventHandler('mrp:tabAction', root,
+	function(pressed)
+		if not client or source ~= client or type(pressed) ~= 'boolean' then return end
+		local playerID = getElemID(client)
+		local playerData = playerID and g_Players[playerID]
+		if not playerData or playerData.keys.action == pressed then return end
+		keyStateChange(client, 'action', pressed and 'down' or 'up')
+	end
+)
+
+-- /q cannot invoke MTA's protected core `quit` command. Disconnect through
+-- the privileged AMX resource but retain SA-MP's QUIT reason for Pawn cleanup,
+-- position saving and anti-/q systems.
+addEvent('mrp:requestQuit', true)
+addEventHandler('mrp:requestQuit', root,
+	function()
+		if not client or source ~= client then return end
+		setElementData(client, 'mrp:requestedQuit', true, false)
+		kickPlayer(client, 'Quit')
+	end
+)
+
 addEventHandler('onPlayerWeaponSwitch', root,
 	function(prev, current)
 		procCallOnAll('OnPlayerWeaponSwitch', getElemID(source), current, prev)
@@ -549,7 +588,10 @@ addEventHandler('onPlayerWasted', root,
 					if procCallOnAll('OnPlayerRequestClass', playerID, 0) then
 						putPlayerInClassSelection(player)
 					else
-						outputDebugString('Not allowed to select a class', 1)
+						-- Some role-play gamemodes deliberately reject class selection and
+						-- expect the player to return using their last SetSpawnInfo data.
+						-- Leaving the player wasted here makes them appear permanently dead.
+						spawnPlayerBySelectedClass(player)
 					end
 				end, 3000, 1
 			)
@@ -589,7 +631,8 @@ addEventHandler('onPlayerQuit', root,
 		end
 
 		local playerID = getElemID(source)
-		procCallOnAll('OnPlayerDisconnect', playerID, quitReasons[reason] or 0)
+		local quitReason = getElementData(source, 'mrp:requestedQuit') and 1 or (quitReasons[reason] or 0)
+		procCallOnAll('OnPlayerDisconnect', playerID, quitReason)
 
 		if g_PlayerObjects[source] then
 			for objID, obj in pairs(g_PlayerObjects[source]) do
@@ -712,6 +755,21 @@ function respawnStaticVehicle(vehicle)
 	end
 
 	local spawninfo = g_Vehicles[vehID].spawninfo
+	if not spawninfo
+		or type(spawninfo.x) ~= 'number'
+		or type(spawninfo.y) ~= 'number'
+		or type(spawninfo.z) ~= 'number'
+		or (math.abs(spawninfo.x) < 0.01 and math.abs(spawninfo.y) < 0.01 and math.abs(spawninfo.z) < 0.01)
+	then
+		outputDebugString(string.format(
+			'[MTA AMX - VEHICLE]: Blocked invalid respawn for vehicle ID %d (spawn: %s, %s, %s)',
+			vehID,
+			spawninfo and tostring(spawninfo.x) or 'nil',
+			spawninfo and tostring(spawninfo.y) or 'nil',
+			spawninfo and tostring(spawninfo.z) or 'nil'
+		), 2)
+		return false
+	end
 	setTimer(
 		function()
 			if not isElement(vehicle) then return end
@@ -1175,6 +1233,20 @@ addEventHandler('onDrunkLevelRequest', root,
 
 addEventHandler('onConsole', root,
 	function(cmd)
+		-- The stock MTA scoreboard binds TAB to client commands. onConsole is
+		-- also emitted for those binds, but they are not Pawn commands and must
+		-- not be forwarded to OnPlayerCommandText (which would print the
+		-- gamemode's "unknown command" message on every TAB press/release).
+		if type(cmd) ~= 'string' then return end
+		local internalCommand = cmd:match('^%s*(.-)%s*$'):lower()
+		if internalCommand == 'scoreboard'
+			or internalCommand:match('^toggle scoreboard%s+[01]$')
+			or internalCommand == 'toggle scoreboard'
+			or internalCommand:match('^open scoreboard settings%s+[01]$')
+			or internalCommand == 'open scoreboard settings' then
+			return
+		end
+
 		cmd = '/' .. cmd:gsub('^([^%s]*)', g_CommandMapping)
 		if getElementType(source) ~= 'player' then return end
 		procCallOnAll('OnPlayerCommandText', getElemID(source), cmd)

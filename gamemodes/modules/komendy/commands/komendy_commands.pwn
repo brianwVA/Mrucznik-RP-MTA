@@ -491,7 +491,7 @@
 #include "unwarn\cmd_unwarn.pwn"
 #include "up\cmd_up.pwn"
 #include "uprawnienia\cmd_uprawnienia.pwn"
-#include "ustawcena\cmd_ustawcena.pwn"
+#include "ustawcena\cmd_ustawcenabiletu.pwn"
 #include "ustawmistrz\cmd_ustawmistrz.pwn"
 #include "usunbron\cmd_usunbron.pwn"
 #include "usunopis\cmd_usunopis.pwn"
@@ -1067,7 +1067,7 @@ hook OnGameModeInit()
     command_unwarn();
     command_up();
     command_uprawnienia();
-    command_ustawcena();
+    command_ustawcenabiletu();
     command_ustawmistrz();
     command_usunbron();
     command_usunopis();

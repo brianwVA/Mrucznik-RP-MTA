@@ -2,6 +2,10 @@
 #include "UTF8.h"
 #include <cstdlib>
 #include <filesystem>
+#ifndef WIN32
+#include <cerrno>
+#include <iconv.h>
+#endif
 
 using namespace std;
 namespace fs = std::filesystem;
@@ -53,37 +57,93 @@ const char* getenv_portable(const char* name)
 	}
 #endif
 
+#ifndef WIN32
+static std::string ConvertEncoding(const char* input, const char* targetEncoding, const char* sourceEncoding)
+{
+	if (!input || !*input)
+		return input ? std::string() : std::string();
+
+	iconv_t converter = iconv_open(targetEncoding, sourceEncoding);
+	if (converter == reinterpret_cast<iconv_t>(-1))
+		return std::string(input);
+
+	size_t inputLeft = strlen(input);
+	std::string output(inputLeft * 4 + 4, '\0');
+	char* inputCursor = const_cast<char*>(input);
+	char* outputCursor = output.data();
+	size_t outputLeft = output.size();
+
+	while (iconv(converter, &inputCursor, &inputLeft, &outputCursor, &outputLeft) == static_cast<size_t>(-1)) {
+		if (errno != E2BIG) {
+			iconv_close(converter);
+			return std::string(input);
+		}
+
+		const size_t written = static_cast<size_t>(outputCursor - output.data());
+		output.resize(output.size() * 2);
+		outputCursor = output.data() + written;
+		outputLeft = output.size() - written;
+	}
+
+	iconv_close(converter);
+	output.resize(static_cast<size_t>(outputCursor - output.data()));
+	return output;
+}
+#endif
+
 std::string ToUTF8(const char * str)
 {
-	int strLen = strlen(str);
-	int newstrLen = mbstowcs(NULL, str, strLen);
-	wchar_t *dest = new wchar_t[newstrLen+1];
+#ifdef WIN32
+	if (!str || !*str)
+		return str ? std::string() : std::string();
 
-	mbstowcs(dest, str, strLen);
-	dest[newstrLen] = 0;
-	std::string newstr = utf8_wcstombs(dest);
-	delete[] dest;
-	return newstr;
+	// Mrucznik's Pawn sources and database use Windows-1250.  Relying on
+	// mbstowcs() made the result depend on the process locale and produced
+	// mojibake (for example "Ä…") on MTA clients.
+	int wideLen = MultiByteToWideChar(1250, 0, str, -1, NULL, 0);
+	if (wideLen <= 0)
+		return std::string(str);
+
+	std::wstring wide(wideLen, L'\0');
+	MultiByteToWideChar(1250, 0, str, -1, &wide[0], wideLen);
+
+	int utf8Len = WideCharToMultiByte(CP_UTF8, 0, wide.c_str(), -1, NULL, 0, NULL, NULL);
+	if (utf8Len <= 0)
+		return std::string(str);
+
+	std::string result(utf8Len, '\0');
+	WideCharToMultiByte(CP_UTF8, 0, wide.c_str(), -1, &result[0], utf8Len, NULL, NULL);
+	result.resize(utf8Len - 1);
+	return result;
+#else
+	return ConvertEncoding(str, "UTF-8", "WINDOWS-1250");
+#endif
 }
 
 std::string ToOriginalCP(const char * str)
 {
-	/*iconv_t conv = iconv_open("CP1251","UTF-8");
-	iconv(conv, (const char**)&str, (size_t*)&strLen, &pOut, (size_t*)&newstrLen);
-	iconv_close(conv);*/
+#ifdef WIN32
+	if (!str || !*str)
+		return str ? std::string() : std::string();
 
-	std::wstring newstr = utf8_mbstowcs(str);
+	int wideLen = MultiByteToWideChar(CP_UTF8, MB_ERR_INVALID_CHARS, str, -1, NULL, 0);
+	if (wideLen <= 0)
+		return std::string(str);
 
-	int strLen = strlen(str);
-	int newstrLen = wcstombs(NULL, newstr.c_str(), newstr.length());
-	char *dest = new char[newstr.length()+1];
+	std::wstring wide(wideLen, L'\0');
+	MultiByteToWideChar(CP_UTF8, MB_ERR_INVALID_CHARS, str, -1, &wide[0], wideLen);
 
-	wcstombs(dest, newstr.c_str(), newstr.length());
-	dest[newstr.length()] = 0;
+	int cpLen = WideCharToMultiByte(1250, 0, wide.c_str(), -1, NULL, 0, NULL, NULL);
+	if (cpLen <= 0)
+		return std::string(str);
 
-	std::string retstr = dest;
-	delete[] dest;
-	return retstr;
+	std::string result(cpLen, '\0');
+	WideCharToMultiByte(1250, 0, wide.c_str(), -1, &result[0], cpLen, NULL, NULL);
+	result.resize(cpLen - 1);
+	return result;
+#else
+	return ConvertEncoding(str, "WINDOWS-1250", "UTF-8");
+#endif
 }
 
 void lua_pushamxstring(lua_State* luaVM, AMX* amx, cell *physaddr) {

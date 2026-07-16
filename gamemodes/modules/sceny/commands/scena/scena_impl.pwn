@@ -54,7 +54,7 @@ command_scena_Impl(playerid)
     if(PlayerInfo[playerid][pAdmin] < 200 && GetPVarInt(playerid, "scena-allow") != 1) return 1;
     if(GetPlayerFraction(playerid) != FRAC_SN && SN_ACCESS[playerid] == 0)
     {
-        ShowPlayerDialogEx(playerid, SCENA_DIALOG_GETMONEY, DIALOG_STYLE_MSGBOX, "Mrucznik Role Play", "Aby postawiæ scenê w swoim zakresie musisz umieœciæ op³atê\nW sejf San News w wysokoœci 2 milionów!!!!\nJe¿eli organizujesz event OOC zg³oœ siê do lidera SN po pozwolenie na scenê (darmow¹)", "Zap³aæ", "Anuluj"); 
+        ShowPlayerDialogEx(playerid, SCENA_DIALOG_GETMONEY, DIALOG_STYLE_MSGBOX, "M-RP", "Aby postawiæ scenê w swoim zakresie musisz umieœciæ op³atê\nW sejf San News w wysokoœci 2 milionów!!!!\nJe¿eli organizujesz event OOC zg³oœ siê do lidera SN po pozwolenie na scenê (darmow¹)", "Zap³aæ", "Anuluj");
         return 1;
     }
     ShowPlayerDialogEx(playerid, SCENA_DIALOG_MAIN, DIALOG_STYLE_LIST, "Zarz¹dzanie scen¹", "Zbuduj scenê » Zniszcz scenê\nZarz¹dzanie ekranem\nZarz¹dzanie neonami\nDodatkowe efekty\nAudio URL\nMaszyny do dymu", "Wybierz", "Wyjdz");

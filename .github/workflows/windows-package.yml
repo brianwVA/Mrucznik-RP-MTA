@@ -37,7 +37,7 @@ jobs:
         shell: pwsh
         run: |
           $expected = @{
-            "mta/windows/binaries/king.dll" = "0d79740654407d8805e970fc6e4803db7bb6e9f8753d2d6c14244556adb10a88"
+            "mta/windows/binaries/king.dll" = "c58a0d9a3ab208af135fb6f691e781cf18c4e53e1d9c7c888bdba68b41a73388"
             "mta/windows/binaries/ColAndreas.dll" = "bf188f7b9fd8be45cd21872a399cab9a0a82b6df55f620359bc4c38c2c7f0e57"
             "mta/windows/binaries/7z2601-x64.exe" = "d64a0468f5b5b0b0fc5b2188450bcd655b70809d97b1c4535f2884635094377d"
           }
@@ -70,7 +70,7 @@ jobs:
         shell: pwsh
         run: >-
           C:\mrp-transfer-package\Install-MrucznikMTA.ps1
-          -InstallRoot C:\Mrucznik-RP-MTA
+          -InstallRoot C:\M-RP-MTA
 
       - name: Upload package diagnostics
         if: always()
@@ -78,14 +78,14 @@ jobs:
         with:
           name: mrucznik-windows-package-logs
           path: |
-            C:\Mrucznik-RP-MTA\logs\*.log
-            C:\Mrucznik-RP-MTA\installation.json
+            C:\M-RP-MTA\logs\*.log
+            C:\M-RP-MTA\installation.json
           if-no-files-found: warn
 
       - name: Stop local services
         if: always()
         shell: pwsh
         run: |
-          if (Test-Path C:\Mrucznik-RP-MTA\Stop-MrucznikMTA.ps1) {
-            & C:\Mrucznik-RP-MTA\Stop-MrucznikMTA.ps1 -InstallRoot C:\Mrucznik-RP-MTA
+          if (Test-Path C:\M-RP-MTA\Stop-MrucznikMTA.ps1) {
+            & C:\M-RP-MTA\Stop-MrucznikMTA.ps1 -InstallRoot C:\M-RP-MTA
           }

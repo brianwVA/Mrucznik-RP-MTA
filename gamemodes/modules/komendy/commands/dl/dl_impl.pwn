@@ -71,6 +71,7 @@ command_dl_Impl(playerid, params[256])
 									ZabierzKase(playerid, 5000);
 									Sejf_Add(FRAC_GOV, 5000);
 									PlayerInfo[giveplayerid][pCarLic] = 1;
+									MruMySQL_SetAccInt("CarLic", GetNickEx(giveplayerid), 1);
 									Log(payLog, INFO, "Urzêdnik %s da³ %s prawo jazdy (5 000$).", GetPlayerLogName(playerid), GetPlayerLogName(giveplayerid));
 									return 1;
 								}

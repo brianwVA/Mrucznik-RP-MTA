@@ -1,5 +1,5 @@
 local function configureWorld()
-    setGameType("Mrucznik-RP " .. MRP.version)
+    setGameType("M-RP " .. MRP.version)
     setMapName("San Andreas")
     setGameSpeed(1)
 end

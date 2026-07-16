@@ -27,7 +27,7 @@ command_personalizuj_Impl(playerid)
 {
     if(IsPlayerConnected(playerid))
 	{
-		ShowPlayerDialogEx(playerid, D_PERSONALIZE, DIALOG_STYLE_LIST, "Mrucznik Role Play", "Pojazd\nChat\nAdmin\nInne", "Akceptuj", "Wyjdz");
+		ShowPlayerDialogEx(playerid, D_PERSONALIZE, DIALOG_STYLE_LIST, "M-RP", "Pojazd\nChat\nAdmin\nInne", "Akceptuj", "Wyjdz");
 	}
 	return 1;
 }

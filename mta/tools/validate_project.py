@@ -20,9 +20,9 @@ def main() -> int:
     models = json.loads((mta / "compatibility/models.json").read_text(encoding="utf-8"))
     natives = json.loads((mta / "compatibility/natives.json").read_text(encoding="utf-8"))
     plugins = json.loads((mta / "plugins.lock.json").read_text(encoding="utf-8"))
-    if commands["command_count"] != 787 or commands["definition_count"] != 788:
+    if commands["command_count"] != 788 or commands["definition_count"] != 788:
         fail("Unexpected command inventory size")
-    if commands.get("runtime_command_count") != 745:
+    if commands.get("runtime_command_count") != 746:
         fail("Unexpected compiled AMX command inventory size")
     if commands.get("inactive_source_command_count") != 42:
         fail("Unexpected inactive source command inventory size")
@@ -37,13 +37,13 @@ def main() -> int:
         fail("Unexpected 0.3.DL ped model inventory size")
     if models.get("samp_object_count") != 1:
         fail("Unexpected SA-MP object model inventory size")
-    if natives["native_entry_count"] != 598 or natives["unique_native_count"] != 489:
+    if natives["native_entry_count"] != 552 or natives["unique_native_count"] != 471:
         fail("Unexpected compiled AMX native inventory size")
     programs = {program["name"]: program for program in natives["programs"]}
-    if programs.get("Mrucznik-RP", {}).get("native_entry_count") != 556:
+    if programs.get("M-RP", {}).get("native_entry_count") != 510:
         fail("Unexpected gamemode native inventory size")
     expected_programs = {
-        "Mrucznik-RP", "animy", "realtime", "sobeitblock", "SAN_extPSq",
+        "M-RP", "animy", "realtime", "sobeitblock", "SAN_extPSq",
         "callbackfix", *(f"fs-count-{suffix}" for suffix in "ABCDEFGHIJKLMNOP"),
     }
     if set(programs) != expected_programs:
@@ -136,6 +136,25 @@ def main() -> int:
         (mta / f"vendor/mta-amx/amx/server/{name}").read_text(encoding="utf-8")
         for name in ("mrp_compat.lua", "mrp_databases.lua")
     )
+    object_compatibility = (
+        mta / "vendor/mta-amx/amx/server/mrp_compat.lua"
+    ).read_text(encoding="utf-8")
+    if "return 1337, logicalModel" not in object_compatibility:
+        fail("Unknown custom object IDs can leak a visible 1337 placeholder")
+    if "return logicalModel, false" not in object_compatibility:
+        fail("Stock object model IDs are not preserved by the compatibility layer")
+    suppressed_wps_positions = {
+        "2511.49, -2020.82, 13.20", "2525.22, -2015.97, 13.20",
+        "2525.18, -1999.27, 13.43", "2504.39, -1998.48, 13.20",
+        "2480.99, -1995.30, 13.20", "2463.91, -1995.87, 13.34",
+        "2469.20, -2020.50, 13.20", "2441.65, -2020.67, 13.20",
+        "2482.57, -2021.26, 13.20",
+    }
+    if not all(position in object_compatibility for position in suppressed_wps_positions) or (
+        "MRP_SUPPRESSED_OBJECT_MODEL" not in object_compatibility
+        or "mrpIsSuppressedLegacyObject" not in object_compatibility
+    ):
+        fail("Obsolete WPS street-bin placements are not suppressed exactly")
     compatibility_natives = {
         native["name"]
         for native in natives["natives"]
@@ -208,13 +227,15 @@ def main() -> int:
     if 'setPlayerHudComponentVisible("money"' in bridge_client:
         fail("Bridge must not hide the SA-MP money HUD")
     required_input_tokens = {
-        'toggleControl("chatbox", false)',
-        'bindKey("t", "down", openInput)',
-        'bindKey("F6", "down", openInput)',
-        'triggerServerEvent("mrp:rawInput"',
+        'toggleControl("chatbox", true)',
+        'key ~= "y"',
+        'cancelEvent()',
+        'triggerServerEvent("mrp:conversationYes"',
+        'addCommandHandler("q"',
+        'triggerServerEvent("mrp:requestQuit"',
     }
     if not all(token in bridge_client for token in required_input_tokens):
-        fail("Bridge does not provide the exact SA-MP chat/command input path")
+        fail("Bridge does not preserve SA-MP chat, Y and /q controls")
 
     amx_events = (
         mta / "vendor/mta-amx/amx/server/events.lua"
@@ -230,6 +251,16 @@ def main() -> int:
         or "g_CommandMapping" in raw_input.group(1)
     ):
         fail("Raw input does not dispatch exact command names to the original Pawn handler")
+    required_compat_events = {
+        "addEvent('mrp:conversationYes', true)",
+        "keyStateChange(client, 'conversation_yes'",
+        "addEvent('mrp:requestQuit', true)",
+        "setElementData(client, 'mrp:requestedQuit'",
+        "kickPlayer(client, 'Quit')",
+        "getElementData(source, 'mrp:requestedQuit') and 1",
+    }
+    if not all(token in amx_events for token in required_compat_events):
+        fail("AMX bridge does not preserve SA-MP Y and /q semantics")
 
     amx_loader = (
         mta / "vendor/mta-amx/amx/server/amx.lua"
@@ -244,6 +275,23 @@ def main() -> int:
     models_client = (
         mta / "server/mods/deathmatch/resources/mrp_models/client/main.lua"
     ).read_text(encoding="utf-8")
+    models_server = (
+        mta / "server/mods/deathmatch/resources/mrp_models/server/main.lua"
+    ).read_text(encoding="utf-8")
+    models_meta = ET.parse(
+        mta / "server/mods/deathmatch/resources/mrp_models/meta.xml"
+    ).getroot()
+    model_scripts = [node.get("src") for node in models_meta.findall("script")]
+    if "shared/vc_objects.lua" not in model_scripts:
+        fail("Vice City shared object catalog is not loaded by mrp_models")
+    vc_catalog = (
+        mta / "server/mods/deathmatch/resources/mrp_models/shared/vc_objects.lua"
+    ).read_text(encoding="utf-8")
+    if len(re.findall(r"MRP_OBJECT_MODELS\[-\d+\]", vc_catalog)) != 2747:
+        fail("Unexpected loadable Vice City object inventory size")
+    for repaired_texture in ("docksvc.txd", "subcratesvc.txd"):
+        if repaired_texture not in vc_catalog:
+            fail(f"Vice City texture alias is absent: {repaired_texture}")
     material_shader = (
         mta / "server/mods/deathmatch/resources/mrp_models/client/material_replace.fx"
     ).read_text(encoding="utf-8")
@@ -251,6 +299,58 @@ def main() -> int:
         fail("Player-object materials cannot resolve stock GTA model textures")
     if "engineLoadCOL(definition.col)" not in models_client or "engineReplaceCOL(col, runtimeModel)" not in models_client:
         fail("SA-MP object models do not load their exact collision data")
+    if "loadEmbeddedObjectCOL" not in models_client or "engineLoadCOL(raw)" not in models_client:
+        fail("Vice City objects do not load the COL data embedded by SA-MP")
+    if "engineSetModelVisibleTime(runtimeModel, timeOn, timeOff)" not in models_client:
+        fail("Vice City day/night models ignore their original visibility times")
+    if "engineSetModelLODDistance(runtimeModel, 1000, true)" not in models_client:
+        fail("Custom objects do not use the extended one-kilometre draw distance")
+    required_model_streaming_tokens = {
+        'addEventHandler("onClientElementStreamOut", root',
+        "OBJECT_MODEL_RELEASE_DELAY",
+        "freeCustomObjectModel(model)",
+        "OBJECT_MODEL_LOAD_INTERVAL",
+        "processObjectModelLoadQueue",
+        "engineSetAsynchronousLoading(true, false)",
+        "destroyEngineAsset(loaded.dff)",
+    }
+    if not all(token in models_client for token in required_model_streaming_tokens):
+        fail("Custom object models are not streamed and released safely")
+    amx_client = (
+        mta / "vendor/mta-amx/amx/client/client.lua"
+    ).read_text(encoding="utf-8")
+    if "engineSetModelLODDistance(model, MRP_OBJECT_DRAW_DISTANCE, true)" not in amx_client:
+        fail("Stock script objects do not use the extended draw distance")
+    attached_objects = (
+        mta / "vendor/mta-amx/amx/server/natives/a_players.lua"
+    ).read_text(encoding="utf-8")
+    if "if customModel or not tonumber(modelid)" not in attached_objects:
+        fail("Attached custom object placeholders can become visible")
+    object_natives = (
+        mta / "vendor/mta-amx/amx/server/natives/a_objects.lua"
+    ).read_text(encoding="utf-8")
+    if object_natives.count("mrpIsSuppressedLegacyObject(model, x, y, z)") != 2:
+        fail("Legacy-object suppression does not cover global and player objects")
+    colandreas_streamer = (mta.parent / "gamemodes/system/mrp_object_distance.inc").read_text(
+        encoding="utf-8"
+    )
+    if colandreas_streamer.count("MRP_ExpandObjectDistances(streamdistance, drawdistance);") != 2:
+        fail("Dynamic object streaming distance is not expanded globally")
+    if 'addEventHandler("onClientResourceStop", resourceRoot' not in models_client or (
+        "engineFreeModel(runtimeModel)" not in models_client
+    ):
+        fail("Custom model IDs are leaked across mrp_models resource restarts")
+    if "pairs(MRP_OBJECT_MODELS or {})" not in models_client:
+        fail("Client does not initialize the complete shared object catalog")
+    if "getElementModel(object) == runtimeModel" not in models_client:
+        fail("Repeated custom-object application can hide an already loaded model")
+    if "MRP model audit" in models_client or "mrpmodelaudit" in models_client:
+        fail("Temporary object-model diagnostics remain enabled")
+    if "runtimeObjectModels" not in models_server or (
+        'triggerClientEvent(client, "mrp:onObjectModelsReady", resourceRoot, runtimeObjectModels)'
+        not in models_server
+    ):
+        fail("Server still transfers the full shared object catalog as one event")
     if 'dxSetShaderValue(shader, "materialColor"' not in models_client:
         fail("Player-object material ARGB colors are not forwarded to the shader")
     if "materialColor" not in material_shader or "replaceMaterial" not in material_shader:

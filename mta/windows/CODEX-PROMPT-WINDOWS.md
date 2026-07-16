@@ -5,7 +5,7 @@ wypakowaniu paczki.
 
 ---
 
-Masz przed sobą wypakowaną paczkę `Mrucznik-RP-MTA-Windows`. Twoim zadaniem jest
+Masz przed sobą wypakowaną paczkę `M-RP-MTA-Windows`. Twoim zadaniem jest
 zainstalować i uruchomić ją lokalnie na tym komputerze Windows, a następnie
 potwierdzić działanie na podstawie pełnych logów. Wykonaj pracę samodzielnie do
 końca; pytaj mnie tylko wtedy, gdy Windows wymaga ręcznego zatwierdzenia UAC lub
@@ -25,11 +25,11 @@ Zasady:
    bieżącego procesu:
    `Set-ExecutionPolicy -Scope Process Bypass -Force`.
 5. W katalogu paczki uruchom:
-   `.\Install-MrucznikMTA.ps1 -InstallRoot "C:\Mrucznik-RP-MTA"`.
+   `.\Install-MrucznikMTA.ps1 -InstallRoot "C:\M-RP-MTA"`.
    Instalator automatycznie wykona test runtime. Nie przerywaj go podczas
    pobierania, wypakowywania modeli ani inicjalizacji mapy.
 6. Jeśli instalator zgłosi błąd sieciowy, ponów go. Jeśli zgłosi inny błąd,
-   przeczytaj pełny stack trace oraz logi w `C:\Mrucznik-RP-MTA\logs`, znajdź
+   przeczytaj pełny stack trace oraz logi w `C:\M-RP-MTA\logs`, znajdź
    przyczynę i popraw wyłącznie lokalny skrypt instalacyjny. Nie omijaj
    sprawdzania sum i nie osłabiaj asercji testu.
 7. Sukces uznaj dopiero, gdy `Test-MrucznikMTA.ps1` wypisze `TEST OK`, a log
@@ -43,7 +43,7 @@ Zasady:
    oraz nie zawiera `FATAL ERROR MYSQL`, `Run time error`, błędu brakujących
    natywów ani awarii procesu.
 8. Po zaliczonym teście uruchom serwer poleceniami:
-   `cd C:\Mrucznik-RP-MTA`
+   `cd C:\M-RP-MTA`
    `.\Start-MrucznikMTA.ps1`
 9. Potwierdź, że proces `MTA Server.exe` działa, MySQL odpowiada i port 22003
    nasłuchuje. Podaj mi dokładną ścieżkę logów oraz informację, że w kliencie

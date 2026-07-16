@@ -1,9 +1,9 @@
 {
   "schema_version": 1,
   "source": "MrucznikRolePlay/Mrucznik-RP-gamemode@master",
-  "command_count": 787,
+  "command_count": 788,
   "definition_count": 788,
-  "runtime_command_count": 745,
+  "runtime_command_count": 746,
   "runtime_alias_count": 547,
   "inactive_source_command_count": 42,
   "commands": [
@@ -412,7 +412,7 @@
       "wrapper_source": "filterscripts/zombiescript.pwn",
       "implementation_source": null,
       "runtime": "source-only-inactive",
-      "native_mta_status": "not-loaded-by-v2.8.8",
+      "native_mta_status": "not-loaded-by-v2.9",
       "compiled_runtime": false
     },
     {
@@ -633,7 +633,7 @@
       "wrapper_source": "filterscripts/ronda.pwn",
       "implementation_source": null,
       "runtime": "source-only-inactive",
-      "native_mta_status": "not-loaded-by-v2.8.8",
+      "native_mta_status": "not-loaded-by-v2.9",
       "compiled_runtime": false
     },
     {
@@ -1597,7 +1597,7 @@
       "wrapper_source": "filterscripts/colorchange.pwn",
       "implementation_source": null,
       "runtime": "source-only-inactive",
-      "native_mta_status": "not-loaded-by-v2.8.8",
+      "native_mta_status": "not-loaded-by-v2.9",
       "compiled_runtime": false
     },
     {
@@ -1612,7 +1612,7 @@
       "wrapper_source": "filterscripts/colorchange.pwn",
       "implementation_source": null,
       "runtime": "source-only-inactive",
-      "native_mta_status": "not-loaded-by-v2.8.8",
+      "native_mta_status": "not-loaded-by-v2.9",
       "compiled_runtime": false
     },
     {
@@ -1627,7 +1627,7 @@
       "wrapper_source": "filterscripts/colorchange.pwn",
       "implementation_source": null,
       "runtime": "source-only-inactive",
-      "native_mta_status": "not-loaded-by-v2.8.8",
+      "native_mta_status": "not-loaded-by-v2.9",
       "compiled_runtime": false
     },
     {
@@ -1642,7 +1642,7 @@
       "wrapper_source": "filterscripts/colorchange.pwn",
       "implementation_source": null,
       "runtime": "source-only-inactive",
-      "native_mta_status": "not-loaded-by-v2.8.8",
+      "native_mta_status": "not-loaded-by-v2.9",
       "compiled_runtime": false
     },
     {
@@ -1657,7 +1657,7 @@
       "wrapper_source": "filterscripts/colorchange.pwn",
       "implementation_source": null,
       "runtime": "source-only-inactive",
-      "native_mta_status": "not-loaded-by-v2.8.8",
+      "native_mta_status": "not-loaded-by-v2.9",
       "compiled_runtime": false
     },
     {
@@ -1672,7 +1672,7 @@
       "wrapper_source": "filterscripts/colorchange.pwn",
       "implementation_source": null,
       "runtime": "source-only-inactive",
-      "native_mta_status": "not-loaded-by-v2.8.8",
+      "native_mta_status": "not-loaded-by-v2.9",
       "compiled_runtime": false
     },
     {
@@ -1687,7 +1687,7 @@
       "wrapper_source": "filterscripts/colorchange.pwn",
       "implementation_source": null,
       "runtime": "source-only-inactive",
-      "native_mta_status": "not-loaded-by-v2.8.8",
+      "native_mta_status": "not-loaded-by-v2.9",
       "compiled_runtime": false
     },
     {
@@ -1702,7 +1702,7 @@
       "wrapper_source": "filterscripts/colorchange.pwn",
       "implementation_source": null,
       "runtime": "source-only-inactive",
-      "native_mta_status": "not-loaded-by-v2.8.8",
+      "native_mta_status": "not-loaded-by-v2.9",
       "compiled_runtime": false
     },
     {
@@ -1932,7 +1932,7 @@
       "wrapper_source": "filterscripts/colorchange.pwn",
       "implementation_source": null,
       "runtime": "source-only-inactive",
-      "native_mta_status": "not-loaded-by-v2.8.8",
+      "native_mta_status": "not-loaded-by-v2.9",
       "compiled_runtime": false
     },
     {
@@ -3523,7 +3523,7 @@
       "wrapper_source": "filterscripts/zombiescript.pwn",
       "implementation_source": null,
       "runtime": "source-only-inactive",
-      "native_mta_status": "not-loaded-by-v2.8.8",
+      "native_mta_status": "not-loaded-by-v2.9",
       "compiled_runtime": false
     },
     {
@@ -3776,7 +3776,7 @@
       "wrapper_source": "filterscripts/Firecrackers.pwn",
       "implementation_source": null,
       "runtime": "source-only-inactive",
-      "native_mta_status": "not-loaded-by-v2.8.8",
+      "native_mta_status": "not-loaded-by-v2.9",
       "compiled_runtime": false
     },
     {
@@ -3998,7 +3998,7 @@
       "wrapper_source": "filterscripts/Firecrackers.pwn",
       "implementation_source": null,
       "runtime": "source-only-inactive",
-      "native_mta_status": "not-loaded-by-v2.8.8",
+      "native_mta_status": "not-loaded-by-v2.9",
       "compiled_runtime": false
     },
     {
@@ -4452,7 +4452,7 @@
       "wrapper_source": "filterscripts/zombiescript.pwn",
       "implementation_source": null,
       "runtime": "source-only-inactive",
-      "native_mta_status": "not-loaded-by-v2.8.8",
+      "native_mta_status": "not-loaded-by-v2.9",
       "compiled_runtime": false
     },
     {
@@ -4621,7 +4621,7 @@
       "wrapper_source": "filterscripts/zombiescript.pwn",
       "implementation_source": null,
       "runtime": "source-only-inactive",
-      "native_mta_status": "not-loaded-by-v2.8.8",
+      "native_mta_status": "not-loaded-by-v2.9",
       "compiled_runtime": false
     },
     {
@@ -4733,7 +4733,7 @@
       "wrapper_source": "filterscripts/wybory.pwn",
       "implementation_source": null,
       "runtime": "source-only-inactive",
-      "native_mta_status": "not-loaded-by-v2.8.8",
+      "native_mta_status": "not-loaded-by-v2.9",
       "compiled_runtime": false
     },
     {
@@ -5267,7 +5267,7 @@
       "wrapper_source": "filterscripts/wybory.pwn",
       "implementation_source": null,
       "runtime": "source-only-inactive",
-      "native_mta_status": "not-loaded-by-v2.8.8",
+      "native_mta_status": "not-loaded-by-v2.9",
       "compiled_runtime": false
     },
     {
@@ -5344,7 +5344,7 @@
       "wrapper_source": "filterscripts/Firecrackers.pwn",
       "implementation_source": null,
       "runtime": "source-only-inactive",
-      "native_mta_status": "not-loaded-by-v2.8.8",
+      "native_mta_status": "not-loaded-by-v2.9",
       "compiled_runtime": false
     },
     {
@@ -7822,7 +7822,7 @@
       "wrapper_source": "filterscripts/Mruczniki_2016.pwn",
       "implementation_source": null,
       "runtime": "source-only-inactive",
-      "native_mta_status": "not-loaded-by-v2.8.8",
+      "native_mta_status": "not-loaded-by-v2.9",
       "compiled_runtime": false
     },
     {
@@ -7887,7 +7887,7 @@
       "wrapper_source": "gamemodes/obiekty/skrypt/objecttest.pwn",
       "implementation_source": null,
       "runtime": "source-only-inactive",
-      "native_mta_status": "not-loaded-by-v2.8.8",
+      "native_mta_status": "not-loaded-by-v2.9",
       "compiled_runtime": false
     },
     {
@@ -7902,7 +7902,7 @@
       "wrapper_source": "gamemodes/obiekty/skrypt/objecttest.pwn",
       "implementation_source": null,
       "runtime": "source-only-inactive",
-      "native_mta_status": "not-loaded-by-v2.8.8",
+      "native_mta_status": "not-loaded-by-v2.9",
       "compiled_runtime": false
     },
     {
@@ -9563,7 +9563,7 @@
       "wrapper_source": "filterscripts/colorchange.pwn",
       "implementation_source": null,
       "runtime": "source-only-inactive",
-      "native_mta_status": "not-loaded-by-v2.8.8",
+      "native_mta_status": "not-loaded-by-v2.9",
       "compiled_runtime": false
     },
     {
@@ -9703,7 +9703,7 @@
       "wrapper_source": "filterscripts/sanie.pwn",
       "implementation_source": null,
       "runtime": "source-only-inactive",
-      "native_mta_status": "not-loaded-by-v2.8.8",
+      "native_mta_status": "not-loaded-by-v2.9",
       "compiled_runtime": false
     },
     {
@@ -10035,7 +10035,7 @@
       "wrapper_source": "filterscripts/Firecrackers.pwn",
       "implementation_source": null,
       "runtime": "source-only-inactive",
-      "native_mta_status": "not-loaded-by-v2.8.8",
+      "native_mta_status": "not-loaded-by-v2.9",
       "compiled_runtime": false
     },
     {
@@ -10253,7 +10253,7 @@
       "wrapper_source": "filterscripts/wybory.pwn",
       "implementation_source": null,
       "runtime": "source-only-inactive",
-      "native_mta_status": "not-loaded-by-v2.8.8",
+      "native_mta_status": "not-loaded-by-v2.9",
       "compiled_runtime": false
     },
     {
@@ -10839,7 +10839,7 @@
       "wrapper_source": "filterscripts/sanie.pwn",
       "implementation_source": null,
       "runtime": "source-only-inactive",
-      "native_mta_status": "not-loaded-by-v2.8.8",
+      "native_mta_status": "not-loaded-by-v2.9",
       "compiled_runtime": false
     },
     {
@@ -10851,10 +10851,10 @@
       "author": "",
       "module": "filterscripts",
       "metadata_source": null,
-      "wrapper_source": "filterscripts/SAN_extPSq.pwn",
+      "wrapper_source": "filterscripts/hol.pwn",
       "implementation_source": null,
       "runtime": "source-only-inactive",
-      "native_mta_status": "not-loaded-by-v2.8.8",
+      "native_mta_status": "not-loaded-by-v2.9",
       "compiled_runtime": false
     },
     {
@@ -11404,7 +11404,7 @@
       "wrapper_source": "gamemodes/obiekty/skrypt/objecttest.pwn",
       "implementation_source": null,
       "runtime": "source-only-inactive",
-      "native_mta_status": "not-loaded-by-v2.8.8",
+      "native_mta_status": "not-loaded-by-v2.9",
       "compiled_runtime": false
     },
     {
@@ -11580,7 +11580,7 @@
       "wrapper_source": "gamemodes/obiekty/skrypt/objecttest.pwn",
       "implementation_source": null,
       "runtime": "source-only-inactive",
-      "native_mta_status": "not-loaded-by-v2.8.8",
+      "native_mta_status": "not-loaded-by-v2.9",
       "compiled_runtime": false
     },
     {
@@ -11856,7 +11856,7 @@
       "wrapper_source": "filterscripts/zombiescript.pwn",
       "implementation_source": null,
       "runtime": "source-only-inactive",
-      "native_mta_status": "not-loaded-by-v2.8.8",
+      "native_mta_status": "not-loaded-by-v2.9",
       "compiled_runtime": false
     },
     {
@@ -12952,7 +12952,7 @@
       "wrapper_source": "filterscripts/Firecrackers.pwn",
       "implementation_source": null,
       "runtime": "source-only-inactive",
-      "native_mta_status": "not-loaded-by-v2.8.8",
+      "native_mta_status": "not-loaded-by-v2.9",
       "compiled_runtime": false
     },
     {
@@ -13157,7 +13157,7 @@
       "wrapper_source": "filterscripts/zombiescript.pwn",
       "implementation_source": null,
       "runtime": "source-only-inactive",
-      "native_mta_status": "not-loaded-by-v2.8.8",
+      "native_mta_status": "not-loaded-by-v2.9",
       "compiled_runtime": false
     },
     {
@@ -13327,7 +13327,7 @@
       "wrapper_source": "filterscripts/sanie.pwn",
       "implementation_source": null,
       "runtime": "source-only-inactive",
-      "native_mta_status": "not-loaded-by-v2.8.8",
+      "native_mta_status": "not-loaded-by-v2.9",
       "compiled_runtime": false
     },
     {
@@ -13342,7 +13342,7 @@
       "wrapper_source": "filterscripts/Sunny_IslandPARTY.pwn",
       "implementation_source": null,
       "runtime": "source-only-inactive",
-      "native_mta_status": "not-loaded-by-v2.8.8",
+      "native_mta_status": "not-loaded-by-v2.9",
       "compiled_runtime": false
     },
     {
@@ -13357,7 +13357,7 @@
       "wrapper_source": "filterscripts/Sunny_Island.pwn",
       "implementation_source": null,
       "runtime": "source-only-inactive",
-      "native_mta_status": "not-loaded-by-v2.8.8",
+      "native_mta_status": "not-loaded-by-v2.9",
       "compiled_runtime": false
     },
     {
@@ -13934,7 +13934,7 @@
       "wrapper_source": "filterscripts/zombiescript.pwn",
       "implementation_source": null,
       "runtime": "source-only-inactive",
-      "native_mta_status": "not-loaded-by-v2.8.8",
+      "native_mta_status": "not-loaded-by-v2.9",
       "compiled_runtime": false
     },
     {
@@ -14663,7 +14663,35 @@
       "permissions": [
         "everyone"
       ],
-      "description": "",
+      "description": "Ustawia cenę poszczególnej licencji w Urzędzie Miasta Los Santos",
+      "parameters": [
+        {
+          "type": "integer",
+          "name": "valueChoice",
+          "description": "To co gracz wybrał"
+        },
+        {
+          "type": "integer",
+          "name": "valueCost",
+          "description": "Nowa cena licencji"
+        }
+      ],
+      "author": "Simeone",
+      "module": "urzadls",
+      "metadata_source": "gamemodes/modules/urzadls/commands/ustawcena/command.json",
+      "wrapper_source": "gamemodes/modules/urzadls/commands/ustawcena/cmd_ustawcena.pwn",
+      "implementation_source": "gamemodes/modules/urzadls/commands/ustawcena/ustawcena_impl.pwn",
+      "runtime": "amx-baseline",
+      "native_mta_status": "pending",
+      "compiled_runtime": true
+    },
+    {
+      "name": "ustawcenabiletu",
+      "aliases": [],
+      "permissions": [
+        "everyone"
+      ],
+      "description": "Ustawia cenę biletu kolejowego",
       "parameters": [
         {
           "type": "string",
@@ -14674,65 +14702,12 @@
         }
       ],
       "author": "mrucznik",
-      "module": "multiple",
+      "module": "komendy",
       "metadata_source": "gamemodes/modules/komendy/commands/ustawcena/command.json",
-      "wrapper_source": "gamemodes/modules/komendy/commands/ustawcena/cmd_ustawcena.pwn",
-      "implementation_source": "gamemodes/modules/komendy/commands/ustawcena/ustawcena_impl.pwn",
+      "wrapper_source": "gamemodes/modules/komendy/commands/ustawcena/cmd_ustawcenabiletu.pwn",
+      "implementation_source": "gamemodes/modules/komendy/commands/ustawcena/ustawcenabiletu_impl.pwn",
       "runtime": "amx-baseline",
       "native_mta_status": "pending",
-      "variants": [
-        {
-          "name": "ustawcena",
-          "aliases": [],
-          "permissions": [
-            "everyone"
-          ],
-          "description": "",
-          "parameters": [
-            {
-              "type": "string",
-              "size": "256",
-              "name": "param",
-              "description": "",
-              "defaultValue": ""
-            }
-          ],
-          "author": "mrucznik",
-          "module": "komendy",
-          "metadata_source": "gamemodes/modules/komendy/commands/ustawcena/command.json",
-          "wrapper_source": "gamemodes/modules/komendy/commands/ustawcena/cmd_ustawcena.pwn",
-          "implementation_source": "gamemodes/modules/komendy/commands/ustawcena/ustawcena_impl.pwn",
-          "runtime": "amx-baseline",
-          "native_mta_status": "pending"
-        },
-        {
-          "name": "ustawcena",
-          "aliases": [],
-          "permissions": [
-            "everyone"
-          ],
-          "description": "Ustawia cenę poszczególnej licencji w Urzędzie Miasta Los Santos",
-          "parameters": [
-            {
-              "type": "integer",
-              "name": "valueChoice",
-              "description": "To co gracz wybrał"
-            },
-            {
-              "type": "integer",
-              "name": "valueCost",
-              "description": "Nowa cena licencji"
-            }
-          ],
-          "author": "Simeone",
-          "module": "urzadls",
-          "metadata_source": "gamemodes/modules/urzadls/commands/ustawcena/command.json",
-          "wrapper_source": "gamemodes/modules/urzadls/commands/ustawcena/cmd_ustawcena.pwn",
-          "implementation_source": "gamemodes/modules/urzadls/commands/ustawcena/ustawcena_impl.pwn",
-          "runtime": "amx-baseline",
-          "native_mta_status": "pending"
-        }
-      ],
       "compiled_runtime": true
     },
     {
@@ -15590,7 +15565,7 @@
       "wrapper_source": "filterscripts/Firecrackers.pwn",
       "implementation_source": null,
       "runtime": "source-only-inactive",
-      "native_mta_status": "not-loaded-by-v2.8.8",
+      "native_mta_status": "not-loaded-by-v2.9",
       "compiled_runtime": false
     },
     {
@@ -15677,7 +15652,7 @@
       "wrapper_source": "filterscripts/zombiescript.pwn",
       "implementation_source": null,
       "runtime": "source-only-inactive",
-      "native_mta_status": "not-loaded-by-v2.8.8",
+      "native_mta_status": "not-loaded-by-v2.9",
       "compiled_runtime": false
     },
     {
@@ -16392,7 +16367,7 @@
       "wrapper_source": "filterscripts/zombiescript.pwn",
       "implementation_source": null,
       "runtime": "source-only-inactive",
-      "native_mta_status": "not-loaded-by-v2.8.8",
+      "native_mta_status": "not-loaded-by-v2.9",
       "compiled_runtime": false
     },
     {
@@ -16407,7 +16382,7 @@
       "wrapper_source": "filterscripts/zombiescript.pwn",
       "implementation_source": null,
       "runtime": "source-only-inactive",
-      "native_mta_status": "not-loaded-by-v2.8.8",
+      "native_mta_status": "not-loaded-by-v2.9",
       "compiled_runtime": false
     },
     {
@@ -17535,7 +17510,7 @@
       "wrapper_source": "filterscripts/zombiescript.pwn",
       "implementation_source": null,
       "runtime": "source-only-inactive",
-      "native_mta_status": "not-loaded-by-v2.8.8",
+      "native_mta_status": "not-loaded-by-v2.9",
       "compiled_runtime": false
     },
     {

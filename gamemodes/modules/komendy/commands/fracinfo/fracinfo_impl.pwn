@@ -47,7 +47,7 @@ command_fracinfo_Impl(playerid, params[256])
 			}
 		}
 		format(string, sizeof(string), "{FFFFFF}Name: {AA3333}%s\n{FFFFFF}Slot: {AA3333}%d\n{FFFFFF}Liderów: {AA3333}%d\n{FFFFFF}Pracowników [On-Line]: {AA3333}%d", FractionNames[valueFrac], valueFrac, LeadersValue[LEADER_FRAC][valueFrac], countWorkers);
-		ShowPlayerInfoDialog(playerid, "Mrucznik Role Play", string, false);
+		ShowPlayerInfoDialog(playerid, "M-RP", string, false);
 	}
 	return 1;
 }

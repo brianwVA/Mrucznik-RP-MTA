@@ -308,6 +308,10 @@ IsACrimeJob(playerid, job)
 
 GetJobIfPlayerCloseEnough(playerid)
 {
+	new Float:px, Float:py, Float:pz;
+	GetPlayerPos(playerid, px, py, pz);
+	new Float:maxDistanceSquared = JOB_JOIN_MAX_PROXIMITY * JOB_JOIN_MAX_PROXIMITY;
+
 	for(new jobid = 1; jobid < sizeof(JobInfo); jobid++)
 	{
 		for(new i; i < MAX_JOB_JOINS; i++)
@@ -317,10 +321,10 @@ GetJobIfPlayerCloseEnough(playerid)
 				break;
 			}
 
-			if(IsPlayerInRangeOfPoint(playerid, JOB_JOIN_MAX_PROXIMITY, 
-				JobJoinPositions[jobid][i][JOB_JOIN_X], 
-				JobJoinPositions[jobid][i][JOB_JOIN_Y], 
-				JobJoinPositions[jobid][i][JOB_JOIN_Z]))
+			new Float:dx = px - JobJoinPositions[jobid][i][JOB_JOIN_X];
+			new Float:dy = py - JobJoinPositions[jobid][i][JOB_JOIN_Y];
+			new Float:dz = pz - JobJoinPositions[jobid][i][JOB_JOIN_Z];
+			if(dx * dx + dy * dy + dz * dz <= maxDistanceSquared)
 			{
 				return jobid;
 			}

@@ -16,7 +16,7 @@ akceptujnaprawe,an,everyone,komendy,gamemodes/modules/komendy/commands/akceptujn
 akceptujtankowanie,at,everyone,komendy,gamemodes/modules/komendy/commands/akceptujtankowanie/akceptujtankowanie_impl.pwn,True,pending
 alarm,,everyone,komendy,gamemodes/modules/komendy/commands/alarm/alarm_impl.pwn,True,pending
 alkomat,,everyone,komendy,gamemodes/modules/komendy/commands/alkomat/alkomat_impl.pwn,True,pending
-and1,,,filterscripts,filterscripts/zombiescript.pwn,False,not-loaded-by-v2.8.8
+and1,,,filterscripts,filterscripts/zombiescript.pwn,False,not-loaded-by-v2.9
 anim,animacje animhelp anims animshelp,everyone,animacje,gamemodes/modules/animacje/commands/anim/anim_impl.pwn,True,pending
 ann,,everyone,komendy,gamemodes/modules/komendy/commands/ann/ann_impl.pwn,True,pending
 antybh,,everyone,komendy,gamemodes/modules/komendy/commands/antybh/antybh_impl.pwn,True,pending
@@ -26,7 +26,7 @@ app,,everyone,komendy,gamemodes/modules/komendy/commands/app/app_impl.pwn,True,p
 apteczka,,everyone,komendy,gamemodes/modules/komendy/commands/apteczka/apteczka_impl.pwn,True,pending
 aresztuj,,everyone,komendy,gamemodes/modules/komendy/commands/aresztuj/aresztuj_impl.pwn,True,pending
 armor,,everyone,komendy,gamemodes/modules/komendy/commands/armor/armor_impl.pwn,True,pending
-aroundabout,,,filterscripts,filterscripts/ronda.pwn,False,not-loaded-by-v2.8.8
+aroundabout,,,filterscripts,filterscripts/ronda.pwn,False,not-loaded-by-v2.9
 asystem,,everyone,komendy,gamemodes/modules/komendy/commands/asystem/asystem_impl.pwn,True,pending
 atakuj,,everyone,komendy,gamemodes/modules/komendy/commands/atakuj/atakuj_impl.pwn,True,pending
 aulecz,aheal,everyone,choroby,gamemodes/modules/choroby/commands/aulecz/aulecz_impl.pwn,True,pending
@@ -70,14 +70,14 @@ carcolors,kolory,everyone,praca_mechanik,gamemodes/modules/praca_mechanik/comman
 carjump,,everyone,komendy,gamemodes/modules/komendy/commands/carjump/carjump_impl.pwn,True,pending
 carslot,,everyone,komendy,gamemodes/modules/komendy/commands/carslot/carslot_impl.pwn,True,pending
 cbradio,cb cb_radio,everyone,komendy,gamemodes/modules/komendy/commands/cbradio/cbradio_impl.pwn,True,pending
-cc,,,filterscripts,filterscripts/colorchange.pwn,False,not-loaded-by-v2.8.8
-cc_dajlider,,,filterscripts,filterscripts/colorchange.pwn,False,not-loaded-by-v2.8.8
-cc_odrzut,,,filterscripts,filterscripts/colorchange.pwn,False,not-loaded-by-v2.8.8
-cc_restart,,,filterscripts,filterscripts/colorchange.pwn,False,not-loaded-by-v2.8.8
-cc_start,,,filterscripts,filterscripts/colorchange.pwn,False,not-loaded-by-v2.8.8
-cc_tog,,,filterscripts,filterscripts/colorchange.pwn,False,not-loaded-by-v2.8.8
-cc_widz,,,filterscripts,filterscripts/colorchange.pwn,False,not-loaded-by-v2.8.8
-cc_zabierzlider,,,filterscripts,filterscripts/colorchange.pwn,False,not-loaded-by-v2.8.8
+cc,,,filterscripts,filterscripts/colorchange.pwn,False,not-loaded-by-v2.9
+cc_dajlider,,,filterscripts,filterscripts/colorchange.pwn,False,not-loaded-by-v2.9
+cc_odrzut,,,filterscripts,filterscripts/colorchange.pwn,False,not-loaded-by-v2.9
+cc_restart,,,filterscripts,filterscripts/colorchange.pwn,False,not-loaded-by-v2.9
+cc_start,,,filterscripts,filterscripts/colorchange.pwn,False,not-loaded-by-v2.9
+cc_tog,,,filterscripts,filterscripts/colorchange.pwn,False,not-loaded-by-v2.9
+cc_widz,,,filterscripts,filterscripts/colorchange.pwn,False,not-loaded-by-v2.9
+cc_zabierzlider,,,filterscripts,filterscripts/colorchange.pwn,False,not-loaded-by-v2.9
 cca,cc,everyone,komendy,gamemodes/modules/komendy/commands/cca/cca_impl.pwn,True,pending
 cennik,,everyone,komendy,gamemodes/modules/komendy/commands/cennik/cennik_impl.pwn,True,pending
 check,,everyone,komendy,gamemodes/modules/komendy/commands/check/check_impl.pwn,True,pending
@@ -87,7 +87,7 @@ checkcar,,everyone,komendy,gamemodes/modules/komendy/commands/checkcar/checkcar_
 checkcars,,everyone,komendy,gamemodes/modules/komendy/commands/checkcars/checkcars_impl.pwn,True,pending
 checkpremium,checkkp checkmc,everyone,premium,gamemodes/modules/premium/commands/checkpremium/checkpremium_impl.pwn,True,pending
 checktank,checktankmod checktankmode,everyone,komendy,gamemodes/modules/komendy/commands/checktank/checktank_impl.pwn,True,pending
-chujcipa123strefa,,,filterscripts,filterscripts/colorchange.pwn,False,not-loaded-by-v2.8.8
+chujcipa123strefa,,,filterscripts,filterscripts/colorchange.pwn,False,not-loaded-by-v2.9
 clearwlall,,everyone,komendy,gamemodes/modules/komendy/commands/clearwlall/clearwlall_impl.pwn,True,pending
 clearzone,,everyone,komendy,gamemodes/modules/komendy/commands/clearzone/clearzone_impl.pwn,True,pending
 cmdinfo,,everyone,komendy,gamemodes/modules/komendy/commands/cmdinfo/cmdinfo_impl.pwn,True,pending
@@ -147,7 +147,7 @@ do,,everyone,komendy,gamemodes/modules/komendy/commands/do/do_impl.pwn,True,pend
 dodajweryfikacje,,everyone,komendy,gamemodes/modules/komendy/commands/dodajweryfikacje/dodajweryfikacje_impl.pwn,True,pending
 dodatki,,everyone,player_attachments,gamemodes/modules/player_attachments/commands/dodatki/dodatki_impl.pwn,True,pending
 dolacz,join,everyone,prace,gamemodes/modules/prace/commands/dolacz/dolacz_impl.pwn,True,pending
-dolaczzombie,,,filterscripts,filterscripts/zombiescript.pwn,False,not-loaded-by-v2.8.8
+dolaczzombie,,,filterscripts,filterscripts/zombiescript.pwn,False,not-loaded-by-v2.9
 domint,,everyone,komendy,gamemodes/modules/komendy/commands/domint/domint_impl.pwn,True,pending
 dompomoc,househelp,everyone,pomoc,gamemodes/modules/pomoc/commands/dompomoc/dompomoc_impl.pwn,True,pending
 dopasuj,,everyone,komendy,gamemodes/modules/komendy/commands/dopasuj/dopasuj_impl.pwn,True,pending
@@ -157,7 +157,7 @@ dskill,,everyone,komendy,gamemodes/modules/komendy/commands/dskill/dskill_impl.p
 dsus,,everyone,komendy,gamemodes/modules/komendy/commands/dsus/dsus_impl.pwn,True,pending
 dutycd,dutysbi,everyone,komendy,gamemodes/modules/komendy/commands/dutycd/dutycd_impl.pwn,True,pending
 dvobiekt,,admini,admin,gamemodes/modules/admin/commands/dvobiekt/dvobiekt_impl.pwn,True,pending
-dynamite,,,filterscripts,filterscripts/Firecrackers.pwn,False,not-loaded-by-v2.8.8
+dynamite,,,filterscripts,filterscripts/Firecrackers.pwn,False,not-loaded-by-v2.9
 dzwon,call,everyone,komendy,gamemodes/modules/komendy/commands/dzwon/dzwon_impl.pwn,True,pending
 editobject,,everyone,admin,gamemodes/modules/admin/commands/editobject/editobject_impl.pwn,True,pending
 edytuj,,everyone,komendy,gamemodes/modules/komendy/commands/edytuj/edytuj_impl.pwn,True,pending
@@ -167,7 +167,7 @@ elo,,everyone,komendy,gamemodes/modules/komendy/commands/elo/elo_impl.pwn,True,p
 elo2,,everyone,komendy,gamemodes/modules/komendy/commands/elo2/elo2_impl.pwn,True,pending
 endround,,everyone,komendy,gamemodes/modules/komendy/commands/endround/endround_impl.pwn,True,pending
 entercar,,everyone,komendy,gamemodes/modules/komendy/commands/entercar/entercar_impl.pwn,True,pending
-fajerwerki,,,filterscripts,filterscripts/Firecrackers.pwn,False,not-loaded-by-v2.8.8
+fajerwerki,,,filterscripts,filterscripts/Firecrackers.pwn,False,not-loaded-by-v2.9
 fbadmin,,everyone,front_business,gamemodes/modules/front_business/commands/fbadmin/fbadmin_impl.pwn,True,pending
 fbidrzwi,,everyone,komendy,gamemodes/modules/komendy/commands/fbidrzwi/fbidrzwi_impl.pwn,True,pending
 fdaj,,everyone,komendy,gamemodes/modules/komendy/commands/fdaj/fdaj_impl.pwn,True,pending
@@ -188,19 +188,19 @@ forum,,everyone,komendy,gamemodes/modules/komendy/commands/forum/forum_impl.pwn,
 fpanel,,everyone,komendy,gamemodes/modules/komendy/commands/fpanel/fpanel_impl.pwn,True,pending
 fracinfo,,everyone,komendy,gamemodes/modules/komendy/commands/fracinfo/fracinfo_impl.pwn,True,pending
 fskin,mundur uniform,everyone,komendy,gamemodes/modules/komendy/commands/fskin/fskin_impl.pwn,True,pending
-getantidote,,,filterscripts,filterscripts/zombiescript.pwn,False,not-loaded-by-v2.8.8
+getantidote,,,filterscripts,filterscripts/zombiescript.pwn,False,not-loaded-by-v2.9
 getcar,,everyone,komendy,gamemodes/modules/komendy/commands/getcar/getcar_impl.pwn,True,pending
 gethere,tm,everyone,komendy,gamemodes/modules/komendy/commands/gethere/gethere_impl.pwn,True,pending
 getimmunity,sprawdzodpornosc,everyone,choroby,gamemodes/modules/choroby/commands/getimmunity/getimmunity_impl.pwn,True,pending
 getint,,everyone,komendy,gamemodes/modules/komendy/commands/getint/getint_impl.pwn,True,pending
 getposp,getpos,everyone,komendy,gamemodes/modules/komendy/commands/getposp/getposp_impl.pwn,True,pending
 getvw,,everyone,komendy,gamemodes/modules/komendy/commands/getvw/getvw_impl.pwn,True,pending
-giveaccessfs,,,filterscripts,filterscripts/zombiescript.pwn,False,not-loaded-by-v2.8.8
+giveaccessfs,,,filterscripts,filterscripts/zombiescript.pwn,False,not-loaded-by-v2.9
 givegun,,everyone,komendy,gamemodes/modules/komendy/commands/givegun/givegun_impl.pwn,True,pending
 giveroom,dajpokoj dajwynajem,everyone,komendy,gamemodes/modules/komendy/commands/giveroom/giveroom_impl.pwn,True,pending
 glosnik,sanradio,everyone,komendy,gamemodes/modules/komendy/commands/glosnik/glosnik_impl.pwn,True,pending
 glosowanie,,everyone,komendy,gamemodes/modules/komendy/commands/glosowanie/glosowanie_impl.pwn,True,pending
-glosuj,,,filterscripts,filterscripts/wybory.pwn,False,not-loaded-by-v2.8.8
+glosuj,,,filterscripts,filterscripts/wybory.pwn,False,not-loaded-by-v2.9
 goto,to,everyone,komendy,gamemodes/modules/komendy/commands/goto/goto_impl.pwn,True,pending
 gotoadmin,,everyone,komendy,gamemodes/modules/komendy/commands/gotoadmin/gotoadmin_impl.pwn,True,pending
 gotobank,,everyone,komendy,gamemodes/modules/komendy/commands/gotobank/gotobank_impl.pwn,True,pending
@@ -226,11 +226,11 @@ gotostad,,everyone,komendy,gamemodes/modules/komendy/commands/gotostad/gotostad_
 gotoszpital,,everyone,komendy,gamemodes/modules/komendy/commands/gotoszpital/gotoszpital_impl.pwn,True,pending
 gotovc,,everyone,vicecity,gamemodes/modules/vicecity/commands/gotovc/gotovc_impl.pwn,True,pending
 gotovcint,,everyone,vicecity,gamemodes/modules/vicecity/commands/gotovcint/gotovcint_impl.pwn,True,pending
-gotowybory,,,filterscripts,filterscripts/wybory.pwn,False,not-loaded-by-v2.8.8
+gotowybory,,,filterscripts,filterscripts/wybory.pwn,False,not-loaded-by-v2.9
 gps,,everyone,komendy,gamemodes/modules/komendy/commands/gps/gps_impl.pwn,True,pending
 grafiti,graffiti,everyone,graffiti,gamemodes/modules/graffiti/commands/grafiti/grafiti_impl.pwn,True,pending
 gspanel,gunshop,everyone,frontbiz_gunshop,gamemodes/modules/frontbiz_gunshop/commands/gspanel/gspanel_impl.pwn,True,pending
-gwiazda,,,filterscripts,filterscripts/Firecrackers.pwn,False,not-loaded-by-v2.8.8
+gwiazda,,,filterscripts,filterscripts/Firecrackers.pwn,False,not-loaded-by-v2.9
 help,komendy pomoc,everyone,pomoc,gamemodes/modules/pomoc/commands/help/help_impl.pwn,True,pending
 house,dom,everyone,komendy,gamemodes/modules/komendy/commands/house/house_impl.pwn,True,pending
 houseinfo,dom_info dominfo,everyone,komendy,gamemodes/modules/komendy/commands/houseinfo/houseinfo_impl.pwn,True,pending
@@ -343,11 +343,11 @@ mojeauta,mojeauto,everyone,komendy,gamemodes/modules/komendy/commands/mojeauta/m
 mojskin,,everyone,komendy,gamemodes/modules/komendy/commands/mojskin/mojskin_impl.pwn,True,pending
 mole,,everyone,komendy,gamemodes/modules/komendy/commands/mole/mole_impl.pwn,True,pending
 mp3,music muzyka,everyone,komendy,gamemodes/modules/komendy/commands/mp3/mp3_impl.pwn,True,pending
-mruczniki,,,filterscripts,filterscripts/Mruczniki_2016.pwn,False,not-loaded-by-v2.8.8
+mruczniki,,,filterscripts,filterscripts/Mruczniki_2016.pwn,False,not-loaded-by-v2.9
 msgbox,,everyone,komendy,gamemodes/modules/komendy/commands/msgbox/msgbox_impl.pwn,True,pending
 muzyczka,,everyone,komendy,gamemodes/modules/komendy/commands/muzyczka/muzyczka_impl.pwn,True,pending
-myfrac,,,legacy,gamemodes/obiekty/skrypt/objecttest.pwn,False,not-loaded-by-v2.8.8
-myorg,,,legacy,gamemodes/obiekty/skrypt/objecttest.pwn,False,not-loaded-by-v2.8.8
+myfrac,,,legacy,gamemodes/obiekty/skrypt/objecttest.pwn,False,not-loaded-by-v2.9
+myorg,,,legacy,gamemodes/obiekty/skrypt/objecttest.pwn,False,not-loaded-by-v2.9
 namierz,find szukaj znajdz,everyone,komendy,gamemodes/modules/komendy/commands/namierz/namierz_impl.pwn,True,pending
 napad,,,napady,gamemodes/modules/napady/commands/napad/napad_impl.pwn,True,pending
 napadoff,,,napady,gamemodes/modules/napady/commands/napadoff/napadoff_impl.pwn,True,pending
@@ -420,14 +420,14 @@ pojazdygracza,,everyone,komendy,gamemodes/modules/komendy/commands/pojazdygracza
 pokazcb,,everyone,komendy,gamemodes/modules/komendy/commands/pokazcb/pokazcb_impl.pwn,True,pending
 pokazdowod,dowod,everyone,komendy,gamemodes/modules/komendy/commands/pokazdowod/pokazdowod_impl.pwn,True,pending
 polej,,everyone,komendy,gamemodes/modules/komendy/commands/polej/polej_impl.pwn,True,pending
-pos,,,filterscripts,filterscripts/colorchange.pwn,False,not-loaded-by-v2.8.8
+pos,,,filterscripts,filterscripts/colorchange.pwn,False,not-loaded-by-v2.9
 poszukuj,,everyone,komendy,gamemodes/modules/komendy/commands/poszukuj/poszukuj_impl.pwn,True,pending
 pozwolenie,,everyone,komendy,gamemodes/modules/komendy/commands/pozwolenie/pozwolenie_impl.pwn,True,pending
 pracapomoc,jobhelp jobpomoc,everyone,pomoc,gamemodes/modules/pomoc/commands/pracapomoc/pracapomoc_impl.pwn,True,pending
 pracownicy,czlonkowie,everyone,organizacje,gamemodes/modules/organizacje/commands/pracownicy/pracownicy_impl.pwn,True,pending
 premiumpanel,dotacje kp premium,everyone,premium,gamemodes/modules/premium/commands/premiumpanel/premiumpanel_impl.pwn,True,pending
 premiumskin,,everyone,premium,gamemodes/modules/premium/commands/premiumskin/premiumskin_impl.pwn,True,pending
-prezent,,,filterscripts,filterscripts/sanie.pwn,False,not-loaded-by-v2.8.8
+prezent,,,filterscripts,filterscripts/sanie.pwn,False,not-loaded-by-v2.9
 profiler,,everyone,admin,gamemodes/modules/admin/commands/profiler/profiler_impl.pwn,True,pending
 przebierz,,everyone,komendy,gamemodes/modules/komendy/commands/przebierz/przebierz_impl.pwn,True,pending
 przedmiotycmd,p przedmioty,everyone,komendy,gamemodes/modules/komendy/commands/przedmiotycmd/przedmiotycmd_impl.pwn,True,pending
@@ -442,7 +442,7 @@ quitbusiness,opuscbiz opuscbiznes qb quitbiz quitbiznes,everyone,biznesy,gamemod
 quitpraca,opuscprace quitjob,everyone,komendy,gamemodes/modules/komendy/commands/quitpraca/quitpraca_impl.pwn,True,pending
 r,radio,everyone,komendy,gamemodes/modules/komendy/commands/r/r_impl.pwn,True,pending
 radiostacja,,everyone,komendy,gamemodes/modules/komendy/commands/radiostacja/radiostacja_impl.pwn,True,pending
-rakieta,,,filterscripts,filterscripts/Firecrackers.pwn,False,not-loaded-by-v2.8.8
+rakieta,,,filterscripts,filterscripts/Firecrackers.pwn,False,not-loaded-by-v2.9
 ranny,,everyone,komendy,gamemodes/modules/komendy/commands/ranny/ranny_impl.pwn,True,pending
 rapidfly,,everyone,komendy,gamemodes/modules/komendy/commands/rapidfly/rapidfly_impl.pwn,True,pending
 raport,report,everyone,komendy,gamemodes/modules/komendy/commands/raport/raport_impl.pwn,True,pending
@@ -452,7 +452,7 @@ red,,everyone,komendy,gamemodes/modules/komendy/commands/red/red_impl.pwn,True,p
 reflektor,,everyone,komendy,gamemodes/modules/komendy/commands/reflektor/reflektor_impl.pwn,True,pending
 reklama,ha,everyone,komendy,gamemodes/modules/komendy/commands/reklama/reklama_impl.pwn,True,pending
 reloadbans,,everyone,komendy,gamemodes/modules/komendy/commands/reloadbans/reloadbans_impl.pwn,True,pending
-reloadwybory,,,filterscripts,filterscripts/wybory.pwn,False,not-loaded-by-v2.8.8
+reloadwybory,,,filterscripts,filterscripts/wybory.pwn,False,not-loaded-by-v2.9
 removecar,,everyone,komendy,gamemodes/modules/komendy/commands/removecar/removecar_impl.pwn,True,pending
 removeganglimit,,everyone,komendy,gamemodes/modules/komendy/commands/removeganglimit/removeganglimit_impl.pwn,True,pending
 removezoneprotect,,everyone,komendy,gamemodes/modules/komendy/commands/removezoneprotect/removezoneprotect_impl.pwn,True,pending
@@ -478,8 +478,8 @@ ryby,fishes,everyone,fishing,gamemodes/modules/fishing/commands/ryby/ryby_impl.p
 rybypomoc,fishhelp,everyone,pomoc,gamemodes/modules/pomoc/commands/rybypomoc/rybypomoc_impl.pwn,True,pending
 sad,,everyone,komendy,gamemodes/modules/komendy/commands/sad/sad_impl.pwn,True,pending
 samppomoc,samphelp,everyone,pomoc,gamemodes/modules/pomoc/commands/samppomoc/samppomoc_impl.pwn,True,pending
-sanie,,,filterscripts,filterscripts/sanie.pwn,False,not-loaded-by-v2.8.8
-sasc,,,filterscripts,filterscripts/SAN_extPSq.pwn,False,not-loaded-by-v2.8.8
+sanie,,,filterscripts,filterscripts/sanie.pwn,False,not-loaded-by-v2.9
+sasc,,,filterscripts,filterscripts/hol.pwn,False,not-loaded-by-v2.9
 say,l local,everyone,komendy,gamemodes/modules/komendy/commands/say/say_impl.pwn,True,pending
 sb,sprawdzbron szukajbroni,everyone,komendy,gamemodes/modules/komendy/commands/sb/sb_impl.pwn,True,pending
 sban,,everyone,komendy,gamemodes/modules/komendy/commands/sban/sban_impl.pwn,True,pending
@@ -501,14 +501,14 @@ setcarhp,,everyone,komendy,gamemodes/modules/komendy/commands/setcarhp/setcarhp_
 setcarint,,everyone,komendy,gamemodes/modules/komendy/commands/setcarint/setcarint_impl.pwn,True,pending
 setcarvw,,everyone,komendy,gamemodes/modules/komendy/commands/setcarvw/setcarvw_impl.pwn,True,pending
 setdrunk,,everyone,komendy,gamemodes/modules/komendy/commands/setdrunk/setdrunk_impl.pwn,True,pending
-setfrac,,,legacy,gamemodes/obiekty/skrypt/objecttest.pwn,False,not-loaded-by-v2.8.8
+setfrac,,,legacy,gamemodes/obiekty/skrypt/objecttest.pwn,False,not-loaded-by-v2.9
 setimmunity,ustawodpornosc,everyone,choroby,gamemodes/modules/choroby/commands/setimmunity/setimmunity_impl.pwn,True,pending
 setint,,everyone,komendy,gamemodes/modules/komendy/commands/setint/setint_impl.pwn,True,pending
 setkontrabanda,,everyone,praca_przemytnik,gamemodes/modules/praca_przemytnik/commands/setkontrabanda/setkontrabanda_impl.pwn,True,pending
 setmats,,everyone,komendy,gamemodes/modules/komendy/commands/setmats/setmats_impl.pwn,True,pending
 setmc,,everyone,premium,gamemodes/modules/premium/commands/setmc/setmc_impl.pwn,True,pending
 setname,,everyone,komendy,gamemodes/modules/komendy/commands/setname/setname_impl.pwn,True,pending
-setorg,,,legacy,gamemodes/obiekty/skrypt/objecttest.pwn,False,not-loaded-by-v2.8.8
+setorg,,,legacy,gamemodes/obiekty/skrypt/objecttest.pwn,False,not-loaded-by-v2.9
 setplocal,,everyone,komendy,gamemodes/modules/komendy/commands/setplocal/setplocal_impl.pwn,True,pending
 setpogoda,dajpogode setweather,everyone,komendy,gamemodes/modules/komendy/commands/setpogoda/setpogoda_impl.pwn,True,pending
 setserverpass,ssp,everyone,komendy,gamemodes/modules/komendy/commands/setserverpass/setserverpass_impl.pwn,True,pending
@@ -519,7 +519,7 @@ setstrong,,everyone,komendy,gamemodes/modules/komendy/commands/setstrong/setstro
 setveh,setauto setcar zmienauto,everyone,komendy,gamemodes/modules/komendy/commands/setveh/setveh_impl.pwn,True,pending
 setvregistration,setcarreg setrg,everyone,admin,gamemodes/modules/admin/commands/setvregistration/setvregistration_impl.pwn,True,pending
 setvw,,everyone,komendy,gamemodes/modules/komendy/commands/setvw/setvw_impl.pwn,True,pending
-setzombie,,,filterscripts,filterscripts/zombiescript.pwn,False,not-loaded-by-v2.8.8
+setzombie,,,filterscripts,filterscripts/zombiescript.pwn,False,not-loaded-by-v2.9
 setzonecontrol,,everyone,gangzone,gamemodes/modules/gangzone/commands/setzonecontrol/setzonecontrol_impl.pwn,True,pending
 sex,,everyone,komendy,gamemodes/modules/komendy/commands/sex/sex_impl.pwn,True,pending
 sh,,everyone,komendy,gamemodes/modules/komendy/commands/sh/sh_impl.pwn,True,pending
@@ -565,7 +565,7 @@ sprzedajprzemyt,sellprzemyt sellsmuggled sprzedajprzemyt,everyone,praca_przemytn
 sprzedajrybe,sellfish sprzedajryby,everyone,fishing,gamemodes/modules/fishing/commands/sprzedajrybe/sprzedajrybe_impl.pwn,True,pending
 sprzedajzestaw,,everyone,praca_mechanik,gamemodes/modules/praca_mechanik/commands/sprzedajzestaw/sprzedajzestaw_impl.pwn,True,pending
 stan,stankonta,everyone,komendy,gamemodes/modules/komendy/commands/stan/stan_impl.pwn,True,pending
-star2,,,filterscripts,filterscripts/Firecrackers.pwn,False,not-loaded-by-v2.8.8
+star2,,,filterscripts,filterscripts/Firecrackers.pwn,False,not-loaded-by-v2.9
 startlotto,,everyone,komendy,gamemodes/modules/komendy/commands/startlotto/startlotto_impl.pwn,True,pending
 startskinevent,,everyone,komendy,gamemodes/modules/komendy/commands/startskinevent/startskinevent_impl.pwn,True,pending
 startujlekcje,startegzamin startlekcja startlesson zacznijlekcje,everyone,komendy,gamemodes/modules/komendy/commands/startujlekcje/startujlekcje_impl.pwn,True,pending
@@ -575,7 +575,7 @@ stopanim,stopani,everyone,komendy,gamemodes/modules/komendy/commands/stopanim/st
 stopbieg,,everyone,komendy,gamemodes/modules/komendy/commands/stopbieg/stopbieg_impl.pwn,True,pending
 stoprecord,stoprec stoprecordnpc,everyone,npc,gamemodes/modules/npc/commands/stoprecord/stoprecord_impl.pwn,True,pending
 streamer,,everyone,komendy,gamemodes/modules/komendy/commands/streamer/streamer_impl.pwn,True,pending
-strefa,,,filterscripts,filterscripts/zombiescript.pwn,False,not-loaded-by-v2.8.8
+strefa,,,filterscripts,filterscripts/zombiescript.pwn,False,not-loaded-by-v2.9
 strefagangu,gangzone,everyone,komendy,gamemodes/modules/komendy/commands/strefagangu/strefagangu_impl.pwn,True,pending
 studia,,everyone,komendy,gamemodes/modules/komendy/commands/studia/studia_impl.pwn,True,pending
 stworzbiznes,createbiz createbusiness stworzbiz,everyone,biznesy,gamemodes/modules/biznesy/commands/stworzbiznes/stworzbiznes_impl.pwn,True,pending
@@ -583,9 +583,9 @@ stworzdom,zrobdom,everyone,komendy,gamemodes/modules/komendy/commands/stworzdom/
 stworztrase,stworzwyscig,everyone,komendy,gamemodes/modules/komendy/commands/stworztrase/stworztrase_impl.pwn,True,pending
 swat,,everyone,komendy,gamemodes/modules/komendy/commands/swat/swat_impl.pwn,True,pending
 swiadek,witness,everyone,komendy,gamemodes/modules/komendy/commands/swiadek/swiadek_impl.pwn,True,pending
-swieta,,,filterscripts,filterscripts/sanie.pwn,False,not-loaded-by-v2.8.8
-sylwester2018,,,filterscripts,filterscripts/Sunny_IslandPARTY.pwn,False,not-loaded-by-v2.8.8
-sylwestroweparty2017,,,filterscripts,filterscripts/Sunny_Island.pwn,False,not-loaded-by-v2.8.8
+swieta,,,filterscripts,filterscripts/sanie.pwn,False,not-loaded-by-v2.9
+sylwester2018,,,filterscripts,filterscripts/Sunny_IslandPARTY.pwn,False,not-loaded-by-v2.9
+sylwestroweparty2017,,,filterscripts,filterscripts/Sunny_Island.pwn,False,not-loaded-by-v2.9
 szept,cicho s,everyone,komendy,gamemodes/modules/komendy/commands/szept/szept_impl.pwn,True,pending
 szturmowy,,everyone,komendy,gamemodes/modules/komendy/commands/szturmowy/szturmowy_impl.pwn,True,pending
 szukani,poszukiwani wanted,everyone,komendy,gamemodes/modules/komendy/commands/szukani/szukani_impl.pwn,True,pending
@@ -614,7 +614,7 @@ togname,,everyone,komendy,gamemodes/modules/komendy/commands/togname/togname_imp
 tognewbie,togn,everyone,komendy,gamemodes/modules/komendy/commands/tognewbie/tognewbie_impl.pwn,True,pending
 togooc,zablokujooc,everyone,komendy,gamemodes/modules/komendy/commands/togooc/togooc_impl.pwn,True,pending
 togopis,,everyone,komendy,gamemodes/modules/komendy/commands/togopis/togopis_impl.pwn,True,pending
-togparty,,,filterscripts,filterscripts/zombiescript.pwn,False,not-loaded-by-v2.8.8
+togparty,,,filterscripts,filterscripts/zombiescript.pwn,False,not-loaded-by-v2.9
 togpodglad,,everyone,komendy,gamemodes/modules/komendy/commands/togpodglad/togpodglad_impl.pwn,True,pending
 togro,,everyone,komendy,gamemodes/modules/komendy/commands/togro/togro_impl.pwn,True,pending
 togscroll,,everyone,komendy,gamemodes/modules/komendy/commands/togscroll/togscroll_impl.pwn,True,pending
@@ -649,7 +649,8 @@ unwarn,,everyone,komendy,gamemodes/modules/komendy/commands/unwarn/unwarn_impl.p
 up,,everyone,komendy,gamemodes/modules/komendy/commands/up/up_impl.pwn,True,pending
 uprawnienia,,everyone,komendy,gamemodes/modules/komendy/commands/uprawnienia/uprawnienia_impl.pwn,True,pending
 upusc,drop,everyone,money,gamemodes/modules/money/commands/upusc/upusc_impl.pwn,True,pending
-ustawcena,,everyone,multiple,gamemodes/modules/komendy/commands/ustawcena/ustawcena_impl.pwn,True,pending
+ustawcena,,everyone,urzadls,gamemodes/modules/urzadls/commands/ustawcena/ustawcena_impl.pwn,True,pending
+ustawcenabiletu,,everyone,komendy,gamemodes/modules/komendy/commands/ustawcena/ustawcenabiletu_impl.pwn,True,pending
 ustawmistrz,setchamp setmistrz,everyone,komendy,gamemodes/modules/komendy/commands/ustawmistrz/ustawmistrz_impl.pwn,True,pending
 usunbiznes,deletebiz deletebusiness usunbiz,everyone,biznesy,gamemodes/modules/biznesy/commands/usunbiznes/usunbiznes_impl.pwn,True,pending
 usunbron,ub,everyone,komendy,gamemodes/modules/komendy/commands/usunbron/usunbron_impl.pwn,True,pending
@@ -687,11 +688,11 @@ wobiekt,,everyone,komendy,gamemodes/modules/komendy/commands/wobiekt/wobiekt_imp
 worek,,everyone,komendy,gamemodes/modules/komendy/commands/worek/worek_impl.pwn,True,pending
 wplac,bank deposit,everyone,komendy,gamemodes/modules/komendy/commands/wplac/wplac_impl.pwn,True,pending
 wrzuc,wepchaj wepchnij,everyone,komendy,gamemodes/modules/komendy/commands/wrzuc/wrzuc_impl.pwn,True,pending
-wulkan,,,filterscripts,filterscripts/Firecrackers.pwn,False,not-loaded-by-v2.8.8
+wulkan,,,filterscripts,filterscripts/Firecrackers.pwn,False,not-loaded-by-v2.9
 wybieralka,,everyone,komendy,gamemodes/modules/komendy/commands/wybieralka/wybieralka_impl.pwn,True,pending
 wyczysc,clear oczysc,everyone,komendy,gamemodes/modules/komendy/commands/wyczysc/wyczysc_impl.pwn,True,pending
 wyjdz,exit,everyone,komendy,gamemodes/modules/komendy/commands/wyjdz/wyjdz_impl.pwn,True,pending
-wyjdzzombie,,,filterscripts,filterscripts/zombiescript.pwn,False,not-loaded-by-v2.8.8
+wyjdzzombie,,,filterscripts,filterscripts/zombiescript.pwn,False,not-loaded-by-v2.9
 wyjedz,wjedz,everyone,komendy,gamemodes/modules/komendy/commands/wyjedz/wyjedz_impl.pwn,True,pending
 wyloguj,logout,everyone,komendy,gamemodes/modules/komendy/commands/wyloguj/wyloguj_impl.pwn,True,pending
 wylogujall,logoutall,everyone,komendy,gamemodes/modules/komendy/commands/wylogujall/wylogujall_impl.pwn,True,pending
@@ -723,8 +724,8 @@ yo2,,everyone,komendy,gamemodes/modules/komendy/commands/yo2/yo2_impl.pwn,True,p
 yo3,,everyone,komendy,gamemodes/modules/komendy/commands/yo3/yo3_impl.pwn,True,pending
 yo4,,everyone,komendy,gamemodes/modules/komendy/commands/yo4/yo4_impl.pwn,True,pending
 z,h hangup zakoncz,everyone,komendy,gamemodes/modules/komendy/commands/z/z_impl.pwn,True,pending
-zabawaon,,,filterscripts,filterscripts/zombiescript.pwn,False,not-loaded-by-v2.8.8
-zabawastatus,,,filterscripts,filterscripts/zombiescript.pwn,False,not-loaded-by-v2.8.8
+zabawaon,,,filterscripts,filterscripts/zombiescript.pwn,False,not-loaded-by-v2.9
+zabawastatus,,,filterscripts,filterscripts/zombiescript.pwn,False,not-loaded-by-v2.9
 zabierz,take,everyone,komendy,gamemodes/modules/komendy/commands/zabierz/zabierz_impl.pwn,True,pending
 zabierzbilet,,everyone,ibiza,gamemodes/modules/ibiza/commands/zabierzbilet/zabierzbilet_impl.pwn,True,pending
 zabierzbiznes,,everyone,biznesy,gamemodes/modules/biznesy/commands/zabierzbiznes/zabierzbiznes_impl.pwn,True,pending
@@ -774,7 +775,7 @@ zmienskin,,everyone,komendy,gamemodes/modules/komendy/commands/zmienskin/zmiensk
 zmienwiek,setwiek,everyone,admin,gamemodes/modules/admin/commands/zmienwiek/zmienwiek_impl.pwn,True,pending
 zmienwl,setwl,everyone,komendy,gamemodes/modules/komendy/commands/zmienwl/zmienwl_impl.pwn,True,pending
 zniszczobiekty,,everyone,komendy,gamemodes/modules/komendy/commands/zniszczobiekty/zniszczobiekty_impl.pwn,True,pending
-zombieclear,,,filterscripts,filterscripts/zombiescript.pwn,False,not-loaded-by-v2.8.8
+zombieclear,,,filterscripts,filterscripts/zombiescript.pwn,False,not-loaded-by-v2.9
 zonedelay,,everyone,komendy,gamemodes/modules/komendy/commands/zonedelay/zonedelay_impl.pwn,True,pending
 zoneid,,everyone,komendy,gamemodes/modules/komendy/commands/zoneid/zoneid_impl.pwn,True,pending
 zp,zapnijpas zapnijpasy,everyone,wypadek,gamemodes/modules/wypadek/commands/zp/zp_impl.pwn,True,pending

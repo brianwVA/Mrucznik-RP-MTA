@@ -96,14 +96,14 @@ saveCar(playerid, vehicleID, vehicleUID, respawn)
 {
 	new Float:X, Float:Y, Float:Z;
 	new Float:A;
-	new VW = GetPlayerVirtualWorld(playerid); 
+	new VW = GetPlayerVirtualWorld(playerid);
 	GetVehicleZAngle(vehicleID, A);
-	GetPlayerPos(playerid, X,Y,Z);
+	GetVehiclePos(vehicleID, X,Y,Z);
 
 	CarData[vehicleUID][c_Pos][0] = X;
 	CarData[vehicleUID][c_Pos][1] = Y;
 	CarData[vehicleUID][c_Pos][2] = Z;
-	CarData[vehicleUID][c_VW] = VW; 
+	CarData[vehicleUID][c_VW] = VW;
 	CarData[vehicleUID][c_Rot] = A;
 	Car_Save(vehicleUID, CAR_SAVE_STATE);
 	if (respawn) 

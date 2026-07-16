@@ -96,7 +96,14 @@ def metadata_commands(repo: Path) -> dict[str, dict]:
 def code_commands(repo: Path, commands: dict[str, dict]) -> None:
     roots = (repo / "gamemodes", repo / "filterscripts", repo / "include")
     for root in roots:
-        for path in sorted(root.rglob("*")):
+        # pathlib ordering is case-sensitive on Linux and case-insensitive on
+        # Windows. A stable key keeps duplicate legacy commands (for example
+        # /sasc in two filterscripts) deterministic in local builds and CI.
+        paths = sorted(
+            root.rglob("*"),
+            key=lambda path: path.relative_to(repo).as_posix().casefold(),
+        )
+        for path in paths:
             if path.suffix.lower() not in {".pwn", ".inc"}:
                 continue
             text = decode_source(path)
@@ -154,14 +161,23 @@ def compiled_commands(repo: Path, output_dir: Path) -> set[str] | None:
     archive = repo / "serverfiles.tar.gz"
     if archive.exists() and archive.stat().st_size > 1024:
         commands: set[str] = set()
+        compiled_gamemode = repo / "gamemodes/Mrucznik-RP.amx"
         with tarfile.open(archive, "r:gz") as tar:
             for member_name in ACTIVE_AMX_MEMBERS:
-                source = tar.extractfile(member_name)
-                if not source:
-                    raise FileNotFoundError(f"{member_name} is missing from serverfiles.tar.gz")
+                if (
+                    member_name == "serverfiles/gamemodes/Mrucznik-RP.amx"
+                    and compiled_gamemode.exists()
+                    and compiled_gamemode.stat().st_size > 1024
+                ):
+                    amx = compiled_gamemode.read_bytes()
+                else:
+                    source = tar.extractfile(member_name)
+                    if not source:
+                        raise FileNotFoundError(f"{member_name} is missing from serverfiles.tar.gz")
+                    amx = source.read()
                 commands.update(
                     name[4:].lower()
-                    for name in amx_publics(source.read())
+                    for name in amx_publics(amx)
                     if name.startswith("@yC_")
                 )
         return commands
@@ -191,7 +207,7 @@ def write_outputs(
             command["compiled_runtime"] = command["name"] in runtime_commands
             if not command["compiled_runtime"]:
                 command["runtime"] = "source-only-inactive"
-                command["native_mta_status"] = "not-loaded-by-v2.8.8"
+                command["native_mta_status"] = "not-loaded-by-v2.9"
     definition_count = sum(max(1, len(command.get("variants", []))) for command in ordered)
     runtime_count = len(runtime_commands) if runtime_commands is not None else None
     runtime_alias_count = (

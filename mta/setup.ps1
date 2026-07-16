@@ -1,4 +1,4 @@
-[CmdletBinding()]
+﻿[CmdletBinding()]
 param(
     [Parameter(Mandatory = $true)]
     [string]$MtaServerRoot,
@@ -15,12 +15,14 @@ param(
     [string]$MysqlPassword = "funia",
     [string]$RedisHost = "127.0.0.1",
     [int]$RedisPort = 6379,
-    [string]$RedisPassword = ""
+    [string]$RedisPassword = "",
+    [string]$GtaPath = ""
 )
 
 $ErrorActionPreference = "Stop"
 $ProjectRoot = Split-Path -Parent $PSScriptRoot
 $ServerFilesArchive = Join-Path $ProjectRoot "serverfiles.tar.gz"
+$CompiledGamemode = Join-Path $ProjectRoot "gamemodes\Mrucznik-RP.amx"
 $ResourcesRoot = Join-Path $MtaServerRoot "mods\deathmatch\resources"
 $PluginLockPath = Join-Path $PSScriptRoot "plugins.lock.json"
 $AmxVersion = "v0.3"
@@ -127,7 +129,8 @@ $LoadNames = New-Object System.Collections.Generic.List[string]
 
 foreach ($Plugin in $PluginLock.plugins) {
     $PackageName = "$($Plugin.name)-$($Plugin.version)"
-    $PackagePath = Join-Path $Work "$PackageName.download"
+    $PackageExtension = if ($Plugin.archive -eq "zip") { ".zip" } else { ".download" }
+    $PackagePath = Join-Path $Work "$PackageName$PackageExtension"
     Write-Host "Pobieranie $PackageName"
     Invoke-BoundedDownload -Uri $Plugin.url -OutFile $PackagePath
     $PackageHash = (Get-FileHash -Algorithm SHA256 $PackagePath).Hash.ToLowerInvariant()
@@ -180,7 +183,12 @@ if ($LASTEXITCODE -ne 0) { throw "Nie udało się wypakować oryginalnych plikó
 
 $BaselineResource = Join-Path $ResourcesRoot "amx-mrucznik"
 New-Item -ItemType Directory -Force $BaselineResource | Out-Null
-Copy-Item (Join-Path $Work "serverfiles\gamemodes\Mrucznik-RP.amx") $BaselineResource -Force
+$GamemodeSource = if ((Test-Path $CompiledGamemode) -and (Get-Item $CompiledGamemode).Length -gt 1MB) {
+    $CompiledGamemode
+} else {
+    Join-Path $Work "serverfiles\gamemodes\Mrucznik-RP.amx"
+}
+Copy-Item $GamemodeSource $BaselineResource -Force
 Copy-Item (Join-Path $PSScriptRoot "server\mods\deathmatch\resources\amx-mrucznik\meta.xml") $BaselineResource -Force
 
 $PackagedFilterScripts = [ordered]@{
@@ -202,7 +210,7 @@ foreach ($FilterEntry in $PackagedFilterScripts.GetEnumerator()) {
     $MetaNode = $FilterMeta.CreateElement("meta")
     [void]$FilterMeta.AppendChild($MetaNode)
     $InfoNode = $FilterMeta.CreateElement("info")
-    $InfoNode.SetAttribute("name", "Mrucznik RP filterscript $FilterScript")
+    $InfoNode.SetAttribute("name", "M-RP filterscript $FilterScript")
     $InfoNode.SetAttribute("type", "script")
     [void]$MetaNode.AppendChild($InfoNode)
     $AmxNode = $FilterMeta.CreateElement("amx")
@@ -276,6 +284,17 @@ Get-ChildItem $ModelAssets -File -Recurse | Sort-Object FullName | ForEach-Objec
 }
 $ModelsMeta.Save((Join-Path $ModelsResource "meta.xml"))
 
+if ($GtaPath) {
+    $Importer = Join-Path $PSScriptRoot "tools\import_samp_objects.py"
+    $Python = Get-Command python.exe -ErrorAction SilentlyContinue
+    if (-not $Python) { throw "Import obiektów SA-MP wymaga Python 3 w PATH." }
+    if (-not (Test-Path (Join-Path $GtaPath "SAMP\SAMP.ide"))) {
+        throw "Wskazany katalog GTA nie zawiera SAMP\SAMP.ide: $GtaPath"
+    }
+    & $Python.Source $Importer --gta $GtaPath --resource $ModelsResource
+    if ($LASTEXITCODE -ne 0) { throw "Import pełnego katalogu obiektów SA-MP nie powiódł się." }
+}
+
 $ServerConfigPath = Join-Path $MtaServerRoot "mods\deathmatch\mtaserver.conf"
 if (-not (Test-Path $ServerConfigPath)) {
     throw "Brak mods\deathmatch\mtaserver.conf w instalacji MTA."
@@ -297,11 +316,21 @@ foreach ($ResourceName in @("object_preview", "mrp_models", "amx", "mrp_bridge")
     $ResourceNode.SetAttribute("startup", "1")
     $ResourceNode.SetAttribute("protected", "0")
 }
+
+# M-RP renders its own SA-MP-style player list from mrp_bridge. Leaving the
+# stock MTA scoreboard enabled would bind TAB a second time and display two
+# different tables at once.
+$StockScoreboardNode = $ServerConfig.config.resource |
+    Where-Object { $_.src -eq "scoreboard" } |
+    Select-Object -First 1
+if ($StockScoreboardNode) {
+    $StockScoreboardNode.SetAttribute("startup", "0")
+}
 $ServerConfig.Save($ServerConfigPath)
 
-Write-Host "Pliki Mrucznik RP zostały zainstalowane w $MtaServerRoot"
+Write-Host "Pliki M-RP zostały zainstalowane w $MtaServerRoot"
 Write-Host "Pluginy zgodności zostały pobrane i zweryfikowane na podstawie plugins.lock.json"
 Write-Host "MySQL: $MysqlUser@$MysqlHost/$MysqlDatabase"
 Write-Host "Redis: $RedisHost`:$RedisPort"
-Write-Host "Moduł king.dll i zasoby startowe zostały wpisane do mtaserver.conf"
+Write-Host "Moduł king.dll i zasoby M-RP zostały wpisane do mtaserver.conf; stockowy scoreboard wyłączono"
 Write-Host "Przy pierwszym uruchomieniu wykonaj: aclrequest allow amx all"

@@ -41,7 +41,7 @@ command_bizinfo_Impl(playerid)
 		Business[businessID][b_maxMoney],
 		Business[businessID][b_Location]
 	); 
-	ShowPlayerInfoDialog(playerid, "Mrucznik Role Play", string, false);     
+	ShowPlayerInfoDialog(playerid, "M-RP", string, false);
     return 1;
 }
 

@@ -368,6 +368,7 @@ g_SAMPSyscallPrototypes = {
 	LinkVehicleToInterior = {'v', 'i'},
 
 	ManualVehicleEngineAndLights = {},
+	MRP_ClearChatBox = {'p'},
 	MoveObject = {'o', 'f', 'f', 'f', 'f', 'f', 'f', 'f'},
 	MovePlayerObject = {'p', 'i', 'f', 'f', 'f', 'f', 'f', 'f', 'f'},
 

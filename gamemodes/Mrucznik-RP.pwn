@@ -1,7 +1,7 @@
-//-----------------------------------------[Mapa Mrucznik Role Play]-----------------------------------------//
+//-----------------------------------------[Mapa M-RP]-----------------------------------------//
 //----------------------------------------------------*------------------------------------------------------//
 //---------------------------------(Stworzona na podstawie mapy The Godfather)-------------------------------//
-//-------------------------------------------------(v2.8)----------------------------------------------------//
+//-------------------------------------------------(v2.9)----------------------------------------------------//
 //----------------------------------------------------*------------------------------------------------------//
 //----[                                                                                                 ]----//
 //----[         |||||             |||||                       ||||||||||       ||||||||||               ]----//
@@ -20,7 +20,7 @@
 //----------------------------------------------------*------------------------------------------------------//
 /*
 
-Mrucznik® Role Play ----> stworzy³ Mrucznik
+M-RP ----> stworzy³ Mrucznik
 	Inni developerzy:
 		Kubi - zwyk³y skurwysyn
 		Akil - chyba nic nie zrobi³ koniec koñców
@@ -98,6 +98,7 @@ Mrucznik® Role Play ----> stworzy³ Mrucznik
 #include <sort-inline>
 //nex-ac settings
 #define AC_MAX_CONNECTS_FROM_IP		3
+#define AC_CLIENT_VERSION			"1.6"
 #define AUTOSAVE_SETTINGS_IN_CONFIG true
 #define AC_USE_TUNING_GARAGES false
 #define AC_USE_PICKUP_WEAPONS false
@@ -106,7 +107,14 @@ Mrucznik® Role Play ----> stworzy³ Mrucznik
 #define AC_USE_CASINOS false
 #include <progress2>
 #include <Pawn.RakNet>
-#include <nex-ac>
+#if defined MRP_MTA_RUNTIME
+	// MTA has its own native anti-cheat.  Nex-AC is tied to SA-MP packet and
+	// animation semantics and its per-update scan is both incompatible and
+	// expensive through the Pawn -> Lua compatibility bridge.
+	#include "system\mrp_mta_anticheat.inc"
+#else
+	#include <nex-ac>
+#endif
 #include <md5>
 #include <double-o-files2>
 #include <dialogs>
@@ -172,9 +180,6 @@ native gpci (playerid, serial [], len);
 //-------<[ Timery ]>-------
 #include "system\timery.pwn"
 
-//-------<[ NPC ]>-------
-#include "system\npc.pwn"
-
 //-------<[ Obiekty ]>-------
 #include "obiekty\obiekty.pwn"
 #include "obiekty\pickupy.pwn"
@@ -190,9 +195,9 @@ native gpci (playerid, serial [], len);
 main()
 {
 	print("\n----------------------------------");
-	print("M | --- Mrucznik Role Play --- | M");
+	print("M | --- M-RP --- | M");
 	print("R | ---        ****        --- | R");
-	print("U | ---        v2.8        --- | U");
+	print("U | ---        v2.9        --- | U");
 	print("C | ---        ****        --- | C");
 	print("Z | ---    by Mrucznik     --- | Z");
 	print("N | ---                    --- | N");
@@ -246,7 +251,7 @@ public OnGameModeInit()
 	AntiDeAMX(); // Hammer time
 
 	//-------<[ SAMP config ]>-------
-	SetGameModeText("Mrucznik-RP "VERSION);
+	SetGameModeText("M-RP "VERSION);
 
 	//-------<[ Gameplay config ]>-------
     SetWeatherEx(3);
@@ -400,7 +405,7 @@ public OnGameModeInit()
 	PlayerHaul[129][pCapasity] = 300;
 	PlayerHaul[130][pCapasity] = 300;
 
-	format(motd, sizeof(motd), "Witaj na serwerze Mrucznik Role Play - %s.", VERSION);
+	format(motd, sizeof(motd), "Witaj na serwerze M-RP - %s.", VERSION);
 	gettime(ghour, gminute, gsecond);
     GLOB_LastHour=ghour;
 	FixHour(ghour);
@@ -432,9 +437,19 @@ public OnGameModeInit()
 	TimeUpdater();
 	//timery
 	SetTimer("AktywujPozar", 3600_000 * 1, true);//System Po¿arów v0.1 - po¿ar co godzinê
-    SetTimer("MainTimer", 1000, true);
-	SetTimer("CheckChangeWeapon", 450, true);
-    SetTimer("RPGTimer", 100, true);
+	SetTimer("MainTimer", 1000, true);
+	// Rozloz pelny przeglad pojazdow na male porcje zamiast jednego
+	// blokujacego impulsu co kilka sekund.
+	SetTimer("VehicleUpdate", 500, true);
+	#if defined MRP_MTA_RUNTIME
+		// MTA raportuje zmianê broni i ma natywny anti-cheat. Wolniejszy fallback
+		// wystarczy, a zapis sejfów dostaje w³asny, asynchroniczny callback.
+		SetTimer("CheckChangeWeapon", 1000, true);
+		SetTimer("ServerStuffSave", 15 * 60 * 1000, true);
+	#else
+		SetTimer("CheckChangeWeapon", 450, true);
+		SetTimer("RPGTimer", 100, true);
+	#endif
 	//Ustalanie wartoœci wind
 	levelLock[FRAC_SN][5]=1;//Zamkniête
     for(new i=0;i<MAX_VEHICLES;i++)
@@ -444,7 +459,8 @@ public OnGameModeInit()
         Blink[i][2] = -1;
         Blink[i][3] = -1;
     }
-    SetTimer("B_TrailerCheck", 1000, 1);
+	// 32 aktywne pojazdy na impuls; pelny obieg trwa okolo sekundy.
+	SetTimer("B_TrailerCheck", 100, 1);
 
     for(new v = 0; v < CAR_End+1; v++)
 	{
@@ -902,7 +918,7 @@ public OnPlayerClickTextDraw(playerid, Text:clickedid)
     }
     if(clickedid == TXD_Info) //Display server info
     {
-        if(strlen(ServerInfo) > 1) ShowPlayerDialogEx(playerid, D_SERVERINFO, DIALOG_STYLE_MSGBOX, "Mrucznik-RP » Informacja", ServerInfo, "Schowaj", "Zamknij");
+        if(strlen(ServerInfo) > 1) ShowPlayerDialogEx(playerid, D_SERVERINFO, DIALOG_STYLE_MSGBOX, "M-RP » Informacja", ServerInfo, "Schowaj", "Zamknij");
     }
    	return 1;
 }
@@ -1156,7 +1172,7 @@ public OnPlayerConnect(playerid)
 	//Poprawny nick:
 	new nick[MAX_PLAYER_NAME];
 	GetPlayerName(playerid, nick, MAX_PLAYER_NAME);
-	if(regex_match(nick, NICK_REGEX) <= 0)
+	if(strfind(nick, "_", true) == -1)
 	{
 		SendClientMessage(playerid, COLOR_NEWS, "SERWER: Twój nick jest niepoprawny! Nick musi posiadaæ formê: Imiê_Nazwisko!");
 		KickEx(playerid, "z³y nick");
@@ -3636,7 +3652,8 @@ public OnPlayerUpdate(playerid)
 		return FreezePlayerOnInjury(playerid);
 	}
 
-    systempozarow_OnPlayerUpdate(playerid);//System Po¿arów v0.1
+    new veh = GetPlayerVehicleID(playerid);
+    systempozarow_OnPlayerUpdate(playerid, veh);//System Po¿arów v0.1
 
 	//Anty BH
 	if(GetPVarInt(playerid, "Jumping") == 1)
@@ -3650,7 +3667,6 @@ public OnPlayerUpdate(playerid)
 		}
 	}
 
-    new veh = GetPlayerVehicleID(playerid);
     if(veh != 0)
     {
         new model = GetVehicleModel(veh);
@@ -3673,7 +3689,7 @@ public OnPlayerUpdate(playerid)
 			}
         }
     }
-    new vid = GetPlayerVehicleID(playerid);
+    new vid = veh;
     if(vid > 0)
     {
         if(vid != LastVehicleID[playerid])
@@ -3791,7 +3807,7 @@ OnPlayerRegister(playerid, password[])
 DialogChangePasswordRequired(playerid)
 {
 	SendClientMessage(playerid, COLOR_WHITE, "[SERVER] {FF0000}Wymagana jest zmiana has³a do konta.\n{FF00FF}Istnieje ryzyko, ¿e Twoje has³o wyciek³o w postaci zaszyfrowanej.\nJe¿eli u¿ywa³eœ takiego samego has³a do innych kont/us³ug - radzimy je zmieniæ..");
-	ShowPlayerDialogEx(playerid, D_HASLO_INFO, DIALOG_STYLE_MSGBOX, "Mrucznik Role Play", "{FF00FF}Witaj!\n{FF1010}Wymagana jest zmiana has³a do konta.\n{FF00FF}Istnieje ryzyko, ¿e Twoje has³o wyciek³o w postaci zaszyfrowanej.\nJe¿eli u¿ywa³eœ takiego samego has³a do innych kont/us³ug - radzimy je zmieniæ.", "Dalej", "Wyjdz"); 
+	ShowPlayerDialogEx(playerid, D_HASLO_INFO, DIALOG_STYLE_MSGBOX, "M-RP", "{FF00FF}Witaj!\n{FF1010}Wymagana jest zmiana has³a do konta.\n{FF00FF}Istnieje ryzyko, ¿e Twoje has³o wyciek³o w postaci zaszyfrowanej.\nJe¿eli u¿ywa³eœ takiego samego has³a do innych kont/us³ug - radzimy je zmieniæ.", "Dalej", "Wyjdz");
 }
 
 VerifyPlayerIp(playerid)
@@ -3993,7 +4009,7 @@ OnPlayerLogin(playerid, password[])
 		SetPVarInt(playerid, "last-pos-vw", PlayerInfo[playerid][pVW]);
 
 		//Powitanie:
-		format(string, sizeof(string), "Witaj na serwerze Mrucznik Role Play, %s!",nick);
+		format(string, sizeof(string), "Witaj na serwerze M-RP, %s!",nick);
 		SendClientMessage(playerid, COLOR_WHITE,string);
 		printf("%s has logged in.",nick);
 		SendDiscordConnectInfo(playerid);
@@ -4157,9 +4173,9 @@ OnPlayerLogin(playerid, password[])
         SetSpawnInfo(playerid, 0, PlayerInfo[playerid][pSkin], PlayerInfo[playerid][pPos_x], PlayerInfo[playerid][pPos_y], PlayerInfo[playerid][pPos_z], 1.0, -1, -1, -1, -1, -1, -1);
 		gOoc[playerid] = 1; gNews[playerid] = 1; gFam[playerid] = 1;
 		PlayerInfo[playerid][pMuted] = 1;
-		SendClientMessage(playerid, COLOR_YELLOW, "Witaj na Mrucznik Role Play!");
+		SendClientMessage(playerid, COLOR_YELLOW, "Witaj na M-RP!");
 		SendClientMessage(playerid, COLOR_WHITE, "Aby zacz¹æ grê musisz przejœæ procedury rejestracji.");
-		ShowPlayerDialogEx(playerid, 70, DIALOG_STYLE_MSGBOX, "Witaj na Mrucznik Role Play", "Witaj na serwerze Mrucznik Role Play\nJeœli jesteœ tu nowy, to przygotowaliœmy dla ciebie poradnik\nZa chwilê bêdziesz móg³ go obejrzeæ, lecz najpierw bêdziesz musia³ opisaæ postaæ któr¹ bêdziesz sterowa³\nAby przejœæ dalej wciœnij przycisk 'dalej'", "Dalej", "");
+		ShowPlayerDialogEx(playerid, 70, DIALOG_STYLE_MSGBOX, "Witaj na M-RP", "Witaj na serwerze M-RP\nJeœli jesteœ tu nowy, to przygotowaliœmy dla ciebie poradnik\nZa chwilê bêdziesz móg³ go obejrzeæ, lecz najpierw bêdziesz musia³ opisaæ postaæ któr¹ bêdziesz sterowa³\nAby przejœæ dalej wciœnij przycisk 'dalej'", "Dalej", "");
     }
 	ALockdown_OnPlayerLogin(playerid);
 	return 1;
@@ -4545,7 +4561,7 @@ public OnPlayerKeyStateChange(playerid,newkeys,oldkeys)
 					else
 					{
 						SetPlayerArmedWeapon(playerid, 0); //chowanie spadochronu
-        				return ShowPlayerInfoDialog(playerid, "Mrucznik Role Play", "Schowaj spadochron zanim w coœ uderzysz."); 
+						return ShowPlayerInfoDialog(playerid, "M-RP", "Schowaj spadochron zanim w coœ uderzysz.");
 					}
 				}
 			}

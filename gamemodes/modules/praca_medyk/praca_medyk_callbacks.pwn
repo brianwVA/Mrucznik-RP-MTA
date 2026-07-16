@@ -43,14 +43,23 @@ public EndSmoke(id)
 	return 1;
 }
 
-public systempozarow_OnPlayerUpdate(playerid)
+public systempozarow_OnPlayerUpdate(playerid, vehicleid)
 {
+	new weapon = GetPlayerWeapon(playerid);
+	new bool:isFireTruckDriver = vehicleid != 0
+		&& GetVehicleModel(vehicleid) == 407
+		&& GetPlayerState(playerid) == PLAYER_STATE_DRIVER;
+	if(weapon != 42 && !isFireTruckDriver && GetPVarInt(playerid, "firehose_on") != 1)
+	{
+		return 1;
+	}
+
 	new newkeys,l,u;
 	GetPlayerKeys(playerid, newkeys, l, u);
 	new i;
 	if(Holding(KEY_FIRE))
 	{
-        if(GetPlayerWeapon(playerid) == 42)
+        if(weapon == 42)
         {
             for(i = 0; i<MaxFire; i++)
  	    	{
@@ -83,7 +92,7 @@ public systempozarow_OnPlayerUpdate(playerid)
 				}
 			}
 		}
-		else if(IsPlayerInAnyVehicle(playerid) && GetVehicleModel(GetPlayerVehicleID(playerid)) == 407 && PLAYER_STATE_DRIVER)
+		else if(isFireTruckDriver)
         {
             for(i = 0; i<MaxFire; i++)
  	    	{
@@ -163,32 +172,49 @@ hook OnVehicleDeath(vehicleid, killerid)
 
 public OnFire()
 {
-	for(new i = 0; i<MaxFire; i++)
+	// Read each streamed entity position once, then do the fire-distance checks
+	// in Pawn.  The old fire -> all 2000 vehicle slots nesting crossed the
+	// MTA compatibility bridge up to 160,000 times every second.
+	foreach(new p : Player)
 	{
-		if(IsValidFire(i))
+		if(IsPlayerInAnyVehicle(p) || IsAFireman(p)) continue;
+
+		new Float:px, Float:py, Float:pz;
+		GetPlayerPos(p, px, py, pz);
+		for(new i = 0; i < MaxFire; i++)
 		{
-			foreach(new p : Player)
+			if(!IsValidFire(i)) continue;
+			new Float:dx = px - FirePos[i][0];
+			new Float:dy = py - FirePos[i][1];
+			new Float:dz = pz - FirePos[i][2];
+			if(dx*dx + dy*dy + dz*dz < 4.0)
 			{
-				if(IsPlayerInAnyVehicle(p))
-				{
-					LastFireVehicles[GetPlayerVehicleID(p)] = false;
-				}
-				else if(!IsAFireman(p) && IsPlayerInRangeOfPoint(p, 2, FirePos[i][0], FirePos[i][1], FirePos[i][2]))
-				{
-	  				new Float:HP;
-		    		GetPlayerHealth(p, HP);
-	  				SetPlayerHealth(p, HP-4);
-				}	
+				new Float:HP;
+				GetPlayerHealth(p, HP);
+				SetPlayerHealth(p, HP-4);
+				break;
 			}
-			for(new v = 0; v < MAX_VEHICLES; v++)
+		}
+	}
+
+	foreach(new v : Vehicle)
+	{
+		if(GetVehicleModel(v) == 407) continue;
+
+		new Float:vx, Float:vy, Float:vz;
+		GetVehiclePos(v, vx, vy, vz);
+		for(new i = 0; i < MaxFire; i++)
+		{
+			if(!IsValidFire(i)) continue;
+			new Float:dx = vx - FirePos[i][0];
+			new Float:dy = vy - FirePos[i][1];
+			new Float:dz = vz - FirePos[i][2];
+			if(dx*dx + dy*dy + dz*dz < 25.0)
 			{
-				if(LastFireVehicles[v] || (IsValidVehicle(v) && GetVehicleModel(v) != 407 && GetVehicleDistanceFromPoint(v, FirePos[i][0], FirePos[i][1], FirePos[i][2]) < 5.0))
-				{
-					new Float:HP;
-					GetVehicleHealth(v, HP);
-					SetVehicleHealth(v, HP-30);
-					LastFireVehicles[v] = true;
-				}
+				new Float:HP;
+				GetVehicleHealth(v, HP);
+				SetVehicleHealth(v, HP-30);
+				break;
 			}
 		}
 	}

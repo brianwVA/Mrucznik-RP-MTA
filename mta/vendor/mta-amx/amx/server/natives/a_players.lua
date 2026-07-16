@@ -505,6 +505,13 @@ function SetPlayerAttachedObject(amx, player, index, modelid, bone, fOffsetX, fO
 	local obj = createObject(runtimeModel, x, y, z)
 
 	if obj then
+		if customModel or not tonumber(modelid) or modelid < 321 or modelid > 18630 then
+			-- Attached custom objects use the same invisible 1337 transport model
+			-- as streamed objects. mrp_models reveals them only after the requested
+			-- DFF/TXD/COL has been applied successfully.
+			setElementAlpha(obj, 0)
+			setElementCollisionsEnabled(obj, false)
+		end
 		local playerID = getElemID(player)
 		local oldObj = g_Players[playerID].attachedObjects[index]
 
@@ -1222,8 +1229,8 @@ end
 
 function GetPlayerCameraMode(amx, player)
 	if not player then return -1 end
-	local cameraMode = getCameraMode(player)
-	if cameraMode == 'fixed' then return 15 end
+	-- getCameraMode is client-only in MTA.  The gamemode uses this mainly to
+	-- distinguish on-foot and in-vehicle cameras, which is available here.
 	if getPedOccupiedVehicle(player) then return 18 end
 	return 4
 end
@@ -1361,13 +1368,21 @@ function TogglePlayerSpectating(amx, player, enable)
 				setPlayerState(player, PLAYER_STATE_WASTED)
 				putPlayerInClassSelection(player)
 			else
-				outputDebugString('Not allowed to select a class', 1)
-				setPlayerState(player, PLAYER_STATE_SPAWNED)
+				-- The gamemode may intentionally disable class selection.  A state
+				-- change alone does not create the ped and leaves the player stuck.
+				spawnPlayerBySelectedClass(player)
 			end
 		elseif playerdata.doingclasssel then
-			-- Call requestSpawn instead so we clear up any binds
-			-- since there's a workaround in SA-MP to skip the spawn selection screen
-			requestSpawn(player, false, false)
+			-- TogglePlayerSpectating(false) is used by this gamemode to finish
+			-- login.  Its OnPlayerRequestSpawn deliberately returns false, so
+			-- routing this through requestSpawn leaves the ped transparent and
+			-- never physically spawned.  Clear class-selection binds and spawn
+			-- directly, matching SA-MP spectating semantics.
+			unbindKey(player, 'arrow_l', 'down', requestClass)
+			unbindKey(player, 'arrow_r', 'down', requestClass)
+			unbindKey(player, 'lshift', 'down', requestSpawn)
+			unbindKey(player, 'rshift', 'down', requestSpawn)
+			spawnPlayerBySelectedClass(player)
 		else
 			spawnPlayerBySelectedClass(player)
 		end

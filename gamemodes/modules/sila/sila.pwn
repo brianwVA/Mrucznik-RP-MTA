@@ -20,7 +20,7 @@
 // Data utworzenia: 04.05.2019
 //Opis:
 /*
-	System si³y to rewolucja na serwerze Mrucznik Role_Play. Dziêki sile mo¿emy realnie prze³o¿yæ akcje na postaæ.
+	System si³y to rewolucja na serwerze M-RP. Dziêki sile mo¿emy realnie prze³o¿yæ akcje na postaæ.
 	Przyk³adowo: Gracz X (200V) i policjant Y (25V) - policjant próbuje aresztowaæ gracza, gracz wyrywa siê bez wiêkszego problemu.
 	RE: Ta sama sytuacja, z tym, ¿e policjant ma ju¿ 1/2 wartoœci si³y gracza - wtedy gracz ma zaledwie 25% na ucieczkê, które maleje z ka¿dym policjantem obok.
 	Wnioski? Dziêki temu systemowi, gracze bêd¹ mieli realne szanse uciec z aresztowania i /przetrwaæ/, a dla PD bêdzie wyzwaniem z³apaæ 140 kilowego sku*wysyna.

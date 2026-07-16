@@ -30,7 +30,10 @@
 // Streamer defines
 #define GetDynamicObjectModel(%0) Streamer_GetIntData(STREAMER_TYPE_OBJECT, %0, E_STREAMER_MODEL_ID)
 // How much objects appears simultaneously for player. Low number increase permonfance. Note: max objects is 2000 
-#define STREAMER_VISIBLEITENS           1000
+// The two LSPD maps alone contain more than 1600 dynamic objects. A limit of
+// 1000 can discard structural pieces (including collision floors) in their
+// compact interiors, making the player fall through the map.
+#define STREAMER_VISIBLEITENS           3000
 
 // Virtual World of Vice City
 #define VICECITY_VWORLD                 -1

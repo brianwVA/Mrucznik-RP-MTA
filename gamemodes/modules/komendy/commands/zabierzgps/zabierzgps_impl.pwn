@@ -51,7 +51,7 @@ command_zabierzgps_Impl(playerid, params[256])
                 SendRadioMessage(2, COLOR_YELLOW2, string);
                 SendRadioMessage(3, COLOR_YELLOW2, string);
                 SendRadioMessage(4, COLOR_YELLOW2, string);
-                return ShowPlayerInfoDialog(para1, "Mrucznik Role Play", "Zabrano Ci nadajnik GPS."); 
+                return ShowPlayerInfoDialog(para1, "M-RP", "Zabrano Ci nadajnik GPS.");
             }
             else
             {
@@ -61,7 +61,7 @@ command_zabierzgps_Impl(playerid, params[256])
         }
         else
         {
-            return ShowPlayerInfoDialog(playerid, "Mrucznik Role Play", "Gracz musi byæ nieprzytomny lub jesteœ za daleko.");     
+            return ShowPlayerInfoDialog(playerid, "M-RP", "Gracz musi byæ nieprzytomny lub jesteœ za daleko.");
         }
 	}
 	return 1;

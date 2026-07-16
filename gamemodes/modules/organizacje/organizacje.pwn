@@ -41,20 +41,21 @@ LoadOrganisations()
 
 SaveOrg(id)
 {
-    new query[1024];
-	new name_escaped[32];
-	new motto_escaped[128];
+	new query[1024];
+	new name_escaped[65];
+	new motto_escaped[257];
 	mysql_real_escape_string(OrgInfo[id][o_Name], name_escaped);
 	mysql_real_escape_string(OrgInfo[id][o_Motto], motto_escaped);
 	
     format(query, sizeof(query), 
         "UPDATE `mru_org` SET " \
-        "`Type`='%d', `Name`='%s', `Motd`='%s', `Color`=x'%08x', `x`='%f', `y`='%f', `z`='%f', `a`='%f', `Int`='%d', `VW`='%d', `LeaderStake`='%d' " \
+		"`Type`='%d', `Name`='%s', `Motd`='%s', `Color`=x'%04x%04x', `x`='%f', `y`='%f', `z`='%f', `a`='%f', `Int`='%d', `VW`='%d', `LeaderStake`='%d' " \
         "WHERE ID=%d",
         OrgInfo[id][o_Type], 
-        OrgInfo[id][o_Name], 
-        OrgInfo[id][o_Motto], 
-        OrgInfo[id][o_Color], 
+		name_escaped,
+		motto_escaped,
+		(OrgInfo[id][o_Color] >>> 16) & 0xFFFF,
+		OrgInfo[id][o_Color] & 0xFFFF,
         OrgInfo[id][o_Spawn][0],OrgInfo[id][o_Spawn][1],OrgInfo[id][o_Spawn][2],OrgInfo[id][o_Spawn][3], 
         OrgInfo[id][o_Int], OrgInfo[id][o_VW], 
         OrgInfo[id][o_LeaderStake],

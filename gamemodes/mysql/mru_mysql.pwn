@@ -654,7 +654,6 @@ public MruMySQL_LoadAccount(playerid)
     	mysql_store_result();
         if(mysql_num_rows()) id++;
         mysql_fetch_row_format(lStr, "|");
-        mysql_free_result();
 
         sscanf(lStr, "p<|>dddddddddddddffddddddddddfffddddd",
         PlayerInfo[playerid][pDetSkill],
@@ -690,6 +689,22 @@ public MruMySQL_LoadAccount(playerid)
 		PlayerInfo[playerid][pBoatLic],
 		PlayerInfo[playerid][pFishLic],
 		PlayerInfo[playerid][pGunLic]);
+
+		// Krytyczne dane spawnu pobieramy po nazwie kolumny. Chroni to
+		// pozycje przed wyzerowaniem przez niezgodny parser starego formatu.
+		mysql_fetch_field_row(lStr, "Pos_x"); PlayerInfo[playerid][pPos_x] = floatstr(lStr);
+		mysql_fetch_field_row(lStr, "Pos_y"); PlayerInfo[playerid][pPos_y] = floatstr(lStr);
+		mysql_fetch_field_row(lStr, "Pos_z"); PlayerInfo[playerid][pPos_z] = floatstr(lStr);
+		mysql_fetch_field_row(lStr, "VW"); PlayerInfo[playerid][pVW] = strval(lStr);
+		mysql_fetch_field_row(lStr, "Int"); PlayerInfo[playerid][pInt] = strval(lStr);
+		// Licencje s¹ stanem trwa³ym. Odczyt po nazwach kolumn chroni je przed
+		// przesuniêciem pól w d³ugim, historycznym formacie sscanf.
+		mysql_fetch_field_row(lStr, "CarLic"); PlayerInfo[playerid][pCarLic] = strval(lStr);
+		mysql_fetch_field_row(lStr, "FlyLic"); PlayerInfo[playerid][pFlyLic] = strval(lStr);
+		mysql_fetch_field_row(lStr, "BoatLic"); PlayerInfo[playerid][pBoatLic] = strval(lStr);
+		mysql_fetch_field_row(lStr, "FishLic"); PlayerInfo[playerid][pFishLic] = strval(lStr);
+		mysql_fetch_field_row(lStr, "GunLic"); PlayerInfo[playerid][pGunLic] = strval(lStr);
+		mysql_free_result();
 
 
         lStr = "`Gun0`, `Gun1`, `Gun2`, `Gun3`, `Gun4`, `Gun5`, `Gun6`, `Gun7`, `Gun8`, `Gun9`, `Gun10`, `Gun11`, `Gun12`, `Ammo0`, `Ammo1`, `Ammo2`, `Ammo3`, `Ammo4`, `Ammo5`, `Ammo6`, `Ammo7`, `Ammo8`, `Ammo9`, `Ammo10`, `Ammo11`, `Ammo12`, `CarTime`, `PayDay`, `PayDayHad`, `CDPlayer`, `Wins`, `Loses`, `AlcoholPerk`, `DrugPerk`, `MiserPerk`, `PainPerk`, `TraderPerk`, `Tutorial`, `Mission`, `Warnings`, `Block`, `Fuel`, `Married`";
@@ -1323,6 +1338,17 @@ stock MruMySQL_SetAccInt(kolumna[], nick[], wartosc)
 	return 1;
 }
 
+stock MruMySQL_SavePlayerDocuments(playerid)
+{
+	new query[256];
+	format(query, sizeof(query), "UPDATE `mru_konta` SET `Dowod`='%d', `CarLic`='%d', `FlyLic`='%d', `BoatLic`='%d', `FishLic`='%d', `GunLic`='%d' WHERE `UID`='%d'",
+		PlayerInfo[playerid][pDowod], PlayerInfo[playerid][pCarLic], PlayerInfo[playerid][pFlyLic],
+		PlayerInfo[playerid][pBoatLic], PlayerInfo[playerid][pFishLic], PlayerInfo[playerid][pGunLic],
+		PlayerInfo[playerid][pUID]);
+	mysql_query(query);
+	return 1;
+}
+
 stock MruMySQL_SetAccFloat(kolumna[], nick[], Float:wartosc)
 {
 	new string[128];
@@ -1448,7 +1474,7 @@ public MySQL_Refresh()
         if(MySQL_timeout)
         {
             new str[64];
-            format(str, 64, "gamemodetext Mrucznik-RP %s", VERSION);
+            format(str, 64, "gamemodetext M-RP %s", VERSION);
             SendRconCommand(str);
             MySQL_timeout = false;
         }

@@ -1,4 +1,4 @@
-# Mrucznik Role Play dla MTA:SA
+# M-RP dla MTA:SA
 
 Port zachowuje oryginalny gamemode Pawn jako wykonywalną bazę zgodności wewnątrz MTA 1.6. Równoległy zasób `mrp_bridge` implementuje różnice silników i jest miejscem stopniowego przenoszenia funkcji do natywnego Lua bez zmiany zachowania widocznego dla gracza.
 
@@ -27,7 +27,8 @@ docker compose -f mta/docker-compose.database.yml up -d
   -KingDll ".\artifacts\king.dll" `
   -MysqlHost "127.0.0.1" -MysqlUser "samp" `
   -MysqlDatabase "mrucznik" -MysqlPassword "funia" `
-  -RedisHost "127.0.0.1" -RedisPort 6379
+  -RedisHost "127.0.0.1" -RedisPort 6379 `
+  -GtaPath "C:\GTA San Andreas"
 ```
 
 DLL ColAndreas jest artefaktem workflow `Build ColAndreas x86`; lokalnie można ją
@@ -41,6 +42,27 @@ Object Preview 0.7.0 i wszystkich gotowych pluginów, wypakowuje dokładny
 cztery aktywne filterscripty, pełny łańcuch dynamicznych skryptów `fixes.inc`,
 bazę kolizji i modele DFF dla ColAndreas, 81 skinów,
 obiekt SA-MP 19377 z dokładnym DFF/TXD/COL oraz komplet 4426 plików Vice City.
+Parametr `-GtaPath` dodatkowo importuje pełny katalog obiektów SA-MP 0.3.7
+(DFF, TXD i COL); jest wymagany dla rozbudowanych map, między innymi obu
+interiorów LSPD. Pliki są pobierane z lokalnej, legalnie posiadanej instalacji
+GTA/SA-MP i dlatego nie są przechowywane w repozytorium.
+
+Katalog Vice City jest generowany deterministycznie z `vicecity_map.pwn`:
+
+```powershell
+python .\mta\tools\build_vc_model_catalog.py `
+  --source .\gamemodes\modules\vicecity\vicecity_map.pwn `
+  --assets C:\Mrucznik-RP-MTA\mta-distribution\server\mods\deathmatch\resources\mrp_models\assets\vc4samp `
+  --output .\mta\server\mods\deathmatch\resources\mrp_models\shared\vc_objects.lua
+```
+
+Aktualna paczka ładuje 2747 z 2754 rejestrowanych definicji IDE. Siedem
+używanych obiektów lotniska i doków korzysta z zgodnych nazw paczki GTA United
+(`subcratesvc.txd` i `docksvc.txd`). Cztery definicje źródłowe nie mają plików
+w archiwum: trzy nie występują na mapie, a `man_dooropen.dff` występuje raz jako
+otwarte drzwi w interiorze rezydencji. Walidator pilnuje liczby modeli i obu
+naprawionych słowników tekstur.
+
 Publiczne hasło `funia` służy wyłącznie
 lokalnej bazie deweloperskiej; dane produkcyjne i tokeny nie są wpisywane do
 repozytorium.
@@ -65,6 +87,12 @@ callbacków Pawn. Jest to konieczne dla zachowania dokładnych nazw `/help`,
 `/login` i `/say`, które w standardowym polu MTA są zarezerwowane przez klienta
 lub serwer. Konsola `F8` pozostaje konsolą techniczną MTA.
 
+Lista graczy używa własnego interfejsu DX zgodnego z układem SA-MP
+(`ID / Gracz / Wynik / Ping`). Jest widoczna wyłącznie podczas trzymania `TAB`,
+a przy większej liczbie graczy można ją przewijać kółkiem myszy, `PgUp` i
+`PgDn`. Instalator wyłącza stockowy resource `scoreboard`, aby jego tabela i
+wewnętrzne komendy nie dublowały interfejsu M-RP.
+
 ## Kontrola kompletności komend
 
 ```shell
@@ -73,10 +101,10 @@ python3 mta/tools/build_native_catalog.py
 ```
 
 Pierwszy test porównuje zatwierdzony katalog z aktualnym kodem Pawn i tablicą
-publicznych handlerów dokładnego AMX. Repozytorium zawiera 787 nazw komend, z
-których 745 jest faktycznie aktywnych w wydaniu v2.8.8; 42 stare lub warunkowe
+publicznych handlerów dokładnego AMX. Repozytorium zawiera 788 nazw komend, z
+których 746 jest faktycznie aktywnych w wydaniu v2.9; 42 stare lub warunkowe
 definicje źródłowe są raportowane osobno. Drugi test odczytuje
-tablicę 598 importów natywnych głównego AMX i wszystkich 21 filterscriptów
+tablicę 552 importów natywnych głównego AMX i wszystkich 21 filterscriptów
 bezpośrednio z dokładnych plików w archiwum Git LFS.
 Brak choć jednej aktywnej komendy, aliasu, grupy uprawnień albo wymaganego natywu powoduje
 błąd walidacji projektu.

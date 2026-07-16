@@ -1,7 +1,8 @@
-[CmdletBinding()]
+﻿[CmdletBinding()]
 param(
-    [string]$InstallRoot = "C:\Mrucznik-RP-MTA",
+    [string]$InstallRoot = "C:\M-RP-MTA",
     [int]$MysqlPort = 3306,
+    [string]$GtaPath = "",
     [switch]$SkipRuntimeTest
 )
 
@@ -13,7 +14,7 @@ $MtaSha256 = "b58328e72922321de59531acd139ff829cfc29270108e000956b5a1bd7c928b1"
 $MysqlUrl = "https://cdn.mysql.com/archives/mysql-5.7/mysql-5.7.44-winx64.zip"
 $MysqlSha256 = "aed661fe8120254a1dc30f5a4d5de346681922f4847cf025e2d4084eca78e70e"
 $SevenZipSha256 = "d64a0468f5b5b0b0fc5b2188450bcd655b70809d97b1c4535f2884635094377d"
-$KingSha256 = "0d79740654407d8805e970fc6e4803db7bb6e9f8753d2d6c14244556adb10a88"
+$KingSha256 = "c58a0d9a3ab208af135fb6f691e781cf18c4e53e1d9c7c888bdba68b41a73388"
 $ColAndreasSha256 = "bf188f7b9fd8be45cd21872a399cab9a0a82b6df55f620359bc4c38c2c7f0e57"
 
 function Get-PackageLayout {
@@ -160,8 +161,8 @@ $LoadedState = Get-MrpInstallState -InstallRoot $InstallRoot
 Start-MrpMysql -State $LoadedState
 
 $ImportMarker = Join-Path $InstallRoot ".database-imported"
+$MysqlExe = Join-Path $MysqlHome "bin\mysql.exe"
 if (-not (Test-Path $ImportMarker)) {
-    $MysqlExe = Join-Path $MysqlHome "bin\mysql.exe"
     & $MysqlExe --protocol=TCP "--host=127.0.0.1" "--port=$MysqlPort" "--user=root" -e `
         "DROP DATABASE IF EXISTS mrucznik; DROP USER IF EXISTS 'samp'@'%'; CREATE DATABASE mrucznik; CREATE USER 'samp'@'%' IDENTIFIED WITH mysql_native_password BY 'funia'; GRANT ALL ON mrucznik.* TO 'samp'@'%'; FLUSH PRIVILEGES;"
     if ($LASTEXITCODE -ne 0) { throw "Nie udało się utworzyć lokalnej bazy i użytkownika." }
@@ -179,13 +180,67 @@ if (-not (Test-Path $ImportMarker)) {
     Set-Content $ImportMarker "MySQL 5.7.44 / mrucznik" -Encoding ASCII
 }
 
+# Early MTA compatibility builds could load business strings and integers but
+# lose every floating-point position. Their shutdown handler then persisted
+# those zeroes back to MySQL, leaving visible business names without usable
+# pickups or interiors. Repair only that unmistakable state from the packaged
+# seed while preserving ownership and the live MoneyPocket balance.
+$PositionedBusinessCount = & $MysqlExe --protocol=TCP "--host=127.0.0.1" `
+    "--port=$MysqlPort" "--user=root" --batch --skip-column-names `
+    -e "SELECT COUNT(*) FROM mrucznik.mru_business WHERE enX <> 0 AND enY <> 0;"
+if ($LASTEXITCODE -ne 0) { throw "Nie udało się sprawdzić pozycji biznesów." }
+if ([int]$PositionedBusinessCount -eq 0) {
+    $BackupRoot = Join-Path $InstallRoot "backups"
+    New-Item -ItemType Directory -Force $BackupRoot | Out-Null
+    $BusinessBackup = Join-Path $BackupRoot `
+        ("mru_business-before-restore-{0}.sql" -f (Get-Date -Format "yyyyMMdd-HHmmss"))
+    $MysqlDump = Join-Path $MysqlHome "bin\mysqldump.exe"
+    $DumpCommand = "`"$MysqlDump`" --protocol=TCP --host=127.0.0.1 --port=$MysqlPort " +
+        "--user=root --single-transaction --skip-lock-tables mrucznik mru_business > `"$BusinessBackup`""
+    & cmd.exe /d /s /c $DumpCommand
+    if ($LASTEXITCODE -ne 0 -or (Get-Item $BusinessBackup).Length -lt 1000) {
+        throw "Nie udało się wykonać kopii tabeli mru_business."
+    }
+
+    & $MysqlExe --protocol=TCP "--host=127.0.0.1" "--port=$MysqlPort" "--user=root" -e `
+        "DROP DATABASE IF EXISTS mrucznik_business_seed; CREATE DATABASE mrucznik_business_seed CHARACTER SET utf8 COLLATE utf8_general_ci;"
+    if ($LASTEXITCODE -ne 0) { throw "Nie udało się przygotować wzorca biznesów." }
+    try {
+        Invoke-MysqlFile -MysqlExe $MysqlExe `
+            -File (Join-Path $PayloadRoot "database\schema\mru_business_schema.sql") `
+            -Database "mrucznik_business_seed"
+        Invoke-MysqlFile -MysqlExe $MysqlExe `
+            -File (Join-Path $PayloadRoot "database\data\mru_business_data.sql") `
+            -Database "mrucznik_business_seed"
+
+        $RepairQuery = @"
+UPDATE mrucznik.mru_business AS live
+JOIN mrucznik_business_seed.mru_business AS seed ON seed.ID = live.ID
+SET live.enX = seed.enX, live.enY = seed.enY, live.enZ = seed.enZ,
+    live.enVw = seed.enVw, live.enInt = seed.enInt,
+    live.exX = seed.exX, live.exY = seed.exY, live.exZ = seed.exZ,
+    live.exVW = seed.exVW, live.exINT = seed.exINT,
+    live.pLocal = seed.pLocal, live.Money = seed.Money,
+    live.Cost = seed.Cost, live.Location = seed.Location, live.Icon = seed.Icon;
+"@
+        & $MysqlExe --protocol=TCP "--host=127.0.0.1" "--port=$MysqlPort" `
+            "--user=root" "--execute=$RepairQuery"
+        if ($LASTEXITCODE -ne 0) { throw "Nie udało się odtworzyć danych biznesów." }
+    }
+    finally {
+        & $MysqlExe --protocol=TCP "--host=127.0.0.1" "--port=$MysqlPort" `
+            "--user=root" -e "DROP DATABASE IF EXISTS mrucznik_business_seed;" | Out-Null
+    }
+}
+
 $MysqlHostForMta = if ($MysqlPort -eq 3306) { "127.0.0.1" } else { "127.0.0.1;port=$MysqlPort" }
 & (Join-Path $PayloadRoot "mta\setup.ps1") `
     -MtaServerRoot $ServerRoot `
     -ColAndreasDll (Join-Path $BinariesRoot "ColAndreas.dll") `
     -KingDll (Join-Path $BinariesRoot "king.dll") `
     -MysqlHost $MysqlHostForMta -MysqlUser "samp" -MysqlDatabase "mrucznik" `
-    -MysqlPassword "funia" -RedisHost "127.0.0.1" -RedisPort 6379
+    -MysqlPassword "funia" -RedisHost "127.0.0.1" -RedisPort 6379 `
+    -GtaPath $GtaPath
 
 $AclPath = Join-Path $ServerRoot "mods\deathmatch\acl.xml"
 [xml]$Acl = Get-Content $AclPath

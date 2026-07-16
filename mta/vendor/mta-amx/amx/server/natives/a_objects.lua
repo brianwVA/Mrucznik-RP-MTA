@@ -1,11 +1,28 @@
 function CreateObject(amx, model, x, y, z, rX, rY, rZ, drawDistance)
-	local runtimeModel, customModel = mrpResolveObjectModel(model)
+	local suppressed = mrpIsSuppressedLegacyObject(model, x, y, z)
+	local runtimeModel, customModel
+	if suppressed then
+		runtimeModel, customModel = 1337, MRP_SUPPRESSED_OBJECT_MODEL
+	else
+		runtimeModel, customModel = mrpResolveObjectModel(model)
+	end
 	local obj = createObject(runtimeModel, x, y, z, rX, rY, rZ)
+	if obj and customModel then
+		-- Never synchronize the base 1337 placeholder as a visible world object.
+		-- mrp_models reveals it client-side only after the custom DFF/TXD/COL has
+		-- been loaded and applied successfully.
+		setElementAlpha(obj, 0)
+		setElementCollisionsEnabled(obj, false)
+	end
 	if not obj then
 		obj = createObject(1337, x, y, z, rX, rY, rZ) -- Create a dummy object anyway since createobject can also be used to make camera attachments
 		setElementAlpha(obj, 0)
 		setElementCollisionsEnabled(obj, false)
 		outputDebugString(string.format('[MTA AMX - WARNING]: Invalid model id %d (replaced with invisible and non-collidable), some object ids are not supported, consider updating your scripts', model))
+	end
+	if obj and not customModel and (not tonumber(model) or model < 321 or model > 18630) then
+		setElementAlpha(obj, 0)
+		setElementCollisionsEnabled(obj, false)
 	end
 	mrpApplyCustomObjectModel(obj, customModel)
 	return addElem(g_Objects, obj)
@@ -145,7 +162,13 @@ function CreatePlayerObject(amx, player, model, x, y, z, rX, rY, rZ, drawDistanc
 		x = x, y = y, z = z,
 		rx = rX, ry = rY, rz = rZ
 	})
-	local runtimeModel, customModel = mrpResolveObjectModel(model)
+	local suppressed = mrpIsSuppressedLegacyObject(model, x, y, z)
+	local runtimeModel, customModel
+	if suppressed then
+		runtimeModel, customModel = 1337, MRP_SUPPRESSED_OBJECT_MODEL
+	else
+		runtimeModel, customModel = mrpResolveObjectModel(model)
+	end
 	clientCall(player, 'CreatePlayerObject', objID, runtimeModel, x, y, z, rX, rY, rZ, customModel)
 	return objID
 end
@@ -274,9 +297,10 @@ function StopPlayerObject(amx, player, objID)
 		return false
 	end
 	if obj.moving then
+		local moving = obj.moving
 		obj.x, obj.y, obj.z = getPlayerObjectPos(amx, player, objID)
-		if isTimer(obj.moving.timer) then
-			killTimer(obj.moving.timer)
+		if isTimer(moving.timer) then
+			killTimer(moving.timer)
 		end
 		obj.moving = nil
 	end

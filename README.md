@@ -1,11 +1,11 @@
-# Mrucznik Role Play — port MTA:SA
+# M-RP — port MTA:SA
 
 Ten fork zawiera kompletną bazę zgodności dla **MTA:SA 1.6**. Uruchamia dokładny
-gamemode `Mrucznik-RP.amx` v2.8.8, cztery aktywne filterscripty i dynamiczne
+gamemode `Mrucznik-RP.amx` v2.9, cztery aktywne filterscripty i dynamiczne
 skrypty pomocnicze `fixes.inc` wewnątrz MTA,
 a różnice silników obsługuje przypięta i przetestowana warstwa zgodności Lua.
 
-- 745 komend aktywnych w wydanym AMX oraz 547 aliasów zachowuje oryginalne
+- 746 komend aktywnych w wydanym AMX oraz 547 aliasów zachowuje oryginalne
   handlery Pawn, parametry i sprawdzanie uprawnień;
 - 42 dodatkowe nazwy znalezione w starym lub warunkowym kodzie źródłowym są
   jawnie oznaczone jako nieaktywne — nie działały również w bazowym wydaniu;
@@ -42,9 +42,9 @@ Set-ExecutionPolicy -Scope Process Bypass -Force
 
 ## Oryginalna dokumentacja SA-MP
 
-# Mrucznik-RP-2.6
+# M-RP-2.6
 
-Mapa serwera Mrucznik Role Play, jednego z największych polskich serwerów Role Play na modyfikacji San Andreas Multiplayer (SA:MP). 
+Mapa serwera M-RP, jednego z największych polskich serwerów Role Play na modyfikacji San Andreas Multiplayer (SA:MP).
 Serwer istniał od września 2009 roku do października 2020 roku. W tym czasie zapewnił graczom wiele niezapomnianych akcji, mnóstwo zabawy i zgromadził wokół siebie sporą społeczność graczy.
 
 ## Od autora
@@ -97,7 +97,7 @@ W razie problemów z pluginem ColAndreas.so, użyj jego wersji statycznie linkow
 ## Twórcy
 
 - [Fear]? - Twórcy podstawy gamemodu - skryptu The Godfather
-- [Mrucznik] Twórca modyfikacji mapy (mapa została napisana na podstawie skryptu The Godfather) i założyciel serwera Mrucznik Role Play,
+- [Mrucznik] Twórca modyfikacji mapy (mapa została napisana na podstawie skryptu The Godfather) i założyciel serwera M-RP,
 - [Simeone] Developer w latach 2018 - 2019
 - [Pecet] Developer w latach 2017-2019
 - [Akil] Developer (brak szczegółowych danych)
@@ -116,7 +116,7 @@ W razie problemów z pluginem ColAndreas.so, użyj jego wersji statycznie linkow
 ## Konfiguracja repozytorium
 
 - `git clone  https://github.com/MrucznikRolePlay/Mrucznik-RP-gamemode`
-- `cd Mrucznik-RP-2.5`
+- `cd M-RP-2.5`
 - `git submodule init`
 - `git submodule update` - w razie problemów z uprawnieniami edytuj plik .git/config podmieniając ścieżki submodułów z protokołu git na https
 

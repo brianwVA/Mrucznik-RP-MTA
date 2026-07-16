@@ -1,6 +1,6 @@
 {
-    "name": "ustawcena",
-    "description": "",
+    "name": "ustawcenabiletu",
+    "description": "Ustawia cenę biletu kolejowego",
     "permissions": ["everyone"],
     "author": "mrucznik",
     "aliases": [],

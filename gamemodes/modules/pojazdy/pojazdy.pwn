@@ -236,9 +236,21 @@ Car_RemovePlayerOwner(playerid, uid)
     }
 }
 
+stock bool:Car_IsSpawnPositionValid(Float:x, Float:y, Float:z)
+{
+    // (0, 0, 0) is not a usable parking position in GTA:SA. In MTA it lands
+    // near Blueberry and makes every damaged vehicle record pile up there.
+    return !(floatabs(x) < 0.01 && floatabs(y) < 0.01 && floatabs(z) < 0.01);
+}
+
 Car_Create(model, Float:x, Float:y, Float:z, Float:angle, color1, color2)
 {
     new lUID, string[256], idx=-1;
+    if(model < 400 || model > 611 || !Car_IsSpawnPositionValid(x, y, z))
+    {
+        printf("[CAR] Odrzucono tworzenie pojazdu: model=%d, pozycja=%f,%f,%f", model, x, y, z);
+        return -1;
+    }
     format(string, sizeof(string), "INSERT INTO `mru_cars` (`model`, `x`, `y`, `z`, `angle`, `color1`, `color2`) VALUES (%d, %.2f, %.2f, %.2f, %.1f, %d, %d)", model, x, y, z, angle, color1, color2);
     if(mysql_query(string))
     {
@@ -248,8 +260,17 @@ Car_Create(model, Float:x, Float:y, Float:z, Float:angle, color1, color2)
         idx = Car_GetFromQueue();
         if(idx == -1) idx = gCars, doadd=true;
 
+        new vehicleid = CreateVehicle(model, x, y, z, angle, color1, color2, -1);
+        if(vehicleid == INVALID_VEHICLE_ID)
+        {
+            format(string, sizeof(string), "DELETE FROM `mru_cars` WHERE `UID`='%d' LIMIT 1", lUID);
+            mysql_query(string);
+            printf("[CAR] Cofniêto rekord UID %d: MTA odrzuci³o utworzenie modelu %d", lUID, model);
+            return -1;
+        }
+
         CarData[idx][c_UID] = lUID;
-        CarData[idx][c_ID] = CreateVehicle(model, x, y, z, angle, color1, color2, -1);
+        CarData[idx][c_ID] = vehicleid;
         CarData[idx][c_Owner] = 0;
         CarData[idx][c_OwnerType] = 0;
         CarData[idx][c_Model] = model;
@@ -288,6 +309,39 @@ Car_Create(model, Float:x, Float:y, Float:z, Float:angle, color1, color2)
     return idx;
 }
 
+Car_LoadCurrentRow(idx)
+{
+    new value[64];
+
+    mysql_fetch_field_row(value, "UID"); CarData[idx][c_UID] = strval(value);
+    mysql_fetch_field_row(value, "ownertype"); CarData[idx][c_OwnerType] = strval(value);
+    mysql_fetch_field_row(value, "owner"); CarData[idx][c_Owner] = strval(value);
+    mysql_fetch_field_row(value, "model"); CarData[idx][c_Model] = strval(value);
+    mysql_fetch_field_row(value, "x"); CarData[idx][c_Pos][0] = floatstr(value);
+    mysql_fetch_field_row(value, "y"); CarData[idx][c_Pos][1] = floatstr(value);
+    mysql_fetch_field_row(value, "z"); CarData[idx][c_Pos][2] = floatstr(value);
+    mysql_fetch_field_row(value, "angle"); CarData[idx][c_Rot] = floatstr(value);
+    mysql_fetch_field_row(value, "hp"); CarData[idx][c_HP] = floatstr(value);
+    mysql_fetch_field_row(value, "tires"); CarData[idx][c_Tires] = strval(value);
+    mysql_fetch_field_row(value, "color1"); CarData[idx][c_Color][0] = strval(value);
+    mysql_fetch_field_row(value, "color2"); CarData[idx][c_Color][1] = strval(value);
+    mysql_fetch_field_row(value, "nitro"); CarData[idx][c_Nitro] = strval(value);
+    mysql_fetch_field_row(value, "hydraulika"); CarData[idx][c_bHydraulika] = strval(value);
+    mysql_fetch_field_row(value, "felgi"); CarData[idx][c_Felgi] = strval(value);
+    mysql_fetch_field_row(value, "malunek"); CarData[idx][c_Malunek] = strval(value);
+    mysql_fetch_field_row(value, "spoiler"); CarData[idx][c_Spoiler] = strval(value);
+    mysql_fetch_field_row(value, "bumper1"); CarData[idx][c_Bumper][0] = strval(value);
+    mysql_fetch_field_row(value, "bumper2"); CarData[idx][c_Bumper][1] = strval(value);
+    mysql_fetch_field_row(value, "keys"); CarData[idx][c_Keys] = strval(value);
+    mysql_fetch_field_row(value, "neon"); CarData[idx][c_Neon] = strval(value);
+    mysql_fetch_field_row(value, "ranga"); CarData[idx][c_Rang] = strval(value);
+    mysql_fetch_field_row(value, "int"); CarData[idx][c_Int] = strval(value);
+    mysql_fetch_field_row(value, "vw"); CarData[idx][c_VW] = strval(value);
+    mysql_fetch_field_row(value, "pdvehmod"); CarData[idx][c_Siren] = strval(value);
+    mysql_fetch_field_row(CarData[idx][c_Rejestracja], "Rejestracja");
+    return 1;
+}
+
 Car_Load()
 {
     new string[512], lLoad=gCars;
@@ -297,34 +351,7 @@ Car_Load()
     mysql_store_result();
     while(mysql_fetch_row_format(string, "|"))
     {
-        sscanf(string, "p<|>ddddfffffddddlddddddddddds[32]",
-        CarData[gCars][c_UID],
-        CarData[gCars][c_OwnerType],
-        CarData[gCars][c_Owner],
-        CarData[gCars][c_Model],
-        CarData[gCars][c_Pos][0],
-        CarData[gCars][c_Pos][1],
-        CarData[gCars][c_Pos][2],
-        CarData[gCars][c_Rot],
-        CarData[gCars][c_HP],
-        CarData[gCars][c_Tires],
-        CarData[gCars][c_Color][0],
-        CarData[gCars][c_Color][1],
-        CarData[gCars][c_Nitro],
-        CarData[gCars][c_bHydraulika],
-        CarData[gCars][c_Felgi],
-        CarData[gCars][c_Malunek],
-        CarData[gCars][c_Spoiler],
-        CarData[gCars][c_Bumper][0],
-        CarData[gCars][c_Bumper][1],
-        CarData[gCars][c_Keys],
-        CarData[gCars][c_Neon],
-        CarData[gCars][c_Rang],
-        CarData[gCars][c_Int],
-        CarData[gCars][c_VW],
-		CarData[gCars][c_Siren],
-		CarData[gCars][c_Rejestracja]);
-
+        Car_LoadCurrentRow(gCars);
         gCars++;
     }
     mysql_free_result();
@@ -440,33 +467,7 @@ Car_LoadEx(lUID)
     if(mysql_num_rows())
     {
         mysql_fetch_row_format(string, "|");
-        sscanf(string, "p<|>ddddfffffddddlddddddddddds[32]",
-        CarData[lVehID][c_UID],
-        CarData[lVehID][c_OwnerType],
-        CarData[lVehID][c_Owner],
-        CarData[lVehID][c_Model],
-        CarData[lVehID][c_Pos][0],
-        CarData[lVehID][c_Pos][1],
-        CarData[lVehID][c_Pos][2],
-        CarData[lVehID][c_Rot],
-        CarData[lVehID][c_HP],
-        CarData[lVehID][c_Tires],
-        CarData[lVehID][c_Color][0],
-        CarData[lVehID][c_Color][1],
-        CarData[lVehID][c_Nitro],
-        CarData[lVehID][c_bHydraulika],
-        CarData[lVehID][c_Felgi],
-        CarData[lVehID][c_Malunek],
-        CarData[lVehID][c_Spoiler],
-        CarData[lVehID][c_Bumper][0],
-        CarData[lVehID][c_Bumper][1],
-        CarData[lVehID][c_Keys],
-        CarData[lVehID][c_Neon],
-        CarData[lVehID][c_Rang],
-        CarData[lVehID][c_Int],
-        CarData[lVehID][c_VW],
-        CarData[lVehID][c_Siren],
-        CarData[lVehID][c_Rejestracja]);
+        Car_LoadCurrentRow(lVehID);
 
         if(doadd) gCars++;
 
@@ -503,7 +504,9 @@ Car_LoadForPlayer(playerid)
     mysql_store_result();
     while(mysql_fetch_row_format(string, "|"))
     {
-        sscanf(string, "p<|>d", lsID);
+        new uidText[16];
+        mysql_fetch_field_row(uidText, "UID");
+        lsID = strval(uidText);
         format(lsSearch, 8, "%d|", lsID);
         if(strfind(lList, lsSearch) == -1)
         {
@@ -514,33 +517,7 @@ Car_LoadForPlayer(playerid)
                 continue;
             }
 
-            sscanf(string, "p<|>ddddfffffddddlddddddddddds[32]",
-            CarData[lVehID][c_UID],
-            CarData[lVehID][c_OwnerType],
-            CarData[lVehID][c_Owner],
-            CarData[lVehID][c_Model],
-            CarData[lVehID][c_Pos][0],
-            CarData[lVehID][c_Pos][1],
-            CarData[lVehID][c_Pos][2],
-            CarData[lVehID][c_Rot],
-            CarData[lVehID][c_HP],
-            CarData[lVehID][c_Tires],
-            CarData[lVehID][c_Color][0],
-            CarData[lVehID][c_Color][1],
-            CarData[lVehID][c_Nitro],
-            CarData[lVehID][c_bHydraulika],
-            CarData[lVehID][c_Felgi],
-            CarData[lVehID][c_Malunek],
-            CarData[lVehID][c_Spoiler],
-            CarData[lVehID][c_Bumper][0],
-            CarData[lVehID][c_Bumper][1],
-            CarData[lVehID][c_Keys],
-            CarData[lVehID][c_Neon],
-            CarData[lVehID][c_Rang],
-            CarData[lVehID][c_Int],
-            CarData[lVehID][c_VW],
-            CarData[lVehID][c_Siren],
-            CarData[lVehID][c_Rejestracja]);
+            Car_LoadCurrentRow(lVehID);
 
             PlayerInfo[playerid][pCars][lUsed++] = lVehID;
 
@@ -668,6 +645,15 @@ Car_Spawn(lUID, bool:loaddesc=true)
 {
     if(GetVehicleModel(CarData[lUID][c_ID]) != 0) return 0;
 
+    if(CarData[lUID][c_Model] < 400 || CarData[lUID][c_Model] > 611 ||
+        !Car_IsSpawnPositionValid(CarData[lUID][c_Pos][0], CarData[lUID][c_Pos][1], CarData[lUID][c_Pos][2]))
+    {
+        printf("[CAR] Pominiêto uszkodzony spawn: UID=%d, model=%d, pozycja=%f,%f,%f",
+            CarData[lUID][c_UID], CarData[lUID][c_Model], CarData[lUID][c_Pos][0],
+            CarData[lUID][c_Pos][1], CarData[lUID][c_Pos][2]);
+        return 0;
+    }
+
     new vehicleid, expire=-1;
 
     if(CarData[lUID][c_OwnerType] == CAR_OWNER_JOB)
@@ -681,6 +667,11 @@ Car_Spawn(lUID, bool:loaddesc=true)
         vehicleid = AddStaticVehicleEx(CarData[lUID][c_Model], CarData[lUID][c_Pos][0],CarData[lUID][c_Pos][1],CarData[lUID][c_Pos][2], CarData[lUID][c_Rot], CarData[lUID][c_Color][0], CarData[lUID][c_Color][1], expire, CarData[lUID][c_Siren]);
     else
        vehicleid = CreateVehicle(CarData[lUID][c_Model], CarData[lUID][c_Pos][0],CarData[lUID][c_Pos][1],CarData[lUID][c_Pos][2], CarData[lUID][c_Rot], CarData[lUID][c_Color][0], CarData[lUID][c_Color][1], expire, CarData[lUID][c_Siren]);
+    if(vehicleid == INVALID_VEHICLE_ID)
+    {
+        printf("[CAR] MTA odrzuci³o spawn UID=%d, model=%d", CarData[lUID][c_UID], CarData[lUID][c_Model]);
+        return 0;
+    }
     VehicleUID[vehicleid][vUID] = lUID;
 
     new rejestracja[32];
@@ -690,8 +681,8 @@ Car_Spawn(lUID, bool:loaddesc=true)
 		format(rejestracja, sizeof(rejestracja), "%s", CarData[lUID][c_Rejestracja]);
 
     SetVehicleNumberPlate(vehicleid, rejestracja);
-	RespawnVehicleEx(vehicleid);
-	//
+    // CreateVehicle ju¿ stawia pojazd na zapisanym spawnie. Natychmiastowy
+    // SetVehicleToRespawn tworzy³ w MTA drugi, opóŸniony spawn wszystkich aut.
     Car_AddTune(vehicleid);
     CarData[lUID][c_ID] = vehicleid;
 

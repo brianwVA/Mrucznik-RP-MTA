@@ -40,7 +40,7 @@
 		"echo": "-",
 		"rcon_password": "funiol",
 		"port": 7777,
-		"hostname": "!PL! Mrucznik Role Play - local development !PL!",
+		"hostname": "!PL! M-RP - local development !PL!",
 		"maxplayers": 1000,
 		"language": "PL",
 		"mapname": "San Andreas",
@@ -86,7 +86,8 @@
 			"-Z+"
 		],
 		"includes": [
-			"./include"
+			"./include",
+			"./dependencies/sscanf"
 		],
 		"compiler": {}
 	}

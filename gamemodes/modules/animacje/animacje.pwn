@@ -40,7 +40,7 @@ MRP_ShowAnim(playerid)
 	format(dialog, sizeof(dialog), "%s{ebc034}@medyk\n{ebc034}@napad\n{ebc034}@nie\n{ebc034}@odbierz\n{ebc034}@odloz\n{ebc034}@oh\n{ebc034}@opieraj\n{ebc034}@pa\n{ebc034}@pij\n{ebc034}@placz\n", dialog);
 	format(dialog, sizeof(dialog), "%s{ebc034}@przeladuj\n{ebc034}@ramiona\n{ebc034}@rozciagaj\n{ebc034}@rozlacz\n{ebc034}@siad\n{ebc034}@sikaj\n{ebc034}@smiech\n{ebc034}@stoj\n{ebc034}@tak\n{ebc034}@waledochodze\n", dialog);
 	format(dialog, sizeof(dialog), "%s{ebc034}@walekonia\n{ebc034}@wolaj\n{ebc034}@wozszlug\n{ebc034}@wstan\n{ebc034}@wtf\n{ebc034}@wymiotuj\n{ebc034}@zarcie\n{ebc034}@zmeczony", dialog);
-	ShowPlayerDialogEx(playerid, D_ANIMLIST, 2, "{4876FF}Mrucznik Role Play ª {FFFFFF}Animacje", dialog, "Wybierz", "Wyjdü");
+	ShowPlayerDialogEx(playerid, D_ANIMLIST, 2, "{4876FF}M-RP ª {FFFFFF}Animacje", dialog, "Wybierz", "Wyjdü");
 	return 1;
 }
 

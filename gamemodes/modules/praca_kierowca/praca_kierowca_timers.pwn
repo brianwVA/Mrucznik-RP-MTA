@@ -30,7 +30,6 @@ Driver_JednaSekundaTimer(playerid)
 {
 	new string[MAX_MESSAGE_LENGTH];
 	new Float:x, Float:y, Float:z;
-	GetPlayerPos(playerid, x, y, z);
 
 	new taxidriver = TransportDriver[playerid];
 	if(taxidriver != 999) //Taxi

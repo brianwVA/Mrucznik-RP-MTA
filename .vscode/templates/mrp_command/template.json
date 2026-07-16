@@ -1,6 +1,6 @@
 {
     "name" : "Komenda",
-    "description" : "Nowa komenda dla gememodu Mrucznik Role Play",
+    "description" : "Nowa komenda dla gememodu M-RP",
     "defaultName" : "command.pwn",
     "sortOrder" : "100",
     "category" : "Mrucznik",

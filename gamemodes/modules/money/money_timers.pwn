@@ -29,15 +29,12 @@
 forward AntyCheatSystemByMrucznik(); //repeated every second
 public AntyCheatSystemByMrucznik()
 {
-    for(new i = 0, p = GetMaxPlayers(); i < p; i++)
+    foreach(new i : Player)
     {
 		if(GetPlayerMoney(i) != kaska[i])
 		{
-			if(IsPlayerConnected(i))
-			{
-				ResetPlayerMoney(i);
-				GivePlayerMoney(i,kaska[i]);
-			}
+			ResetPlayerMoney(i);
+			GivePlayerMoney(i,kaska[i]);
 		}
 	}
 	return 1;
