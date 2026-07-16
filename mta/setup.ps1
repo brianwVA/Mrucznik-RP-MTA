@@ -316,11 +316,21 @@ foreach ($ResourceName in @("object_preview", "mrp_models", "amx", "mrp_bridge")
     $ResourceNode.SetAttribute("startup", "1")
     $ResourceNode.SetAttribute("protected", "0")
 }
+
+# M-RP renders its own SA-MP-style player list from mrp_bridge. Leaving the
+# stock MTA scoreboard enabled would bind TAB a second time and display two
+# different tables at once.
+$StockScoreboardNode = $ServerConfig.config.resource |
+    Where-Object { $_.src -eq "scoreboard" } |
+    Select-Object -First 1
+if ($StockScoreboardNode) {
+    $StockScoreboardNode.SetAttribute("startup", "0")
+}
 $ServerConfig.Save($ServerConfigPath)
 
 Write-Host "Pliki M-RP zostały zainstalowane w $MtaServerRoot"
 Write-Host "Pluginy zgodności zostały pobrane i zweryfikowane na podstawie plugins.lock.json"
 Write-Host "MySQL: $MysqlUser@$MysqlHost/$MysqlDatabase"
 Write-Host "Redis: $RedisHost`:$RedisPort"
-Write-Host "Moduł king.dll i zasoby startowe zostały wpisane do mtaserver.conf"
+Write-Host "Moduł king.dll i zasoby M-RP zostały wpisane do mtaserver.conf; stockowy scoreboard wyłączono"
 Write-Host "Przy pierwszym uruchomieniu wykonaj: aclrequest allow amx all"

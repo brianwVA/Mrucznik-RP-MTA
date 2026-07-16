@@ -87,6 +87,12 @@ callbacków Pawn. Jest to konieczne dla zachowania dokładnych nazw `/help`,
 `/login` i `/say`, które w standardowym polu MTA są zarezerwowane przez klienta
 lub serwer. Konsola `F8` pozostaje konsolą techniczną MTA.
 
+Lista graczy używa własnego interfejsu DX zgodnego z układem SA-MP
+(`ID / Gracz / Wynik / Ping`). Jest widoczna wyłącznie podczas trzymania `TAB`,
+a przy większej liczbie graczy można ją przewijać kółkiem myszy, `PgUp` i
+`PgDn`. Instalator wyłącza stockowy resource `scoreboard`, aby jego tabela i
+wewnętrzne komendy nie dublowały interfejsu M-RP.
+
 ## Kontrola kompletności komend
 
 ```shell

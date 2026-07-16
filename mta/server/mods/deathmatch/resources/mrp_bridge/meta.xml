@@ -4,4 +4,5 @@
     <script src="shared/config.lua" type="shared" cache="false" />
     <script src="server/main.lua" type="server" />
     <script src="client/main.lua" type="client" cache="false" />
+    <script src="client/scoreboard.lua" type="client" cache="false" />
 </meta>

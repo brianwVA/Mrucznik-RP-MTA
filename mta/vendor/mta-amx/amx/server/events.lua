@@ -147,6 +147,7 @@ addCommandHandler('changeclass', classSelKey)
 
 function keyStateChange(player, key, state)
 	local id = getElemID(player)
+	if not id or not g_Players[id] then return end
 	g_Players[id].keys[key] = (state == 'down')
 	if g_KeyMapping[key] then
 		local oldState = g_Players[id].keys.old or 0
@@ -479,6 +480,20 @@ addEventHandler('mrp:conversationYes', root,
 	function(pressed)
 		if not client or source ~= client or type(pressed) ~= 'boolean' then return end
 		keyStateChange(client, 'conversation_yes', pressed and 'down' or 'up')
+	end
+)
+
+-- Canceling TAB client-side is required to suppress MTA's stock scoreboard,
+-- but it also cancels the GTA "action" bind used by SA-MP KEY_ACTION. Restore
+-- that state explicitly so scripts keep receiving the original key behavior.
+addEvent('mrp:tabAction', true)
+addEventHandler('mrp:tabAction', root,
+	function(pressed)
+		if not client or source ~= client or type(pressed) ~= 'boolean' then return end
+		local playerID = getElemID(client)
+		local playerData = playerID and g_Players[playerID]
+		if not playerData or playerData.keys.action == pressed then return end
+		keyStateChange(client, 'action', pressed and 'down' or 'up')
 	end
 )
 
@@ -1218,6 +1233,20 @@ addEventHandler('onDrunkLevelRequest', root,
 
 addEventHandler('onConsole', root,
 	function(cmd)
+		-- The stock MTA scoreboard binds TAB to client commands. onConsole is
+		-- also emitted for those binds, but they are not Pawn commands and must
+		-- not be forwarded to OnPlayerCommandText (which would print the
+		-- gamemode's "unknown command" message on every TAB press/release).
+		if type(cmd) ~= 'string' then return end
+		local internalCommand = cmd:match('^%s*(.-)%s*$'):lower()
+		if internalCommand == 'scoreboard'
+			or internalCommand:match('^toggle scoreboard%s+[01]$')
+			or internalCommand == 'toggle scoreboard'
+			or internalCommand:match('^open scoreboard settings%s+[01]$')
+			or internalCommand == 'open scoreboard settings' then
+			return
+		end
+
 		cmd = '/' .. cmd:gsub('^([^%s]*)', g_CommandMapping)
 		if getElementType(source) ~= 'player' then return end
 		procCallOnAll('OnPlayerCommandText', getElemID(source), cmd)
