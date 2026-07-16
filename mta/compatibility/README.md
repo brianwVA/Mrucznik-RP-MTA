@@ -1,10 +1,10 @@
 # Rejestr zgodności komend
 
 Pliki `commands.json` i `commands.csv` są generowane bezpośrednio z kodu Pawn,
-745 plików `command.json` oraz tablicy publicznych funkcji dokładnego AMX. Nie
+746 plików `command.json` oraz tablicy publicznych funkcji dokładnego AMX. Nie
 należy edytować ich ręcznie.
 
-Katalog rozróżnia 787 nazw znalezionych w całym drzewie źródeł od 745 komend
+Katalog rozróżnia 788 nazw znalezionych w całym drzewie źródeł od 746 komend
 rzeczywiście wyeksportowanych jako `@yC_*` przez wydany `Mrucznik-RP.amx`
 v2.9. Pole `compiled_runtime` jest prawdziwe wyłącznie dla komend działających
 na bazowym serwerze SA-MP. Pozostałe 42 definicje są zachowane jako inwentarz

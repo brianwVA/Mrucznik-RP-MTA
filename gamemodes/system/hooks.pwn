@@ -38,13 +38,22 @@
 
 // ----[ Pickups fix ]----
 new Map:MruDynamicPickupTimers;
+#define MRP_MAX_DYNAMIC_PICKUP_OBJECTS (100000)
+new MruDynamicPickupTimerGeneration[MRP_MAX_DYNAMIC_PICKUP_OBJECTS];
+new MruDynamicPickupGeneration;
 stock Mru_CreateDynamicPickup(modelid, type, Float:x, Float:y, Float:z, worldid = -1, interiorid = -1, playerid = -1, Float:streamdistance = STREAMER_PICKUP_SD, STREAMER_TAG_AREA:areaid = STREAMER_TAG_AREA:-1, priority=0)
 {
     if(x >= 4096.0 || x <= -4096.0 || y >= 4096.0 || y <= -4096.0)
     {
         new obj = CreateDynamicObject(modelid, x, y, z, 0.0, 0.0, 0.0, worldid, interiorid, playerid, streamdistance, streamdistance, areaid, priority);
         MAP_insert_val_val(MruDynamicPickupTimers, obj, 1);
-        defer AnimateObjectPickup(obj, x, y, z, 0);
+        if(obj >= 0 && obj < sizeof(MruDynamicPickupTimerGeneration))
+        {
+            new timerOffset = 1 + (obj % 475);
+            MruDynamicPickupGeneration++;
+            MruDynamicPickupTimerGeneration[obj] = MruDynamicPickupGeneration;
+            defer AnimateObjectPickup[timerOffset](obj, x, y, z, 0, MruDynamicPickupGeneration);
+        }
         return obj;
     }
     else
@@ -60,37 +69,26 @@ stock Mru_CreateDynamicPickup(modelid, type, Float:x, Float:y, Float:z, worldid 
 // Reroute future calls to our function.
 #define CreateDynamicPickup Mru_CreateDynamicPickup
 
-timer AnimateObjectPickup[475](obj, Float:x, Float:y, Float:z, step)
+timer AnimateObjectPickup[475](obj, Float:x, Float:y, Float:z, step, generation)
 {
-    if(MAP_get_val_val(MruDynamicPickupTimers, obj) == 0)
+    if(obj < 0 || obj >= sizeof(MruDynamicPickupTimerGeneration) || MruDynamicPickupTimerGeneration[obj] != generation)
     {
         return;
     }
 
     new Float:animationSpeed = 0.2;
-    new Float:newZ;
-    if(step % 4 == 0)
+    new phase = step % 4;
+    new Float:newZ = z + (phase % 2 == 0 ? 0.1 : -0.1);
+    foreach(new playerid : Player)
     {
-        newZ = z + 0.1;
-        MoveDynamicObject(obj, x, y, newZ, animationSpeed, 0.0, 0.0, 0.0);
-    }
-    else if(step % 4 == 1)
-    {
-        newZ = z - 0.1;
-        MoveDynamicObject(obj, x, y, newZ, animationSpeed, 0.0, 0.0, 90.0);
-    }
-    else if(step % 4 == 2)
-    {
-        newZ = z + 0.1;
-        MoveDynamicObject(obj, x, y, newZ, animationSpeed, 0.0, 0.0, 180.0);
-    }
-    else if(step % 4 == 3)
-    {
-        newZ = z - 0.1;
-        MoveDynamicObject(obj, x, y, newZ, animationSpeed, 0.0, 0.0, 270.0);
+        if(Streamer_IsItemVisible(playerid, STREAMER_TYPE_OBJECT, obj))
+        {
+            MoveDynamicObject(obj, x, y, newZ, animationSpeed, 0.0, 0.0, phase * 90.0);
+            break;
+        }
     }
 
-    defer AnimateObjectPickup(obj, x, y, newZ, step+1);
+    defer AnimateObjectPickup(obj, x, y, newZ, step+1, generation);
 }
 
 
@@ -107,6 +105,10 @@ stock Mru_DestroyDynamicPickup(pickupid)
         GetDynamicObjectPos(pickupid, x, y, z);
         if(x >= 4096.0 || x <= -4096.0 || y >= 4096.0 || y <= -4096.0)
         {
+            if(pickupid >= 0 && pickupid < sizeof(MruDynamicPickupTimerGeneration))
+            {
+                MruDynamicPickupTimerGeneration[pickupid] = 0;
+            }
             DestroyDynamicObject(pickupid);
             MAP_remove_val(MruDynamicPickupTimers, pickupid);
         }

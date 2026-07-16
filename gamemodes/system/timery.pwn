@@ -1069,17 +1069,27 @@ forward MainTimer();
 public MainTimer()
 {
     JednaSekundaTimer();
-	SlapperTimer();
+	#if !defined MRP_MTA_RUNTIME
+		SlapperTimer();
+	#endif
     if(TICKS_Second)
     {
         Spectator();
+    }
+    else
+    {
         GangZone_Process();
     }
-    if(TICKS_3Sec == 2)
+    if(TICKS_3Sec == 0)
     {
-    	AC_AntyVehSpamLag();
-        VehicleUpdate();
+		AC_AntyVehSpamLag();
+    }
+    else if(TICKS_3Sec == 1)
+    {
         CustomPickups();
+    }
+    else if(TICKS_3Sec == 2)
+    {
         GangZone_ShowInfoToParticipants();
     }
     if(TICKS_MySQLRefresh == 14)
@@ -1103,7 +1113,9 @@ public MainTimer()
     }
     if(TICKS_15Min == (60*15)-1)
     {
-        ServerStuffSave();
+		#if !defined MRP_MTA_RUNTIME
+			ServerStuffSave();
+		#endif
         IdleKick();
     }
     if(TICKS_30Min == (60*30)-1)
@@ -2261,7 +2273,7 @@ public SlapperTimer()
 public JednaSekundaTimer()
 {
     //25.06.2014
-    new State, Float:pancerzyy,string[128],vehicleid,VehicleModel,
+    new State, string[128],vehicleid,VehicleModel,
         Float:x, Float:y, Float:z, Float:health, Float:Dis,
         pZone[MAX_ZONE_NAME], ammo, weaponID, weaponState, Float:vel[3];
 
@@ -2276,16 +2288,18 @@ public JednaSekundaTimer()
 		}
 	}
 
+	// Ta funkcja sama iteruje po graczach. Wywolanie jej wewnatrz petli
+	// Player powodowalo O(P^2) i wielokrotne odtwarzanie textdrawa mapy.
+	ViceCity_JednaSekundaTimer();
+
     foreach(new i : Player)
 	{
         if(!IsPlayerConnected(i)) continue;
         State = GetPlayerState(i);
         GetPlayerPos(i, x, y, z);
-		GetPlayerArmour(i, pancerzyy);
         vehicleid = GetPlayerVehicleID(i);
 
 		JednaSekundaTimer_Kajdanki(i);
-		ViceCity_JednaSekundaTimer();
 		
 		//dzwonek telefonu
 		if(RingTone[i] > 0 && Mobile[i] >= 0)
@@ -3495,11 +3509,25 @@ public GangZone_ShowInfoToParticipants() {
 }
 public VehicleUpdate()
 {
+    #define VEHICLE_UPDATE_BATCH (32)
+
+    static nextVehicle = -1;
     new Float:lHP = 0.0,
         engine, lights, alarm, doors, bonnect, boot, objective;
-    for(new i=0;i<MAX_VEHICLES;i++)
+
+    new i = nextVehicle;
+    if(i < 1 || !Iter_Contains(Vehicle, i))
     {
-        if(!GetVehicleHealth(i, lHP)) continue;
+        i = Iter_First(Vehicle);
+    }
+
+    for(new processed = 0; processed < VEHICLE_UPDATE_BATCH && i != Iter_End(Vehicle); processed++)
+    {
+        if(!GetVehicleHealth(i, lHP))
+        {
+            i = Iter_Next(Vehicle, i);
+            continue;
+        }
 
         if(lHP < 250.0)
         {
@@ -3521,10 +3549,16 @@ public VehicleUpdate()
 				if(shifthour >= 4)
 				{
 					Oil_GenerateFromVehicle(i);
-				}
+                }
             }
         }
+
+        i = Iter_Next(Vehicle, i);
     }
+
+    nextVehicle = (i == Iter_End(Vehicle)) ? -1 : i;
+
+    #undef VEHICLE_UPDATE_BATCH
 }
 
 

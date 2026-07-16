@@ -23,13 +23,13 @@
     "serverfiles/scriptfiles/fs-count-P.amx",
     "serverfiles/scriptfiles/callbackfix.amx"
   ],
-  "native_entry_count": 598,
-  "unique_native_count": 489,
+  "native_entry_count": 552,
+  "unique_native_count": 471,
   "programs": [
     {
       "name": "M-RP",
-      "native_entry_count": 556,
-      "unique_native_count": 487
+      "native_entry_count": 510,
+      "unique_native_count": 469
     },
     {
       "name": "animy",
@@ -144,13 +144,13 @@
     "discord-connector": 2,
     "libRegEx": 6,
     "log-plugin": 3,
-    "mrp-mta-compat": 35,
-    "mta-amx-core": 331,
+    "mrp-mta-compat": 29,
+    "mta-amx-core": 320,
     "pawn-memory": 13,
     "profiler": 4,
     "requests": 7,
     "sscanf": 6,
-    "streamer": 70
+    "streamer": 69
   },
   "natives": [
     {
@@ -219,32 +219,7 @@
       "provider": "mta-amx-core"
     },
     {
-      "name": "BS_Delete",
-      "occurrences": 1,
-      "provider": "mrp-mta-compat"
-    },
-    {
-      "name": "BS_IgnoreBits",
-      "occurrences": 1,
-      "provider": "mrp-mta-compat"
-    },
-    {
-      "name": "BS_New",
-      "occurrences": 1,
-      "provider": "mrp-mta-compat"
-    },
-    {
       "name": "BS_ReadValue",
-      "occurrences": 1,
-      "provider": "mrp-mta-compat"
-    },
-    {
-      "name": "BS_SetWriteOffset",
-      "occurrences": 1,
-      "provider": "mrp-mta-compat"
-    },
-    {
-      "name": "BS_WriteValue",
       "occurrences": 1,
       "provider": "mrp-mta-compat"
     },
@@ -554,11 +529,6 @@
       "provider": "mta-amx-core"
     },
     {
-      "name": "DestroyPickup",
-      "occurrences": 1,
-      "provider": "mta-amx-core"
-    },
-    {
       "name": "DestroyPlayerObject",
       "occurrences": 1,
       "provider": "mta-amx-core"
@@ -600,16 +570,6 @@
     },
     {
       "name": "EnableStuntBonusForAll",
-      "occurrences": 1,
-      "provider": "mta-amx-core"
-    },
-    {
-      "name": "EnableStuntBonusForPlayer",
-      "occurrences": 1,
-      "provider": "mta-amx-core"
-    },
-    {
-      "name": "EnableVehicleFriendlyFire",
       "occurrences": 1,
       "provider": "mta-amx-core"
     },
@@ -764,6 +724,16 @@
       "provider": "mta-amx-core"
     },
     {
+      "name": "GameTextForAll",
+      "occurrences": 1,
+      "provider": "mta-amx-core"
+    },
+    {
+      "name": "GameTextForPlayer",
+      "occurrences": 1,
+      "provider": "mta-amx-core"
+    },
+    {
       "name": "GangZoneCreate",
       "occurrences": 1,
       "provider": "mta-amx-core"
@@ -824,16 +794,6 @@
       "provider": "mta-amx-core"
     },
     {
-      "name": "GetConsoleVarAsBool",
-      "occurrences": 1,
-      "provider": "mta-amx-core"
-    },
-    {
-      "name": "GetConsoleVarAsInt",
-      "occurrences": 1,
-      "provider": "mta-amx-core"
-    },
-    {
       "name": "GetConsoleVarAsString",
       "occurrences": 1,
       "provider": "mta-amx-core"
@@ -865,11 +825,6 @@
     },
     {
       "name": "GetMaxPlayers",
-      "occurrences": 1,
-      "provider": "mta-amx-core"
-    },
-    {
-      "name": "GetObjectModel",
       "occurrences": 1,
       "provider": "mta-amx-core"
     },
@@ -964,11 +919,6 @@
       "provider": "mta-amx-core"
     },
     {
-      "name": "GetPlayerObjectModel",
-      "occurrences": 1,
-      "provider": "mta-amx-core"
-    },
-    {
       "name": "GetPlayerObjectPos",
       "occurrences": 1,
       "provider": "mta-amx-core"
@@ -1009,11 +959,6 @@
       "provider": "mta-amx-core"
     },
     {
-      "name": "GetPlayerSurfingVehicleID",
-      "occurrences": 1,
-      "provider": "mta-amx-core"
-    },
-    {
       "name": "GetPlayerTargetPlayer",
       "occurrences": 1,
       "provider": "mta-amx-core"
@@ -1040,11 +985,6 @@
     },
     {
       "name": "GetPlayerVelocity",
-      "occurrences": 1,
-      "provider": "mta-amx-core"
-    },
-    {
-      "name": "GetPlayerVersion",
       "occurrences": 1,
       "provider": "mta-amx-core"
     },
@@ -1319,11 +1259,6 @@
       "provider": "mta-amx-core"
     },
     {
-      "name": "IsValidVehicle",
-      "occurrences": 1,
-      "provider": "mta-amx-core"
-    },
-    {
       "name": "IsVehicleStreamedIn",
       "occurrences": 1,
       "provider": "mta-amx-core"
@@ -1464,6 +1399,11 @@
       "provider": "mta-amx-core"
     },
     {
+      "name": "MRP_ClearChatBox",
+      "occurrences": 1,
+      "provider": "mta-amx-core"
+    },
+    {
       "name": "mysql_connect",
       "occurrences": 1,
       "provider": "mrp-mta-compat"
@@ -1539,11 +1479,6 @@
       "provider": "mta-amx-core"
     },
     {
-      "name": "NetStats_MessagesRecvPerSecond",
-      "occurrences": 1,
-      "provider": "mta-amx-core"
-    },
-    {
       "name": "NetStats_PacketLossPercent",
       "occurrences": 1,
       "provider": "mta-amx-core"
@@ -1580,47 +1515,47 @@
     },
     {
       "name": "PlayerTextDrawAlignment",
-      "occurrences": 2,
+      "occurrences": 1,
       "provider": "mta-amx-core"
     },
     {
       "name": "PlayerTextDrawBackgroundColor",
-      "occurrences": 2,
+      "occurrences": 1,
       "provider": "mta-amx-core"
     },
     {
       "name": "PlayerTextDrawBoxColor",
-      "occurrences": 2,
+      "occurrences": 1,
       "provider": "mta-amx-core"
     },
     {
       "name": "PlayerTextDrawColor",
-      "occurrences": 2,
+      "occurrences": 1,
       "provider": "mta-amx-core"
     },
     {
       "name": "PlayerTextDrawDestroy",
-      "occurrences": 2,
+      "occurrences": 1,
       "provider": "mta-amx-core"
     },
     {
       "name": "PlayerTextDrawFont",
-      "occurrences": 2,
+      "occurrences": 1,
       "provider": "mta-amx-core"
     },
     {
       "name": "PlayerTextDrawHide",
-      "occurrences": 2,
+      "occurrences": 1,
       "provider": "mta-amx-core"
     },
     {
       "name": "PlayerTextDrawLetterSize",
-      "occurrences": 2,
+      "occurrences": 1,
       "provider": "mta-amx-core"
     },
     {
       "name": "PlayerTextDrawSetOutline",
-      "occurrences": 2,
+      "occurrences": 1,
       "provider": "mta-amx-core"
     },
     {
@@ -1640,7 +1575,7 @@
     },
     {
       "name": "PlayerTextDrawSetProportional",
-      "occurrences": 2,
+      "occurrences": 1,
       "provider": "mta-amx-core"
     },
     {
@@ -1650,7 +1585,7 @@
     },
     {
       "name": "PlayerTextDrawSetShadow",
-      "occurrences": 2,
+      "occurrences": 1,
       "provider": "mta-amx-core"
     },
     {
@@ -1660,17 +1595,17 @@
     },
     {
       "name": "PlayerTextDrawShow",
-      "occurrences": 2,
+      "occurrences": 1,
       "provider": "mta-amx-core"
     },
     {
       "name": "PlayerTextDrawTextSize",
-      "occurrences": 2,
+      "occurrences": 1,
       "provider": "mta-amx-core"
     },
     {
       "name": "PlayerTextDrawUseBox",
-      "occurrences": 2,
+      "occurrences": 1,
       "provider": "mta-amx-core"
     },
     {
@@ -1680,11 +1615,6 @@
     },
     {
       "name": "PR_RegHandler",
-      "occurrences": 1,
-      "provider": "mrp-mta-compat"
-    },
-    {
-      "name": "PR_SendRPC",
       "occurrences": 1,
       "provider": "mrp-mta-compat"
     },
@@ -2154,11 +2084,6 @@
       "provider": "mta-amx-core"
     },
     {
-      "name": "SetVehicleParamsForPlayer",
-      "occurrences": 1,
-      "provider": "mta-amx-core"
-    },
-    {
       "name": "SetVehiclePos",
       "occurrences": 1,
       "provider": "mta-amx-core"
@@ -2329,11 +2254,6 @@
       "provider": "streamer"
     },
     {
-      "name": "Streamer_GetItemStreamerID",
-      "occurrences": 1,
-      "provider": "streamer"
-    },
-    {
       "name": "Streamer_GetTickRate",
       "occurrences": 1,
       "provider": "streamer"
@@ -2445,22 +2365,22 @@
     },
     {
       "name": "TextDrawAlignment",
-      "occurrences": 2,
+      "occurrences": 1,
       "provider": "mta-amx-core"
     },
     {
       "name": "TextDrawBackgroundColor",
-      "occurrences": 2,
+      "occurrences": 1,
       "provider": "mta-amx-core"
     },
     {
       "name": "TextDrawBoxColor",
-      "occurrences": 2,
+      "occurrences": 1,
       "provider": "mta-amx-core"
     },
     {
       "name": "TextDrawColor",
-      "occurrences": 2,
+      "occurrences": 1,
       "provider": "mta-amx-core"
     },
     {
@@ -2470,32 +2390,32 @@
     },
     {
       "name": "TextDrawDestroy",
-      "occurrences": 2,
+      "occurrences": 1,
       "provider": "mta-amx-core"
     },
     {
       "name": "TextDrawFont",
-      "occurrences": 2,
+      "occurrences": 1,
       "provider": "mta-amx-core"
     },
     {
       "name": "TextDrawHideForAll",
-      "occurrences": 2,
+      "occurrences": 1,
       "provider": "mta-amx-core"
     },
     {
       "name": "TextDrawHideForPlayer",
-      "occurrences": 2,
+      "occurrences": 1,
       "provider": "mta-amx-core"
     },
     {
       "name": "TextDrawLetterSize",
-      "occurrences": 2,
+      "occurrences": 1,
       "provider": "mta-amx-core"
     },
     {
       "name": "TextDrawSetOutline",
-      "occurrences": 2,
+      "occurrences": 1,
       "provider": "mta-amx-core"
     },
     {
@@ -2515,7 +2435,7 @@
     },
     {
       "name": "TextDrawSetProportional",
-      "occurrences": 2,
+      "occurrences": 1,
       "provider": "mta-amx-core"
     },
     {
@@ -2525,16 +2445,11 @@
     },
     {
       "name": "TextDrawSetShadow",
-      "occurrences": 2,
-      "provider": "mta-amx-core"
-    },
-    {
-      "name": "TextDrawSetString",
       "occurrences": 1,
       "provider": "mta-amx-core"
     },
     {
-      "name": "TextDrawShowForAll",
+      "name": "TextDrawSetString",
       "occurrences": 1,
       "provider": "mta-amx-core"
     },
@@ -2545,12 +2460,12 @@
     },
     {
       "name": "TextDrawTextSize",
-      "occurrences": 2,
+      "occurrences": 1,
       "provider": "mta-amx-core"
     },
     {
       "name": "TextDrawUseBox",
-      "occurrences": 2,
+      "occurrences": 1,
       "provider": "mta-amx-core"
     },
     {
@@ -2580,11 +2495,6 @@
     },
     {
       "name": "UpdateVehicleDamageStatus",
-      "occurrences": 1,
-      "provider": "mta-amx-core"
-    },
-    {
-      "name": "UsePlayerPedAnims",
       "occurrences": 1,
       "provider": "mta-amx-core"
     },

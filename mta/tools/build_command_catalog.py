@@ -161,14 +161,23 @@ def compiled_commands(repo: Path, output_dir: Path) -> set[str] | None:
     archive = repo / "serverfiles.tar.gz"
     if archive.exists() and archive.stat().st_size > 1024:
         commands: set[str] = set()
+        compiled_gamemode = repo / "gamemodes/Mrucznik-RP.amx"
         with tarfile.open(archive, "r:gz") as tar:
             for member_name in ACTIVE_AMX_MEMBERS:
-                source = tar.extractfile(member_name)
-                if not source:
-                    raise FileNotFoundError(f"{member_name} is missing from serverfiles.tar.gz")
+                if (
+                    member_name == "serverfiles/gamemodes/Mrucznik-RP.amx"
+                    and compiled_gamemode.exists()
+                    and compiled_gamemode.stat().st_size > 1024
+                ):
+                    amx = compiled_gamemode.read_bytes()
+                else:
+                    source = tar.extractfile(member_name)
+                    if not source:
+                        raise FileNotFoundError(f"{member_name} is missing from serverfiles.tar.gz")
+                    amx = source.read()
                 commands.update(
                     name[4:].lower()
-                    for name in amx_publics(source.read())
+                    for name in amx_publics(amx)
                     if name.startswith("@yC_")
                 )
         return commands

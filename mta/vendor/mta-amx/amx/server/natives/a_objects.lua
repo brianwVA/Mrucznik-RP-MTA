@@ -1,5 +1,11 @@
 function CreateObject(amx, model, x, y, z, rX, rY, rZ, drawDistance)
-	local runtimeModel, customModel = mrpResolveObjectModel(model)
+	local suppressed = mrpIsSuppressedLegacyObject(model, x, y, z)
+	local runtimeModel, customModel
+	if suppressed then
+		runtimeModel, customModel = 1337, MRP_SUPPRESSED_OBJECT_MODEL
+	else
+		runtimeModel, customModel = mrpResolveObjectModel(model)
+	end
 	local obj = createObject(runtimeModel, x, y, z, rX, rY, rZ)
 	if obj and customModel then
 		-- Never synchronize the base 1337 placeholder as a visible world object.
@@ -156,7 +162,13 @@ function CreatePlayerObject(amx, player, model, x, y, z, rX, rY, rZ, drawDistanc
 		x = x, y = y, z = z,
 		rx = rX, ry = rY, rz = rZ
 	})
-	local runtimeModel, customModel = mrpResolveObjectModel(model)
+	local suppressed = mrpIsSuppressedLegacyObject(model, x, y, z)
+	local runtimeModel, customModel
+	if suppressed then
+		runtimeModel, customModel = 1337, MRP_SUPPRESSED_OBJECT_MODEL
+	else
+		runtimeModel, customModel = mrpResolveObjectModel(model)
+	end
 	clientCall(player, 'CreatePlayerObject', objID, runtimeModel, x, y, z, rX, rY, rZ, customModel)
 	return objID
 end

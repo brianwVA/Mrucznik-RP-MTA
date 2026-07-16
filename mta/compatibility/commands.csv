@@ -650,7 +650,7 @@ up,,everyone,komendy,gamemodes/modules/komendy/commands/up/up_impl.pwn,True,pend
 uprawnienia,,everyone,komendy,gamemodes/modules/komendy/commands/uprawnienia/uprawnienia_impl.pwn,True,pending
 upusc,drop,everyone,money,gamemodes/modules/money/commands/upusc/upusc_impl.pwn,True,pending
 ustawcena,,everyone,urzadls,gamemodes/modules/urzadls/commands/ustawcena/ustawcena_impl.pwn,True,pending
-ustawcenabiletu,,everyone,komendy,gamemodes/modules/komendy/commands/ustawcena/ustawcenabiletu_impl.pwn,False,not-loaded-by-v2.9
+ustawcenabiletu,,everyone,komendy,gamemodes/modules/komendy/commands/ustawcena/ustawcenabiletu_impl.pwn,True,pending
 ustawmistrz,setchamp setmistrz,everyone,komendy,gamemodes/modules/komendy/commands/ustawmistrz/ustawmistrz_impl.pwn,True,pending
 usunbiznes,deletebiz deletebusiness usunbiz,everyone,biznesy,gamemodes/modules/biznesy/commands/usunbiznes/usunbiznes_impl.pwn,True,pending
 usunbron,ub,everyone,komendy,gamemodes/modules/komendy/commands/usunbron/usunbron_impl.pwn,True,pending

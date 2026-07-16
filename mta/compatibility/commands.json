@@ -3,9 +3,9 @@
   "source": "MrucznikRolePlay/Mrucznik-RP-gamemode@master",
   "command_count": 788,
   "definition_count": 788,
-  "runtime_command_count": 745,
+  "runtime_command_count": 746,
   "runtime_alias_count": 547,
-  "inactive_source_command_count": 43,
+  "inactive_source_command_count": 42,
   "commands": [
     {
       "name": "a",
@@ -14706,9 +14706,9 @@
       "metadata_source": "gamemodes/modules/komendy/commands/ustawcena/command.json",
       "wrapper_source": "gamemodes/modules/komendy/commands/ustawcena/cmd_ustawcenabiletu.pwn",
       "implementation_source": "gamemodes/modules/komendy/commands/ustawcena/ustawcenabiletu_impl.pwn",
-      "runtime": "source-only-inactive",
-      "native_mta_status": "not-loaded-by-v2.9",
-      "compiled_runtime": false
+      "runtime": "amx-baseline",
+      "native_mta_status": "pending",
+      "compiled_runtime": true
     },
     {
       "name": "ustawmistrz",

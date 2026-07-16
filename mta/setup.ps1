@@ -22,6 +22,7 @@ param(
 $ErrorActionPreference = "Stop"
 $ProjectRoot = Split-Path -Parent $PSScriptRoot
 $ServerFilesArchive = Join-Path $ProjectRoot "serverfiles.tar.gz"
+$CompiledGamemode = Join-Path $ProjectRoot "gamemodes\Mrucznik-RP.amx"
 $ResourcesRoot = Join-Path $MtaServerRoot "mods\deathmatch\resources"
 $PluginLockPath = Join-Path $PSScriptRoot "plugins.lock.json"
 $AmxVersion = "v0.3"
@@ -182,7 +183,12 @@ if ($LASTEXITCODE -ne 0) { throw "Nie udało się wypakować oryginalnych plikó
 
 $BaselineResource = Join-Path $ResourcesRoot "amx-mrucznik"
 New-Item -ItemType Directory -Force $BaselineResource | Out-Null
-Copy-Item (Join-Path $Work "serverfiles\gamemodes\Mrucznik-RP.amx") $BaselineResource -Force
+$GamemodeSource = if ((Test-Path $CompiledGamemode) -and (Get-Item $CompiledGamemode).Length -gt 1MB) {
+    $CompiledGamemode
+} else {
+    Join-Path $Work "serverfiles\gamemodes\Mrucznik-RP.amx"
+}
+Copy-Item $GamemodeSource $BaselineResource -Force
 Copy-Item (Join-Path $PSScriptRoot "server\mods\deathmatch\resources\amx-mrucznik\meta.xml") $BaselineResource -Force
 
 $PackagedFilterScripts = [ordered]@{

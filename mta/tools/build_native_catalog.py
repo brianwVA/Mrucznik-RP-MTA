@@ -71,7 +71,11 @@ def read_amx_programs(root: Path, explicit: Path | None) -> dict[str, bytes]:
         raise FileNotFoundError("serverfiles.tar.gz is missing; run git lfs pull")
     with tarfile.open(archive, "r:gz") as tar:
         programs = {}
+        compiled_gamemode = root / "gamemodes/Mrucznik-RP.amx"
         for name, member_name in AMX_MEMBERS.items():
+            if name == "M-RP" and compiled_gamemode.exists() and compiled_gamemode.stat().st_size > 1024:
+                programs[name] = compiled_gamemode.read_bytes()
+                continue
             member = tar.getmember(member_name)
             source = tar.extractfile(member)
             if not source:

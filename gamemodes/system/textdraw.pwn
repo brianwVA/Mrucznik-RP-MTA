@@ -185,7 +185,7 @@ LoadTXD()
     ZoneTXD_Load();
 
 
-    Loading_Title = TextDrawCreate(320.000000, 213.214828, "~g~~h~~h~~h~Mrucznik~w~-~g~~h~~h~~h~RP");
+    Loading_Title = TextDrawCreate(320.000000, 213.214828, "~g~~h~~h~~h~M~w~-~g~~h~~h~~h~RP");
     TextDrawLetterSize(Loading_Title, 0.449999, 1.600000);
     TextDrawAlignment(Loading_Title, 2);
     TextDrawColor(Loading_Title, -1);

@@ -1,7 +1,7 @@
 //-----------------------------------------[Mapa M-RP]-----------------------------------------//
 //----------------------------------------------------*------------------------------------------------------//
 //---------------------------------(Stworzona na podstawie mapy The Godfather)-------------------------------//
-//-------------------------------------------------(v2.8)----------------------------------------------------//
+//-------------------------------------------------(v2.9)----------------------------------------------------//
 //----------------------------------------------------*------------------------------------------------------//
 //----[                                                                                                 ]----//
 //----[         |||||             |||||                       ||||||||||       ||||||||||               ]----//
@@ -107,7 +107,14 @@ M-RP ----> stworzy³ Mrucznik
 #define AC_USE_CASINOS false
 #include <progress2>
 #include <Pawn.RakNet>
-#include <nex-ac>
+#if defined MRP_MTA_RUNTIME
+	// MTA has its own native anti-cheat.  Nex-AC is tied to SA-MP packet and
+	// animation semantics and its per-update scan is both incompatible and
+	// expensive through the Pawn -> Lua compatibility bridge.
+	#include "system\mrp_mta_anticheat.inc"
+#else
+	#include <nex-ac>
+#endif
 #include <md5>
 #include <double-o-files2>
 #include <dialogs>
@@ -190,7 +197,7 @@ main()
 	print("\n----------------------------------");
 	print("M | --- M-RP --- | M");
 	print("R | ---        ****        --- | R");
-	print("U | ---        v2.8        --- | U");
+	print("U | ---        v2.9        --- | U");
 	print("C | ---        ****        --- | C");
 	print("Z | ---    by Mrucznik     --- | Z");
 	print("N | ---                    --- | N");
@@ -430,9 +437,19 @@ public OnGameModeInit()
 	TimeUpdater();
 	//timery
 	SetTimer("AktywujPozar", 3600_000 * 1, true);//System Po¿arów v0.1 - po¿ar co godzinê
-    SetTimer("MainTimer", 1000, true);
-	SetTimer("CheckChangeWeapon", 450, true);
-    SetTimer("RPGTimer", 100, true);
+	SetTimer("MainTimer", 1000, true);
+	// Rozloz pelny przeglad pojazdow na male porcje zamiast jednego
+	// blokujacego impulsu co kilka sekund.
+	SetTimer("VehicleUpdate", 500, true);
+	#if defined MRP_MTA_RUNTIME
+		// MTA raportuje zmianê broni i ma natywny anti-cheat. Wolniejszy fallback
+		// wystarczy, a zapis sejfów dostaje w³asny, asynchroniczny callback.
+		SetTimer("CheckChangeWeapon", 1000, true);
+		SetTimer("ServerStuffSave", 15 * 60 * 1000, true);
+	#else
+		SetTimer("CheckChangeWeapon", 450, true);
+		SetTimer("RPGTimer", 100, true);
+	#endif
 	//Ustalanie wartoœci wind
 	levelLock[FRAC_SN][5]=1;//Zamkniête
     for(new i=0;i<MAX_VEHICLES;i++)
@@ -442,7 +459,8 @@ public OnGameModeInit()
         Blink[i][2] = -1;
         Blink[i][3] = -1;
     }
-    SetTimer("B_TrailerCheck", 1000, 1);
+	// 32 aktywne pojazdy na impuls; pelny obieg trwa okolo sekundy.
+	SetTimer("B_TrailerCheck", 100, 1);
 
     for(new v = 0; v < CAR_End+1; v++)
 	{
@@ -3634,7 +3652,8 @@ public OnPlayerUpdate(playerid)
 		return FreezePlayerOnInjury(playerid);
 	}
 
-    systempozarow_OnPlayerUpdate(playerid);//System Po¿arów v0.1
+    new veh = GetPlayerVehicleID(playerid);
+    systempozarow_OnPlayerUpdate(playerid, veh);//System Po¿arów v0.1
 
 	//Anty BH
 	if(GetPVarInt(playerid, "Jumping") == 1)
@@ -3648,7 +3667,6 @@ public OnPlayerUpdate(playerid)
 		}
 	}
 
-    new veh = GetPlayerVehicleID(playerid);
     if(veh != 0)
     {
         new model = GetVehicleModel(veh);
@@ -3671,7 +3689,7 @@ public OnPlayerUpdate(playerid)
 			}
         }
     }
-    new vid = GetPlayerVehicleID(playerid);
+    new vid = veh;
     if(vid > 0)
     {
         if(vid != LastVehicleID[playerid])

@@ -51,6 +51,7 @@ id_rsa
 
 # Compiled Bytecode, precompiled output and assembly
 *.amx
+!gamemodes/Mrucznik-RP.amx
 *.lst
 *.asm
 

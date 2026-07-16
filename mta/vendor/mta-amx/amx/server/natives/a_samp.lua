@@ -23,6 +23,14 @@ function SendClientMessageToAll(amx, r, g, b, a, message)
 	return outputChatBox(colorizeString(message), root, r, g, b, true)
 end
 
+function MRP_ClearChatBox(amx, player)
+	if not isElement(player) or getElementType(player) ~= 'player' then
+		return false
+	end
+
+	return clearChatBox(player)
+end
+
 function SendPlayerMessageToAll(amx, sender, message)
 	local r, g, b = getPlayerNametagColor(sender)
 	if not r then

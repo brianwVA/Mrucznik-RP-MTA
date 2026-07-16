@@ -95,10 +95,10 @@ python3 mta/tools/build_native_catalog.py
 ```
 
 Pierwszy test porównuje zatwierdzony katalog z aktualnym kodem Pawn i tablicą
-publicznych handlerów dokładnego AMX. Repozytorium zawiera 787 nazw komend, z
-których 745 jest faktycznie aktywnych w wydaniu v2.9; 42 stare lub warunkowe
+publicznych handlerów dokładnego AMX. Repozytorium zawiera 788 nazw komend, z
+których 746 jest faktycznie aktywnych w wydaniu v2.9; 42 stare lub warunkowe
 definicje źródłowe są raportowane osobno. Drugi test odczytuje
-tablicę 598 importów natywnych głównego AMX i wszystkich 21 filterscriptów
+tablicę 552 importów natywnych głównego AMX i wszystkich 21 filterscriptów
 bezpośrednio z dokładnych plików w archiwum Git LFS.
 Brak choć jednej aktywnej komendy, aliasu, grupy uprawnień albo wymaganego natywu powoduje
 błąd walidacji projektu.

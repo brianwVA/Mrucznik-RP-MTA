@@ -5,7 +5,7 @@ gamemode `Mrucznik-RP.amx` v2.9, cztery aktywne filterscripty i dynamiczne
 skrypty pomocnicze `fixes.inc` wewnątrz MTA,
 a różnice silników obsługuje przypięta i przetestowana warstwa zgodności Lua.
 
-- 745 komend aktywnych w wydanym AMX oraz 547 aliasów zachowuje oryginalne
+- 746 komend aktywnych w wydanym AMX oraz 547 aliasów zachowuje oryginalne
   handlery Pawn, parametry i sprawdzanie uprawnień;
 - 42 dodatkowe nazwy znalezione w starym lub warunkowym kodzie źródłowym są
   jawnie oznaczone jako nieaktywne — nie działały również w bazowym wydaniu;

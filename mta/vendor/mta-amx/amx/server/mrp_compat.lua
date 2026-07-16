@@ -1,5 +1,34 @@
 -- M-RP additions for SA-MP 0.3.DL model IDs.
 
+-- The old WPS decoration contains nine stock BinNt07_LA objects placed as a
+-- repeated row across the public road. Keep the upstream submodule untouched,
+-- but suppress those exact legacy placements in the MTA compatibility layer.
+-- The sentinel follows the normal custom-model path, which guarantees that the
+-- transport object remains invisible and non-collidable on every client.
+MRP_SUPPRESSED_OBJECT_MODEL = -2147483647
+local suppressedLegacyObjectPositions = {
+    { 2511.49, -2020.82, 13.20 },
+    { 2525.22, -2015.97, 13.20 },
+    { 2525.18, -1999.27, 13.43 },
+    { 2504.39, -1998.48, 13.20 },
+    { 2480.99, -1995.30, 13.20 },
+    { 2463.91, -1995.87, 13.34 },
+    { 2469.20, -2020.50, 13.20 },
+    { 2441.65, -2020.67, 13.20 },
+    { 2482.57, -2021.26, 13.20 },
+}
+
+function mrpIsSuppressedLegacyObject(model, x, y, z)
+    if tonumber(model) ~= 1337 then return false end
+    x, y, z = tonumber(x), tonumber(y), tonumber(z)
+    if not x or not y or not z then return false end
+    for _, position in ipairs(suppressedLegacyObjectPositions) do
+        local dx, dy, dz = x - position[1], y - position[2], z - position[3]
+        if dx * dx + dy * dy + dz * dz <= 0.04 then return true end
+    end
+    return false
+end
+
 function mrpResolveSkin(skin)
     local models = getResourceFromName("mrp_models")
     if not models or getResourceState(models) ~= "running" then
@@ -17,18 +46,25 @@ function mrpApplyCustomSkin(player, customSkin)
 end
 
 function mrpResolveObjectModel(model)
-    local models = getResourceFromName("mrp_models")
-    if not models or getResourceState(models) ~= "running" then
-        return model, false
-    end
-    local base = call(models, "getObjectBaseModel", model)
-    if base then
-        return base, model
-    end
-    if not tonumber(model) or model < 321 or model > 18630 then
+    local logicalModel = tonumber(model)
+    if not logicalModel then
         return 1337, false
     end
-    return model, false
+    local models = getResourceFromName("mrp_models")
+    if models and getResourceState(models) == "running" then
+        local base = call(models, "getObjectBaseModel", logicalModel)
+        if base then
+            return base, logicalModel
+        end
+    end
+    if logicalModel < 321 or logicalModel > 18630 then
+        -- Keep the requested logical ID even when its registry entry is not
+        -- ready or absent. The client can then apply the matching custom model
+        -- later; if it is genuinely unknown, the 1337 transport placeholder
+        -- stays invisible instead of becoming a row of visible trash bins.
+        return 1337, logicalModel
+    end
+    return logicalModel, false
 end
 
 function mrpApplyCustomObjectModel(object, customModel)

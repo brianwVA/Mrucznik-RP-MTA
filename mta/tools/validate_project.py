@@ -22,9 +22,9 @@ def main() -> int:
     plugins = json.loads((mta / "plugins.lock.json").read_text(encoding="utf-8"))
     if commands["command_count"] != 788 or commands["definition_count"] != 788:
         fail("Unexpected command inventory size")
-    if commands.get("runtime_command_count") != 745:
+    if commands.get("runtime_command_count") != 746:
         fail("Unexpected compiled AMX command inventory size")
-    if commands.get("inactive_source_command_count") != 43:
+    if commands.get("inactive_source_command_count") != 42:
         fail("Unexpected inactive source command inventory size")
     runtime_commands = {
         command["name"]
@@ -37,10 +37,10 @@ def main() -> int:
         fail("Unexpected 0.3.DL ped model inventory size")
     if models.get("samp_object_count") != 1:
         fail("Unexpected SA-MP object model inventory size")
-    if natives["native_entry_count"] != 598 or natives["unique_native_count"] != 489:
+    if natives["native_entry_count"] != 552 or natives["unique_native_count"] != 471:
         fail("Unexpected compiled AMX native inventory size")
     programs = {program["name"]: program for program in natives["programs"]}
-    if programs.get("M-RP", {}).get("native_entry_count") != 556:
+    if programs.get("M-RP", {}).get("native_entry_count") != 510:
         fail("Unexpected gamemode native inventory size")
     expected_programs = {
         "M-RP", "animy", "realtime", "sobeitblock", "SAN_extPSq",
@@ -136,6 +136,25 @@ def main() -> int:
         (mta / f"vendor/mta-amx/amx/server/{name}").read_text(encoding="utf-8")
         for name in ("mrp_compat.lua", "mrp_databases.lua")
     )
+    object_compatibility = (
+        mta / "vendor/mta-amx/amx/server/mrp_compat.lua"
+    ).read_text(encoding="utf-8")
+    if "return 1337, logicalModel" not in object_compatibility:
+        fail("Unknown custom object IDs can leak a visible 1337 placeholder")
+    if "return logicalModel, false" not in object_compatibility:
+        fail("Stock object model IDs are not preserved by the compatibility layer")
+    suppressed_wps_positions = {
+        "2511.49, -2020.82, 13.20", "2525.22, -2015.97, 13.20",
+        "2525.18, -1999.27, 13.43", "2504.39, -1998.48, 13.20",
+        "2480.99, -1995.30, 13.20", "2463.91, -1995.87, 13.34",
+        "2469.20, -2020.50, 13.20", "2441.65, -2020.67, 13.20",
+        "2482.57, -2021.26, 13.20",
+    }
+    if not all(position in object_compatibility for position in suppressed_wps_positions) or (
+        "MRP_SUPPRESSED_OBJECT_MODEL" not in object_compatibility
+        or "mrpIsSuppressedLegacyObject" not in object_compatibility
+    ):
+        fail("Obsolete WPS street-bin placements are not suppressed exactly")
     compatibility_natives = {
         native["name"]
         for native in natives["natives"]
@@ -284,6 +303,39 @@ def main() -> int:
         fail("Vice City objects do not load the COL data embedded by SA-MP")
     if "engineSetModelVisibleTime(runtimeModel, timeOn, timeOff)" not in models_client:
         fail("Vice City day/night models ignore their original visibility times")
+    if "engineSetModelLODDistance(runtimeModel, 1000, true)" not in models_client:
+        fail("Custom objects do not use the extended one-kilometre draw distance")
+    required_model_streaming_tokens = {
+        'addEventHandler("onClientElementStreamOut", root',
+        "OBJECT_MODEL_RELEASE_DELAY",
+        "freeCustomObjectModel(model)",
+        "OBJECT_MODEL_LOAD_INTERVAL",
+        "processObjectModelLoadQueue",
+        "engineSetAsynchronousLoading(true, false)",
+        "destroyEngineAsset(loaded.dff)",
+    }
+    if not all(token in models_client for token in required_model_streaming_tokens):
+        fail("Custom object models are not streamed and released safely")
+    amx_client = (
+        mta / "vendor/mta-amx/amx/client/client.lua"
+    ).read_text(encoding="utf-8")
+    if "engineSetModelLODDistance(model, MRP_OBJECT_DRAW_DISTANCE, true)" not in amx_client:
+        fail("Stock script objects do not use the extended draw distance")
+    attached_objects = (
+        mta / "vendor/mta-amx/amx/server/natives/a_players.lua"
+    ).read_text(encoding="utf-8")
+    if "if customModel or not tonumber(modelid)" not in attached_objects:
+        fail("Attached custom object placeholders can become visible")
+    object_natives = (
+        mta / "vendor/mta-amx/amx/server/natives/a_objects.lua"
+    ).read_text(encoding="utf-8")
+    if object_natives.count("mrpIsSuppressedLegacyObject(model, x, y, z)") != 2:
+        fail("Legacy-object suppression does not cover global and player objects")
+    colandreas_streamer = (mta.parent / "gamemodes/system/mrp_object_distance.inc").read_text(
+        encoding="utf-8"
+    )
+    if colandreas_streamer.count("MRP_ExpandObjectDistances(streamdistance, drawdistance);") != 2:
+        fail("Dynamic object streaming distance is not expanded globally")
     if 'addEventHandler("onClientResourceStop", resourceRoot' not in models_client or (
         "engineFreeModel(runtimeModel)" not in models_client
     ):

@@ -35,7 +35,7 @@ new FireSmoke[MaxFire];
 
 //------------------<[ Forwardy: ]>--------------------
 forward EndSmoke(id);
-forward systempozarow_OnPlayerUpdate(playerid);
+forward systempozarow_OnPlayerUpdate(playerid, vehicleid);
 forward systempozarow_init();
 forward OnFire();
 forward OnFireDeath(fireid, playerid);

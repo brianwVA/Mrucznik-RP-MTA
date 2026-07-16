@@ -90,25 +90,18 @@ MruMySQL_RemoveKP(playerid)
 
 MruMySQL_SaveMc(playerid)
 {
-	new query[128];
-    format(query, sizeof(query), "SELECT `p_charUID` FROM `mru_premium` WHERE `p_charUID`='%d'", PlayerInfo[playerid][pUID]);
+	new query[256];
+	if(PremiumInfo[playerid][pMC] > 0)
+	{
+		format(query, sizeof(query), "INSERT INTO `mru_premium` (`p_charUID`, `p_MC`) VALUES('%d', '%d') ON DUPLICATE KEY UPDATE `p_MC`=VALUES(`p_MC`)", PlayerInfo[playerid][pUID], PremiumInfo[playerid][pMC]);
+	}
+	else
+	{
+		// Zachowaj stare zachowanie: zero aktualizuje istniejacy rekord,
+		// ale nie tworzy pustego rekordu premium dla kazdego konta.
+		format(query, sizeof(query), "UPDATE `mru_premium` SET `p_MC`=0 WHERE `p_charUID`='%d'", PlayerInfo[playerid][pUID]);
+	}
 	mysql_query(query);
-	mysql_store_result();
-    if(mysql_num_rows())
-    {
-        mysql_free_result();
-        format(query, sizeof(query), "UPDATE `mru_premium` SET `p_MC`='%d' WHERE `p_charUID`='%d'", PremiumInfo[playerid][pMC], PlayerInfo[playerid][pUID]);
-        mysql_query(query);
-    }
-    else
-    {
-        mysql_free_result();
-        if(PremiumInfo[playerid][pMC] > 0)
-        {
-            format(query, sizeof(query), "INSERT INTO `mru_premium` (`p_charUID`, `p_MC`) VALUES('%d', '%d')", PlayerInfo[playerid][pUID], PremiumInfo[playerid][pMC]);
-            mysql_query(query);
-        }
-    }
 }
 
 MruMySQL_LoadPlayerPremiumSkins(playerid)

@@ -5,12 +5,14 @@ on:
   push:
     paths:
       - "mta/**"
+      - "gamemodes/**"
       - "serverfiles.tar.gz"
       - "database/**"
       - ".github/workflows/windows-runtime.yml"
   pull_request:
     paths:
       - "mta/**"
+      - "gamemodes/**"
       - "serverfiles.tar.gz"
       - "database/**"
       - ".github/workflows/windows-runtime.yml"
@@ -37,6 +39,8 @@ jobs:
         run: |
           $length = (Get-Item ./serverfiles.tar.gz).Length
           if ($length -lt 700MB) { throw "serverfiles.tar.gz is still an LFS pointer ($length bytes)" }
+          $gamemodeLength = (Get-Item ./gamemodes/Mrucznik-RP.amx).Length
+          if ($gamemodeLength -lt 100MB) { throw "Mrucznik-RP.amx is still an LFS pointer ($gamemodeLength bytes)" }
 
       - name: Verify compiled command and native contracts
         shell: pwsh

@@ -4,12 +4,14 @@
 
 local mysqlState = {
     connection = false,
+    writeConnection = false,
     config = false,
     rows = {},
     resultColumns = {},
     tableColumns = {},
     rowIndex = 0,
     insertId = 0,
+    pendingWrites = 0,
     debug = false,
 }
 
@@ -52,15 +54,47 @@ local function splitSelectList(value)
     return result
 end
 
-local function pollMysql(query)
-    if not mysqlState.connection then
+local function isMysqlWrite(query)
+    local command = trim(query):match("^([%a]+)")
+    command = command and command:upper() or ""
+    return command == "INSERT" or command == "UPDATE"
+        or command == "DELETE" or command == "REPLACE"
+end
+
+local function pollMysql(query, connection)
+    connection = connection or mysqlState.connection
+    if not connection then
         return false, 2006, "No MySQL connection"
     end
-    local handle = dbQuery(mysqlState.connection, query)
+    local handle = dbQuery(connection, query)
     if not handle then
         return false, 2006, "dbQuery rejected the connection"
     end
     return dbPoll(handle, -1)
+end
+
+local function queueMysqlWrite(query)
+    local connection = mysqlState.writeConnection
+    if not connection or not isElement(connection) then
+        return false
+    end
+
+    mysqlState.pendingWrites = mysqlState.pendingWrites + 1
+    local handle = dbQuery(function(queryHandle)
+        local rows, errorCode, errorMessage = dbPoll(queryHandle, 0)
+        mysqlState.pendingWrites = math.max(0, mysqlState.pendingWrites - 1)
+        if rows == false then
+            outputDebugString("[MRP MySQL R5 async] " .. tostring(errorCode) .. ": "
+                .. tostring(errorMessage) .. " | " .. query, 1)
+        elseif mysqlState.debug then
+            outputDebugString("[MRP MySQL R5 async] " .. query)
+        end
+    end, connection, query)
+    if not handle then
+        mysqlState.pendingWrites = math.max(0, mysqlState.pendingWrites - 1)
+        return false
+    end
+    return true
 end
 
 local function getTableColumns(tableName)
@@ -137,14 +171,35 @@ local function connectMysql()
     if mysqlState.connection and isElement(mysqlState.connection) then
         destroyElement(mysqlState.connection)
     end
+    if mysqlState.writeConnection and isElement(mysqlState.writeConnection) then
+        destroyElement(mysqlState.writeConnection)
+    end
     mysqlState.connection = dbConnect(
         "mysql",
         "dbname=" .. config.database .. ";host=" .. config.host .. ";charset=cp1250",
         config.user,
         config.password,
-        "share=0;batch=0;autoreconnect=1;tag=mrucznik-r5"
+        "share=0;batch=0;autoreconnect=1;queue=mrucznik-r5-reads;tag=mrucznik-r5"
     )
-    return mysqlState.connection and true or false
+    if not mysqlState.connection then return false end
+
+    -- Writes use one ordered queue.  Periodic account saves can enqueue work
+    -- without blocking the game thread, while critical writes still poll this
+    -- same queue and therefore cannot be overtaken by an older autosave.
+    mysqlState.writeConnection = dbConnect(
+        "mysql",
+        "dbname=" .. config.database .. ";host=" .. config.host .. ";charset=cp1250",
+        config.user,
+        config.password,
+        "share=0;batch=0;autoreconnect=1;queue=mrucznik-r5-writes;tag=mrucznik-r5-writes"
+    )
+    if not mysqlState.writeConnection then
+        destroyElement(mysqlState.connection)
+        mysqlState.connection = false
+        return false
+    end
+    mysqlState.pendingWrites = 0
+    return true
 end
 
 function mysql_connect(amx, host, user, database, password)
@@ -153,7 +208,8 @@ function mysql_connect(amx, host, user, database, password)
 end
 
 function mysql_ping(amx, connectionHandle)
-    return mysqlState.connection and isElement(mysqlState.connection) and 1 or 0
+    return mysqlState.connection and isElement(mysqlState.connection)
+        and mysqlState.writeConnection and isElement(mysqlState.writeConnection) and 1 or 0
 end
 
 function mysql_reconnect(amx, connectionHandle)
@@ -166,7 +222,23 @@ function mysql_debug(amx, enabled)
 end
 
 function mysql_query(amx, query, resultId, extraId, connectionHandle)
-    local rows, affectedOrError, insertOrMessage = pollMysql(query)
+    local writeQuery = isMysqlWrite(query)
+    -- The periodic Pawn autosave runs inside this named public callback.
+    -- Scope async writes to that callback instead of keeping a mutable global
+    -- switch which could leak after a Pawn runtime error.
+    local asyncWriteCallback = type(amx) == "table"
+        and (amx.proc == "SaveMyAccountTimer" or amx.proc == "ServerStuffSave")
+    if asyncWriteCallback and writeQuery then
+        mysqlState.rows, mysqlState.resultColumns, mysqlState.rowIndex = {}, {}, 0
+        if not queueMysqlWrite(query) then
+            outputDebugString("[MRP MySQL R5 async] Failed to queue query | " .. query, 1)
+            return 0
+        end
+        return 1
+    end
+
+    local connection = writeQuery and mysqlState.writeConnection or mysqlState.connection
+    local rows, affectedOrError, insertOrMessage = pollMysql(query, connection)
     if rows == false then
         outputDebugString("[MRP MySQL R5] " .. tostring(affectedOrError) .. ": "
             .. tostring(insertOrMessage) .. " | " .. query, 1)

@@ -9,6 +9,27 @@ end
 local loadedObjectModels = {}
 local objectMaterialShaders = {}
 local pendingObjectModels = {}
+local activeObjectModels = {}
+local objectModelUsers = {}
+local objectModelReleaseTimers = {}
+local objectModelLoadQueue = {}
+local objectModelLoadHead = 1
+local objectModelLoadTail = 0
+local queuedObjectModels = {}
+local objectModelLoadTimer = false
+local releaseObjectModel
+local retryPendingObjectModels
+
+local OBJECT_MODEL_RELEASE_DELAY = 15000
+-- One COL/TXD/DFF replacement can briefly occupy the GTA streaming thread.
+-- Spread dense-area loads across more frames instead of issuing 40 per second.
+local OBJECT_MODEL_LOAD_INTERVAL = 50
+
+if type(engineSetAsynchronousLoading) == "function" then
+    -- Respect the player's preference while avoiding first-use model stalls on
+    -- current MTA clients.  The explicit load queue below still limits bursts.
+    engineSetAsynchronousLoading(true, false)
+end
 
 local function littleEndianUInt32(data, position)
     local b1, b2, b3, b4 = data:byte(position, position + 3)
@@ -129,6 +150,7 @@ end
 
 addEventHandler("onClientElementDestroy", root, function()
 	pendingObjectModels[source] = nil
+	if releaseObjectModel then releaseObjectModel(source, false) end
 	local materials = objectMaterialShaders[source]
 	if not materials then return end
 	for _, material in pairs(materials) do
@@ -163,14 +185,19 @@ local function loadCustomModel(customModel)
     return runtimeModel
 end
 
+local function destroyEngineAsset(asset)
+    if isElement(asset) then destroyElement(asset) end
+end
+
 local function loadCustomObjectModel(customModel)
     customModel = tonumber(customModel)
     local definition = objectModels[customModel]
     if not definition then
         return false
     end
-    if loadedObjectModels[customModel] then
-        return loadedObjectModels[customModel]
+    local loaded = loadedObjectModels[customModel]
+    if loaded then
+        return loaded.runtimeModel
     end
 
     local baseModel = tonumber(definition.base) or 1337
@@ -199,6 +226,9 @@ local function loadCustomObjectModel(customModel)
         or not engineReplaceModel(dff, runtimeModel)
     then
         engineFreeModel(runtimeModel)
+        destroyEngineAsset(dff)
+        destroyEngineAsset(txd)
+        destroyEngineAsset(col)
         outputDebugString("[MRP models] Nie udało się załadować obiektu " .. customModel, 1)
         return false
     end
@@ -206,8 +236,123 @@ local function loadCustomObjectModel(customModel)
     if timeOn and timeOff then
         engineSetModelVisibleTime(runtimeModel, timeOn, timeOff)
     end
-    loadedObjectModels[customModel] = runtimeModel
+    -- Match the Pawn streamer's one-kilometre range in GTA's renderer. The
+    -- extended flag bypasses MTA's legacy 325-unit ceiling.
+    engineSetModelLODDistance(runtimeModel, 1000, true)
+    loadedObjectModels[customModel] = {
+        runtimeModel = runtimeModel,
+        col = col,
+        txd = txd,
+        dff = dff,
+    }
     return runtimeModel
+end
+
+local function freeCustomObjectModel(customModel)
+    customModel = tonumber(customModel)
+    local users = objectModelUsers[customModel]
+    if users and next(users) then return false end
+    local loaded = loadedObjectModels[customModel]
+    if not loaded then return false end
+    loadedObjectModels[customModel] = nil
+    engineFreeModel(loaded.runtimeModel)
+    destroyEngineAsset(loaded.dff)
+    destroyEngineAsset(loaded.txd)
+    destroyEngineAsset(loaded.col)
+    return true
+end
+
+local function cancelObjectModelRelease(customModel)
+    local timer = objectModelReleaseTimers[customModel]
+    if timer and isTimer(timer) then killTimer(timer) end
+    objectModelReleaseTimers[customModel] = nil
+end
+
+local function scheduleObjectModelRelease(customModel)
+    cancelObjectModelRelease(customModel)
+    objectModelReleaseTimers[customModel] = setTimer(function(model)
+        objectModelReleaseTimers[model] = nil
+        freeCustomObjectModel(model)
+    end, OBJECT_MODEL_RELEASE_DELAY, 1, customModel)
+end
+
+releaseObjectModel = function(object, resetPlaceholder)
+    local customModel = activeObjectModels[object]
+    if not customModel then return end
+    activeObjectModels[object] = nil
+    local users = objectModelUsers[customModel]
+    if users then
+        users[object] = nil
+        if not next(users) then
+            objectModelUsers[customModel] = nil
+            scheduleObjectModelRelease(customModel)
+        end
+    end
+    if resetPlaceholder and isElement(object) then
+        setElementAlpha(object, 0)
+        setElementCollisionsEnabled(object, false)
+        local loaded = loadedObjectModels[customModel]
+        if loaded and getElementModel(object) == loaded.runtimeModel then
+            setElementModel(object, 1337)
+        end
+    end
+end
+
+local function retainObjectModel(object, customModel)
+    local active = activeObjectModels[object]
+    if active == customModel then return end
+    if active then releaseObjectModel(object, true) end
+    activeObjectModels[object] = customModel
+    objectModelUsers[customModel] = objectModelUsers[customModel] or {}
+    objectModelUsers[customModel][object] = true
+    cancelObjectModelRelease(customModel)
+end
+
+local function hasPendingObjectModel(customModel)
+    for object, pendingModel in pairs(pendingObjectModels) do
+        if pendingModel == customModel and isElement(object) then return true end
+    end
+    return false
+end
+
+local function processObjectModelLoadQueue()
+    objectModelLoadTimer = false
+    local customModel
+    if objectModelLoadHead <= objectModelLoadTail then
+        customModel = objectModelLoadQueue[objectModelLoadHead]
+        objectModelLoadQueue[objectModelLoadHead] = nil
+        objectModelLoadHead = objectModelLoadHead + 1
+    end
+    if customModel then
+        queuedObjectModels[customModel] = nil
+        if hasPendingObjectModel(customModel) and objectModels[customModel]
+            and not loadedObjectModels[customModel]
+        then
+            loadCustomObjectModel(customModel)
+        end
+        if retryPendingObjectModels then retryPendingObjectModels(customModel) end
+    end
+    if objectModelLoadHead <= objectModelLoadTail then
+        objectModelLoadTimer = setTimer(
+            processObjectModelLoadQueue, OBJECT_MODEL_LOAD_INTERVAL, 1
+        )
+    else
+        objectModelLoadQueue = {}
+        objectModelLoadHead = 1
+        objectModelLoadTail = 0
+    end
+end
+
+local function queueObjectModelLoad(customModel)
+    if loadedObjectModels[customModel] or queuedObjectModels[customModel] then return end
+    queuedObjectModels[customModel] = true
+    objectModelLoadTail = objectModelLoadTail + 1
+    objectModelLoadQueue[objectModelLoadTail] = customModel
+    if not objectModelLoadTimer or not isTimer(objectModelLoadTimer) then
+        objectModelLoadTimer = setTimer(
+            processObjectModelLoadQueue, OBJECT_MODEL_LOAD_INTERVAL, 1
+        )
+    end
 end
 
 function applyObjectModel(object, customModel)
@@ -225,6 +370,10 @@ function applyObjectModel(object, customModel)
     -- rows of dumpsters visible in the world.
     setElementAlpha(object, 0)
     setElementCollisionsEnabled(object, false)
+    local activeModel = activeObjectModels[object]
+    if activeModel and activeModel ~= customModel then
+        releaseObjectModel(object, true)
+    end
     -- Streamer can create client-only player objects before the asynchronous
     -- model registry reaches the client. Remember those objects and retry once
     -- the matching definition is available; otherwise collision floors can
@@ -233,11 +382,13 @@ function applyObjectModel(object, customModel)
         pendingObjectModels[object] = customModel
         return false
     end
-    local runtimeModel = loadCustomObjectModel(customModel)
-    if not runtimeModel then
+    local loaded = loadedObjectModels[customModel]
+    if not loaded then
         pendingObjectModels[object] = customModel
+        queueObjectModelLoad(customModel)
         return false
     end
+    local runtimeModel = loaded.runtimeModel
     -- Streamer sets the local model data and then calls this export explicitly.
     -- The data-change handler may therefore have applied the model already.
     -- setElementModel returns false for that harmless second call; treating it
@@ -246,6 +397,7 @@ function applyObjectModel(object, customModel)
         or setElementModel(object, runtimeModel)
     if applied then
         pendingObjectModels[object] = nil
+        retainObjectModel(object, customModel)
         -- PlayerObjects use an invisible, non-collidable 1337 placeholder.
         -- Reveal the element only after the requested model really exists.
         setElementAlpha(object, 255)
@@ -254,7 +406,7 @@ function applyObjectModel(object, customModel)
     return applied
 end
 
-local function retryPendingObjectModels(customModel)
+retryPendingObjectModels = function(customModel)
     customModel = tonumber(customModel)
     for object, pendingModel in pairs(pendingObjectModels) do
         if not isElement(object) then
@@ -281,6 +433,7 @@ function createPreviewElement(logicalModel)
         local runtimeModel = loadCustomObjectModel(logicalModel)
         if runtimeModel then
             element = createObject(runtimeModel, 0, 0, -1000)
+            if element then retainObjectModel(element, logicalModel) end
         end
     elseif logicalModel >= 0 and logicalModel <= 311 then
         element = createPed(logicalModel, 0, 0, -1000)
@@ -317,8 +470,14 @@ addEventHandler("onClientElementDataChange", root, function(dataName)
     local elementType = getElementType(source)
     if dataName == "mrp:customSkin" and (elementType == "player" or elementType == "ped") then
         applyModel(source)
-    elseif dataName == "mrp:customObjectModel" and getElementType(source) == "object" then
-        applyObjectModel(source, getElementData(source, "mrp:customObjectModel"))
+    elseif dataName == "mrp:customObjectModel" and elementType == "object" then
+        local customModel = getElementData(source, "mrp:customObjectModel")
+        if not customModel then
+            pendingObjectModels[source] = nil
+            releaseObjectModel(source, true)
+        elseif isElementStreamedIn(source) then
+            applyObjectModel(source, customModel)
+        end
     end
 end)
 
@@ -334,7 +493,18 @@ addEventHandler("onClientElementStreamIn", root, function()
     end
 end)
 
+addEventHandler("onClientElementStreamOut", root, function()
+    if getElementType(source) == "object" then
+        pendingObjectModels[source] = nil
+        releaseObjectModel(source, true)
+    end
+end)
+
 addEventHandler("onClientResourceStart", resourceRoot, function()
+    -- Avoid a long frame whenever a new district requests many GTA assets.
+    -- The custom-object queue additionally limits replacements to one unique
+    -- model per timer slice.
+    engineSetAsynchronousLoading(true, false)
     triggerServerEvent("mrp:requestObjectModels", resourceRoot)
     for _, player in ipairs(getElementsByType("player")) do
         applyModel(player)
@@ -348,8 +518,18 @@ addEventHandler("onClientResourceStop", resourceRoot, function()
     -- engineRequestModel allocations survive a resource stop unless they are
     -- explicitly released. Repeated updates used to drain the client model
     -- pool and could make later VC districts disappear.
-    for _, runtimeModel in pairs(loadedObjectModels) do
-        engineFreeModel(runtimeModel)
+    if objectModelLoadTimer and isTimer(objectModelLoadTimer) then
+        killTimer(objectModelLoadTimer)
+    end
+    for _, timer in pairs(objectModelReleaseTimers) do
+        if isTimer(timer) then killTimer(timer) end
+    end
+    for customModel, loaded in pairs(loadedObjectModels) do
+        loadedObjectModels[customModel] = nil
+        engineFreeModel(loaded.runtimeModel)
+        destroyEngineAsset(loaded.dff)
+        destroyEngineAsset(loaded.txd)
+        destroyEngineAsset(loaded.col)
     end
     for _, runtimeModel in pairs(loadedModels) do
         engineFreeModel(runtimeModel)
@@ -373,7 +553,7 @@ addEventHandler("mrp:onObjectModelsReady", resourceRoot, function(models)
     retryPendingObjectModels()
     for _, object in ipairs(getElementsByType("object")) do
         local customModel = getElementData(object, "mrp:customObjectModel")
-        if customModel then
+        if customModel and isElementStreamedIn(object) then
             applyObjectModel(object, customModel)
         end
     end

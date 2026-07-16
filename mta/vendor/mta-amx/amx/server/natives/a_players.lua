@@ -505,7 +505,10 @@ function SetPlayerAttachedObject(amx, player, index, modelid, bone, fOffsetX, fO
 	local obj = createObject(runtimeModel, x, y, z)
 
 	if obj then
-		if not customModel and (not tonumber(modelid) or modelid < 321 or modelid > 18630) then
+		if customModel or not tonumber(modelid) or modelid < 321 or modelid > 18630 then
+			-- Attached custom objects use the same invisible 1337 transport model
+			-- as streamed objects. mrp_models reveals them only after the requested
+			-- DFF/TXD/COL has been applied successfully.
 			setElementAlpha(obj, 0)
 			setElementCollisionsEnabled(obj, false)
 		end

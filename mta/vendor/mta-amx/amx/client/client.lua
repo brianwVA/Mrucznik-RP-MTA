@@ -22,6 +22,25 @@ setmetatable(g_Vehicles, defaultEmptyTableMt)
 
 g_Menus = {}
 g_PlayerObjects = {}
+local MRP_OBJECT_DRAW_DISTANCE = 1000
+local extendedObjectModels = {}
+
+local function applyExtendedObjectDrawDistance(object)
+	if not isElement(object) or getElementType(object) ~= 'object' then return end
+	local model = getElementModel(object)
+	if model and model >= 321 and model <= 18630 and not extendedObjectModels[model] then
+		-- Extended LOD removes the legacy 325-unit ceiling. It affects only
+		-- script-created objects, so the stock GTA world remains untouched.
+		-- The setting is global per model ID, therefore doing it once avoids
+		-- thousands of identical engine calls while objects stream in.
+		engineSetModelLODDistance(model, MRP_OBJECT_DRAW_DISTANCE, true)
+		extendedObjectModels[model] = true
+	end
+end
+
+addEventHandler('onClientElementCreate', root, function()
+	applyExtendedObjectDrawDistance(source)
+end)
 g_TextDraws = {}
 g_TextLabels = {}
 g_Blips = {}
@@ -588,6 +607,7 @@ function CreatePlayerObject(objID, model, x, y, z, rX, rY, rZ, customModel)
 	local validModel = not customModel and mrpIsValidObjectModel(model)
 	local createModel = validModel and model or 1337
 	g_PlayerObjects[objID] = createObject(createModel, x, y, z, rX, rY, rZ)
+	applyExtendedObjectDrawDistance(g_PlayerObjects[objID])
 	if not g_PlayerObjects[objID] then
 		g_PlayerObjects[objID] = createObject(1337, x, y, z, rX, rY, rZ) -- Create a dummy object anyway since createobject can also be used to make camera attachments
 		setElementAlpha(g_PlayerObjects[objID], 0)

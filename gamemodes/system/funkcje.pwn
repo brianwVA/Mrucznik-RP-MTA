@@ -614,11 +614,15 @@ public Dopalaj(playerid)
 
 ClearChat(playerid)
 {
+	#if defined MRP_MTA_RUNTIME
+		return MRP_ClearChatBox(playerid);
+	#else
 	for(new i; i<100; i++)
 	{
 		SendClientMessage(playerid, COLOR_GREY," ");
 	}
 	return 1;
+	#endif
 }
 
 AntyReklama(result[])
@@ -2810,6 +2814,59 @@ IsAtBank(playerid)
 
 IsAtBankomat(playerid)
 {
+	#if defined MRP_MTA_RUNTIME
+		// One bridge call instead of up to 35 IsPlayerInRangeOfPoint calls.
+		static const Float:BankomatPos[][3] = {
+			{2127.66210938, -1153.92480469, 23.48433304},
+			{1040.38732910, -1131.23059082, 23.46322632},
+			{1493.25781250, -1022.13476562, 23.46905136},
+			{2842.70239258, -1562.88049316, 10.73664951},
+			{2072.01953125, -1825.50097656, 13.18},
+			{1928.63220215, -1768.14794922, 13.21},
+			{1787.46899414, -1867.33886719, 13.21315384},
+			{852.48236084, -2061.84008789, 12.51009178},
+			{341.01486206, -1517.85717773, 32.83914185},
+			{2701.67407227, -2417.54223633, 13.27571201},
+			{1186.23657227, -1368.89025879, 13.30330658},
+			{1505.4449, -1754.8218, 13.5469},
+			{2423.41968, -2066.13257, 13.16730},
+			{1001.01910, -923.60107, 41.94500},
+			{388.61719, -1806.26758, 7.45220},
+			{647.26550, -1368.86865, 13.26730},
+			{661.38593, -575.82269, 15.95790},
+			{2273.16821, -76.34060, 26.18810},
+			{1822.5533, -1544.7983, 13.3347},
+			{2024.5298, 997.9246, 10.8203},
+			{222.7831, -63.5663, 1.5781},
+			{1036.0112, -1025.2030, 32.1016},
+			{1380.6733, -1766.1440, 13.5469},
+			{1319.7610, 339.2741, 19.5547},
+			{421.4708, 2533.3391, 16.5737},
+			{-1504.4927, 2617.1204, 55.8359},
+			{-2446.6143, 2321.3167, 4.9766},
+			{-2278.0667, 936.9093, 66.6484},
+			{-1690.4055, 864.8093, 24.8906},
+			{-3842.4971, 3380.7435, 1219.7744},
+			{-3842.2944, 3378.2677, 1219.8038},
+			{-4196.9902, 1321.3622, 10.5760},
+			{-4195.0254, 1321.2914, 10.5760},
+			{-4197.0806, 1300.5468, 10.5760},
+			{-4195.0981, 1300.3383, 10.5760}
+		};
+		new Float:px, Float:py, Float:pz;
+		GetPlayerPos(playerid, px, py, pz);
+		for(new i; i < sizeof(BankomatPos); i++)
+		{
+			new Float:dx = px - BankomatPos[i][0];
+			new Float:dy = py - BankomatPos[i][1];
+			new Float:dz = pz - BankomatPos[i][2];
+			if(dx * dx + dy * dy + dz * dz <= 6.25)
+			{
+				return 1;
+			}
+		}
+		return 0;
+	#else
     if(IsPlayerInRangeOfPoint(playerid, 2.5, 2127.66210938,-1153.92480469,23.48433304))
     {
         return 1;
@@ -2960,6 +3017,7 @@ IsAtBankomat(playerid)
 	}
 	
 	return 0;
+	#endif
 }
 
 IsAtClothShop(playerid)
@@ -7274,6 +7332,32 @@ public MUSIC_Response(index, response_code, data[])
     return 1;
 }
 
+timer ShowLoginZonesBatch[50](playerid, sessionID, startZone)
+{
+	if(!IsPlayerConnected(playerid) || SessionID[playerid] != sessionID)
+	{
+		return 1;
+	}
+
+	new endZone = startZone + 8;
+	if(endZone > MAX_ZONES)
+	{
+		endZone = MAX_ZONES;
+	}
+
+	for(new j = startZone; j < endZone; j++)
+	{
+		if(ZoneControl[j] > 100) GangZoneShowForPlayer(playerid, ZoneIDs[j], OrgInfo[clamp(ZoneControl[j]-100, 0, MAX_ORG-1)][o_Color] & 0xFFFFFF44);
+		else GangZoneShowForPlayer(playerid, ZoneIDs[j], 0xC6E2F144);
+	}
+
+	if(endZone < MAX_ZONES)
+	{
+		defer ShowLoginZonesBatch(playerid, sessionID, endZone);
+	}
+	return 1;
+}
+
 timer StartLogin[100](playerid, sessionID)
 {
 	if(!IsPlayerConnected(playerid))
@@ -7309,11 +7393,9 @@ timer StartLogin[100](playerid, sessionID)
     //Strefy load
     ZonePTXD_Load(playerid);
     ZonePlayerTimer[playerid]=0;
-    for(new j=0;j<MAX_ZONES;j++)
-    {
-        if(ZoneControl[j] > 100) GangZoneShowForPlayer(playerid, ZoneIDs[j], OrgInfo[clamp(ZoneControl[j]-100, 0, MAX_ORG-1)][o_Color] & 0xFFFFFF44);
-        else GangZoneShowForPlayer(playerid, ZoneIDs[j], 0xC6E2F144);
-    }
+	// Ka¿de wywo³anie przechodzi przez most Pawn-Lua. Roz³ó¿ 65 stref na
+	// ma³e porcje, ¿eby do³¹czenie gracza nie zatrzymywa³o ca³ego serwera.
+	defer ShowLoginZonesBatch(playerid, sessionID, 0);
 
 	SetPlayerHealth(playerid, 100);
 	GUIExit[playerid] = 1;
@@ -8091,8 +8173,18 @@ public B_OnTrailerAttached(trailerid, tovehicleid)
 
 public B_TrailerCheck()
 {
+    #define TRAILER_CHECK_BATCH (32)
+
+    static nextVehicle = -1;
     new trailer;
-    for(new i=0;i<MAX_VEHICLES;i++)
+
+    new i = nextVehicle;
+    if(i < 1 || !Iter_Contains(Vehicle, i))
+    {
+        i = Iter_First(Vehicle);
+    }
+
+    for(new processed = 0; processed < TRAILER_CHECK_BATCH && i != Iter_End(Vehicle); processed++)
     {
         if((trailer = GetVehicleTrailer(i)) != 0)
         {
@@ -8107,7 +8199,13 @@ public B_TrailerCheck()
             B_OnTrailerDetached(BlinkTrailer[i], i);
             BlinkTrailer[i] = 0;
         }
+
+        i = Iter_Next(Vehicle, i);
     }
+
+    nextVehicle = (i == Iter_End(Vehicle)) ? -1 : i;
+
+    #undef TRAILER_CHECK_BATCH
 }
 
 //END SYSTEM
@@ -8636,6 +8734,18 @@ Patrol_ShowMap(playerid)
     TextDrawShowForPlayer(playerid, PatrolGammaSq);
     TextDrawShowForPlayer(playerid, PatrolDeltaSq);
     TextDrawShowForPlayer(playerid, PatrolLabel);
+
+    // PatrolGPS only re-sends markers which were rebuilt. Show the current
+    // marker set once when a player opens the map so stationary patrols do not
+    // need an idempotent TextDrawShowForPlayer call every second.
+    for(new i = 0; i < MAX_PATROLS; i++)
+    {
+        if(PatrolInfo[i][pataktywny] == 1 && PatrolMarker[i] != Text:INVALID_TEXT_DRAW)
+        {
+            TextDrawShowForPlayer(playerid, PatrolMarker[i]);
+        }
+    }
+
     SelectTextDraw(playerid, 0xD2691E55);
     SetPVarInt(playerid, "patrolmap", 1);
 }
@@ -8733,6 +8843,12 @@ GPSMode(playerid, bool:red = false)
 
 public PatrolGPS()
 {
+    static bool:markerReady[MAX_PATROLS];
+    static Float:lastMarkerX[MAX_PATROLS];
+    static Float:lastMarkerY[MAX_PATROLS];
+    static lastMarkerType[MAX_PATROLS];
+
+    new bool:markerChanged[MAX_PATROLS];
     new Float:x, Float:y, Float:z;
     for(new i = 0; i < MAX_PATROLS; i ++)
     {
@@ -8740,17 +8856,31 @@ public PatrolGPS()
         {
             GetPlayerPos(PatrolInfo[i][patroluje][0], x, y, z);
 
-            Patrol_CreateMarker(i, x, y, PatrolInfo[i][patstan]);
+            if(!markerReady[i] || PatrolMarker[i] == Text:INVALID_TEXT_DRAW ||
+                x != lastMarkerX[i] || y != lastMarkerY[i] ||
+                PatrolInfo[i][patstan] != lastMarkerType[i])
+            {
+                Patrol_CreateMarker(i, x, y, PatrolInfo[i][patstan]);
+
+                lastMarkerX[i] = x;
+                lastMarkerY[i] = y;
+                lastMarkerType[i] = PatrolInfo[i][patstan];
+                markerReady[i] = true;
+                markerChanged[i] = true;
+            }
+        }
+        else
+        {
+            markerReady[i] = false;
         }
     }
-    for(new i = 0; i < MAX_PLAYERS; i++)
+    foreach(new i : Player)
     {
-        if(!IsPlayerConnected(i)) continue;
         if(GetPVarInt(i, "patrolmap") == 1)
         {
             for(new a = 0; a < MAX_PATROLS; a ++)
             {
-                if(PatrolInfo[a][pataktywny] == 1)
+                if(PatrolInfo[a][pataktywny] == 1 && markerChanged[a])
                 {
                     TextDrawShowForPlayer(i, PatrolMarker[a]);
                 }
@@ -11162,7 +11292,7 @@ stock DumpPlayerStreamInfo(playerid)
 	}
 
 	new visibleVehicles;
-	for(new vehicleid = 1; vehicleid < MAX_VEHICLES; vehicleid++)
+	foreach(new vehicleid : Vehicle)
 	{
 		if (IsVehicleStreamedIn(vehicleid, playerid))
 		{

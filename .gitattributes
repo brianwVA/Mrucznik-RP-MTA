@@ -18,6 +18,7 @@
 *.inc linguist-language=Pawn
 addons.tar.gz filter=lfs diff=lfs merge=lfs -text
 serverfiles.tar.gz filter=lfs diff=lfs merge=lfs -text
+gamemodes/Mrucznik-RP.amx filter=lfs diff=lfs merge=lfs -text
 
 # Preserve pinned third-party snapshots byte-for-byte and do not report their
 # upstream whitespace as changes introduced by the MTA port.
