@@ -1,0 +1,101 @@
+
+// Opis: System skrytek osobistych dla cywili - przechowywanie materialow i produkcja legalnych produktow
+
+//------------------<[ Define: ]>-------------------
+
+#define MAX_PERSONAL_STORAGES       100
+
+// Poziomy skrytek
+#define STORAGE_TIER_BASIC          1  // Podstawowa - 1 bot, 50 pojemnosci
+#define STORAGE_TIER_ADVANCED       2  // Zaawansowana - 2 boty, 100 pojemnosci
+#define STORAGE_TIER_GARAGE        3  // Gara? - 3 boty, 200 pojemnosci
+
+// Typy produkcji dla botow
+#define PRODUCTION_TYPE_NONE        0  // Brak produkcji
+#define PRODUCTION_TYPE_TOOLS       1  // Narzedzia
+#define PRODUCTION_TYPE_CLOTHES     2  // Ubrania
+#define PRODUCTION_TYPE_FURNITURE   3  // Meble
+#define PRODUCTION_TYPE_ELECTRONICS 4  // Elektronika
+
+// Dialogi
+#define DIALOG_STORAGE_MENU         9880
+#define DIALOG_STORAGE_BUY          9881
+#define DIALOG_STORAGE_STORE        9882
+#define DIALOG_STORAGE_TAKE         9883
+#define DIALOG_STORAGE_PRODUCTION   9884
+#define DIALOG_STORAGE_BOT_SETUP    9885
+#define DIALOG_STORAGE_UPGRADE      9886
+#define DIALOG_STORAGE_TAKE_MATERIALS 9887
+#define DIALOG_STORAGE_STORE_ITEMS    9888
+
+#define STORAGE_MIN_DISTANCE_FROM_DEPOT 50.0  // Minimalna odleglosc od depotow
+#define STORAGE_MIN_DISTANCE_FROM_STORAGE 30.0  // Minimalna odleglosc od innych skrytek
+
+//------------------<[ Enums: ]>-------------------
+
+enum E_STORAGE_DATA {
+    st_sql_id,
+    st_owner_uid,              // UID wlasciciela
+    st_tier,                    // Poziom skrytki (1-3)
+    Float:st_ent_pos[3],        // Pozycja wejscia
+    Float:st_exit_pos[3],       // Pozycja wyjscia (wewnatrz)
+    st_interior,
+    st_virtualworld,
+    // Materialy
+    st_fabrics,
+    st_metals,
+    st_mats,
+    st_chemicals,  // Ogolne chemicals (dla kompatybilnosci)
+    // Chemikalia (poszczegolne)
+    st_acetone,
+    st_toluene,
+    st_lithium,
+    st_sodium,
+    st_calcium,
+    // Produkty
+    st_tools,
+    st_clothes,
+    st_furniture,
+    st_electronics,
+    // Boty produkcyjne (1-3 w zaleznosci od tier)
+    st_bot1_type,               // Typ produkcji bota 1 (0-4)
+    st_bot2_type,               // Typ produkcji bota 2 (0-4, tylko tier 2+)
+    st_bot3_type,               // Typ produkcji bota 3 (0-4, tylko tier 3)
+    st_bot1_actor,              // ID aktora bota 1
+    st_bot2_actor,              // ID aktora bota 2
+    st_bot3_actor,              // ID aktora bota 3
+    // Timery produkcji
+    st_bot1_timer,              // Timer produkcji bota 1
+    st_bot2_timer,              // Timer produkcji bota 2
+    st_bot3_timer,              // Timer produkcji bota 3
+    // Elementy swiata
+    st_pickup,
+    st_area,
+    Text3D:st_label,
+    st_exit_pickup,              // Pickup przy wyjsciu (wewnatrz)
+    Text3D:st_exit_label,        // Label przy wyjsciu (wewnatrz)
+    bool:st_production_enabled   // Czy produkcja jest wlaczona (domyslnie true)
+};
+
+// Kursy produkcji (losowane co restart)
+enum E_PRODUCTION_RATES {
+    rate_tools_min,
+    rate_tools_max,
+    rate_clothes_min,
+    rate_clothes_max,
+    rate_furniture_min,
+    rate_furniture_max,
+    rate_electronics_min,
+    rate_electronics_max
+};
+
+//------------------<[ Variables: ]>-------------------
+
+new gStorageData[MAX_PERSONAL_STORAGES][E_STORAGE_DATA];
+new gPlayerInStorage[MAX_PLAYERS];
+new gTotalStorages = 0;
+
+// Kursy produkcji (zmieniaja sie co restart)
+new gProductionRates[E_PRODUCTION_RATES];
+
+//end

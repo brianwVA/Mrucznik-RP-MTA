@@ -1,9 +1,19 @@
 _triggerClientEvent = triggerClientEvent
 
 local playerData = {}			-- { player = { loaded = bool, pending = {...} } }
+local beginClientQueue
 
 local function joinHandler(player)
-	playerData[player or source] = { loaded = false, pending = {} }
+	player = player or source
+	playerData[player] = { loaded = false, pending = {}, queueStarted = false }
+	-- Some large resource packs finish loading client Lua but lose the one-shot
+	-- readiness event while MTA is validating files. Do not let that strand the
+	-- player behind the startup queue forever.
+	setTimer(function()
+		if playerData and playerData[player] and not playerData[player].queueStarted then
+			beginClientQueue(player, 'fallback')
+		end
+	end, 6000, 1)
 end
 
 addEventHandler('onResourceStart', resourceRoot,
@@ -24,14 +34,41 @@ addEventHandler('onResourceStop', resourceRoot,
 
 addEventHandler('onPlayerJoin', root, joinHandler)
 
+beginClientQueue = function(player, reason)
+		local data = playerData[player]
+		if not data or data.queueStarted then return end
+		data.queueStarted = true
+		local pending = data.pending or {}
+		data.loaded = true
+		data.pending = nil
+
+		outputDebugString(string.format(
+			'[MTA AMX] Client startup queue for %s (%s): %d events',
+			getPlayerName(player), tostring(reason), #pending
+		), 3)
+
+		-- The Pawn login dialog is emitted shortly after the client reports that
+		-- its scripts are ready. Give it an unobstructed path, then replay old
+		-- initialization traffic one event per frame. The original implementation
+		-- sent the entire queue in one loop and could freeze MTA for many minutes.
+		local head = 1
+		local function flushNext()
+			if not playerData or not playerData[player] or not isElement(player) then
+				return
+			end
+			local event = pending[head]
+			if not event then return end
+			head = head + 1
+			_triggerClientEvent(player, event.name, event.source, unpack(event.args))
+			setTimer(flushNext, 16, 1)
+		end
+		setTimer(flushNext, 5000, 1)
+	end
+
 addEvent('onLoadedAtClient', true)
 addEventHandler('onLoadedAtClient', resourceRoot,
 	function()
-		playerData[client].loaded = true
-		for i, event in ipairs(playerData[client].pending) do
-			_triggerClientEvent(client, event.name, event.source, unpack(event.args))
-		end
-		playerData[client].pending = nil
+		beginClientQueue(client, 'client-ready')
 	end,
 	false
 )

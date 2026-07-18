@@ -1,0 +1,9 @@
+{
+    "name": "bizinfo",
+    "description": "Wyświetla podstawowe informacje o biznesie.",
+    "permissions": [],
+    "author": "Simeone",
+    "aliases": [],
+    "parameters": [],
+    "date": "19.08.2019"
+}

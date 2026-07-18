@@ -1,0 +1,10 @@
+
+
+//------------------<[ Funkcje forward: ]>-------------------
+
+forward DrugLab_Load();
+forward DrugLab_Save(dlid);
+forward DrugLab_OnCreate(dlid);
+forward DrugLab_ProductionCycle();
+
+//end

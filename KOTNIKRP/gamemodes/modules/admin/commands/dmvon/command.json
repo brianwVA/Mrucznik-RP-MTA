@@ -1,0 +1,9 @@
+{
+    "name": "dmvon",
+    "description": "Komenda, która pozwala włączyć/wyłączyć boty w urzędzie Miasta.",
+    "permissions": [],
+    "author": "Simeone",
+    "aliases": [],
+    "parameters": [],
+    "date": "24.09.2019"
+}

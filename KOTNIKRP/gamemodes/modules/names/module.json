@@ -1,0 +1,11 @@
+{
+    "name": "names",
+    "description": "Nicki nad głowami postaci",
+    "author": "Simeone",
+    "timers": false,
+    "callbacks": false,
+    "mysql": false,
+    "files": [],
+    "commands": false,
+    "date": "13.09.2019"
+}

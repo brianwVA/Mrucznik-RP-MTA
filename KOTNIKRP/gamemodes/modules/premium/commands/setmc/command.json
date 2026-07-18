@@ -1,0 +1,22 @@
+{
+    "name": "setmc",
+    "description": "Komenda nadająca graczowi M-RP Coiny",
+    "permissions": [
+        "everyone"
+    ],
+    "author": "Mrucznik",
+    "aliases": [],
+    "parameters": [
+        {
+            "type": "player",
+            "name": "giveplayerid",
+            "description": "Nick/ID"
+        },
+        {
+            "type": "integer",
+            "name": "value",
+            "description": "ilość M-RP Coinyów"
+        }
+    ],
+    "date": "09.06.2019"
+}

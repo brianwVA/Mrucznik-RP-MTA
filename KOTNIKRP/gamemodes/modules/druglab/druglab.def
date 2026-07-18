@@ -1,0 +1,98 @@
+
+
+//------------------<[ Define: ]>-------------------
+
+#define MAX_DRUG_LABS           10
+#define MAX_LAB_ACTORS          10
+#define MAX_LAB_SEEDS           1000
+#define DRUGLAB_PICKUP_MODEL    1279
+
+// Typy kokainy - w zaleznosci od poziomu upgrade NPC
+#define COCAINE_TYPE_P          0   // skill 0-50 (Poor/Slaba)
+#define COCAINE_TYPE_N          1   // skill 51-100 (Normal/Normalna)
+#define COCAINE_TYPE_G          2   // skill 101-200 (Good/Dobra)
+#define COCAINE_TYPE_E          3   // skill 201+ (Excellent/Doskonala)
+
+// Poziomy upgrade NPC
+#define NPC_UPGRADE_NONE        0
+#define NPC_UPGRADE_POOR        1   // Produkuje Cocaine(P)
+#define NPC_UPGRADE_NORMAL      2   // Produkuje Cocaine(N)
+#define NPC_UPGRADE_GOOD        3   // Produkuje Cocaine(G)
+#define NPC_UPGRADE_EXCELLENT   4   // Produkuje Cocaine(E)
+
+// Ceny upgrade NPC
+// Definicje przeniesione do gamemodes/system/ceny.pwn
+
+// Dialogi
+#define DIALOG_DRUGLAB_MENU         9820
+#define DIALOG_DRUGLAB_BUY          9821
+#define DIALOG_DRUGLAB_SAFE         9822
+#define DIALOG_DRUGLAB_SAFE_TAKE    9823
+#define DIALOG_DRUGLAB_ACTORS       9824
+#define DIALOG_DRUGLAB_ACTOR_BUY    9825
+#define DIALOG_DRUGLAB_ACTOR_UPG    9826
+#define DIALOG_DRUGLAB_ACTOR_REM    9827
+#define DIALOG_DRUGLAB_BUY_SEEDS    9828
+#define DIALOG_DRUGLAB_SELL         9829
+
+//------------------<[ Enums: ]>-------------------
+
+enum E_DRUGLAB_DATA {
+    dl_sql_id,
+    Float:dl_ent_pos[3],
+    Float:dl_exit_pos[3],
+    dl_price,
+    dl_org_owner_sql,
+    dl_org_owner,
+    dl_player_owner,        // UID gracza-wlasciciela (dla cywili)
+    dl_interior,
+    dl_virtualworld,
+    dl_safe_cocaine[4],     // 4 typy kokainy: P, N, G, E
+    dl_actor_level[10],     // Poziom upgrade kazdego z 10 NPC
+    dl_seeds,               // Ilosc nasion w laboratorium
+    dl_pickup,
+    Text3D:dl_label,
+    dl_seeds_pickup,
+    Text3D:dl_seeds_label,
+    dl_actor[10],           // ID aktorow
+    dl_area,                // Obszar do rozladunku skrzynek
+    bool:dl_production_enabled  // Czy produkcja jest wlaczona (domyslnie true)
+};
+
+//------------------<[ Variables: ]>-------------------
+
+new gDrugLabData[MAX_DRUG_LABS][E_DRUGLAB_DATA];
+new gPlayerInDrugLab[MAX_PLAYERS];
+new gPlayerChosenDrugSlot[MAX_PLAYERS];
+new gPlayerChosenActorSlot[MAX_PLAYERS];
+new gTotalDrugLabs = 0;
+
+// Pozycje aktorow w laboratorium (interior 1, 1405.31/-8.29/1000.91)
+new Float:gActorPositions[MAX_LAB_ACTORS][4] = {
+    {1362.0, -2.0, 1000.9130, 180.0},
+    {1364.0, -2.0, 1000.9130, 180.0},
+    {1366.0, -2.0, 1000.9130, 180.0},
+    {1368.0, -2.0, 1000.9130, 180.0},
+    {1362.0, -5.0, 1000.9130, 0.0},
+    {1364.0, -5.0, 1000.9130, 0.0},
+    {1366.0, -5.0, 1000.9130, 0.0},
+    {1368.0, -5.0, 1000.9130, 0.0},
+    {1360.0, -3.5, 1000.9130, 90.0},
+    {1370.0, -3.5, 1000.9130, 270.0}
+};
+
+// Animacje aktorow
+new gActorAnimations[MAX_LAB_ACTORS][2][32] = {
+    {"GANGS", "hndshkda"},
+    {"BAR", "Barserve_bottle"},
+    {"PED", "IDLE_CHAT"},
+    {"PED", "IDLE_CHAT"},
+    {"WUZI", "Wuzi_follow"},
+    {"CARRY", "liftup"},
+    {"GHANDS", "gsign5"},
+    {"CARRY", "putdwn"},
+    {"BOMBER", "BOM_Plant"},
+    {"RAPPING", "RAP_C_Loop"}
+};
+
+//end

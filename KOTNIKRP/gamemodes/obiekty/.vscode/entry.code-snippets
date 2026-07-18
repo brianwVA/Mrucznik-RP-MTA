@@ -1,0 +1,14 @@
+{
+	"Print to console": {
+		"scope": "pawn",
+		"prefix": "wejscie",
+		"body": [
+			"DodajWejscie($POZYCJA_WEJSCIA,"
+			"	$POZYCJA_WYJSCIA,",
+			"	$VW_WEJSCIA, $INT_WEJSCIA,",
+			"	$VW_WYJSCIA, $INT_WYJSCIA,", 
+			"	$NAZWA_WEJSCIA, $NAZWWA_WYJSCIA);"
+		],
+		"description": "Log output to console"
+	}
+}

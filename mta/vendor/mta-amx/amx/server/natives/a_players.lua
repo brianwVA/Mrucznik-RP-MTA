@@ -1355,7 +1355,25 @@ function TogglePlayerSpectating(amx, player, enable)
 			setElementVisibleTo(playerdata.blip, root, false)
 		end
 	else
-		if not spectating then return false end
+		if not spectating then
+			-- Some SA-MP gamemodes keep the player in class selection and only
+			-- move the camera while showing their login UI. They still finish
+			-- login with TogglePlayerSpectating(false). MTA does not report that
+			-- state as PLAYER_STATE_SPECTATING, so the old early return left the
+			-- player on the login camera forever even after a valid password.
+			if playerdata.doingclasssel then
+				unbindKey(player, 'arrow_l', 'down', requestClass)
+				unbindKey(player, 'arrow_r', 'down', requestClass)
+				unbindKey(player, 'lshift', 'down', requestSpawn)
+				unbindKey(player, 'rshift', 'down', requestSpawn)
+				setCameraTarget(player, player)
+				clientCall(player, 'setCameraTarget', player)
+				clientCall(player, 'removeCamHandlers')
+				spawnPlayerBySelectedClass(player)
+				return true
+			end
+			return false
+		end
 		setCameraTarget(player, player)
 		clientCall(player, 'setCameraTarget', player) -- Clear the one on the client as well, otherwise we can't go back to normal camera after spectating vehicles
 		-- In SA-MP calling TogglePlayerSpectating also unsets camera interpolation

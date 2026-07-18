@@ -1,0 +1,11 @@
+{
+    "name": "premiumpanel",
+    "description": "Komenda wyświetlająca panel usług premium.",
+    "permissions": [
+        "everyone"
+    ],
+    "author": "Mrucznik",
+    "aliases": ["premium", "kp", "dotacje"],
+    "parameters": [],
+    "date": "09.06.2019"
+}

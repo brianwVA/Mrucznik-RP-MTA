@@ -1,0 +1,30 @@
+new Iterator:AirDrop_iterator<AirDrop_maxvalue>;
+
+enum AirDrop_enum {
+    STREAMER_TAG_3D_TEXT_LABEL:ad_label,
+    STREAMER_TAG_PICKUP:ad_pickup,
+    string:ad_name[32],
+    Float:ad_pos[3],
+    ad_vw,
+    ad_int,
+    ad_itemtype,
+    ad_item_values[3]
+}
+
+new AirDrop_data[AirDrop_maxvalue][AirDrop_enum];
+
+new drop_items[][] = {
+    //NAME,             ITEMTYPE,           ITEMVALUE1, ITEMVALUE2, ITEMVALUE3, PICKUP
+
+    //weapons
+    {"Pistolet 9MM",    ITEM_TYPE_WEAPON,   WEAPON_COLT45, 100,     0,          346}
+
+    //mats
+
+    //drugs
+};
+
+new Float:drop_locations[][5] = {
+    //x y z vw int
+    {0.0, 0.0, 0.0, 0, 0}
+};

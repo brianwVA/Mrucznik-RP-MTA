@@ -1,0 +1,52 @@
+//-----------------------------------------------<< Defines >>-----------------------------------------------//
+//                                                   motele                                                  //
+//----------------------------------------------------*------------------------------------------------------//
+//----[                                                                                                 ]----//
+//----[         |||||             |||||                       ||||||||||       ||||||||||               ]----//
+//----[        ||| |||           ||| |||                      |||     ||||     |||     ||||             ]----//
+//----[       |||   |||         |||   |||                     |||       |||    |||       |||            ]----//
+//----[       ||     ||         ||     ||                     |||       |||    |||       |||            ]----//
+//----[      |||     |||       |||     |||                    |||     ||||     |||     ||||             ]----//
+//----[      ||       ||       ||       ||     __________     ||||||||||       ||||||||||               ]----//
+//----[     |||       |||     |||       |||                   |||    |||       |||                      ]----//
+//----[     ||         ||     ||         ||                   |||     ||       |||                      ]----//
+//----[    |||         |||   |||         |||                  |||     |||      |||                      ]----//
+//----[    ||           ||   ||           ||                  |||      ||      |||                      ]----//
+//----[   |||           ||| |||           |||                 |||      |||     |||                      ]----//
+//----[  |||             |||||             |||                |||       |||    |||                      ]----//
+//----[                                                                                                 ]----//
+//----------------------------------------------------*------------------------------------------------------//
+// Autor: xSeLeCTx
+// Data utworzenia: 14.05.2021
+
+//
+
+//------------------<[ Makra: ]>-------------------
+//------------------<[ Define: ]>-------------------
+#define MAX_MOTELS                  50    // Maksymalna ilość moteli
+#define MAX_MOTEL_ROOMS             3000  // Maksymalna ilość pokoi
+#define MOTEL_VW                    13000 // VW pokoi w motelach + UID pokoju
+#define MOTEL_MAX_ACCESS            15    // Maksymalna ilość graczy mających dostęp do pokoju
+
+#define DIALOG_MOTEL                32000 // Główny panel /motel gdy gracz nie wynajmuje motelu
+#define DIALOG_MOTEL_RENT           32001 // Wiadomość przed akceptacją wynajmu pokoju
+#define DIALOG_MOTEL_REQUEST_ACCESS 32002 // Input z prośbą o dostęp do pokoju
+#define DIALOG_MOTEL_ENTER_ID       32003 // Wchodzenie do czyjegoś pokoju po ID / Nicku
+#define DIALOG_MOTEL_ENTER_NUMBER   32004 // Wchodzenie do czyjegoś pokoju po numerze pokoju
+#define DIALOG_MOTEL_2              32005 // Główny panel /motel gdy gracz wynajmuje motel
+#define DIALOG_MOTEL_WHERE          32006 // Wybór czy gracz chce wejść do swojego pokoju czy do czyjegoś
+#define DIALOG_MOTEL_UNRENT         32007 // Wiadomość przed rezygnacją wynajmu
+#define DIALOG_MOTEL_MANAGE         32008 // Panel zarządzania pokojem, drzwi, zaproszenia
+#define DIALOG_MOTEL_MANAGE_LIST    32009 // Lista graczy, którzy mają dostęp do pokoju
+#define DIALOG_MOTEL_MANAGE_SELECT  32010 // Wybór czym gracz chce zarządzać w pokoju
+#define DIALOG_MOTEL_MANAGE_INVITE  32011 // Input z możliwością podania ID/Nicku gracza, którego gracz chce zaprosić do pokoju
+#define DIALOG_MOTEL_ENTER_SELECT   32012 // Wybór czy chce się wyszukać pokój po ID/Nicku czy po numerze pokoju
+#define DIALOG_MOTEL_MANAGE_REMOVE  32013 // Potwierdzenie odebrania dostępu do pokoju
+#define DIALOG_MOTEL_SPAWN          32014 // Wybór spawnu
+
+#define DIALOG_AMOTEL               32020 // Główny panel kreatoru moteli /amotel 
+#define DIALOG_AMOTEL_EDIT          32021 // Panel edycji motelu
+#define DIALOG_AMOTEL_TELEPORT      32022 // Teleport do podanego UID motelu
+#define DIALOG_AMOTEL_CREATE        32023 // Nieużwany panel tworzenia motelu (/amotel create)
+#define DIALOG_AMOTEL_CHANGE        32024 // Zmiana wybranch wartości, ustawia co zmienić przy pomocy SetPVarInt(...)
+//end

@@ -1,0 +1,134 @@
+//-----------------------------------------------<< MySQL >>-------------------------------------------------//
+//                                             player_attachments                                            //
+//----------------------------------------------------*------------------------------------------------------//
+//----[                                                                                                 ]----//
+//----[         |||||             |||||                       ||||||||||       ||||||||||               ]----//
+//----[        ||| |||           ||| |||                      |||     ||||     |||     ||||             ]----//
+//----[       |||   |||         |||   |||                     |||       |||    |||       |||            ]----//
+//----[       ||     ||         ||     ||                     |||       |||    |||       |||            ]----//
+//----[      |||     |||       |||     |||                    |||     ||||     |||     ||||             ]----//
+//----[      ||       ||       ||       ||     __________     ||||||||||       ||||||||||               ]----//
+//----[     |||       |||     |||       |||                   |||    |||       |||                      ]----//
+//----[     ||         ||     ||         ||                   |||     ||       |||                      ]----//
+//----[    |||         |||   |||         |||                  |||     |||      |||                      ]----//
+//----[    ||           ||   ||           ||                  |||      ||      |||                      ]----//
+//----[   |||           ||| |||           |||                 |||      |||     |||                      ]----//
+//----[  |||             |||||             |||                |||       |||    |||                      ]----//
+//----[                                                                                                 ]----//
+//----------------------------------------------------*------------------------------------------------------//
+// Autor: Mrucznik
+// Data utworzenia: 10.08.2019
+//Opis:
+/*
+	Moduł odpowiedzialny za zarządzanie obiektami przyczepialnymi do gracza.
+*/
+
+//
+
+//------------------<[ MySQL: ]>--------------------
+PlayerAttachments_Create(playerid, model, bone, Float:x, Float:y, Float:z, Float:rx, Float:ry, Float:rz, Float:sx, Float:sy, Float:sz)
+{
+    new str[512];
+    format(str, sizeof(str), "INSERT INTO `mru_playeritems` (`UID`, `model`, `bone`, `x`, `y`, `z`, `rx`, `ry`, `rz`, `sx`, `sy`, `sz`)"\
+					 " VALUES ('%d', '%d', '%d', '%f', '%f', '%f', '%f', '%f', '%f', '%f', '%f', '%f')", 
+		PlayerInfo[playerid][pUID],
+		model, 
+        bone,
+        x, y, z,
+        rx, ry, rz,
+        sx, sy, sz
+	);
+    mysql_query(Database, str);
+    new id = cache_insert_id();
+
+	VECTOR_push_back_val(VAttachedItems[playerid], model);
+    return id;
+}
+
+//TODO: use
+stock PlayerAttachments_Remove(playerid, model)
+{
+    new str[256];
+    format(str, sizeof(str), "DELETE FROM mru_playeritems WHERE `uid`=%d AND `model`='%d'", PlayerInfo[playerid][pUID], model);
+    mysql_query(Database, str);
+	VECTOR_remove_val(VAttachedItems[playerid], model);
+}
+
+PlayerAttachments_LoadItems(playerid)
+{
+	new str[256], model, bone, Float:x, Float:y, Float:z, Float:rx, Float:ry, Float:rz, Float:sx, Float:sy, Float:sz, bool:active;
+    inline OnAttachItemsLoaded()
+    {
+        for(new i = 0; i < cache_num_rows(); i++)
+        {
+            cache_get_value_index_int(i, 0, model );
+            cache_get_value_index_float(i, 1, x );
+            cache_get_value_index_float(i, 2, y );
+            cache_get_value_index_float(i, 3, z );
+            cache_get_value_index_float(i, 4, rx );
+            cache_get_value_index_float(i, 5, ry );
+            cache_get_value_index_float(i, 6, rz );
+            cache_get_value_index_float(i, 7, sx );
+            cache_get_value_index_float(i, 8, sy );
+            cache_get_value_index_float(i, 9, sz );
+            cache_get_value_index_int(i, 10, active );
+            cache_get_value_index_int(i, 11, bone);
+            VECTOR_push_back_val(VAttachedItems[playerid], model);
+            if(active)
+            {
+                AttachPlayerItem(playerid, model, bone, x, y, z, rx, ry, rz, sx, sy, sz);
+            }
+        }
+    }
+
+    format(str, sizeof(str), "SELECT `model`, `x`, `y`, `z`, `rx`, `ry`, `rz`, `sx`, `sy`, `sz`, `active`,`bone` FROM `mru_playeritems` WHERE `UID`='%d'", PlayerInfo[playerid][pUID]);
+    MySQL_TQueryInline(Database, using inline OnAttachItemsLoaded, str);
+}
+
+PlayerAttachments_LoadItem(playerid, model)
+{
+	new str[256], bone, Float:x, Float:y, Float:z, Float:rx, Float:ry, Float:rz, Float:sx, Float:sy, Float:sz, bool:active, Cache:result;
+    new index = INVALID_ATTACHED_OBJECT_INDEX;
+	format(str, sizeof(str), "SELECT `x`, `y`, `z`, `rx`, `ry`, `rz`, `sx`, `sy`, `sz`, `active`,`bone` FROM `mru_playeritems` WHERE `UID`='%d' AND `model`='%d'", 
+		PlayerInfo[playerid][pUID],
+		model
+	);
+    result = mysql_query(Database, str);
+    if(cache_num_rows())
+    {
+        new i = 0;
+        cache_get_value_index_int(i, 0, model );
+        cache_get_value_index_float(i, 1, x );
+        cache_get_value_index_float(i, 2, y );
+        cache_get_value_index_float(i, 3, z );
+        cache_get_value_index_float(i, 4, rx );
+        cache_get_value_index_float(i, 5, ry );
+        cache_get_value_index_float(i, 6, rz );
+        cache_get_value_index_float(i, 7, sx );
+        cache_get_value_index_float(i, 8, sy );
+        cache_get_value_index_float(i, 9, sz );
+        cache_get_value_index_int(i, 10, active );
+        cache_get_value_index_int(i, 11, bone);
+        index = AttachPlayerItem(playerid, model, bone, x, y, z, rx, ry, rz, sx, sy, sz);
+    }
+    cache_delete(result);
+    return index;
+}
+
+PlayerAttachments_UpdateItem(playerid, model, Float:x, Float:y, Float:z, Float:rx, Float:ry, Float:rz, bone, active) {
+    new str[256];
+    format(str, sizeof(str), "UPDATE mru_playeritems SET `bone`='%d', `x`='%f',`y`='%f',`z`='%f', `rx`='%f',`ry`='%f',`rz`='%f', `active`='%d' WHERE `uid`='%d' AND model='%d'", 
+		bone, x,y,z,rx,ry,rz, active, PlayerInfo[playerid][pUID], model);
+    mysql_tquery(Database, str);
+    return 1;
+}
+
+PlayerAttachments_SetActive(playerid, model, active) {
+    new str[256];
+    format(str, sizeof(str), "UPDATE mru_playeritems SET `active`='%d' WHERE `uid`='%d' AND model='%d'", 
+		active, PlayerInfo[playerid][pUID], model);
+    mysql_tquery(Database, str);
+    return 1;
+}
+
+//end

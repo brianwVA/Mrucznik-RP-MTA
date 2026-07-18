@@ -1,0 +1,11 @@
+{
+    "name": "vpn",
+    "description": "Panel zarządzania AntyVPN",
+    "permissions": [
+        "admini"
+    ],
+    "author": "xSeLeCTx",
+    "aliases": [],
+    "parameters": [],
+    "date": "27.05.2021"
+}

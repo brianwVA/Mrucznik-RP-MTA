@@ -1,0 +1,50 @@
+
+
+//------------------<[ Define: ]>-------------------
+
+#define MAX_HEROIN_POTS         10
+#define HEROIN_POT_MODEL        18748
+
+// Etapy produkcji heroiny
+#define HEROIN_STAGE_HEATING        0   // 0-20%
+#define HEROIN_STAGE_ADD_WATER      20  // Dodaj wode
+#define HEROIN_STAGE_BOILING        20  // 20-40%
+#define HEROIN_STAGE_ADD_CALCIUM    40  // Dodaj wapno
+#define HEROIN_STAGE_MIX_CALCIUM    40  // 40-60%
+#define HEROIN_STAGE_ADD_SODIUM     60  // Dodaj sod
+#define HEROIN_STAGE_MIX_SODIUM     60  // 60-80%
+#define HEROIN_STAGE_ADD_ACETONE    80  // Dodaj aceton
+#define HEROIN_STAGE_MIX_ACETONE    80  // 80-100%
+#define HEROIN_STAGE_READY          100 // Gotowe do zbioru
+
+// Stany miksowania
+#define HEROIN_STATE_NONE           0
+#define HEROIN_STATE_WATER          1
+#define HEROIN_STATE_CALCIUM        2
+#define HEROIN_STATE_SODIUM         3
+#define HEROIN_STATE_ACETONE        4
+
+// Dialogi
+#define DIALOG_HEROIN_MENU          9830
+#define DIALOG_HEROIN_INFO          9831
+
+//------------------<[ Enums: ]>-------------------
+
+enum E_HEROIN_POT {
+    heroin_id,
+    Float:heroin_pos[3],
+    bool:heroin_created,
+    heroin_stage,       // 0-100
+    heroin_mix_state,   // Stan miksowania (co zostalo dodane)
+    heroin_mistakes,    // Ilosc bledow w kolejnosci skladnikow (0-4)
+    heroin_object,
+    heroin_object_743,  // Obiekt 743 (dodatkowy)
+    Text3D:heroin_label,
+    heroin_owner        // UID gracza ktory zaczal produkcje
+};
+
+//------------------<[ Variables: ]>-------------------
+
+new gHeroinPots[MAX_HEROIN_POTS][E_HEROIN_POT];
+
+//end

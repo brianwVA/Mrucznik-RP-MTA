@@ -1,0 +1,88 @@
+
+// Opis: System skrzynek (Fabrics, Metals, Materials, Cocaine)
+
+//------------------<[ Define: ]>-------------------
+
+#define MAX_CRATE_DROPS         500
+#define MAX_CRATE_DEPOTS        10
+
+// Typy skrzynek
+#define CRATE_TYPE_NONE         0
+#define CRATE_TYPE_FABRICS      1
+#define CRATE_TYPE_METALS       2
+#define CRATE_TYPE_MATS         3
+#define CRATE_TYPE_COCAINE      4
+#define CRATE_TYPE_CHEMICALS    5  // Chemikalia (losowe skladniki)
+
+// Attachment slot dla skrzynki
+#define CRATE_ATTACHMENT_SLOT   8
+
+// Model skrzynki
+#define CRATE_OBJECT_MODEL      3052
+
+// Dialogi
+#define DIALOG_CRATE_DEPOT      9800
+#define DIALOG_CRATE_INFO       9801
+
+// Despawn timery (w milisekundach)
+#define CRATE_CARRY_TIMEOUT     1200000  // 20 minut noszenia
+#define CRATE_DROP_TIMEOUT      900000   // 15 minut na ziemi
+
+// Loot table dla CRATE_TYPE_CHEMICALS (percentages sum to 100)
+#define CHEMICALS_LOOT_MIN_ITEMS    1
+#define CHEMICALS_LOOT_MAX_ITEMS    3
+#define CHEMICALS_LOOT_LITHIUM_CHANCE    25
+#define CHEMICALS_LOOT_TOLUENE_CHANCE    25
+#define CHEMICALS_LOOT_ACETONE_CHANCE    20
+#define CHEMICALS_LOOT_CALCIUM_CHANCE    15
+#define CHEMICALS_LOOT_SODIUM_CHANCE    15
+
+//------------------<[ Enums: ]>-------------------
+
+enum E_CRATE_DEPOT {
+    crate_depot_name[48],
+    crate_depot_type,
+    crate_depot_amount,
+    Text3D:crate_depot_label,
+    crate_depot_price,
+    Float:crate_depot_x,
+    Float:crate_depot_y,
+    Float:crate_depot_z
+};
+
+enum E_CRATE_DROP {
+    crate_drop_type,
+    crate_drop_object,
+    Text3D:crate_drop_text,
+    Float:crate_drop_x,
+    Float:crate_drop_y,
+    Float:crate_drop_z,
+    crate_drop_world,
+    crate_drop_interior,
+    crate_drop_time  // Czas upuszczenia (GetTickCount)
+};
+
+enum E_PLAYER_CRATE {
+    player_crate_type,
+    player_crate_last_taken
+};
+
+//------------------<[ Variables: ]>-------------------
+
+new gCrateDepots[MAX_CRATE_DEPOTS][E_CRATE_DEPOT];
+new gDroppedCrates[MAX_CRATE_DROPS][E_CRATE_DROP];
+new gPlayerCrate[MAX_PLAYERS][E_PLAYER_CRATE];
+new Iterator:I_Crates<MAX_CRATE_DROPS>;
+new gTotalCrateDepots = 0;
+
+// System skrzynek w pojazdach (max 5 na pojazd)
+#define MAX_VEHICLE_CRATES      5
+
+enum E_VEHICLE_CRATE {
+    vehicle_crate_count,
+    vehicle_crate_types[MAX_VEHICLE_CRATES]
+};
+
+new gVehicleCrates[MAX_VEHICLES][E_VEHICLE_CRATE];
+
+//end

@@ -1,0 +1,52 @@
+//-----------------------------------------------<< Header >>------------------------------------------------//
+//                                                    logi                                                   //
+//----------------------------------------------------*------------------------------------------------------//
+//----[                                                                                                 ]----//
+//----[         |||||             |||||                       ||||||||||       ||||||||||               ]----//
+//----[        ||| |||           ||| |||                      |||     ||||     |||     ||||             ]----//
+//----[       |||   |||         |||   |||                     |||       |||    |||       |||            ]----//
+//----[       ||     ||         ||     ||                     |||       |||    |||       |||            ]----//
+//----[      |||     |||       |||     |||                    |||     ||||     |||     ||||             ]----//
+//----[      ||       ||       ||       ||     __________     ||||||||||       ||||||||||               ]----//
+//----[     |||       |||     |||       |||                   |||    |||       |||                      ]----//
+//----[     ||         ||     ||         ||                   |||     ||       |||                      ]----//
+//----[    |||         |||   |||         |||                  |||     |||      |||                      ]----//
+//----[    ||           ||   ||           ||                  |||      ||      |||                      ]----//
+//----[   |||           ||| |||           |||                 |||      |||     |||                      ]----//
+//----[  |||             |||||             |||                |||       |||    |||                      ]----//
+//----[                                                                                                 ]----//
+//----------------------------------------------------*------------------------------------------------------//
+// Autor: Mrucznik
+// Data utworzenia: 04.05.2019
+
+//
+
+//-----------------<[ Zmienne: ]>-------------------
+new Logger:adminLog; //Logi akcji administracyjnych
+new Logger:payLog; //Logi z transakcji związanych z pieniędzmi graczy
+new Logger:premiumLog; //Logi z systemu premium
+new Logger:punishmentLog; //Logi nadawania oraz zdejmowania kar dla graczy
+new Logger:warningLog; //Logi warningów administracyjnych
+new Logger:commandLog; //Logi komendy wykonanych przez graczy
+new Logger:nickLog; //Logi zmian nicków
+new Logger:sejfLog; //Logi stanu sejfów
+new Logger:serverLog; //Logi akcji serwera
+new Logger:connectLog; //Logi logowań/połączeń/rozłączeń
+new Logger:damageLog; //Logi śmierci oraz obrażeń odniesionych przez graczy
+new Logger:chatLog; //Logi chatów
+new Logger:moneyLog; //Logi akcji związanych z pieniędzmi
+new Logger:errorLog; //Logi błędów wraz ze ścieżką wystąpienia
+new Logger:mysqlLog; //Błędy mySQL
+new Logger:itemLog; //Logi przedmiotów
+new Logger:moteleLog; //Logi moteli
+new Logger:casinoLog; //Logi kasyna
+new Logger:combatLog;
+new Logger:houseLog;
+
+//old
+new Logger:admindutyLog;
+
+//------------------<[ Enumy: ]>--------------------
+//------------------<[ Forwardy: ]>--------------------
+
+//end

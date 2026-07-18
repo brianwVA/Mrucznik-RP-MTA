@@ -1,0 +1,57 @@
+
+// Opis: System dilerow NPC - punkty skupu narkotykow
+
+//------------------<[ Define: ]>-------------------
+
+#define MAX_DRUG_DEALERS        10
+
+// Ceny skupu - zakres (min, max) - losowane przy resecie
+// Definicje przeniesione do gamemodes/system/ceny.pwn
+
+// Max lokalizacji dilerow (losowane przy resecie)
+#define MAX_DEALER_LOCATIONS    10
+
+// Dialogi
+#define DIALOG_DEALER_MENU      9860
+#define DIALOG_DEALER_SELL      9861
+
+//------------------<[ Enums: ]>-------------------
+
+enum E_DRUG_DEALER {
+    dealer_id,
+    dealer_name[48],
+    Float:dealer_x,
+    Float:dealer_y,
+    Float:dealer_z,
+    Float:dealer_angle,
+    dealer_interior,
+    dealer_virtualworld,
+    dealer_actor,
+    Text3D:dealer_label,
+    dealer_purchase_limit,        // Limit zakupowy (200-1000g na reset)
+    dealer_purchased_amount,      // Ilosc zakupiona w danym okresie (w gramach)
+    dealer_base_prices[6]         // Bazowe ceny przed modyfikacja (0=cocaine_p, 1=cocaine_n, 2=cocaine_g, 3=cocaine_e, 4=heroin, 5=meth)
+};
+
+//------------------<[ Variables: ]>-------------------
+
+new gDrugDealers[MAX_DRUG_DEALERS][E_DRUG_DEALER];
+new gTotalDrugDealers = 0;
+
+// Aktualne ceny (losowane przy resecie)
+new gDealerPrices[6]; // 0=cocaine_p, 1=cocaine_n, 2=cocaine_g, 3=cocaine_e, 4=heroin, 5=meth
+
+// Mozliwe lokalizacje dilerow (losowane przy resecie)
+enum E_DEALER_LOCATION {
+    Float:loc_x,
+    Float:loc_y,
+    Float:loc_z,
+    Float:loc_angle,
+    loc_interior,
+    loc_virtualworld
+};
+
+new gDealerLocations[MAX_DEALER_LOCATIONS][E_DEALER_LOCATION];
+new gTotalDealerLocations = 0;
+
+//end

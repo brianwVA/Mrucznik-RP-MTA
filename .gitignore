@@ -127,3 +127,11 @@ mta/server/mods/deathmatch/resources/amx/scriptfiles/
 
 # Locally assembled transfer packages are release artifacts, not source files.
 dist/
+# Local Kotnik package contains server binaries. Keep sources and migrations,
+# but exclude the bundled runtime archive and executable dependencies.
+KOTNIKRP/serverfiles.tar.gz
+KOTNIKRP/*.exe
+KOTNIKRP/*.dll
+KOTNIKRP/gamemodes/*.amx
+KOTNIKRP/plugins/
+KOTNIKRP/db/server.sql

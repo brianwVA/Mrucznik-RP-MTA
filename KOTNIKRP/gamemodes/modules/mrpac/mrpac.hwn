@@ -1,0 +1,147 @@
+//-----------------------------------------------<< Header >>------------------------------------------------//
+//                                                   mrp_ac                                                  //
+//----------------------------------------------------*------------------------------------------------------//
+//----[                                                                                                 ]----//
+//----[         |||||             |||||                       ||||||||||       ||||||||||               ]----//
+//----[        ||| |||           ||| |||                      |||     ||||     |||     ||||             ]----//
+//----[       |||   |||         |||   |||                     |||       |||    |||       |||            ]----//
+//----[       ||     ||         ||     ||                     |||       |||    |||       |||            ]----//
+//----[      |||     |||       |||     |||                    |||     ||||     |||     ||||             ]----//
+//----[      ||       ||       ||       ||     __________     ||||||||||       ||||||||||               ]----//
+//----[     |||       |||     |||       |||                   |||    |||       |||                      ]----//
+//----[     ||         ||     ||         ||                   |||     ||       |||                      ]----//
+//----[    |||         |||   |||         |||                  |||     |||      |||                      ]----//
+//----[    ||           ||   ||           ||                  |||      ||      |||                      ]----//
+//----[   |||           ||| |||           |||                 |||      |||     |||                      ]----//
+//----[  |||             |||||             |||                |||       |||    |||                      ]----//
+//----[                                                                                                 ]----//
+//----------------------------------------------------*------------------------------------------------------//
+// Autor: xSeLeCTx
+// Data utworzenia: 22.05.2021
+
+//
+
+//------------------<[ Enumy: ]>--------------------
+new BannedAnimations[] = {
+    //WheelWalk	 //FuckingAngle
+    1068,        975, 976, 977
+};
+
+
+new VPNServices[3][2][128] = // 2000 requests / day + saved IPs in local database
+{
+    {AC_VPN_IP "/vpn/vpn.php?ip=", ""},
+    {AC_VPN_IP "/vpn/vpn.php?ip=", "&service=iphub"}, // 1000 requests / day
+    {AC_VPN_IP "/vpn/vpn.php?ip=", "&service=proxycheck"} // 1000 requests / day
+};
+
+enum PlayerAC_Enum
+{
+    acPlayerIP[16],
+    Float:acPos[3],
+
+    acWarn_SpeedHack,         
+    acWarn_FlyHack,           
+    acWarn_SilentAim,
+    acWarn_Aimbot,
+    acWarn_NoSpread,
+    acWarn_AfkShot,
+    acWarn_Slide,
+    acWarn_FakeWL,
+    acWarn_SilentAim2,
+    acWarn_ZoomHack,
+
+    acLastWarn_SpeedHack,     
+    acLastWarn_FlyHack,
+    acLastWarn_Aimbot,
+    acLastWarn_NoSpread,
+    acLastWarn_SilentAim2,
+    acLastWarn_ZoomHack,
+    acLastWarn_NoFuel,
+    
+    acCarEngine_Tick,
+
+    Float:acAim_lastAimZ,
+    Float:acAim_meanAim[10],
+
+    Float:acNoSpread_lastHitPos[3],
+    Float:acNoSpread_lastOffsets[3],
+
+    acSpeed_lastSpeed,          
+
+    acSpam_lastTick,
+    acSpam_count,
+    acSpam_unmuteTime,
+
+    acVPN_count,
+    acCleo,
+    acSampFuncs,
+    acSilentPatch,
+    acSobeit,
+    acWh,
+    acVorbis,
+    acSilentAim,
+    //PlayerAimed,
+    //acWarn_Triggerbot,
+}
+new PlayerAC[MAX_PLAYERS][PlayerAC_Enum];
+
+//-----------------<[ Zmienne: ]>-------------------
+//new FakeModel = -1;
+new rgAllowPlayerRPC[MAX_PLAYERS][300]; // +- 300 rpc
+new rgAllowVehicleRPC[MAX_VEHICLES][300]; // +- 300 rpc
+new rgAllowPlayerPacket[MAX_PLAYERS][300]; // +- 300 pakietów
+
+new rgRakNet_VehicleDriver[MAX_VEHICLES] = {INVALID_PLAYER_ID, ...}; // tablica zapisująca aktualnego kierowce pojazdu
+new rgRakNet_PlayerWeapons[MAX_PLAYERS][13][2]; // tablica zapisująca aktualne bronie i amunicje gracza
+new rgRakNet_SaveWeapons[MAX_PLAYERS]; // tablica sprawdzająca czy zapisywać bronie do mysql i ponowne zapisywanie do bazy danych
+
+new VehicleDestroyed = 136;
+new WorldVehicleAdd = 164;
+
+const AIM_SYNC = 203;
+const WEAPONS_UPDATE_SYNC = 204;
+const PLAYER_SYNC = 207;
+const SPECTATING_SYNC = 212;
+const VEHICLE_SYNC = 200;
+const PASSENGER_SYNC = 211;
+const BULLET_SYNC = 206;
+const UNOCCUPIED_SYNC = 209;
+
+const RPC_GIVE_PLAYER_WEAPON = 22;
+const RPC_SET_PLAYER_AMMO = 145;
+const RPC_SET_VEHICLE_HEALTH = 147;
+const RPC_SET_PLAYER_VELOCITY = 90;
+const RPC_SET_PLAYER_POS = 12;
+const RPC_SET_VEHICLE_POS = 159;
+
+// MAXIMUM VELOCITY CHANGE, LEAVE AT 1, OTHERWISE IT WON'T DETECT LITTLE SLAPS
+const MAX_VELOCITY_CHANGE = 1;
+// Packets to count, small values cause no detection at all.
+const PACKETS_TO_COUNT = 1000;
+// Maximum count of warnings before action. Lower if detection is too slow.
+const MAX_WARNINGS = 5;
+
+new Float:lastVelocityAmount[MAX_PLAYERS];
+new packetCounter[MAX_PLAYERS] = 0;
+new packetWarningCounter[MAX_PLAYERS] = 0;
+
+new ARQ_callback[MAX_PLAYERS];
+
+new VPNTurnedOn = 1;
+
+new AntiReconnectIPs[1000][2][16];
+
+//------------------<[ Forwardy: ]>--------------------
+forward TogglePlayerRPC(playerid, rpc, toggle);
+forward ToggleVehicleRPC(vehicleid, rpc, toggle);
+forward TogglePlayerPacket(playerid, packet, toggle);
+forward RestoreOldWeapons(playerid, UID);
+forward Float:abs_f(Float:float);
+forward Float:GetDistanceBetweenPoints(Float:x1, Float:y1, Float:z1, Float:x2, Float:y2, Float:z2);
+forward SetACCode(playerid, code, toggle);
+forward VPNCheck(playerid, response_code, data[]);
+forward VPNNullResponse(playerid, response_code, data[]);
+forward VPNPanel(playerid, response_code, data[]);
+forward VPNLoadState(playerid, response_code, data[]);
+//end

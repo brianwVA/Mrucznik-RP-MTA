@@ -80,7 +80,11 @@ function Repair-MrpModelManifest {
 
     [xml]$Meta = Get-Content $MetaPath
     $Changed = $false
-    $RegistryScripts = @("shared/samp_objects.lua", "shared/vc_objects.lua")
+    $RegistryScripts = @(
+        "shared/kotnik_models.lua",
+        "shared/samp_objects.lua",
+        "shared/vc_objects.lua"
+    )
     foreach ($RegistryScript in $RegistryScripts) {
         $RegistryPath = Join-Path $ResourceRoot $RegistryScript.Replace("/", "\")
         $HasRegistry = @($Meta.meta.script | Where-Object {

@@ -1,0 +1,3 @@
+# opWayneSkolds
+
+Stworzone przez JustMiko

@@ -1,0 +1,43 @@
+//-----------------------------------------------<< Header >>------------------------------------------------//
+//                                                 adminduty                                                 //
+//----------------------------------------------------*------------------------------------------------------//
+//----[                                                                                                 ]----//
+//----[         |||||             |||||                       ||||||||||       ||||||||||               ]----//
+//----[        ||| |||           ||| |||                      |||     ||||     |||     ||||             ]----//
+//----[       |||   |||         |||   |||                     |||       |||    |||       |||            ]----//
+//----[       ||     ||         ||     ||                     |||       |||    |||       |||            ]----//
+//----[      |||     |||       |||     |||                    |||     ||||     |||     ||||             ]----//
+//----[      ||       ||       ||       ||     __________     ||||||||||       ||||||||||               ]----//
+//----[     |||       |||     |||       |||                   |||    |||       |||                      ]----//
+//----[     ||         ||     ||         ||                   |||     ||       |||                      ]----//
+//----[    |||         |||   |||         |||                  |||     |||      |||                      ]----//
+//----[    ||           ||   ||           ||                  |||      ||      |||                      ]----//
+//----[   |||           ||| |||           |||                 |||      |||     |||                      ]----//
+//----[  |||             |||||             |||                |||       |||    |||                      ]----//
+//----[                                                                                                 ]----//
+//----------------------------------------------------*------------------------------------------------------//
+// Autor: Simeone
+// Data utworzenia: 04.05.2019
+
+//
+
+//-----------------<[ Zmienne: ]>-------------------
+
+//Statystyki:
+new iloscKick[MAX_PLAYERS];//Ilość kicków nadanych przez @ -----------------------> [/kick]
+new iloscWarn[MAX_PLAYERS];//Ilość warnów nadanych przez @ -----------------------> [/warn /unwarn]
+new iloscBan[MAX_PLAYERS]; //Ilośc banów/unbanów/warnów/unwarnów/sbanów ----------> [/ban /block /unban /unblock /pban /pblock, /banip, /sblock ]
+new iloscAJ[MAX_PLAYERS];//Ilość rozdanych przez admina AJ -----------------------> [/aj; /unaj; /pAJ]
+new iloscInWiadomosci[MAX_PLAYERS];//Ilość wchodzących wiadomości ----------------> [/w]
+new iloscOutWiadomosci[MAX_PLAYERS];//Ilość wuchodzących wiadomości --------------> [/w]
+new iloscZapytaj[MAX_PLAYERS];//Ilość reakcji na /support -------------------------> [/supports]
+new iloscPozaDuty[MAX_PLAYERS];//Ilość akcji wykonanych poza służbą administratora -> [/ban /kick /block /aj /pban /block /paj /bp]
+new iloscInne[MAX_PLAYERS]; //Inne kary/akcje administracyjne ---------------------> [/slap, /gethere, /tp, /getcar, /pogodaall, /fuelcar, /fixveh, /fuelcars, /sethp, /setarmor, /fixallveh, /mute, /freeze, /unfreeze, /bp ]
+new AdminDutyMinuty[MAX_PLAYERS];//Czas służby - Minuty
+new AdminDutyGodziny[MAX_PLAYERS];//Czas służby - Godziny
+new AdminDutyTimer[MAX_PLAYERS];//Czas służby - Timer
+new firstDutyAdmin[MAX_PLAYERS]; //Sprawdza czy gracz był podczas adminduty, jeżeli był to wykonuje zapis w logi
+//------------------<[ Enumy: ]>--------------------
+//------------------<[ Forwardy: ]>--------------------
+
+//end

@@ -1,0 +1,6 @@
+
+//------------------<[ Funkcje forward: ]>-------------------
+
+forward Dealers_Load();
+
+//end

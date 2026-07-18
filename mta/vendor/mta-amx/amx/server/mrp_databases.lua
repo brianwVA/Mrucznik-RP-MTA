@@ -240,7 +240,8 @@ function mysql_query(amx, query, resultId, extraId, connectionHandle)
     local connection = writeQuery and mysqlState.writeConnection or mysqlState.connection
     local rows, affectedOrError, insertOrMessage = pollMysql(query, connection)
     if rows == false then
-        outputDebugString("[MRP MySQL R5] " .. tostring(affectedOrError) .. ": "
+        outputDebugString("[MRP MySQL R5][" .. tostring(amx and amx.name or "unknown") .. "] "
+            .. tostring(affectedOrError) .. ": "
             .. tostring(insertOrMessage) .. " | " .. query, 1)
         mysqlState.rows, mysqlState.resultColumns, mysqlState.rowIndex = {}, {}, 0
         return 0
@@ -428,7 +429,11 @@ g_SAMPSyscallPrototypes.mysql_free_result = {'i'}
 g_SAMPSyscallPrototypes.mysql_insert_id = {'i'}
 g_SAMPSyscallPrototypes.mysql_num_rows = {'i'}
 g_SAMPSyscallPrototypes.mysql_ping = {'i'}
-g_SAMPSyscallPrototypes.mysql_query = {'s', 'i', 'i', 'i'}
+-- Do not register the legacy R5 `mysql_query(query, ...)` adapter in the
+-- Kotnik runtime. BlueG R41 uses the same native name with the incompatible
+-- `mysql_query(handle, query, use_cache)` signature; registering this Lua
+-- prototype shadowed the real plugin and turned the numeric DB handle into a
+-- one-byte SQL string. The R41 plugin now owns this native end-to-end.
 g_SAMPSyscallPrototypes.mysql_real_escape_string = {'s', 'r', 'i'}
 g_SAMPSyscallPrototypes.mysql_reconnect = {'i'}
 g_SAMPSyscallPrototypes.mysql_retrieve_row = {'i'}

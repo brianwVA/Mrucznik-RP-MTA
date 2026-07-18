@@ -1,0 +1,131 @@
+Logger:
+  logi/5.1.2026/admin:
+    LogLevel: All
+    LogRotation:
+      Type: Size
+      Trigger: 5GB
+      BackupCount: 15
+  logi/5.1.2026/pay:
+    LogLevel: All
+    LogRotation:
+      Type: Size
+      Trigger: 5GB
+      BackupCount: 15
+  logi/5.1.2026/punishment:
+    LogLevel: All
+    LogRotation:
+      Type: Size
+      Trigger: 5GB
+      BackupCount: 15
+  logi/5.1.2026/warning:
+    LogLevel: All
+    LogRotation:
+      Type: Size
+      Trigger: 5GB
+      BackupCount: 15
+  logi/5.1.2026/nick:
+    LogLevel: All
+    LogRotation:
+      Type: Size
+      Trigger: 5GB
+      BackupCount: 15
+  logi/5.1.2026/sejf:
+    LogLevel: All
+    LogRotation:
+      Type: Size
+      Trigger: 5GB
+      BackupCount: 15
+  logi/5.1.2026/server:
+    LogLevel: All
+    LogRotation:
+      Type: Size
+      Trigger: 5GB
+      BackupCount: 15
+  logi/5.1.2026/command:
+    LogLevel: All
+    LogRotation:
+      Type: Size
+      Trigger: 5GB
+      BackupCount: 15
+  logi/5.1.2026/chat:
+    LogLevel: All
+    LogRotation:
+      Type: Size
+      Trigger: 5GB
+      BackupCount: 15
+  logi/5.1.2026/damage:
+    LogLevel: All
+    LogRotation:
+      Type: Size
+      Trigger: 5GB
+      BackupCount: 15
+  logi/5.1.2026/money:
+    LogLevel: All
+    LogRotation:
+      Type: Size
+      Trigger: 5GB
+      BackupCount: 15
+  logi/5.1.2026/error:
+    LogLevel: All
+    LogRotation:
+      Type: Size
+      Trigger: 5GB
+      BackupCount: 15
+  logi/5.1.2026/combat:
+    LogLevel: All
+    LogRotation:
+      Type: Size
+      Trigger: 5GB
+      BackupCount: 15
+  logi/5.1.2026/house:
+    LogLevel: All
+    LogRotation:
+      Type: Size
+      Trigger: 5GB
+      BackupCount: 15
+  logi/old/premium:
+    LogLevel: All
+    LogRotation:
+      Type: Size
+      Trigger: 5GB
+      BackupCount: 15
+  logi/old/connect:
+    LogLevel: All
+    LogRotation:
+      Type: Size
+      Trigger: 5GB
+      BackupCount: 15
+  logi/old/mysql:
+    LogLevel: All
+    LogRotation:
+      Type: Size
+      Trigger: 5GB
+      BackupCount: 15
+  logi/old/items:
+    LogLevel: All
+    LogRotation:
+      Type: Size
+      Trigger: 5GB
+      BackupCount: 15
+  logi/old/motele:
+    LogLevel: All
+    LogRotation:
+      Type: Size
+      Trigger: 5GB
+      BackupCount: 15
+  logi/old/kasyno:
+    LogLevel: All
+    LogRotation:
+      Type: Size
+      Trigger: 5GB
+      BackupCount: 15
+  logi/old/adminduty:
+    LogLevel: All
+    LogRotation:
+      Type: Size
+      Trigger: 5GB
+      BackupCount: 15
+LogLevel:
+  Error:
+    PrintToConsole: true
+EnableColors: true

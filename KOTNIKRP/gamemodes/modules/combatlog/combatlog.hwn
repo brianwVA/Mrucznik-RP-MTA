@@ -1,0 +1,13 @@
+enum CombatData
+{
+    CombatTimer,
+    CombatTimerType,
+    CombatPUID,
+    
+    Float:CombatX,
+    Float:CombatY,
+    Float:CombatZ,
+    CombatVW,
+    CombatInt
+}
+new CombatLogs[MAX_COMBATLOGS][CombatData];

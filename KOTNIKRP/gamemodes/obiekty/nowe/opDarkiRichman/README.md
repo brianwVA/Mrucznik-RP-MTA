@@ -1,0 +1,3 @@
+# opDarkiRichman
+
+Stworzone przez Lilka

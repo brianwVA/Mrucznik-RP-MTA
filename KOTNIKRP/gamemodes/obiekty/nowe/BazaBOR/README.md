@@ -1,0 +1,3 @@
+# BazaBOR
+
+Stworzone przez 

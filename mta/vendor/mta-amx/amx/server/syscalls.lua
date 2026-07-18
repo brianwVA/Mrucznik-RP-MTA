@@ -97,6 +97,44 @@ function argsToSAMP(amx, prototype, ...)
 	return args
 end
 
+-- Large SA-MP maps commonly call RemoveBuildingForPlayer thousands of times
+-- from OnPlayerConnect. Sending every call as an individual client event
+-- blocks the MTA client long enough to trigger NETWORK TROUBLE and delays the
+-- login dialog behind the whole map queue. Keep those removals out of the
+-- synchronous connect callback and deliver them in small timed batches.
+local pendingBuildingRemovals = setmetatable({}, { __mode = 'k' })
+local buildingRemovalTimers = setmetatable({}, { __mode = 'k' })
+-- OPCLogin shows the password dialog about four seconds after class selection.
+-- Send the map queue later so authentication is never held behind world edits.
+local BUILDING_REMOVAL_INITIAL_DELAY = 20000
+
+local function flushBuildingRemovals(player)
+	buildingRemovalTimers[player] = nil
+	if not isElement(player) then
+		pendingBuildingRemovals[player] = nil
+		return
+	end
+
+	local queue = pendingBuildingRemovals[player]
+	if not queue then return end
+	clientCall(player, 'QueueBuildingRemovals', queue.items)
+	pendingBuildingRemovals[player] = nil
+end
+
+local function queueBuildingRemoval(player, args)
+	local queue = pendingBuildingRemovals[player]
+	if not queue then
+		queue = { items = {}, head = 1 }
+		pendingBuildingRemovals[player] = queue
+	end
+	queue.items[#queue.items + 1] = args
+	if not buildingRemovalTimers[player] then
+		buildingRemovalTimers[player] = setTimer(
+			flushBuildingRemovals, BUILDING_REMOVAL_INITIAL_DELAY, 1, player
+		)
+	end
+end
+
 function syscall(amx, svc, prototype, ...)		-- svc = service number (= index in native functions table) or name of native function
 	if type(amx) == 'userdata' then
 		local amxName = table.find(g_LoadedAMXs, 'cptr', amx)
@@ -138,6 +176,10 @@ function syscall(amx, svc, prototype, ...)		-- svc = service number (= index in 
 	local result
 	if prototype.client then
 		local player = table.remove(args, 1)
+		if fnName == 'RemoveBuildingForPlayer' then
+			queueBuildingRemoval(player, args)
+			return 1
+		end
 		clientCall(player, fnName, unpack(args))
 		result = 1
 	else

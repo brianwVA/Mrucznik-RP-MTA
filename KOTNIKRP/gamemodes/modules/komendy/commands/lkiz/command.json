@@ -1,0 +1,11 @@
+{
+    "name": "lkiz",
+    "description": "Wyświetla lista kar i zasad, czyli główny regulamin serwera.",
+    "permissions": [
+        "everyone"
+    ],
+    "author": "Mrucznik",
+    "aliases": [],
+    "parameters": [],
+    "date": "13.05.2019"
+}

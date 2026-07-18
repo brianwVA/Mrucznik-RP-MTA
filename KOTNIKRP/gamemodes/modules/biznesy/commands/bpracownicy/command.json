@@ -1,0 +1,12 @@
+{
+    "name": "bpracownicy",
+    "description": "Wyświetla listę pracowników online biznesu.",
+    "permissions": [],
+    "author": "Simeone",
+    "aliases": [
+        "biznespracownicy",
+        "businessworkers"
+    ],
+    "parameters": [],
+    "date": "19.08.2019"
+}

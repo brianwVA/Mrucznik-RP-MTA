@@ -1,0 +1,11 @@
+{
+    "name": "hq",
+    "description": "Wyświetla listę zgłoszeń z komputera głównego LSPD.",
+    "permissions": [
+        "frakcja_LSPD"
+    ],
+    "author": "niceczlowiek",
+    "aliases": [],
+    "parameters": [],
+    "date": "13.05.2019"
+}

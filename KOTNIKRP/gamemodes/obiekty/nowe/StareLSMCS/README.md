@@ -1,0 +1,3 @@
+# StareLSMCS
+
+Stworzone przez 

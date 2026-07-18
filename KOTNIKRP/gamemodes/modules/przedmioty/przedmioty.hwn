@@ -1,0 +1,106 @@
+//-----------------------------------------------<< Header >>------------------------------------------------//
+//                                                 przedmioty                                                //
+//----------------------------------------------------*------------------------------------------------------//
+//----[                                                                                                 ]----//
+//----[         |||||             |||||                       ||||||||||       ||||||||||               ]----//
+//----[        ||| |||           ||| |||                      |||     ||||     |||     ||||             ]----//
+//----[       |||   |||         |||   |||                     |||       |||    |||       |||            ]----//
+//----[       ||     ||         ||     ||                     |||       |||    |||       |||            ]----//
+//----[      |||     |||       |||     |||                    |||     ||||     |||     ||||             ]----//
+//----[      ||       ||       ||       ||     __________     ||||||||||       ||||||||||               ]----//
+//----[     |||       |||     |||       |||                   |||    |||       |||                      ]----//
+//----[     ||         ||     ||         ||                   |||     ||       |||                      ]----//
+//----[    |||         |||   |||         |||                  |||     |||      |||                      ]----//
+//----[    ||           ||   ||           ||                  |||      ||      |||                      ]----//
+//----[   |||           ||| |||           |||                 |||      |||     |||                      ]----//
+//----[  |||             |||||             |||                |||       |||    |||                      ]----//
+//----[                                                                                                 ]----//
+//----------------------------------------------------*------------------------------------------------------//
+// Autor: renosk
+// Data utworzenia: 06.05.2021
+
+//
+
+//------------------<[ Enumy: ]>--------------------
+
+enum _items {
+	i_UID,
+	i_Name[40],
+	Float:i_Pos[3],
+	i_VW,
+	i_INT,
+	i_Dropped,
+	i_OwnerType,
+	i_Owner,
+	i_ItemType,
+	i_Value1,
+	i_Value2,
+	i_Used,
+	i_Quantity,
+	Text3D:i_3DText,
+	i_tmpValue,
+	i_ValueSecret
+,
+	i_ReceiveTime
+};
+
+enum _playeritems {
+	player_item_id
+};
+
+//-----------------<[ Zmienne: ]>-------------------
+
+new Item[MAX_ITEMS][_items];
+new PlayerItem[MAX_PLAYERS][MAX_ITEM_LIMIT_GENERAL_PREMIUM][_playeritems];
+
+//-----------------<[ Iteratory: ]>-------------------
+
+new Iterator:Items<MAX_ITEMS>;
+new Iterator:PlayerItems[MAX_PLAYERS]<MAX_ITEMS>;
+
+//-----------------<[ Nazwy typ???w przedmiot???w: ]>-------------------
+new ItemTypes[][] = {
+	"Telefon",
+	"Sprunk",
+	"Mats",
+	"CB-Radio",
+	"Łom",
+	"Alkohol",
+	"Papieros",
+	"Broń",
+	"MP3",
+	"Kostka",
+	"Kondom",
+	"Apteczka",
+	"Obiekt przyczepialny",
+	"Ubranie",
+	"Jedzenie",
+	"Książka telefoniczna",
+	"Zdrapka",
+	"Tempomat",
+	"E-papieros",
+	"Wytrych",
+	"Zegarek",
+	"Lancuszek",
+	"Marihuana",
+	"Krzak",
+	"Deskorolka",
+	"Napój",
+	"Urzadzenie do Dymu",
+	"Flara",
+	"Maska",
+	"Kawałek M4",
+	"Kawałek AK47",
+	"Portfel",
+	"Syntetyczna woda",
+	"Plecak"
+};
+
+
+//------------------<[ Forwardy: ]>--------------------
+
+//------------------<[ Jedzenie: ]>--------------------
+
+//#define ZEPSUTE_JEDZENIE_CZAS 21600 //6 godzin
+
+//end

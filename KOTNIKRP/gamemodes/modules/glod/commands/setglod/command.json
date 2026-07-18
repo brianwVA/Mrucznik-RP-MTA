@@ -1,0 +1,22 @@
+{
+    "name": "setglod",
+    "description": "Zmienia głód gracza",
+    "permissions": [
+        "admini"
+    ],
+    "author": "renosk",
+    "aliases": [],
+    "parameters": [
+        {
+            "type": "player",
+            "name": "giveplayerid",
+            "description": "Nick/ID"
+        },
+        {
+            "type": "integer",
+            "name": "hunger",
+            "description": "Głód"
+        }
+    ],
+    "date": "27.05.2021"
+}

@@ -1,0 +1,13 @@
+{
+    "name": "bizlock",
+    "description": "Pozwala zamknąć bądź otworzyć twój biznes. Może ją użyć zarówno członek jak i własciciel biznesu.",
+    "permissions": [],
+    "author": "Simeone",
+    "aliases": [
+        "zamknijbiznes",
+        "otworzbiznes",
+        "businesslock"
+    ],
+    "parameters": [],
+    "date": "19.08.2019"
+}

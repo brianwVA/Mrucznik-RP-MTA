@@ -158,6 +158,14 @@ def amx_publics(amx: bytes) -> set[str]:
 
 
 def compiled_commands(repo: Path, output_dir: Path) -> set[str] | None:
+    kotnik_gamemode = repo / "gamemodes/Kotnik-RP-MTA.amx"
+    if kotnik_gamemode.exists() and kotnik_gamemode.stat().st_size > 1024:
+        return {
+            name[4:].lower()
+            for name in amx_publics(kotnik_gamemode.read_bytes())
+            if name.startswith("@yC_")
+        }
+
     archive = repo / "serverfiles.tar.gz"
     if archive.exists() and archive.stat().st_size > 1024:
         commands: set[str] = set()
@@ -217,7 +225,7 @@ def write_outputs(
     )
     document = {
         "schema_version": 1,
-        "source": "MrucznikRolePlay/Mrucznik-RP-gamemode@master",
+        "source": "M-RP 2.9 / KOTNIKRP",
         "command_count": len(ordered),
         "definition_count": definition_count,
         "runtime_command_count": runtime_count,
@@ -255,6 +263,9 @@ def main() -> None:
     )
     args = parser.parse_args()
     repo = args.repo.resolve()
+    kotnik_repo = repo / "KOTNIKRP"
+    if (kotnik_repo / "gamemodes/Kotnik-RP-MTA.amx").exists():
+        repo = kotnik_repo
     commands = metadata_commands(repo)
     code_commands(repo, commands)
     validate(commands)

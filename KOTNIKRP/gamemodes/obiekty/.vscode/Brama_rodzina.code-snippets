@@ -1,0 +1,13 @@
+{
+	"Print to console": {
+		"scope": "pawn",
+		"prefix": "brama_rodzina",
+		"body": [
+			"DodajBrame($OBIEKT,",
+			"	$BRAMA_OTWARTA,",
+			"	$BRAMA_ZAMKNIETA,",
+			"	2.0, 10.0, BRAMA_UPR_TYPE_FAMILY, $ID_RODZINY);"
+		],
+		"description": "Tworzy nową bramę."
+	}
+}

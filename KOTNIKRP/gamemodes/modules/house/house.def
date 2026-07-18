@@ -1,0 +1,68 @@
+#define MAX_HOUSE               300
+#define D_PLAYER_HOUSE_LIST     8796
+#define D_PLAYER_HOUSE_MANAGE   8797
+#define D_PLAYER_HOUSE_CHANGE_INTERIOR 8798
+#define D_PLAYER_HOUSE_SETSPAWN_CONFIRM 8799
+#define D_PLAYER_HOUSE_SCRAPHOUSE_CONFIRM 8800
+#define D_PLAYER_HOUSE_BOOSTS 8801
+#define D_PLAYER_HOUSE_BOOST_CONFIRM 8802
+
+#define INTERIOR_TYPE_SMALL 1
+#define INTERIOR_TYPE_MEDIUM 2
+#define INTERIOR_TYPE_LARGE 3
+
+#define HOUSE_INT_VW    7000 //+uid
+
+enum _house_interiors {
+    __h_interiorid,
+    __h_name[32],
+    Float:__h_x,
+    Float:__h_y,
+    Float:__h_z,
+    __h_inttype,
+    __h_price,
+    bool:__h_isempty
+}
+new const HOUSE_INTERIORS[][_house_interiors] = {
+    //interiorid,    name,                      x,         y,      z,          inttype,            price, empty
+     // ?????????????????????????????
+    // ?????????????????????????????
+    // SMALL INTERIORS
+    // ?????????????????????????????
+    {2,  "Angel Pine Trailer",        1.1853,     -3.2387,     999.4284,   INTERIOR_TYPE_SMALL,   100, false},
+    {1,  "Denise's House",          245.2307,    304.7632,     999.1484,   INTERIOR_TYPE_SMALL,   100, false},
+    {2,  "Katie's House",           269.6405,    305.9512,     999.1484,   INTERIOR_TYPE_SMALL,   100, false},
+    {5,  "Barbara's House",         322.5014,    303.6906,     999.1484,   INTERIOR_TYPE_SMALL,   100, false},
+    {4,  "Michelle's House",        306.1966,    307.8190,    1003.3047,   INTERIOR_TYPE_SMALL,   100, false},
+
+    // ?????????????????????????????
+    // MEDIUM INTERIORS
+    // ?????????????????????????????
+    // Door coords from SAMP interior-door list / safehouse groups where available
+    {11, "Willowfield Safehouse",  2282.9099,  -1138.2900,   1050.8984,   INTERIOR_TYPE_MEDIUM,  200, false},
+
+    // These �Safehouse X� use the common safehouse interiors.
+    // For group 4 we have exact door coords; others use standard interior coords.
+    {10, "Safehouse 1",            2261.0977,  -1137.8833,   1050.6328,   INTERIOR_TYPE_MEDIUM,  200, false},
+    {8,  "Safehouse 2",            2365.1089,  -1133.0795,   1050.8750,   INTERIOR_TYPE_MEDIUM,  200, false},
+    {6,  "Safehouse 3",            2333.0300,  -1073.9600,   1049.1000,   INTERIOR_TYPE_MEDIUM,  200, false},
+    {6,  "Safehouse 5",            2194.7900,  -1204.3500,   1049.0234,   INTERIOR_TYPE_MEDIUM,  200, false},
+    {6,  "Safehouse 6",            2308.8700,  -1210.7800,   1049.1000,   INTERIOR_TYPE_MEDIUM,  200, false},
+
+    // ?????????????????????????????
+    // LARGE INTERIORS
+    // ?????????????????????????????
+    {3,  "Johnson House (CJ)",     2496.0549,  -1695.1749,   1014.7422,   INTERIOR_TYPE_LARGE,   1000, false},
+    {1,  "Camel's Toe Safehouse",  2216.1282,  -1076.3052,   1050.4844,   INTERIOR_TYPE_LARGE,   300, false},
+    {8,  "Verdant Bluffs Safehouse",2365.1089, -1133.0795,   1050.8750,   INTERIOR_TYPE_LARGE,   300, false},
+    {12, "Safehouse 7",            2323.7063,  -1147.6509,   1050.7101,   INTERIOR_TYPE_LARGE,   300, false},
+
+    // ?????????????????????????????
+    // PLACEHOLDER / EMPTY
+    // ?????????????????????????????
+    {0,  "Pusty interior",         1397.13,    -1600.51,      116.04,     INTERIOR_TYPE_SMALL,   150, true},
+    {0,  "Pusty interior",         1397.13,    -1600.51,      116.04,     INTERIOR_TYPE_MEDIUM,  250, true},
+    {0,  "Pusty interior",         1397.13,    -1600.51,      116.04,     INTERIOR_TYPE_LARGE,   350, true}
+
+
+};

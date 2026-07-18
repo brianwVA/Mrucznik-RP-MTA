@@ -541,13 +541,47 @@ end
 
 function RemoveBuildingForPlayer(model, x, y, z, radius)
 	if model == -1 then
-		for i = 321, 18630 do -- Remove all world models around radius if they sent -1
-			removeWorldModel(i, radius, x, y, z)
-		end
-		return -- Don't run the rest of the code
+		-- Kotnik's source is normalized to concrete IPL model IDs at build time.
+		-- Never emulate SA-MP's wildcard with 18,310 calls on one frame: a few
+		-- such entries can freeze MTA for minutes and cause NETWORK TROUBLE.
+		outputDebugString(string.format(
+			'[MTA AMX] Pominięto nierozwiązane usunięcie budynku przy %.3f %.3f %.3f',
+			x, y, z
+		), 2)
+		return false
 	end
 	removeWorldModel(model, radius, x, y, z)
-	return
+	return true
+end
+
+local buildingRemovalQueue = {}
+local buildingRemovalHead = 1
+local buildingRemovalTail = 0
+local buildingRemovalTimer = false
+
+local function processBuildingRemovalQueue()
+	buildingRemovalTimer = false
+	local building = buildingRemovalQueue[buildingRemovalHead]
+	if not building then
+		buildingRemovalQueue = {}
+		buildingRemovalHead = 1
+		buildingRemovalTail = 0
+		return
+	end
+	buildingRemovalQueue[buildingRemovalHead] = nil
+	buildingRemovalHead = buildingRemovalHead + 1
+	RemoveBuildingForPlayer(unpack(building))
+	buildingRemovalTimer = setTimer(processBuildingRemovalQueue, 16, 1)
+end
+
+function QueueBuildingRemovals(buildings)
+	for _, building in ipairs(buildings or {}) do
+		buildingRemovalTail = buildingRemovalTail + 1
+		buildingRemovalQueue[buildingRemovalTail] = building
+	end
+	if not buildingRemovalTimer or not isTimer(buildingRemovalTimer) then
+		buildingRemovalTimer = setTimer(processBuildingRemovalQueue, 16, 1)
+	end
 end
 
 function RestoreBuildingForPlayer(model, x, y, z, radius)

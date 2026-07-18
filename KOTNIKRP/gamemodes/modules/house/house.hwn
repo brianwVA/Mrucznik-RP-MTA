@@ -1,0 +1,19 @@
+enum eHouse {
+    h_ID,
+    h_Name[64],
+    h_Owner,
+    h_Price,
+    Float:h_enter_pos[3],
+    h_enter_vw,
+    Float:h_exit_pos[3],
+    h_exit_vw,
+    h_exit_int,
+    STREAMER_TAG_PICKUP:h_Pickup,
+    STREAMER_TAG_3D_TEXT_LABEL:h_Label,
+    h_interior_type,
+    bool:h_isClosed,
+    h_sejf_level
+}
+
+new House[MAX_HOUSE][eHouse];
+new Iterator:House_iterator<MAX_HOUSE>;

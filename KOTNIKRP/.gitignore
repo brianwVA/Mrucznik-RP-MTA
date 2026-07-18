@@ -1,0 +1,72 @@
+# Windows image file caches
+Thumbs.db
+ehthumbs.db
+
+# Folder config file
+Desktop.ini
+
+# Recycle Bin used on file shares
+$RECYCLE.BIN/
+
+# Windows Installer files
+*.cab
+*.msi
+*.msm
+*.msp
+
+# Windows shortcuts
+*.lnk
+
+
+
+#---< My Excludes >---
+#Server files and plugins
+*.pdb
+*.db
+*.db-journal
+
+#AMX file format
+*.amx
+
+#Log files
+*.log
+/*.txt
+
+#rsa key
+id_rsa
+
+# logs
+logs/
+server_log.txt
+crashinfo.txt
+
+# Ban list
+samp.ban
+
+#
+# Common files
+#
+
+*.sublime-workspace
+
+
+__pycache__/
+*.py[cod]
+*$py.class
+
+# serverfiles
+serverfiles/
+scriptfiles/MySQL/connect.ini
+*.ini
+*.bak
+*.rar
+server.cfg
+mysql.ini
+
+scriptfiles/sobeitlog/**
+scriptfiles/Narkotyki/**
+
+scriptfiles/rcon/*
+npcmodes/recordings/*.rec
+scriptfiles/sobeitlog_new/**
+models/*

@@ -1,0 +1,3 @@
+# ZniszczoneStudioTatuazu
+
+Stworzone przez 

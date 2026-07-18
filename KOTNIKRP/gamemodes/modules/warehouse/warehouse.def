@@ -1,0 +1,59 @@
+
+
+//------------------<[ Define: ]>-------------------
+
+#define MAX_WAREHOUSES          10
+#define WAREHOUSE_PICKUP_MODEL  19523
+
+// Dialogi
+#define DIALOG_WAREHOUSE_MENU       9810
+#define DIALOG_WAREHOUSE_CRAFT      9811
+#define DIALOG_WAREHOUSE_BUY        9812
+#define DIALOG_WAREHOUSE_STORE      9813
+#define DIALOG_WAREHOUSE_LOAD       9814
+#define DIALOG_WAREHOUSE_UPGRADE    9815
+#define DIALOG_WAREHOUSE_TAKE_CHEMICALS 9816
+#define DIALOG_WAREHOUSE_TAKE_MATERIALS 9817
+
+// Wymagane gunparts do craftowania broni
+// Definicje przeniesione do gamemodes/system/ceny.pwn
+
+// Tiery magazynu
+#define WAREHOUSE_TIER_1            1
+#define WAREHOUSE_TIER_2            2
+// Pojemność i koszt przeniesione do gamemodes/system/ceny.pwn
+
+//------------------<[ Enums: ]>-------------------
+
+enum E_WAREHOUSE_DATA {
+    wh_sql_id,
+    Float:wh_ent_pos[3],
+    Float:wh_exit_pos[3],
+    wh_price,
+    wh_org_owner_sql,
+    wh_org_owner,
+    wh_interior,
+    wh_virtualworld,
+    wh_tier,  // Tier magazynu (1 lub 2)
+    wh_fabrics,
+    wh_metals,
+    wh_mats,  // Materialy
+    wh_gunparts,
+    // Chemikalia
+    wh_acetone,
+    wh_toluene,
+    wh_lithium,
+    wh_sodium,
+    wh_calcium,
+    wh_pickup,
+    wh_area,
+    Text3D:wh_label
+};
+
+//------------------<[ Variables: ]>-------------------
+
+new gWarehouseData[MAX_WAREHOUSES][E_WAREHOUSE_DATA];
+new gPlayerInWarehouse[MAX_PLAYERS];
+new gTotalWarehouses = 0;
+
+//end

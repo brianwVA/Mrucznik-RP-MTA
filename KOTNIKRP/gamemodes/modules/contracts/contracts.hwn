@@ -1,0 +1,7 @@
+
+//------------------<[ Funkcje forward: ]>-------------------
+
+forward Contracts_Load();
+forward Contracts_OnLoad();
+
+//end

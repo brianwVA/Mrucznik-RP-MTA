@@ -1,0 +1,339 @@
+# ============================================ SKINY ============================================ #
+
+------------------ MEŻCZYŹNI ------------------
+#        biala karnacja, włoska i araby       #
+AddCharModel(154, 20001 , "skin20001.dff",  "skin20001.txd"); // mezczyzna mafioza z rozjebaną twarzą, czarna kurtka
+AddCharModel(154, 20003 , "skin20003.dff",  "skin20003.txd"); // mezczynza, pedalska grzywka na lewo, kurtka
+AddCharModel(154, 20005,  "skin20005.dff",  "skin20005.txd"); // mezczyzna, mafioza, krawat, kapelusz
+AddCharModel(154, 20006,  "skin20006.dff",  "skin20006.txd"); // mezczyzna, pomaranczowa kurtka
+AddCharModel(154, 20009,  "skin20009.dff",  "skin20009.txd"); // mezczyzna, niebieska koszulka, biala czapka nike
+AddCharModel(154, 20010,  "skin20010.dff",  "skin20010.txd"); // meczyzna, blondyn, czarna kurtka
+AddCharModel(154, 20013,  "skin20013.dff",  "skin20013.txd"); // mezczyzna, rowerzysta jakis chyba w koszuli bialej
+AddCharModel(154, 20014,  "skin20014.dff",  "skin20014.txd"); // mezczyzna, czerwona bluza adidas, bez koszulki
+AddCharModel(154, 20015,  "skin20015.dff",  "skin20015.txd"); // mezczyzna, czarna dluga marynarka, arab chyba
+AddCharModel(154, 20016,  "skin20016.dff",  "skin20016.txd"); // mezczyzna, czerwona hawajska koszula z kaburą pod pachą
+AddCharModel(154, 20017,  "skin20017.dff",  "skin20017.txd"); // mezczyzna, motocyklista bez koszulki
+AddCharModel(154, 20019,  "skin20019.dff",  "skin20019.txd"); // mezczyzna, gangster, czarna kurtka, czerwona koszula
+AddCharModel(154, 20020,  "skin20020.dff",  "skin20020.txd"); // mezczyzna, mafioza, czarna kurtka, jednodniowy zarost
+AddCharModel(154, 20021,  "skin_20021.dff",  "skin_20021.txd"); // https://memories-rp.pl/index.php?/topic/72-awgranie-skina-b-dup/
+
+#                 czarnuchy                   #
+AddCharModel(154, 20002 , "skin20002.dff",  "skin20002.txd"); // mezczyzna, czarna kurtka i kaptur
+AddCharModel(154, 20004 , "skin20004.dff",  "skin20004.txd"); // mezczyzna, czarnuch z bandaną, prolaps
+AddCharModel(154, 20012,  "skin20012.dff",  "skin20012.txd"); // mezczyzna, czarnu, czerwona kurtka
+
+#                  latynosi                   #
+AddCharModel(154, 20011,  "skin20011.dff",  "skin20011.txd"); // mezczyzna, czerwony stroj a'la wiezienny
+AddCharModel(154, 20018,  "skin20018.dff",  "skin20018.txd"); // mezczyzna, okuary, czarna bluza w krate
+
+#                  azjaci                     #
+AddCharModel(154, 20007,  "skin20007.dff",  "skin20007.txd"); // mezczyzna, biznesmen z bialką marynarką
+AddCharModel(154, 20008,  "skin20008.dff",  "skin20008.txd"); // mezczyzna, japoniec czarna kurtka
+
+-----------------  KOBIETY  -------------------
+#        biala karnacja, włoska i araby       #
+AddCharModel(55, 21001 , "skin21001.dff",  "skin21001.txd"); // kobieta z fioletową kurtką i logo supreme
+AddCharModel(55, 21002 , "skin21002.dff",  "skin21002.txd"); // kobieta, czarna koszulka z warkoczykami
+AddCharModel(55, 21003 , "skin21003.dff",  "skin21003.txd"); // kobieta, biala koszulka, pomaranczowe spodenki, ciemniejsza karnacja 
+AddCharModel(55, 21004,  "skin21004.dff",  "skin21004.txd"); // kobieta, czerwona kurtka, biale wlosy
+AddCharModel(55, 21005,  "skin21005.dff",  "skin21005.txd"); // kobieta, warkocze, bez maski
+AddCharModel(55, 21006,  "skin21006.dff",  "skin21006.txd"); // kobieta, warkocze, z maską
+AddCharModel(55, 21007,  "skin21007.dff",  "skin21007.txd"); // kobieta, warkocz, biala kurtka, czarna spodnica, dlugie buty czarne
+AddCharModel(55, 21008,  "skin21008.dff",  "skin21008.txd"); // kobieta, feministka jakas, biala koszulka w czarne pasy, grzywa na lewo
+AddCharModel(55, 21009,  "skin21009.dff",  "skin21009.txd"); // kobieta, czarna koszula
+AddCharModel(55, 21010,  "skin21010.dff",  "skin21010.txd"); // kobieta, czerwona koszulka w kratke
+AddCharModel(55, 21011,  "skin21011.dff",  "skin21011.txd"); // kobieta, sukienka, okulary
+AddCharModel(55, 21012,  "skin21012.dff",  "skin21012.txd"); // kobieta z kapturem, czarna bluza
+
+// WYGENEROWANE
+AddCharModel(233, 21013, "21013_bfyri.dff", "21013_bfyri.txd");
+AddCharModel(233, 21014, "21014_bfyst.dff", "21014_bfyst.txd");
+AddCharModel(233, 21015, "21015_cat.dff", "21015_cat.txd");
+AddCharModel(233, 21016, "21016_flowers.dff", "21016_flowers.txd");
+AddCharModel(233, 21017, "21017_gangrl3.dff", "21017_gangrl3.txd");
+AddCharModel(233, 21018, "21018_hfyri.dff", "21018_hfyri.txd");
+AddCharModel(233, 21019, "21019_kendl1.dff", "21019_kendl1.txd");
+AddCharModel(233, 21020, "21020_kendl2.dff", "21020_kendl2.txd");
+AddCharModel(233, 21021, "21021_kendl3.dff", "21021_kendl3.txd");
+AddCharModel(233, 21022, "21022_kendl4.dff", "21022_kendl4.txd");
+AddCharModel(233, 21023, "21023_kendl5.dff", "21023_kendl5.txd");
+AddCharModel(233, 21024, "21024_kendl6.dff", "21024_kendl6.txd");
+AddCharModel(233, 21025, "21025_lady.dff", "21025_lady.txd");
+AddCharModel(233, 21026, "21026_mecgrl3.dff", "21026_mecgrl3.txd");
+AddCharModel(233, 21027, "21027_nurgrl3.dff", "21027_nurgrl3.txd");
+AddCharModel(233, 21028, "21028_ofyst.dff", "21028_ofyst.txd");
+AddCharModel(233, 21029, "21029_ofyst1.dff", "21029_ofyst1.txd");
+AddCharModel(233, 21030, "21030_ofyst2.dff", "21030_ofyst2.txd");
+AddCharModel(233, 21031, "21031_persn1.dff", "21031_persn1.txd");
+AddCharModel(233, 21032, "21032_raiders.dff", "21032_raiders.txd");
+AddCharModel(233, 21033, "21033_skinismi.dff", "21033_skinismi.txd");
+AddCharModel(233, 21034, "21034_sofybu.dff", "21034_sofybu.txd");
+AddCharModel(233, 21035, "21035_sofyst.dff", "21035_sofyst.txd");
+AddCharModel(233, 21036, "21036_sofyst1.dff", "21036_sofyst1.txd");
+AddCharModel(233, 21037, "21037_sofyst2.dff", "21037_sofyst2.txd");
+AddCharModel(233, 21038, "21038_swfyri1.dff", "21038_swfyri1.txd");
+AddCharModel(233, 21039, "21039_swfyri3.dff", "21039_swfyri3.txd");
+AddCharModel(233, 21040, "21040_swfyst2.dff", "21040_swfyst2.txd");
+AddCharModel(233, 21041, "21041_swfyst3.dff", "21041_swfyst3.txd");
+AddCharModel(233, 21042, "21042_vwfypro1.dff", "21042_vwfypro1.txd");
+AddCharModel(233, 21043, "21043_vwfypro2.dff", "21043_vwfypro2.txd");
+AddCharModel(233, 21044, "21044_vwfypro3.dff", "21044_vwfypro3.txd");
+AddCharModel(233, 21045, "21045_vwfywa2.dff", "21045_vwfywa2.txd");
+AddCharModel(233, 21046, "21046_wfybu1.dff", "21046_wfybu1.txd");
+AddCharModel(233, 21047, "21047_wfybu2.dff", "21047_wfybu2.txd");
+AddCharModel(233, 21048, "21048_wfyclot.dff", "21048_wfyclot.txd");
+AddCharModel(233, 21049, "21049_wfyclot1.dff", "21049_wfyclot1.txd");
+AddCharModel(233, 21050, "21050_wfyclot2.dff", "21050_wfyclot2.txd");
+AddCharModel(233, 21051, "21051_wfyclot3.dff", "21051_wfyclot3.txd");
+AddCharModel(233, 21052, "21052_wfyri1.dff", "21052_wfyri1.txd");
+AddCharModel(233, 21053, "21053_wfyri2.dff", "21053_wfyri2.txd");
+AddCharModel(233, 21054, "21054_wfyri4.dff", "21054_wfyri4.txd");
+AddCharModel(233, 21055, "21055_wfyri5.dff", "21055_wfyri5.txd");
+AddCharModel(233, 21056, "21056_wfyri6.dff", "21056_wfyri6.txd");
+AddCharModel(233, 21057, "21057_wfyst1.dff", "21057_wfyst1.txd");
+AddCharModel(233, 21058, "21058_wfyst10.dff", "21058_wfyst10.txd");
+AddCharModel(233, 21059, "21059_wfyst11.dff", "21059_wfyst11.txd");
+AddCharModel(233, 21060, "21060_wfyst12.dff", "21060_wfyst12.txd");
+AddCharModel(233, 21061, "21061_wfyst13.dff", "21061_wfyst13.txd");
+AddCharModel(233, 21062, "21062_wfyst14.dff", "21062_wfyst14.txd");
+AddCharModel(233, 21063, "21063_wfyst15.dff", "21063_wfyst15.txd");
+AddCharModel(233, 21064, "21064_wfyst16.dff", "21064_wfyst16.txd");
+AddCharModel(233, 21065, "21065_wfyst3.dff", "21065_wfyst3.txd");
+AddCharModel(233, 21066, "21066_wfyst4.dff", "21066_wfyst4.txd");
+AddCharModel(233, 21067, "21067_wfyst5.dff", "21067_wfyst5.txd");
+AddCharModel(233, 21068, "21068_wfyst6.dff", "21068_wfyst6.txd");
+AddCharModel(233, 21069, "21069_wfyst7.dff", "21069_wfyst7.txd");
+AddCharModel(233, 21070, "21070_wfyst8.dff", "21070_wfyst8.txd");
+AddCharModel(233, 21071, "21071_wfyst9.dff", "21071_wfyst9.txd");
+
+-------------------  INNE  --------------------
+AddCharModel(154, 22001 , "skin22001.dff",  "skin22001.txd"); // shrek
+AddCharModel(154, 22002,  "skin22002.dff",  "skin22002.txd"); // pies
+//AddCharModel(154, 22003,  "skin22003.dff",  "skin22003.txd"); // nazista
+AddCharModel(154, 22004,  "skin22004.dff",  "skin22004.txd"); // general jakis
+AddCharModel(154, 22008,  "santa.dff",  "santa.txd"); // santa
+
+----------------- PERSONALNE ------------------
+
+
+----------------- FRAKCYJNE -------------------
+
+
+#                   LSFD                    #
+
+AddCharModel(274, 27001, "bmyff.dff", "bmyff.txd");
+AddCharModel(274, 27002, "bmyffl.dff", "bmyffl.txd");
+AddCharModel(274, 27003, "bmyffp.dff", "bmyffp.txd");
+AddCharModel(233, 27004, "wfyff.dff", "wfyff.txd");
+AddCharModel(233, 27005, "wfyffl.dff", "wfyffl.txd");
+AddCharModel(233, 27006, "wfyffp.dff", "wfyffp.txd");
+AddCharModel(276, 27007, "wmyff.dff", "wmyff.txd");
+AddCharModel(276, 27008, "wmyffl.dff", "wmyffl.txd");
+AddCharModel(276, 27009, "wmyffp.dff", "wmyff.txd");
+
+#                   LSPD                    #
+
+AddCharModel(280, 27010, "skin27010.dff", "skin27010.txd");
+AddCharModel(280, 27011, "skin27011.dff", "skin27011.txd");
+AddCharModel(280, 27012, "skin27012.dff", "skin27012.txd");
+AddCharModel(280, 27013, "skin27013.dff", "skin27013.txd");
+AddCharModel(280, 27014, "skin27014.dff", "skin27014.txd");
+AddCharModel(233, 27015, "skin27015.dff", "skin27015.txd");
+AddCharModel(233, 27016, "skin27016.dff", "skin27016.txd");
+AddCharModel(233, 27017, "skin27017.dff", "skin27017.txd");
+AddCharModel(233, 27018, "skin27018.dff", "skin27018.txd");
+AddCharModel(280, 27019, "GNDBIALAS.dff", "GNDBIALAS.txd");
+AddCharModel(280, 27020, "GNDBIALASLYSY.dff", "GNDBIALASLYSY.txd");
+AddCharModel(280, 27021, "GNDCZARNUCH.dff", "GNDCZARNUCH.txd");
+AddCharModel(280, 27022, "GNDlatynos.dff", "GNDlatynos.txd");
+AddCharModel(233, 27023, "GNDLASKA.dff", "GNDLASKA.txd");
+
+#        	     UPG		    #
+
+AddCharModel(233, 27024, "skin27024.dff", "skin27024.txd");
+AddCharModel(280, 27025, "skin27025.dff", "skin27025.txd");
+AddCharModel(233, 27026, "skin27026.dff", "skin27026.txd");
+AddCharModel(280, 27027, "skin27027.dff", "skin27027.txd");
+AddCharModel(233, 27028, "skin27028.dff", "skin27028.txd");
+
+#	            BLOODS                  #
+
+AddCharModel(102, 27030, "ballas1.dff", "ballas1.txd");
+AddCharModel(102, 27031, "ballas2.dff", "ballas2.txd");
+AddCharModel(102, 27032, "ballas3.dff", "ballas3.txd");
+AddCharModel(102, 27033, "bmocd.dff", "bmocd.txd");
+AddCharModel(102, 27034, "bmycr.dff", "bmycr.txd");
+AddCharModel(102, 27035, "bmydrug.dff", "bmydrug.txd");
+AddCharModel(102, 27036, "ballas1.dff", "ballas1.txd");
+AddCharModel(102, 27037, "vbmocd.dff", "vbmocd.txd");
+AddCharModel(102, 27038, "vbmyelv.dff", "vbmyelv.txd");
+AddCharModel(102, 27039, "vhmyelv.dff", "vhmyelv.txd");
+AddCharModel(102, 27040, "vimyelv.dff", "vimyelv.txd");
+
+#	        FRONT YARD BALLAS            #
+
+AddCharModel(102, 27040, "1.dff", "1.txd");
+AddCharModel(102, 27041, "2.dff", "2.txd");
+AddCharModel(102, 27042, "3.dff", "3.txd");
+AddCharModel(102, 27043, "4.dff", "4.txd");
+AddCharModel(102, 27044, "5.dff", "5.txd");
+AddCharModel(102, 27045, "6.dff", "6.txd");
+
+
+
+#	             SASD                    #
+
+AddCharModel(288, 27046, "27046_bmybdu.dff", "27046_bmybdu.txd");
+AddCharModel(288, 27047, "27047_bmysher.dff", "27047_bmysher.txd");
+AddCharModel(288, 27048, "27048_bmyshersgt.dff", "27048_bmyshersgt.txd");
+AddCharModel(288, 27049, "27049_bmyswt.dff", "27049_bmyswt.txd");
+AddCharModel(233, 27050, "27050_wfybdu.dff", "27050_wfybdu.txd");
+AddCharModel(233, 27051, "27051_wfyget.dff", "27051_wfyget.txd");
+AddCharModel(233, 27052, "27052_wfysher.dff", "27052_wfysher.txd");
+AddCharModel(288, 27053, "27053_wmybdu.dff", "27053_wmybdu.txd");
+AddCharModel(288, 27054, "27054_wmyget.dff", "27054_wmyget.txd");
+AddCharModel(288, 27055, "27055_wmysher.dff", "27055_wmysher.txd");
+AddCharModel(288, 27056, "27056_wmysher2.dff", "27056_wmysher2.txd");
+AddCharModel(288, 27057, "27057_wmyswt.dff", "27057_wmyswt.txd");
+
+#		    ZACCA		     #
+
+AddCharModel(288, 27060, "27060_boss.dff", "27060_boss.txd");
+AddCharModel(288, 27061, "27061_dres.dff", "27061_dres.txd");
+AddCharModel(288, 27062, "27062_forelli.dff", "27062_forelli.txd");
+AddCharModel(288, 27063, "27063_heck1.dff", "27063_heck1.txd");
+AddCharModel(288, 27066, "27066_skorka.dff", "27066_skorka.txd");
+AddCharModel(288, 27067, "27067_staruch.dff", "27067_staruch.txd");
+AddCharModel(288, 27068, "27068_swmori.dff", "27068_swmori.txd");
+AddCharModel(288, 27069, "27069_swmyhp1.dff", "27069_swmyhp1.txd");
+AddCharModel(288, 27071, "27071_vmaff12.dff", "27071_vmaff12.txd");
+AddCharModel(288, 27073, "27073_vmaff22.dff", "27073_vmaff22.txd");
+AddCharModel(288, 27075, "27075_vmaff33.dff", "27075_vmaff33.txd");
+AddCharModel(288, 27077, "27077_vmaff44.dff", "27077_vmaff44.txd");
+AddCharModel(288, 27078, "27078_wmori.dff", "27078_wmori.txd");
+AddCharModel(288, 27079, "27079_wmygol2.dff", "27079_wmygol2.txd");
+AddCharModel(288, 27080, "27080_zwyklak.dff", "27080_zwyklak.txd");
+
+#                   YAKUZA                   #
+
+AddCharModel(288, 27081, "27081_dnb1.dff", "27081_dnb1.txd");
+AddCharModel(288, 27082, "27082_dnb2.dff", "27082_dnb2.txd");
+AddCharModel(288, 27083, "27083_dnb3.dff", "27083_dnb3.txd");
+AddCharModel(288, 27084, "27084_somyst.dff", "27084_somyst.txd");
+AddCharModel(288, 27085, "27085_triada.dff", "27085_triada.txd");
+AddCharModel(288, 27086, "27086_triadb.dff", "27086_triadb.txd");
+AddCharModel(288, 27087, "27087_triboss.dff", "27087_triboss.txd");
+
+#                   IBIZA                     #
+AddCharModel(288, 27088, "27088_ballas3.dff", "27088_ballas3.txd");
+AddCharModel(288, 27089, "27089_mecgrl3.dff", "27089_mecgrl3.txd");
+AddCharModel(288, 27090, "27090_random.dff", "27090_random.txd");
+AddCharModel(288, 27091, "27091_somyri.dff", "27091_somyri.txd");
+AddCharModel(288, 27092, "27092_vla2.dff", "27092_vla2.txd");
+AddCharModel(288, 27093, "27093_vmaff1.dff", "27093_vmaff1.txd");
+
+#                KU KLUX KLAN		      #
+AddCharModel(288, 27094, "KKK.dff", "KKK.txd");
+
+#             SIEVITZ CRIME FAMILY	      #
+AddCharModel(288, 27095, "27095_bmyri.dff", "27095_bmyri.txd");
+AddCharModel(288, 27096, "27096_bmyst.dff", "27096_bmyst.txd");
+AddCharModel(288, 27097, "27097_ss.dff", "27097_ss.txd");
+AddCharModel(288, 27098, "27098_vbmycr.dff", "27098_vbmycr.txd");
+AddCharModel(288, 27099, "27099_wbdyg2.dff", "27099_wbdyg2.txd");
+AddCharModel(288, 27100, "27100_wmybmx.dff", "27100_wmybmx.txd");
+AddCharModel(288, 27101, "27101_wmydrug.dff", "27101_wmydrug.txd");
+
+
+
+
+#		UNIKATOWE			#
+AddCharModel(152, 28001, "skin28001.dff", "skin28001.txd");
+AddCharModel(152, 28002, "skin28002.dff", "skin28002.txd");
+AddCharModel(40,  28003, "28003_neula.dff", "28003_neula.txd");
+AddCharModel(152, 28004, "28004_neula2.dff", "28004_neula2.txd");
+AddCharModel(288, 28005, "28005_dwayne.dff", "28005_dwayne.txd");
+AddCharModel(93, 28006, "28006_pysio.dff", "28006_pysio.txd");
+AddCharModel(288, 28007, "28007_spartacus.dff", "28007_spartacus.txd");
+AddCharModel(288, 28008, "28008_shevey.dff", "28008_shevey.txd");
+AddCharModel(288, 28009, "28009_pysio2.dff", "28009_pysio2.txd");
+AddCharModel(40, 28010,  "28010_sknatalia.dff", "28010_sknatalia.txd");
+AddCharModel(40, 28011, "28011_sknatalia.dff", "28011_sknatalia.txd");
+AddCharModel(288, 28012, "28012_metinek.dff", "28012_metinek.txd");
+AddCharModel(233, 28013, "28013_stormi.dff", "28013_stormi.txd");
+AddCharModel(233, 28014, "28014_aprilynne.dff", "28014_aprilynne.txd");
+AddCharModel(288, 28015, "28015_personal.dff", "28015_personal.txd");
+AddCharModel(288, 28016, "28016_personal.dff", "28016_personal.txd");
+
+#		BALLAS				#
+AddCharModel(288, 27094, "crips.dff", "crips.txd");
+
+#		IBIZA CLUB			#
+AddCharModel(288, 29002, "somyri.dff", "somyri.txd");
+AddCharModel(288, 29003, "vla2.dff", "vla2.txd");
+AddCharModel(288, 29004, "vmaff1.dff", "vmaff1.txd");
+AddCharModel(288, 29005, "wfyst.dff", "wfyst.txd");
+
+#		BOM				#
+AddCharModel(288, 29006, "wmopj.dff", "wmopj.txd");
+
+#		54 Jeff Crips				#
+AddCharModel(288, 27095, "crips.dff", "crips.txd");
+
+ 
+# ============================================ MODELE ============================================ #
+
+AddSimpleModel(-1, 19379, -2000, "vape.dff", "vape.txd");
+AddSimpleModel(-1, 19379, -2001, "gun_boxbig.dff", "gun_boxbig.txd");
+AddSimpleModel(-1, 19379, -2002, "cellphone.dff", "cellphone.txd");
+
+
+# ============================================ OBIEKTY ============================================ #
+
+// Motel 
+AddSimpleModel(-1, 19379, -3001, "hmm.dff", "walls.txd");
+AddSimpleModel(-1, 19379, -3002, "sciana_waska.dff", "walls.txd");
+AddSimpleModel(-1, 19379, -3003, "sciana.dff", "walls.txd");
+AddSimpleModel(-1, 19379, -3004, "obramowka.dff", "walls.txd");
+AddSimpleModel(-1, 19379, -3005, "pilar.dff", "walls.txd");
+AddSimpleModel(-1, 19379, -3006, "sciana_mini_okno.dff", "walls.txd");
+AddSimpleModel(-1, 19379, -3007, "podloga.dff", "walls.txd");
+AddSimpleModel(-1, 19379, -3008, "sciana_waskie_drzwi.dff", "walls.txd");
+AddSimpleModel(-1, 19379, -3009, "obramowka_waska.dff", "walls.txd");
+AddSimpleModel(-1, 19379, -3010, "sciana_szerokie_drzwi.dff", "walls.txd");
+AddSimpleModel(-1, 19379, -3011, "sciana_duze_okno.dff", "walls.txd");
+AddSimpleModel(-1, 19379, -3012, "sciana_drzwi.dff", "walls.txd");
+AddSimpleModel(-1, 19379, -3013, "podloga_mniejsza.dff", "walls.txd");
+AddSimpleModel(-1, 19379, -3014, "sciana_zaokraglana.dff", "walls.txd");
+AddSimpleModel(-1, 19379, -3015, "drabina.dff", "walls.txd");
+AddSimpleModel(-1, 19379, -3016, "podloga_minimini.dff", "walls.txd");
+AddSimpleModel(-1, 19379, -3017, "drzwi.dff", "walls.txd");
+AddSimpleModel(-1, 19379, -3018, "wielka_sciana.dff", "walls.txd");
+AddSimpleModel(-1, 19379, -3019, "ramy_drzwi.dff", "walls.txd");
+
+
+//------------------- LOMBARD IDLEWOOD -------------------//
+AddSimpleModel(-1,19480, -2300, "idlev2versiyon.dff", "idlev2versiyon.txd");
+AddSimpleModel(-1,19480, -2301, "idlev2pawnshop.dff", "idlev2versiyon.txd");
+AddSimpleModel(-1,19480, -2303, "idlev2liquer.dff", "idlev2versiyon.txd");
+AddSimpleModel(-1,19480, -2302, "idlepark.dff", "idlepark.txd");
+
+//------------------- GILLMORE PARK -------------------//
+AddSimpleModel(-1,19480, -2017, "nwspltbild4_las2.dff", "lashops93_las2.txd");
+
+//------------------- BOISKO GANTON -------------------//
+AddSimpleModel(-1,19480, -2034, "lae2_landhub02ff.dff", "landhubpark.txd");
+
+//------------------- EL CORONA PARK -------------------//
+AddSimpleModel(-1,19480, -2027, "unionstwarc2_las.dff", "railway_las.txd");
+
+//------------------- EL CORONA PARK -------------------//
+AddSimpleModel(-1,19480, -2028, "kotnik-market.dff", "kotnik-market.txd");
+
+AddSimpleModel(-1, 19480, -2029, "gangshops4_lae2.dff", "eastls1b_lae2.txd");
+AddSimpleModel(-1, 19480, -2030, "2030.dff", "2030.txd");
+AddSimpleModel(-1, 19480, -2031, "2031.dff", "2031.txd");
+AddSimpleModel(-1, 19480, -2032, "2032.dff", "2032.txd");
+AddSimpleModel(-1, 19480, -2033, "2033.dff", "2033.txd");
+AddSimpleModel(-1, 19480, -2070, "2070.dff", "2070.txd");
+AddSimpleModel(-1, 19480, -2071, "2071.dff", "2071.txd");

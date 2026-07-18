@@ -1,0 +1,11 @@
+{
+    "name": "npc",
+    "description": "System NPC",
+    "author": "xSeLeCTx",
+    "timers": true,
+    "callbacks": true,
+    "mysql": false,
+    "files": [],
+    "commands": true,
+    "date": "01.05.2023"
+}

@@ -1,0 +1,63 @@
+
+//------------------<[ Define: ]>-------------------
+
+#define MAX_CONTRACTS           50
+#define CONTRACT_EXPIRE_TIME    86400   // 24 godziny w sekundach
+
+// Typy kontraktĂłw (materiaĹ‚y - organizacje)
+#define CONTRACT_TYPE_FABRICS   0
+#define CONTRACT_TYPE_METALS    1
+#define CONTRACT_TYPE_MATS      2
+#define CONTRACT_TYPE_CHEMICALS 3
+
+// Typy kontraktĂłw (produkty - cywile)
+#define CONTRACT_TYPE_TOOLS     4  // Narzedzia
+#define CONTRACT_TYPE_CLOTHES   5  // Ubrania
+#define CONTRACT_TYPE_FURNITURE 6  // Meble
+#define CONTRACT_TYPE_ELECTRONICS 7  // Elektronika
+
+// Stany kontraktĂłw
+#define CONTRACT_STATE_ACTIVE   0
+#define CONTRACT_STATE_COMPLETED 1
+#define CONTRACT_STATE_EXPIRED  2
+#define CONTRACT_STATE_CANCELLED 3
+
+// Dialogi
+#define DIALOG_CONTRACT_MENU        9850
+#define DIALOG_CONTRACT_LIST        9851
+#define DIALOG_CONTRACT_CREATE      9852
+#define DIALOG_CONTRACT_TYPE        9853
+#define DIALOG_CONTRACT_AMOUNT      9854
+#define DIALOG_CONTRACT_REWARD      9855
+#define DIALOG_CONTRACT_CONFIRM     9856
+#define DIALOG_CONTRACT_ACCEPT      9857
+#define DIALOG_CONTRACT_MY          9858
+
+//------------------<[ Enums: ]>-------------------
+
+enum E_CONTRACT {
+    ct_id,
+    ct_org_id,              // ID grupy która wystawiła kontrakt (0 = kontrakt cywila)
+    ct_owner_uid,           // UID gracza który wystawił kontrakt (dla cywili)
+    ct_type,                // Typ skrzynki/produktu
+    ct_amount,              // Ilość wymagana
+    ct_amount_delivered,    // Ilość dostarczona
+    ct_reward,              // Nagroda
+    ct_state,               // Stan kontraktu
+    ct_created,             // Timestamp utworzenia
+    ct_accepted_by,         // UID gracza który przyjął (0 = nikt)
+    ct_warehouse_id,        // ID magazynu docelowego (dla organizacji)
+    ct_storage_id           // ID skrytki docelowej (dla cywili)
+};
+
+//------------------<[ Variables: ]>-------------------
+
+new gContracts[MAX_CONTRACTS][E_CONTRACT];
+new gTotalContracts = 0;
+
+// Tymczasowe zmienne dla tworzenia kontraktu
+new gPlayerContractType[MAX_PLAYERS];
+new gPlayerContractAmount[MAX_PLAYERS];
+new gPlayerContractReward[MAX_PLAYERS];
+
+//end

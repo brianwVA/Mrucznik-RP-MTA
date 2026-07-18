@@ -44,7 +44,15 @@ addEventHandler('onResourceStart', resourceRoot,
 
 		local plugins = get('amx.plugins')
 		if plugins then
-			table.each(plugins:split(), amxLoadPlugin)
+			for _, pluginName in ipairs(plugins:split()) do
+				local loaded = amxLoadPlugin(pluginName)
+				local debugLevel = (loaded or amxIsPluginLoaded(pluginName)) and 3 or 1
+				outputDebugString(string.format(
+					'[MTA AMX] Plugin %-16s %s',
+					pluginName,
+					loaded and 'loaded' or (amxIsPluginLoaded(pluginName) and 'already loaded' or 'FAILED')
+				), debugLevel)
+			end
 		end
 
 		local filterscripts = get('amx.filterscripts')
@@ -72,6 +80,18 @@ addEventHandler('onResourceStart', resourceRoot,
 
 		toggleSpecialProperties()
 		toggleGlitches()
+
+		setTimer(function()
+			local gamemode = getRunningGameMode()
+			if not gamemode or not gamemode.publics.MRP_GetStreamerItemCount then return end
+			outputDebugString(string.format(
+				'[MTA AMX] Streamer inventory: objects=%d pickups=%d labels=%d areas=%d',
+				procCallInternal(gamemode, 'MRP_GetStreamerItemCount', 0),
+				procCallInternal(gamemode, 'MRP_GetStreamerItemCount', 1),
+				procCallInternal(gamemode, 'MRP_GetStreamerItemCount', 3),
+				procCallInternal(gamemode, 'MRP_GetStreamerItemCount', 6)
+			), 3)
+		end, 20000, 1)
 	end,
 	false
 )

@@ -1,0 +1,9 @@
+enum PlayerForex
+{
+    fType,
+    Float:fCourse,
+    fAmount,
+    fBuyid
+}
+new ForexPlayer[MAX_PLAYERS][PlayerForex];
+

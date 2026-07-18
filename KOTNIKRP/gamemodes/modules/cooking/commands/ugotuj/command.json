@@ -1,0 +1,13 @@
+{
+    "name": "ugotuj",
+    "description": "Ugotuj potrawę.",
+    "permissions": [
+        "everyone"
+    ],
+    "author": "mrucznik",
+    "aliases": [
+        "cook", "gotuj"
+    ],
+    "parameters": [],
+    "date": "03.03.2020"
+}

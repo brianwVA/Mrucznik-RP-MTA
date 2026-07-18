@@ -1,0 +1,9 @@
+
+
+//------------------<[ Funkcje forward: ]>-------------------
+
+forward Crates_Load();
+forward Crates_RestockDepots();
+forward Crates_OnPlayerKeyStateChange(playerid, newkeys, oldkeys);
+
+//end

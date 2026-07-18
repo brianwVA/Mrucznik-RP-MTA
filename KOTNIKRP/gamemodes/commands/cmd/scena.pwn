@@ -1,0 +1,67 @@
+//-----------------------------------------------<< Komenda >>-----------------------------------------------//
+//-------------------------------------------------[ scena ]-------------------------------------------------//
+//----------------------------------------------------*------------------------------------------------------//
+//----[                                                                                                 ]----//
+//----[         |||||             |||||                       ||||||||||       ||||||||||               ]----//
+//----[        ||| |||           ||| |||                      |||     ||||     |||     ||||             ]----//
+//----[       |||   |||         |||   |||                     |||       |||    |||       |||            ]----//
+//----[       ||     ||         ||     ||                     |||       |||    |||       |||            ]----//
+//----[      |||     |||       |||     |||                    |||     ||||     |||     ||||             ]----//
+//----[      ||       ||       ||       ||     __________     ||||||||||       ||||||||||               ]----//
+//----[     |||       |||     |||       |||                   |||    |||       |||                      ]----//
+//----[     ||         ||     ||         ||                   |||     ||       |||                      ]----//
+//----[    |||         |||   |||         |||                  |||     |||      |||                      ]----//
+//----[    ||           ||   ||           ||                  |||      ||      |||                      ]----//
+//----[   |||           ||| |||           |||                 |||      |||     |||                      ]----//
+//----[  |||             |||||             |||                |||       |||    |||                      ]----//
+//----[                                                                                                 ]----//
+//----------------------------------------------------*------------------------------------------------------//
+
+// Opis:
+/*
+	
+*/
+
+
+// Notatki skryptera:
+/*
+	
+*/
+
+YCMD:scena(playerid, params[], help)
+{
+    if(CheckPlayerPerm(playerid, PERM_NEWS) && PlayerInfo[playerid][pAdmin] < 200)
+    {
+        if(GetPVarInt(playerid, "scena-allow") != 1)
+        {
+            if(GroupPlayerDutyRank(playerid) < 4) return sendTipMessageEx(playerid, COLOR_GRAD2, "Scena dostępna za pozwoleniem adminów i od 4 rangi!");
+            else
+            {
+                if(GetPVarInt(playerid, "scena-req") == 1)
+                {
+                    new str[128];
+                    format(str, 128, "××× Gracz %s (ID: %d) prosi o pozwolenie na zarządzanie sceną.", GetNick(playerid), playerid);
+                    SendAdminMessage(COLOR_PANICRED, str);
+                    SetPVarInt(playerid, "scena-req", 2);
+                }
+                else if(GetPVarInt(playerid, "scena-req") == 0)
+                {
+                    SendClientMessage(playerid, COLOR_RED, "Możesz tworzyć scenę za pozwoleniem administracji. Aby wysłać zapytanie wpisz ponownie /scena");
+                    SetPVarInt(playerid, "scena-req", 1);
+                }
+                else
+                {
+                    sendTipMessageEx(playerid, COLOR_RED, "Czekaj na akceptację administracji!");
+                }
+            }
+        }
+    }
+    if(PlayerInfo[playerid][pAdmin] < 200 && GetPVarInt(playerid, "scena-allow") != 1) return 1;
+    if(CheckPlayerPerm(playerid, PERM_NEWS) && SN_ACCESS[playerid] == 0)
+    {
+        ShowPlayerDialogEx(playerid, SCENA_DIALOG_GETMONEY, DIALOG_STYLE_MSGBOX, "M-RP", "Aby postawić scenę w swoim zakresie musisz umieścić opłatę\nW sejf San News w wysokości 2 milionów!!!!\nJeżeli organizujesz event OOC zgłoś się do lidera SN po pozwolenie na scenę (darmową)", "Zapłać", "Anuluj"); 
+        return 1;
+    }
+    ShowPlayerDialogEx(playerid, SCENA_DIALOG_MAIN, DIALOG_STYLE_LIST, "Zarządzanie sceną", "Zbuduj scenę » Zniszcz scenę\nZarządzanie ekranem\nZarządzanie neonami\nDodatkowe efekty\nAudio URL\nMaszyny do dymu", "Wybierz", "Wyjdz");
+    return 1;
+}

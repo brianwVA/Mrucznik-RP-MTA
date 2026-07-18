@@ -1,0 +1,45 @@
+
+
+//------------------<[ Define: ]>-------------------
+
+// Modele pojazdow do produkcji meth
+#define METH_VEHICLE_JOURNEY    508  // Journey - najlepszy
+#define METH_VEHICLE_RUMPO      440  // Rumpo
+#define METH_VEHICLE_BURRITO    482  // Burrito
+
+// Szanse na unikniecie eksplozji (w %)
+#define METH_SAFETY_JOURNEY     40   // Journey - 40% szansy na unikniecie
+#define METH_SAFETY_OTHER       10   // Inne vany - 10% szansy
+
+// Etapy produkcji meth
+#define METH_STAGE_NONE         0
+#define METH_STAGE_STARTED      1   // Rozpoczeto - dodano inwentarz
+#define METH_STAGE_LITHIUM      2   // Dodano Lithium (20%)
+#define METH_STAGE_TOLUENE      3   // Dodano Toluene (50%)
+#define METH_STAGE_ACETONE      4   // Dodano Acetone (80%)
+#define METH_STAGE_READY        5   // Gotowe do zbioru (100%)
+
+// Timer - czas miedzy etapami (w sekundach)
+#define METH_STAGE_TIME         60  // 60 sekund na etap
+#define METH_WARNING_TIME       45  // Ostrzezenie po 45 sekundach (15s przed koncem)
+
+// Dialogi
+#define DIALOG_METH_MENU        9840
+#define DIALOG_METH_INFO        9841
+
+//------------------<[ Enums: ]>-------------------
+
+enum E_METH_VEHICLE {
+    meth_veh_id,        // ID pojazdu
+    meth_stage,         // Aktualny etap produkcji
+    meth_object,        // Obiekt wewnatrz vana
+    meth_timer,         // Timer produkcji (eksplozja)
+    meth_warn_timer,    // Timer ostrzezenia
+    meth_owner          // UID gracza ktory rozpoczal
+};
+
+//------------------<[ Variables: ]>-------------------
+
+new gMethVehicles[MAX_VEHICLES][E_METH_VEHICLE];
+
+//end

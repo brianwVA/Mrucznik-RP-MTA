@@ -12,17 +12,19 @@ param(
     [string]$MysqlHost = "127.0.0.1",
     [string]$MysqlUser = "samp",
     [string]$MysqlDatabase = "mrucznik",
-    [string]$MysqlPassword = "funia",
+    [string]$MysqlPassword = "",
     [string]$RedisHost = "127.0.0.1",
     [int]$RedisPort = 6379,
     [string]$RedisPassword = "",
-    [string]$GtaPath = ""
+    [string]$GtaPath = "",
+    [switch]$EnableViceCity
 )
 
 $ErrorActionPreference = "Stop"
 $ProjectRoot = Split-Path -Parent $PSScriptRoot
 $ServerFilesArchive = Join-Path $ProjectRoot "serverfiles.tar.gz"
-$CompiledGamemode = Join-Path $ProjectRoot "gamemodes\Mrucznik-RP.amx"
+$KotnikGamemode = Join-Path $ProjectRoot "KOTNIKRP\gamemodes\Kotnik-RP-MTA.amx"
+$CompiledGamemode = if (Test-Path $KotnikGamemode) { $KotnikGamemode } else { Join-Path $ProjectRoot "gamemodes\Mrucznik-RP.amx" }
 $ResourcesRoot = Join-Path $MtaServerRoot "mods\deathmatch\resources"
 $PluginLockPath = Join-Path $PSScriptRoot "plugins.lock.json"
 $AmxVersion = "v0.3"
@@ -79,15 +81,34 @@ $Work = Join-Path $env:TEMP "mrp-mta-setup"
 if (Test-Path $Work) { Remove-Item -Recurse -Force $Work }
 New-Item -ItemType Directory -Force $Work | Out-Null
 
-$Vc2010Redist = Join-Path $Work "vcredist2010-x86.exe"
-Invoke-BoundedDownload -Uri $Vc2010RedistUrl -OutFile $Vc2010Redist
-$ActualHash = (Get-FileHash -Algorithm SHA256 $Vc2010Redist).Hash.ToLowerInvariant()
-if ($ActualHash -ne $Vc2010RedistSha256) {
-    throw "Niepoprawna suma SHA-256 vcredist2010-x86.exe: $ActualHash"
+# Gdy jako zrodlo podano plik z instalacji docelowej, paczka amx.zip moglaby
+# nadpisac go zanim zostanie ponownie skopiowany. Zachowaj oba buildy przed
+# rozpakowaniem i przed podmiana zasobu amx.
+$ExpectedKingDll = Join-Path $MtaServerRoot "mods\deathmatch\modules\king.dll"
+if ([System.IO.Path]::GetFullPath($KingDll) -eq [System.IO.Path]::GetFullPath($ExpectedKingDll)) {
+    $PreservedKingDll = Join-Path $Work "king-custom.dll"
+    Copy-Item $KingDll $PreservedKingDll -Force
+    $KingDll = $PreservedKingDll
 }
-$VcInstall = Start-Process $Vc2010Redist -ArgumentList @("/q", "/norestart") -Wait -PassThru
-if ($VcInstall.ExitCode -notin @(0, 1638, 3010)) {
-    throw "Instalacja Visual C++ 2010 x86 zakończyła się kodem $($VcInstall.ExitCode)."
+$ExpectedColAndreasDll = Join-Path $ResourcesRoot "amx\plugins\ColAndreas.dll"
+if ([System.IO.Path]::GetFullPath($ColAndreasDll) -eq [System.IO.Path]::GetFullPath($ExpectedColAndreasDll)) {
+    $PreservedColAndreasDll = Join-Path $Work "ColAndreas-custom.dll"
+    Copy-Item $ColAndreasDll $PreservedColAndreasDll -Force
+    $ColAndreasDll = $PreservedColAndreasDll
+}
+
+$Vc2010Installed = Test-Path (Join-Path $env:WINDIR "SysWOW64\msvcr100.dll")
+if (-not $Vc2010Installed) {
+    $Vc2010Redist = Join-Path $Work "vcredist2010-x86.exe"
+    Invoke-BoundedDownload -Uri $Vc2010RedistUrl -OutFile $Vc2010Redist
+    $ActualHash = (Get-FileHash -Algorithm SHA256 $Vc2010Redist).Hash.ToLowerInvariant()
+    if ($ActualHash -ne $Vc2010RedistSha256) {
+        throw "Niepoprawna suma SHA-256 vcredist2010-x86.exe: $ActualHash"
+    }
+    $VcInstall = Start-Process $Vc2010Redist -ArgumentList @("/q", "/norestart") -Wait -PassThru -WindowStyle Hidden
+    if ($VcInstall.ExitCode -notin @(0, 1638, 3010)) {
+        throw "Instalacja Visual C++ 2010 x86 zakończyła się kodem $($VcInstall.ExitCode)."
+    }
 }
 
 $AmxZip = Join-Path $Work "amx.zip"
@@ -100,7 +121,9 @@ Expand-Archive -Path $AmxZip -DestinationPath $MtaServerRoot -Force
 $ModuleDirectory = Join-Path $MtaServerRoot "mods\deathmatch\modules"
 New-Item -ItemType Directory -Force $ModuleDirectory | Out-Null
 $InstalledKingDll = Join-Path $ModuleDirectory "king.dll"
-Copy-Item $KingDll $InstalledKingDll -Force
+if ([System.IO.Path]::GetFullPath($KingDll) -ne [System.IO.Path]::GetFullPath($InstalledKingDll)) {
+    Copy-Item $KingDll $InstalledKingDll -Force
+}
 if ((Get-FileHash -Algorithm SHA256 $InstalledKingDll).Hash -ne
     (Get-FileHash -Algorithm SHA256 $KingDll).Hash) {
     throw "Podmiana modułu king.dll nie zachowała oczekiwanych bajtów."
@@ -128,6 +151,9 @@ $PluginLock = Get-Content $PluginLockPath -Raw | ConvertFrom-Json
 $LoadNames = New-Object System.Collections.Generic.List[string]
 
 foreach ($Plugin in $PluginLock.plugins) {
+    # samp-discord-connector 0.3.6-pre uruchamia własny niezgodny wątek i
+    # cyklicznie wysadza proces MTA. Build MTA ma bezpieczne stuby w Pawn.
+    if ($Plugin.name -eq "discord-connector") { continue }
     $PackageName = "$($Plugin.name)-$($Plugin.version)"
     $PackageExtension = if ($Plugin.archive -eq "zip") { ".zip" } else { ".download" }
     $PackagePath = Join-Path $Work "$PackageName$PackageExtension"
@@ -158,8 +184,42 @@ foreach ($Plugin in $PluginLock.plugins) {
     $LoadNames.Add([string]$Plugin.load_name)
 }
 
+# Kotnik uses the R41 MySQL, chrono and FileManager native sets.  The original
+# mta-amx package only ships older SA-MP plugins, therefore install the tested
+# Kotnik binaries after the pinned baseline (not before it, or sscanf would be
+# overwritten by the archive).
+$KotnikPluginRoot = Join-Path $ProjectRoot "KOTNIKRP\plugins"
+$KotnikPlugins = [ordered]@{
+    "mysql" = "mysql.dll"
+    "sscanf" = "sscanf.dll"
+    "chrono" = "chrono.dll"
+    "FileManager" = "FileManager.dll"
+}
+foreach ($KotnikPlugin in $KotnikPlugins.GetEnumerator()) {
+    $Source = Join-Path $KotnikPluginRoot $KotnikPlugin.Value
+    if (-not (Test-Path $Source)) {
+        throw "Brak wymaganego pluginu Kotnika: $Source"
+    }
+    Copy-Item $Source (Join-Path $PluginRoot $KotnikPlugin.Value) -Force
+    if (-not $LoadNames.Contains([string]$KotnikPlugin.Key)) {
+        $LoadNames.Add([string]$KotnikPlugin.Key)
+    }
+}
+
+foreach ($DependencyName in @("libmariadb.dll", "libmySQL.dll", "log-core.dll", "log-core2.dll")) {
+    $Dependency = Join-Path $ProjectRoot "KOTNIKRP\$DependencyName"
+    if (-not (Test-Path $Dependency)) {
+        throw "Brak zależności pluginów Kotnika: $Dependency"
+    }
+    Copy-Item $Dependency (Join-Path $MtaServerRoot $DependencyName) -Force
+    Copy-Item $Dependency (Join-Path $PluginRoot $DependencyName) -Force
+}
+
 $ColAndreas = $PluginLock.built_plugins | Where-Object { $_.name -eq "ColAndreas" }
-Copy-Item $ColAndreasDll (Join-Path $AmxResource $ColAndreas.destination) -Force
+$InstalledColAndreasDll = Join-Path $AmxResource $ColAndreas.destination
+if ([System.IO.Path]::GetFullPath($ColAndreasDll) -ne [System.IO.Path]::GetFullPath($InstalledColAndreasDll)) {
+    Copy-Item $ColAndreasDll $InstalledColAndreasDll -Force
+}
 $LoadNames.Add([string]$ColAndreas.load_name)
 
 [xml]$AmxMeta = Get-Content (Join-Path $AmxResource "meta.xml")
@@ -188,7 +248,7 @@ $GamemodeSource = if ((Test-Path $CompiledGamemode) -and (Get-Item $CompiledGame
 } else {
     Join-Path $Work "serverfiles\gamemodes\Mrucznik-RP.amx"
 }
-Copy-Item $GamemodeSource $BaselineResource -Force
+Copy-Item $GamemodeSource (Join-Path $BaselineResource "Mrucznik-RP.amx") -Force
 Copy-Item (Join-Path $PSScriptRoot "server\mods\deathmatch\resources\amx-mrucznik\meta.xml") $BaselineResource -Force
 
 $PackagedFilterScripts = [ordered]@{
@@ -219,7 +279,24 @@ foreach ($FilterEntry in $PackagedFilterScripts.GetEnumerator()) {
     $FilterMeta.Save((Join-Path $FilterResource "meta.xml"))
 }
 
+$ExistingHouses = Join-Path $AmxResource "scriptfiles\Domy"
+$HouseBackup = Join-Path $Work "existing-mrucznik-houses"
+if (Test-Path $ExistingHouses) {
+    Copy-Item -Path $ExistingHouses -Destination $HouseBackup -Recurse -Force
+}
+
 Copy-Item -Path (Join-Path $Work "serverfiles\scriptfiles\*") -Destination (Join-Path $AmxResource "scriptfiles") -Recurse -Force
+$KotnikScriptfiles = Join-Path $ProjectRoot "KOTNIKRP\scriptfiles"
+if (Test-Path $KotnikScriptfiles) {
+    # Nakladka Kotnika dostarcza nowe konfiguracje.
+    Copy-Item -Path (Join-Path $KotnikScriptfiles "*") -Destination (Join-Path $AmxResource "scriptfiles") -Recurse -Force
+}
+if (Test-Path $HouseBackup) {
+    # Domy sa stanem produkcyjnym, nie elementem paczki. Przywracamy dokladnie
+    # pliki obecnej instalacji po nalozeniu obu zestawow scriptfiles.
+    if (Test-Path $ExistingHouses) { Remove-Item $ExistingHouses -Recurse -Force }
+    Copy-Item -Path $HouseBackup -Destination $ExistingHouses -Recurse -Force
+}
 $ColAndreasDatabase = Join-Path $Work "serverfiles\scriptfiles\colandreas\ColAndreas.cadb"
 $InstalledColAndreasDatabase = Join-Path $MtaServerRoot "scriptfiles\colandreas\ColAndreas.cadb"
 New-Item -ItemType Directory -Force (Split-Path -Parent $InstalledColAndreasDatabase) | Out-Null
@@ -238,6 +315,19 @@ $MysqlConfig = Join-Path $AmxResource "scriptfiles\MySQL\connect.ini"
     "DB=$MysqlDatabase"
     "Pass=$MysqlPassword"
 ) | Set-Content -Path $MysqlConfig -Encoding ASCII
+# BlueG MySQL R41 (used by Kotnik) reads this flat connection file.  Keep it
+# generated from setup arguments so database credentials never enter Git.
+$MysqlPluginConfig = Join-Path $AmxResource "scriptfiles\mysql.ini"
+$MysqlPluginConfigLines = @(
+    "hostname = $MysqlHost"
+    "username = $MysqlUser"
+    "database = $MysqlDatabase"
+)
+# R41 treats `password = ` as a syntax error; omission means an empty password.
+if ($MysqlPassword.Length -gt 0) {
+    $MysqlPluginConfigLines += "password = $MysqlPassword"
+}
+$MysqlPluginConfigLines | Set-Content -Path $MysqlPluginConfig -Encoding ASCII
 $RedisConfig = Join-Path $AmxResource "scriptfiles\redis.ini"
 @(
     "host=$RedisHost"
@@ -245,9 +335,13 @@ $RedisConfig = Join-Path $AmxResource "scriptfiles\redis.ini"
     "password=$RedisPassword"
 ) | Set-Content -Path $RedisConfig -Encoding ASCII
 $RootMysqlConfig = Join-Path $MtaServerRoot "scriptfiles\MySQL\connect.ini"
+$RootMysqlPluginConfig = Join-Path $MtaServerRoot "scriptfiles\mysql.ini"
+$ServerRootMysqlPluginConfig = Join-Path $MtaServerRoot "mysql.ini"
 $RootRedisConfig = Join-Path $MtaServerRoot "scriptfiles\redis.ini"
 New-Item -ItemType Directory -Force (Split-Path -Parent $RootMysqlConfig) | Out-Null
 Copy-Item $MysqlConfig $RootMysqlConfig -Force
+Copy-Item $MysqlPluginConfig $RootMysqlPluginConfig -Force
+Copy-Item $MysqlPluginConfig $ServerRootMysqlPluginConfig -Force
 Copy-Item $RedisConfig $RootRedisConfig -Force
 
 $BridgeResource = Join-Path $ResourcesRoot "mrp_bridge"
@@ -261,7 +355,15 @@ $ModelAssets = Join-Path $ModelsResource "assets"
 New-Item -ItemType Directory -Force $ModelAssets | Out-Null
 Copy-Item -Path (Join-Path $Work "serverfiles\models\*.dff") -Destination $ModelAssets -Force
 Copy-Item -Path (Join-Path $Work "serverfiles\models\*.txd") -Destination $ModelAssets -Force
-Copy-Item -Path (Join-Path $Work "serverfiles\models\vc4samp") -Destination $ModelAssets -Recurse -Force
+$KotnikModels = Join-Path $ProjectRoot "KOTNIKRP\KRP-V2-Modele\models"
+$KotnikImporter = Join-Path $PSScriptRoot "tools\import_kotnik_models.py"
+$Python = Get-Command python.exe -ErrorAction SilentlyContinue
+if (-not $Python) { throw "Import modeli Kotnika wymaga Python 3 w PATH." }
+& $Python.Source $KotnikImporter --source $KotnikModels --resource $ModelsResource
+if ($LASTEXITCODE -ne 0) { throw "Import modeli Kotnika nie powiódł się." }
+if ($EnableViceCity) {
+    Copy-Item -Path (Join-Path $Work "serverfiles\models\vc4samp") -Destination $ModelAssets -Recurse -Force
+}
 $SampModelAssets = Join-Path $ModelAssets "samp"
 New-Item -ItemType Directory -Force $SampModelAssets | Out-Null
 foreach ($Asset in $SampObjectAssets) {
@@ -272,10 +374,17 @@ foreach ($Asset in $SampObjectAssets) {
         throw "Niepoprawna suma SHA-256 obiektu SA-MP $($Asset.Name)`: $AssetHash"
     }
 }
-$ConvertedConcertHall = Join-Path $Work "serverfiles\models\vc4samp\dff\concerth04.dff"
-Copy-Item $ConvertedConcertHall (Join-Path $MtaServerRoot "models\concerth04.dff") -Force
+if ($EnableViceCity) {
+    $ConvertedConcertHall = Join-Path $Work "serverfiles\models\vc4samp\dff\concerth04.dff"
+    Copy-Item $ConvertedConcertHall (Join-Path $MtaServerRoot "models\concerth04.dff") -Force
+}
 
 [xml]$ModelsMeta = Get-Content (Join-Path $ModelsResource "meta.xml")
+if (-not $EnableViceCity) {
+    @($ModelsMeta.meta.script | Where-Object { $_.src -eq "shared/vc_objects.lua" }) | ForEach-Object {
+        [void]$ModelsMeta.meta.RemoveChild($_)
+    }
+}
 Get-ChildItem $ModelAssets -File -Recurse | Sort-Object FullName | ForEach-Object {
     $RelativeAssetPath = $_.FullName.Substring($ModelAssets.Length + 1).Replace("\", "/")
     $FileNode = $ModelsMeta.CreateElement("file")
@@ -286,8 +395,6 @@ $ModelsMeta.Save((Join-Path $ModelsResource "meta.xml"))
 
 if ($GtaPath) {
     $Importer = Join-Path $PSScriptRoot "tools\import_samp_objects.py"
-    $Python = Get-Command python.exe -ErrorAction SilentlyContinue
-    if (-not $Python) { throw "Import obiektów SA-MP wymaga Python 3 w PATH." }
     if (-not (Test-Path (Join-Path $GtaPath "SAMP\SAMP.ide"))) {
         throw "Wskazany katalog GTA nie zawiera SAMP\SAMP.ide: $GtaPath"
     }
@@ -300,6 +407,27 @@ if (-not (Test-Path $ServerConfigPath)) {
     throw "Brak mods\deathmatch\mtaserver.conf w instalacji MTA."
 }
 [xml]$ServerConfig = Get-Content $ServerConfigPath
+$ServerNameNode = $ServerConfig.SelectSingleNode("/config/servername")
+if (-not $ServerNameNode) {
+    $ServerNameNode = $ServerConfig.CreateElement("servername")
+    [void]$ServerConfig.config.PrependChild($ServerNameNode)
+}
+$ServerNameNode.InnerText = "M-RP 2.9"
+$FpsLimitNode = $ServerConfig.SelectSingleNode("/config/fpslimit")
+if (-not $FpsLimitNode) {
+    $FpsLimitNode = $ServerConfig.CreateElement("fpslimit")
+    [void]$ServerConfig.config.AppendChild($FpsLimitNode)
+}
+$FpsLimitNode.InnerText = "60"
+$DisableAcNode = $ServerConfig.SelectSingleNode("/config/disableac")
+if (-not $DisableAcNode) {
+    $DisableAcNode = $ServerConfig.CreateElement("disableac")
+    [void]$ServerConfig.config.AppendChild($DisableAcNode)
+}
+# AC #95 (heartbeat timeout) is a false positive with the legacy SA-MP AMX
+# compatibility layer while it processes login/streamer callbacks. Keep every
+# other MTA anti-cheat enabled; #2 was already disabled by the base config.
+$DisableAcNode.InnerText = "2,95"
 $ExistingModules = @($ServerConfig.SelectNodes("/config/module"))
 if (-not ($ExistingModules | Where-Object { $_.src -eq "king.dll" })) {
     $ModuleNode = $ServerConfig.CreateElement("module")
@@ -332,5 +460,5 @@ Write-Host "Pliki M-RP zostały zainstalowane w $MtaServerRoot"
 Write-Host "Pluginy zgodności zostały pobrane i zweryfikowane na podstawie plugins.lock.json"
 Write-Host "MySQL: $MysqlUser@$MysqlHost/$MysqlDatabase"
 Write-Host "Redis: $RedisHost`:$RedisPort"
-Write-Host "Moduł king.dll i zasoby M-RP zostały wpisane do mtaserver.conf; stockowy scoreboard wyłączono"
+Write-Host "Moduł king.dll i zasoby M-RP zostały wpisane do mtaserver.conf; FPS ustawiono na 60, stockowy scoreboard wyłączono"
 Write-Host "Przy pierwszym uruchomieniu wykonaj: aclrequest allow amx all"

@@ -1,0 +1,3 @@
+# PlazaLS
+
+Stworzone przez Miko

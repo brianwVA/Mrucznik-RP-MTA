@@ -1,0 +1,107 @@
+
+enum _ePokerTable {
+    gPokerObj[MAX_POKER_OBJECTS],       // Obiekty zetonow na stole
+    gAktualniGracze[MAX_POKER_PLAYERS], // ID graczy przy stole (-1 = wolne)
+    gPokerInfo[20],                     // Info o stole [0]=faza, [1]=pula, [2]=aktualne zaklad, etc.
+    gPokerKartyStolu[5],                // Karty wspolne na stole
+    gPokerKarty[20],                    // Karty pokera (talia)
+    objPoker[MAX_POKER_PLAYERS],        // ID graczy przypisanych do stanowisk
+    Float:objPozX,                      // Pozycja X stolu
+    Float:objPozY,                      // Pozycja Y stolu
+    Float:objPozZ,                      // Pozycja Z stolu
+    Float:objRotZ,                      // Rotacja Z stolu
+    objModel,                           // Model obiektu stolu (19474)
+    objUID,                             // UID stolu z bazy
+    gRundaPoker,                        // Aktualna runda pokera (0-4)
+    objPokerDiler,                      // Pozycja dilera
+    Float:objRotX,                      // Rotacja X stolu
+    Float:objRotY                       // Rotacja Y stolu
+};
+new PokerTableInfo[MAX_POKER_TABLES][_ePokerTable];
+
+enum _ePokerPlayer {
+    gPoker,                             // ID stolu przy ktorym siedzi gracz (-1 = nie gra)
+    gPokerStanowisko,                   // Numer stanowiska przy stole (0-5)
+    gPokerZetony,                       // Ilosc zetonow gracza
+    gPokerPostawione,                   // Ile gracz postawil w rundzie
+    gPokerKarty[2],                     // Karty gracza
+    gInformacjePoker[7],                // Info o pokerze [0]=allin, [1-5]=karty kombinacji, [6]=typ kombinacji
+    Float:gPokx,                        // Pozycja X gracza przy stole
+    Float:gPoky,                        // Pozycja Y gracza przy stole  
+    Float:gPokz,                        // Pozycja Z gracza przy stole
+    gPokr,                              // Rotacja gracza przy stole
+    gPokerObj[30],                      // Obiekty zetonow gracza
+    gNumeryObiektowPostawionych[30],    // Numery obiektow postawionych na stol
+    gRundaPokerCzas                     // Czas rundy pokera
+};
+new PokerPlayerInfo[MAX_PLAYERS][_ePokerPlayer];
+
+new GraWPokera[MAX_PLAYERS];            // 0 = nie gra, 1 = gra
+new WybralMozliwoscPoker[MAX_PLAYERS];  // Czy gracz wybral opcje w rundzie
+new WpisalKase[MAX_PLAYERS];            // Timer na wpisanie kasy
+
+new PlayerText:WylosowaneKarty[MAX_PLAYERS];
+new PlayerText:WylosowaneKarty1[MAX_PLAYERS];
+new PlayerText:WylosowaneKarty2[MAX_PLAYERS];
+new PlayerText:WylosowaneKarty3[MAX_PLAYERS];
+new PlayerText:WylosowaneKarty4[MAX_PLAYERS];
+new PlayerText:WylosowaneKarty5[MAX_PLAYERS];
+new PlayerText:KartyGracza[MAX_PLAYERS];
+new PlayerText:KartyGracza1[MAX_PLAYERS];
+new PlayerText:KartyGracza2[MAX_PLAYERS];
+new PlayerText:KartyGracza3[MAX_PLAYERS];
+new PlayerText:KartyGracza4[MAX_PLAYERS];
+new PlayerText:KartyGracza5[MAX_PLAYERS];
+new PlayerText:KartyGracza6[MAX_PLAYERS];
+new PlayerText:KartyGracza11[MAX_PLAYERS];
+new PlayerText:KartyGracza22[MAX_PLAYERS];
+new PlayerText:KartyGracza33[MAX_PLAYERS];
+new PlayerText:KartyGracza44[MAX_PLAYERS];
+new PlayerText:KartyGracza55[MAX_PLAYERS];
+new PlayerText:KartyGracza66[MAX_PLAYERS];
+new PlayerText:Poker1[MAX_PLAYERS];
+new PlayerText:Poker2[MAX_PLAYERS];
+new PlayerText:Poker3[MAX_PLAYERS];
+new PlayerText:Poker4[MAX_PLAYERS];
+new PlayerText:Poker5[MAX_PLAYERS];
+new PlayerText:Poker6[MAX_PLAYERS];
+new PlayerText:KartaGracza1[MAX_PLAYERS];
+new PlayerText:KartaGracza2[MAX_PLAYERS];
+new PlayerText:KartaGracza3[MAX_PLAYERS];
+new PlayerText:KartaGracza4[MAX_PLAYERS];
+new PlayerText:KartaGracza5[MAX_PLAYERS];
+new PlayerText:KartaGracza6[MAX_PLAYERS];
+new PlayerText:KartaGracza7[MAX_PLAYERS];
+new PlayerText:KartaGracza8[MAX_PLAYERS];
+new PlayerText:KartaGracza9[MAX_PLAYERS];
+new PlayerText:KartaGracza10[MAX_PLAYERS];
+new PlayerText:KartaGracza11[MAX_PLAYERS];
+new PlayerText:KartaGracza12[MAX_PLAYERS];
+new PlayerText:KartaGracza13[MAX_PLAYERS];
+new PlayerText:KartaGracza14[MAX_PLAYERS];
+
+new PlayerBar:KartyGracza111[MAX_PLAYERS];
+new PlayerBar:KartyGracza222[MAX_PLAYERS];
+new PlayerBar:KartyGracza333[MAX_PLAYERS];
+new PlayerBar:KartyGracza444[MAX_PLAYERS];
+new PlayerBar:KartyGracza555[MAX_PLAYERS];
+new PlayerBar:KartyGracza666[MAX_PLAYERS];
+
+new Text:TextNaDrzwi[MAX_PLAYERS];
+new CzasWyswietlaniaTextuNaDrzwiach[MAX_PLAYERS];
+
+#define ObiektInfo      PokerTableInfo
+#define DaneGracza      PokerPlayerInfo
+
+// Funkcja pomocnicza do pobierania nicku gracza
+stock ZmianaNicku(playerid) {
+    new name[MAX_PLAYER_NAME + 1];
+    GetPlayerName(playerid, name, sizeof(name));
+    return name;
+}
+
+// Funkcja do teleportacji gracza
+stock Teleportuj(playerid, Float:x, Float:y, Float:z) {
+    SetPlayerPos(playerid, x, y, z);
+}
+

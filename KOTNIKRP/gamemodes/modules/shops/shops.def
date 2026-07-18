@@ -1,0 +1,50 @@
+// Opis: System legalnych sklepow - punkty skupu craftowanych produktow dla cywili
+
+//------------------<[ Define: ]>-------------------
+
+#define MAX_LEGAL_SHOPS           15
+
+// Typy produktow do skupu (craftowane w skrytkach graczy)
+#define SHOP_PRODUCT_TOOLS        0  // Narzedzia (Tools)
+#define SHOP_PRODUCT_CLOTHES      1  // Ubrania (Clothes)
+#define SHOP_PRODUCT_FURNITURE    2  // Meble (Furniture)
+#define SHOP_PRODUCT_ELECTRONICS  3  // Elektronika (Electronics)
+
+// Typy sklepow (specjalizacja)
+#define SHOP_TYPE_TOOLS           0  // Sklep z narzedziami
+#define SHOP_TYPE_CLOTHES         1  // Sklep z ubraniami
+#define SHOP_TYPE_FURNITURE       2  // Sklep z meblami
+#define SHOP_TYPE_ELECTRONICS      3  // Sklep z elektronika
+#define SHOP_TYPE_UNIVERSAL       4  // Sklep uniwersalny (wszystkie produkty)
+
+// Dialogi
+#define DIALOG_SHOP_MENU          9870
+#define DIALOG_SHOP_SELL_PRODUCT  9871
+
+//------------------<[ Enums: ]>-------------------
+
+enum E_LEGAL_SHOP {
+    shop_id,
+    shop_name[48],
+    shop_type,              // Typ sklepu (specjalizacja)
+    Float:shop_x,
+    Float:shop_y,
+    Float:shop_z,
+    Float:shop_angle,
+    shop_interior,
+    shop_virtualworld,
+    shop_pickup,
+    shop_area,
+    Text3D:shop_label
+};
+
+//------------------<[ Variables: ]>-------------------
+
+new gLegalShops[MAX_LEGAL_SHOPS][E_LEGAL_SHOP];
+new gTotalLegalShops = 0;
+
+// Zakresy cen skupu craftowanych produktow (definicje w gamemodes/system/ceny.pwn)
+// Aktualne ceny (losowane przy resecie) - tools, clothes, furniture, electronics
+new gShopBuyPrices[4];
+
+//end

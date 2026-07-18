@@ -1,0 +1,7 @@
+
+//------------------<[ Funkcje forward: ]>-------------------
+
+forward Meth_StageProgress(vehicleid);
+forward Meth_Explode(vehicleid);
+
+//end

@@ -1,0 +1,3 @@
+# opDaniel
+
+Stworzone przez JustMiko

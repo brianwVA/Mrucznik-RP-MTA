@@ -644,6 +644,25 @@ function SpawnPlayer(amx, player)
 	else
 		spawnPlayerBySelectedClass(player)
 	end
+	-- Login cameras in legacy SA-MP modes can leave client state inherited
+	-- from class selection even though the ped was spawned. Enforce the
+	-- visible, controllable on-foot state expected after SpawnPlayer.
+	setElementAlpha(player, 255)
+	setElementCollisionsEnabled(player, true)
+	setElementFrozen(player, false)
+	toggleAllControls(player, true)
+	setCameraTarget(player, player)
+	clientCall(player, 'setCameraTarget', player)
+	clientCall(player, 'removeCamHandlers')
+	local spawnedPlayer = player
+	setTimer(function()
+		if not isElement(spawnedPlayer) or isPedDead(spawnedPlayer) then return end
+		setElementAlpha(spawnedPlayer, 255)
+		setElementCollisionsEnabled(spawnedPlayer, true)
+		setElementFrozen(spawnedPlayer, false)
+		toggleAllControls(spawnedPlayer, true)
+		setPlayerHudComponentVisible(spawnedPlayer, 'radar', true)
+	end, 750, 1)
 	return true
 end
 

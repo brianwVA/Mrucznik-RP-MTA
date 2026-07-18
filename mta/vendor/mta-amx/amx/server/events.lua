@@ -131,6 +131,48 @@ function joinHandler(player)
 		end
 
 		procCallOnAll('OnPlayerConnect', playerID)
+
+		-- Streamer compatibility diagnostics. Dynamic SA-MP plugins create their
+		-- actual MTA elements only after a player is known to them, so the counts
+		-- here distinguish missing source data from a broken plugin-to-MTA bridge.
+		local function reportStreamerBridge()
+			if not isElement(player) then return end
+			local function countElements(data)
+				local count = 0
+				for _, entry in pairs(data) do
+					local element = type(entry) == 'table' and entry.elem or entry
+					if isElement(element) then count = count + 1 end
+				end
+				return count
+			end
+			local function countEntries(data)
+				local count = 0
+				for _ in pairs(data) do count = count + 1 end
+				return count
+			end
+			local playerObjects = g_PlayerObjects[player] or {}
+			local streamerObjects, streamerPickups = -1, -1
+			local gamemode = getRunningGameMode()
+			if gamemode and gamemode.publics.MRP_GetStreamerItemCount then
+				streamerObjects = procCallInternal(gamemode, 'MRP_GetStreamerItemCount', 0)
+				streamerPickups = procCallInternal(gamemode, 'MRP_GetStreamerItemCount', 1)
+			end
+			outputDebugString(string.format(
+				'[MTA AMX] Player %d bridge: streamerObjects=%d streamerPickups=%d objects=%d playerObjects=%d pickups=%d markers=%d labels=%d; streamer=%s',
+				playerID,
+				streamerObjects,
+				streamerPickups,
+				countElements(g_Objects),
+				countEntries(playerObjects),
+				countElements(g_Pickups),
+				countElements(g_Markers),
+				countElements(g_TextLabels),
+				amxIsPluginLoaded('streamer') and 'loaded' or 'missing'
+			), 3)
+		end
+		setTimer(reportStreamerBridge, 2000, 1)
+		setTimer(reportStreamerBridge, 10000, 1)
+		setTimer(reportStreamerBridge, 30000, 1)
 	end
 end
 addEventHandler('onPlayerJoin', root, joinHandler)
@@ -312,7 +354,7 @@ function spawnPlayerBySelectedClass(player, x, y, z, r)
 	spawnPlayer(player, unpack(spawninfo))
 	mrpApplyCustomSkin(player, spawninfo.customSkin)
 	setPlayerTeam(player, spawninfo[8] or nil)
-	for i, weapon in ipairs(spawninfo.weapons) do
+	for i, weapon in ipairs(spawninfo.weapons or {}) do
 		if weapon[1] > 0 then
 			giveWeapon(player, weapon[1], weapon[2], true)
 		end
@@ -322,6 +364,23 @@ function spawnPlayerBySelectedClass(player, x, y, z, r)
 	if playerdata.blip then
 		setElementVisibleTo(playerdata.blip, root, true)
 	end
+end
+
+local function respawnWastedPlayer(player, playerID)
+	if not isElement(player) or not g_Players[playerID] then return end
+
+	spawnPlayerBySelectedClass(player)
+
+	-- A legacy RP mode can do a lot of work in OnPlayerSpawn (including its
+	-- injured/BW path). Verify that MTA actually left the wasted state, but do
+	-- not replace the gamemode's position, animation or hospital camera.
+	setTimer(function()
+		if not isElement(player) or not g_Players[playerID] then return end
+		if isPedDead(player) or g_Players[playerID].state == PLAYER_STATE_WASTED then
+			outputDebugString(string.format('[MTA AMX] Retrying stuck death respawn for player ID %d', playerID), 2)
+			spawnPlayerBySelectedClass(player)
+		end
+	end, 750, 1)
 end
 
 addEventHandler('onPlayerSpawn', root,
@@ -596,7 +655,7 @@ addEventHandler('onPlayerWasted', root,
 				end, 3000, 1
 			)
 		else
-			setTimer(spawnPlayerBySelectedClass, 3000, 1, source, false)
+			setTimer(respawnWastedPlayer, 3000, 1, source, playerID)
 		end
 
 		g_Players[playerID].spawnint = nil

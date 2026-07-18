@@ -1,0 +1,9 @@
+
+
+//------------------<[ Funkcje forward: ]>-------------------
+
+forward Warehouse_Load();
+forward Warehouse_Save(whid);
+forward Warehouse_OnCreate(whid);
+
+//end

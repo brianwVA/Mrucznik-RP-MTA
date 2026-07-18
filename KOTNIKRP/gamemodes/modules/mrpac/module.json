@@ -1,0 +1,11 @@
+{
+    "name": "mrpac",
+    "description": "System AC M-RP zawierajacy raknet i inne rozwiazania",
+    "author": "xSeLeCTx",
+    "timers": true,
+    "callbacks": true,
+    "mysql": false,
+    "files": [],
+    "commands": false,
+    "date": "22.05.2021"
+}

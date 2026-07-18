@@ -1,0 +1,23 @@
+{
+    "name": "sekta",
+    "description": "Komenda zarządzająca sektą",
+    "permissions": [
+        "everyone"
+    ],
+    "author": "Sandał",
+    "aliases": [],
+    "parameters": [
+        {
+            "type": "string",
+            "size": "24",
+            "name": "opcja",
+            "description": "klucz, wepchnij, wypusc"
+        },
+        {
+            "type": "player",
+            "name": "giveplayerid",
+            "description": "Nick/ID"
+        }
+    ],
+    "date": "02.02.2020"
+}
