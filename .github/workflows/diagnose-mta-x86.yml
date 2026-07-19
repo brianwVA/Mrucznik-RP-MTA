@@ -77,7 +77,7 @@ jobs:
           </config>
           EOF
           set +e
-          timeout 15s ./mta-server > startup.log 2>&1
+          timeout 15s ./mta-server --config mtaserver.conf > startup.log 2>&1
           startup_status=$?
           set -e
           cat startup.log
@@ -87,7 +87,7 @@ jobs:
               -ex 'set env LD_LIBRARY_PATH=.:./mods/deathmatch' \
               -ex run \
               -ex 'thread apply all bt full' \
-              --args ./mta-server > gdb.log 2>&1 || true
+              --args ./mta-server --config mtaserver.conf > gdb.log 2>&1 || true
             cat gdb.log
           fi
           test "$startup_status" -eq 124
