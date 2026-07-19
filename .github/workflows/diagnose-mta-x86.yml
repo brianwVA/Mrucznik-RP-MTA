@@ -63,10 +63,22 @@ jobs:
       - name: Inspect and execute engine
         run: |
           export LD_LIBRARY_PATH="$PWD:$PWD/mods/deathmatch"
-          test "$(xxd -p -l 1 -s $((0x136ea4)) mods/deathmatch/deathmatch.so)" = "55"
-          printf '\303' | dd of=mods/deathmatch/deathmatch.so bs=1 seek=$((0x136ea4)) conv=notrunc status=none
-          test "$(xxd -p -l 1 -s $((0x1619a4)) mods/deathmatch/deathmatch.so)" = "55"
-          printf '\270\001\000\000\000\303' | dd of=mods/deathmatch/deathmatch.so bs=1 seek=$((0x1619a4)) conv=notrunc status=none
+          python3 - <<'PY'
+          from pathlib import Path
+
+          path = Path("mods/deathmatch/deathmatch.so")
+          data = bytearray(path.read_bytes())
+          patches = (
+              (0x136EA4, bytes.fromhex("55"), bytes.fromhex("c3")),
+              (0x1619A4, bytes.fromhex("5589e55756e8"), bytes.fromhex("b801000000c3")),
+          )
+          for offset, original, replacement in patches:
+              current = bytes(data[offset : offset + len(original)])
+              if current not in (original, replacement):
+                  raise SystemExit(f"unexpected deathmatch.so bytes at 0x{offset:x}: {current.hex()}")
+              data[offset : offset + len(replacement)] = replacement
+          path.write_bytes(data)
+          PY
           file mta-server core.so net.so xmll.so libncursesw.so.5 libtinfo.so.5 libz.so.1
           readelf -d core.so | grep -E 'NEEDED|RPATH|RUNPATH'
           readelf -d net.so | grep -E 'NEEDED|RPATH|RUNPATH'
