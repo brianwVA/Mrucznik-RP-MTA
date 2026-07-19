@@ -46,14 +46,15 @@ jobs:
 
       - name: Fetch pinned plugin sources
         run: |
-          git clone --no-checkout https://github.com/Y-Less/sscanf.git ./build/sscanf
-          git -C ./build/sscanf checkout 1d683f3e95e195d9704bcb47564bbd3a00c06c73
-          git clone --no-checkout https://github.com/Southclaws/samp-whirlpool.git ./build/whirlpool
-          git -C ./build/whirlpool checkout 54a18c5e903b35e693308babea04cb89d8a9b0f0
-          git clone --no-checkout https://github.com/MrucznikRolePlay/Regular-Expressions-Plugin-sampctl.git ./build/regex
-          git -C ./build/regex checkout 6290dd7b60bd21bdd03d02b4960ff92c8722d8cd
-          git clone --no-checkout https://github.com/samp-incognito/samp-streamer-plugin.git ./build/streamer
-          git -C ./build/streamer checkout 6dad0a121d60613b25bd1ec9aa6ca38701da3270
+          fetch_commit() {
+            git init --quiet "$2"
+            git -C "$2" fetch --quiet --depth 1 "$1" "$3"
+            git -C "$2" checkout --quiet FETCH_HEAD
+          }
+          fetch_commit https://github.com/Y-Less/sscanf.git ./build/sscanf 1d683f3e95e195d9704bcb47564bbd3a00c06c73
+          fetch_commit https://github.com/Southclaws/samp-whirlpool.git ./build/whirlpool 54a18c5e903b35e693308babea04cb89d8a9b0f0
+          fetch_commit https://github.com/MrucznikRolePlay/Regular-Expressions-Plugin-sampctl.git ./build/regex 6290dd7b60bd21bdd03d02b4960ff92c8722d8cd
+          fetch_commit https://github.com/samp-incognito/samp-streamer-plugin.git ./build/streamer 6dad0a121d60613b25bd1ec9aa6ca38701da3270
           # Boost and Eigen are provided by Ubuntu. Pulling the vendored Boost
           # superproject adds several minutes and is not used by this build.
           git -C ./build/streamer submodule update --init --depth 1 \
