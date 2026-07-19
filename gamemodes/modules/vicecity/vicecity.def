@@ -44,7 +44,7 @@
 #define MRP_DISABLE_VICECITY
 // Use define bottom if your want to use vice city map holding key
 // #define VICECITY_USE_MAP
-#if defined VICECITY_USE_MAP
+#if defined VICECITY_USE_MAP || defined MRP_DISABLE_VICECITY
 	#define HOLDING_KEY                 KEY_NO
 #endif
 
