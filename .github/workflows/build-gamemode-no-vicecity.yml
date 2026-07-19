@@ -27,8 +27,8 @@ jobs:
 
       - name: Compile Mrucznik RP with Vice City disabled
         run: |
-          "$RUNNER_TEMP/sampctl" package ensure
-          "$RUNNER_TEMP/sampctl" package build
+          "$RUNNER_TEMP/sampctl" ensure
+          "$RUNNER_TEMP/sampctl" build
           mv gamemodes/Mrucznik-RP.amx "$RUNNER_TEMP/Mrucznik-RP-no-vicecity.amx"
           test -s "$RUNNER_TEMP/Mrucznik-RP-no-vicecity.amx"
 
