@@ -71,6 +71,16 @@ jobs:
           patches = (
               (0x136EA4, bytes.fromhex("55"), bytes.fromhex("c3")),
               (0x1619A4, bytes.fromhex("5589e55756e8"), bytes.fromhex("b801000000c3")),
+              (0x127E52, bytes.fromhex("6c"), bytes.fromhex("7c")),
+              (0x127E5C, bytes.fromhex("60"), bytes.fromhex("70")),
+              (0x127E67, bytes.fromhex("78"), bytes.fromhex("88")),
+              (0x127E91, bytes.fromhex("5c"), bytes.fromhex("6c")),
+              (0x127E9D, bytes.fromhex("68"), bytes.fromhex("78")),
+              (0x127EC2, bytes.fromhex("6c"), bytes.fromhex("7c")),
+              (0x127ECC, bytes.fromhex("60"), bytes.fromhex("70")),
+              (0x127ED7, bytes.fromhex("78"), bytes.fromhex("88")),
+              (0x127F01, bytes.fromhex("5c"), bytes.fromhex("6c")),
+              (0x127F0D, bytes.fromhex("68"), bytes.fromhex("78")),
           )
           for offset, original, replacement in patches:
               current = bytes(data[offset : offset + len(original)])
@@ -99,6 +109,12 @@ jobs:
       - name: Smoke-test complete engine
         run: |
           export LD_LIBRARY_PATH="$PWD:$PWD/mods/deathmatch"
+          mkdir -p mods/deathmatch/resources/mrp_smoke
+          cat > mods/deathmatch/resources/mrp_smoke/meta.xml <<'EOF'
+          <meta>
+            <info author="MRP" name="MRP runtime smoke test" type="script" />
+          </meta>
+          EOF
           cat > mods/deathmatch/mtaserver.conf <<'EOF'
           <config>
             <servername>MRP x86 CI smoke test</servername>
