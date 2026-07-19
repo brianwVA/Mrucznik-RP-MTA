@@ -1,0 +1,32 @@
+diff --git a/specifiers.cpp b/specifiers.cpp
+index 9e02a12..4d7fbef 100644
+--- a/specifiers.cpp
++++ b/specifiers.cpp
+@@ -873,7 +873,7 @@ DoSD(char ** input, char ** ret, int * length)
+ 	if (i >= *length)
+ 	{
+ 		logprintf("sscanf warning: String buffer overflow.");
+-		*(ret + (*length - 1)) = '\0';
++		*(*ret + (*length - 1)) = '\0';
+ 	}
+ 	else
+ 	{
+diff --git a/sscanf.cpp b/sscanf.cpp
+index 0a69ca8..3ea7eef 100644
+--- a/sscanf.cpp
++++ b/sscanf.cpp
+@@ -1519,5 +1519,6 @@ PLUGIN_EXPORT int PLUGIN_CALL
+ 	AmxLoad(AMX * amx) 
+ {
++#if !defined(__x86_64__) && !defined(_M_X64)
+ 	int
+ 		num,
+ 		idx;
+@@ -1539,6 +1540,7 @@ PLUGIN_EXPORT int PLUGIN_CALL
+ 			break;
+ 		}
+ 	}
++#endif
+ 	return amx_Register(amx, sscanfNatives, -1);
+ }
+ 

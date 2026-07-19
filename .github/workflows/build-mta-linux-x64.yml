@@ -55,6 +55,8 @@ jobs:
           fetch_commit https://github.com/Southclaws/samp-whirlpool.git ./build/whirlpool 54a18c5e903b35e693308babea04cb89d8a9b0f0
           fetch_commit https://github.com/MrucznikRolePlay/Regular-Expressions-Plugin-sampctl.git ./build/regex 6290dd7b60bd21bdd03d02b4960ff92c8722d8cd
           fetch_commit https://github.com/samp-incognito/samp-streamer-plugin.git ./build/streamer 6dad0a121d60613b25bd1ec9aa6ca38701da3270
+          git -C ./build/sscanf apply --ignore-space-change --ignore-whitespace \
+            ../../mta/patches/sscanf-2.8.3-linux-x64.patch
 
       - name: Build sscanf x64
         run: |
