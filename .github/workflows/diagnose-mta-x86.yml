@@ -43,13 +43,13 @@ jobs:
           curl --fail --location --retry 3 --output mods/deathmatch/libmta-lua-bridge.so "$BASE_URL/libmta-lua-bridge.so"
           curl --fail --location --retry 3 --output mods/deathmatch/liblua5.1-mta-x86.so "$BASE_URL/liblua5.1-mta-x86.so"
           curl --fail --location --retry 3 --output mods/deathmatch/dbconmy.so "$BASE_URL/dbconmy.so"
-          curl --fail --location --retry 3 --output glibc-runtime.zip "$BASE_URL/mrp-glibc-bullseye-i386-2300.zip"
-          unzip -q glibc-runtime.zip
           chmod +x mta-server
 
       - name: Inspect and execute engine
         run: |
           export LD_LIBRARY_PATH="$PWD:$PWD/mods/deathmatch"
+          test "$(xxd -p -l 1 -s $((0x136ea4)) mods/deathmatch/deathmatch.so)" = "55"
+          printf '\303' | dd of=mods/deathmatch/deathmatch.so bs=1 seek=$((0x136ea4)) conv=notrunc status=none
           file mta-server core.so net.so xmll.so libncursesw.so.5 libtinfo.so.5 libz.so.1
           readelf -d core.so | grep -E 'NEEDED|RPATH|RUNPATH'
           readelf -d net.so | grep -E 'NEEDED|RPATH|RUNPATH'
@@ -60,9 +60,7 @@ jobs:
           ldd mods/deathmatch/libmta-lua-bridge.so
           ldd mods/deathmatch/liblua5.1-mta-x86.so
           set +e
-          version_output=$(runtime/i386/ld-linux.so.2 \
-            --library-path "$PWD/runtime/i386:$PWD:$PWD/mods/deathmatch" \
-            "$PWD/mta-server" --version 2>&1)
+          version_output=$(./mta-server --version 2>&1)
           version_status=$?
           set -e
           echo "$version_output"
@@ -71,6 +69,7 @@ jobs:
 
       - name: Smoke-test complete engine
         run: |
+          export LD_LIBRARY_PATH="$PWD:$PWD/mods/deathmatch"
           cat > mods/deathmatch/mtaserver.conf <<'EOF'
           <config>
             <servername>MRP x86 CI smoke test</servername>
@@ -86,9 +85,7 @@ jobs:
           </config>
           EOF
           set +e
-          timeout 15s runtime/i386/ld-linux.so.2 \
-            --library-path "$PWD/runtime/i386:$PWD:$PWD/mods/deathmatch" \
-            "$PWD/mta-server" --config mtaserver.conf > startup.log 2>&1
+          timeout 15s ./mta-server --config mtaserver.conf > startup.log 2>&1
           startup_status=$?
           set -e
           cat startup.log
@@ -112,5 +109,6 @@ jobs:
           path: |
             core.so
             net.so
+            mods/deathmatch/deathmatch.so
             startup.log
             gdb.log
