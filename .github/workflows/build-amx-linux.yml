@@ -31,14 +31,29 @@ jobs:
       - name: Build patched AMX module
         run: ./mta/build-amx-linux.sh ./artifacts/amx-linux-x86
 
+      - name: Build exact ColAndreas fork
+        run: |
+          "$VCPKG_INSTALLATION_ROOT/vcpkg" install bullet3:x86-linux
+          cmake -S ./mta/vendor/colandreas -B ./build/colandreas-linux-x86 \
+            -DCMAKE_BUILD_TYPE=Release \
+            -DCMAKE_TOOLCHAIN_FILE="$VCPKG_INSTALLATION_ROOT/scripts/buildsystems/vcpkg.cmake" \
+            -DVCPKG_TARGET_TRIPLET=x86-linux
+          cmake --build ./build/colandreas-linux-x86 --config Release --parallel
+          install -m 0755 ./build/colandreas-linux-x86/ColAndreas_static.so \
+            ./artifacts/amx-linux-x86/ColAndreas_static.so
+
       - name: Verify artifact architecture
         run: |
           file ./artifacts/amx-linux-x86/king.so | grep -F "ELF 32-bit"
+          file ./artifacts/amx-linux-x86/ColAndreas_static.so | grep -F "ELF 32-bit"
           readelf -h ./artifacts/amx-linux-x86/king.so
           ldd ./artifacts/amx-linux-x86/king.so || true
+          ldd ./artifacts/amx-linux-x86/ColAndreas_static.so || true
 
       - uses: actions/upload-artifact@v4
         with:
           name: king-mrucznik-mta-amx-linux-x86
-          path: artifacts/amx-linux-x86/king.so
+          path: |
+            artifacts/amx-linux-x86/king.so
+            artifacts/amx-linux-x86/ColAndreas_static.so
           if-no-files-found: error
