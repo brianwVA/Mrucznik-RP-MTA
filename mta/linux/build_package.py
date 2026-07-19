@@ -38,14 +38,14 @@ SAMP_ASSETS = {
 }
 X86_RUNTIME_DEBS = {
     "libncursesw5": {
-        "url": "https://deb.debian.org/debian/pool/main/n/ncurses/libncursesw5_6.4-4_i386.deb",
-        "sha256": "2db4650758c07d03e966628e1515b215945760733151e017d352792c34a0ef02",
+        "url": "https://archive.debian.org/debian-security/pool/updates/main/n/ncurses/libncursesw5_6.1+20181013-2+deb10u5_i386.deb",
+        "sha256": "93310c88ed7849b9d22747639d39f70693d67de4a69d491be37acc99b7b76f44",
         "source": "./lib/i386-linux-gnu/libncursesw.so.5.9",
         "destinations": ("libncursesw.so.5", "libncursesw.so.5.9"),
     },
     "libtinfo5": {
-        "url": "https://deb.debian.org/debian/pool/main/n/ncurses/libtinfo5_6.4-4_i386.deb",
-        "sha256": "dc615c2119b11b5ac6c6b56c359e423378ef5c87e5f2ff6a9adef11bc6262496",
+        "url": "https://archive.debian.org/debian-security/pool/updates/main/n/ncurses/libtinfo5_6.1+20181013-2+deb10u5_i386.deb",
+        "sha256": "e5d3aa7eb71ed66672edf84b2d267e6d8b9b4bfcaef2eec7e8f3ef08d6ae947d",
         "source": "./lib/i386-linux-gnu/libtinfo.so.5.9",
         "destinations": ("libtinfo.so.5", "libtinfo.so.5.9"),
     },

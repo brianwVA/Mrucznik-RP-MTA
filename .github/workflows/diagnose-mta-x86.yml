@@ -1,0 +1,35 @@
+name: Diagnose MTA Linux x86 engine
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  loader:
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Install 32-bit runtime
+        run: |
+          sudo dpkg --add-architecture i386
+          sudo apt-get update
+          sudo apt-get install --yes libc6:i386 file
+
+      - name: Download ServerProject engine files
+        env:
+          BASE_URL: https://github.com/brianwVA/Mrucznik-RP-MTA/releases/download/v2.8.8-mta-serverproject-linux-x86
+        run: |
+          curl --fail --location --retry 3 --output mta-server "$BASE_URL/mta-server"
+          curl --fail --location --retry 3 --output core.so "$BASE_URL/core.so"
+          curl --fail --location --retry 3 --output libncursesw.so.5 "$BASE_URL/libncursesw.so.5"
+          curl --fail --location --retry 3 --output libtinfo.so.5 "$BASE_URL/libtinfo.so.5"
+          chmod +x mta-server
+
+      - name: Inspect and execute engine
+        run: |
+          file mta-server core.so libncursesw.so.5 libtinfo.so.5
+          readelf -d core.so | grep -E 'NEEDED|RPATH|RUNPATH'
+          readelf -V libncursesw.so.5 | grep 'Name: GLIBC_' | sort -u
+          LD_LIBRARY_PATH="$PWD" ldd core.so
+          LD_LIBRARY_PATH="$PWD" ./mta-server --version
