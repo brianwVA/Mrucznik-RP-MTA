@@ -65,6 +65,8 @@ jobs:
           export LD_LIBRARY_PATH="$PWD:$PWD/mods/deathmatch"
           test "$(xxd -p -l 1 -s $((0x136ea4)) mods/deathmatch/deathmatch.so)" = "55"
           printf '\303' | dd of=mods/deathmatch/deathmatch.so bs=1 seek=$((0x136ea4)) conv=notrunc status=none
+          test "$(xxd -p -l 1 -s $((0x1619a4)) mods/deathmatch/deathmatch.so)" = "55"
+          printf '\270\001\000\000\000\303' | dd of=mods/deathmatch/deathmatch.so bs=1 seek=$((0x1619a4)) conv=notrunc status=none
           file mta-server core.so net.so xmll.so libncursesw.so.5 libtinfo.so.5 libz.so.1
           readelf -d core.so | grep -E 'NEEDED|RPATH|RUNPATH'
           readelf -d net.so | grep -E 'NEEDED|RPATH|RUNPATH'
