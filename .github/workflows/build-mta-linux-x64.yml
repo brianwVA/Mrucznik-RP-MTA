@@ -1,0 +1,98 @@
+name: Build MTA compatibility runtime Linux x64
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - "mta/vendor/mta-amx/amx-deps/src/**"
+      - "mta/vendor/colandreas/**"
+      - "mta/build-amx-linux.sh"
+      - ".github/workflows/build-mta-linux-x64.yml"
+  pull_request:
+    paths:
+      - "mta/vendor/mta-amx/amx-deps/src/**"
+      - "mta/vendor/colandreas/**"
+      - "mta/build-amx-linux.sh"
+      - ".github/workflows/build-mta-linux-x64.yml"
+
+jobs:
+  build:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: false
+          lfs: false
+
+      - name: Install build dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install --yes build-essential cmake libboost-system-dev libeigen3-dev libonig-dev
+
+      - name: Build patched AMX module x64
+        run: ./mta/build-amx-linux.sh ./artifacts/linux-x64 x64
+
+      - name: Build exact ColAndreas fork x64
+        run: |
+          "$VCPKG_INSTALLATION_ROOT/vcpkg" install bullet3:x64-linux
+          cmake -S ./mta/vendor/colandreas -B ./build/colandreas-linux-x64 \
+            -DCMAKE_BUILD_TYPE=Release \
+            -DMRP_BUILD_32BIT=OFF \
+            -DCMAKE_TOOLCHAIN_FILE="$VCPKG_INSTALLATION_ROOT/scripts/buildsystems/vcpkg.cmake" \
+            -DVCPKG_TARGET_TRIPLET=x64-linux
+          cmake --build ./build/colandreas-linux-x64 --config Release --parallel
+          install -m 0755 ./build/colandreas-linux-x64/ColAndreas_static.so \
+            ./artifacts/linux-x64/ColAndreas_static.so
+
+      - name: Fetch pinned plugin sources
+        run: |
+          git clone --no-checkout https://github.com/Y-Less/sscanf.git ./build/sscanf
+          git -C ./build/sscanf checkout 1d683f3e95e195d9704bcb47564bbd3a00c06c73
+          git clone --no-checkout https://github.com/Southclaws/samp-whirlpool.git ./build/whirlpool
+          git -C ./build/whirlpool checkout 54a18c5e903b35e693308babea04cb89d8a9b0f0
+          git clone --no-checkout https://github.com/MrucznikRolePlay/Regular-Expressions-Plugin-sampctl.git ./build/regex
+          git -C ./build/regex checkout 6290dd7b60bd21bdd03d02b4960ff92c8722d8cd
+          git clone --no-checkout https://github.com/samp-incognito/samp-streamer-plugin.git ./build/streamer
+          git -C ./build/streamer checkout 6dad0a121d60613b25bd1ec9aa6ca38701da3270
+          git -C ./build/streamer submodule update --init --recursive
+
+      - name: Build sscanf x64
+        run: |
+          sed -i 's/-m32 //g' ./build/sscanf/makefile
+          make -C ./build/sscanf -j"$(nproc)"
+          install -m 0755 ./build/sscanf/sscanf.so ./artifacts/linux-x64/sscanf.so
+
+      - name: Build Whirlpool x64
+        run: |
+          make -C ./build/whirlpool -j"$(nproc)"
+          install -m 0755 ./build/whirlpool/Whirlpool.so ./artifacts/linux-x64/Whirlpool.so
+
+      - name: Build regular expressions plugin x64
+        run: |
+          g++ -std=c++11 -O2 -fPIC -shared \
+            -I./build/regex/includes -I./build/regex/includes/SDK \
+            -I./build/regex/includes/SDK/amx -I./build/regex/includes/onig-5.9.5 \
+            ./build/regex/src/RegEx.cpp ./build/regex/includes/SDK/amxplugin.cpp \
+            -lonig -o ./artifacts/linux-x64/libRegEx.so
+
+      - name: Build streamer x64
+        run: |
+          cmake -S ./build/streamer -B ./build/streamer-build \
+            -DCMAKE_BUILD_TYPE=Release \
+            -DBOOST_ROOT=/usr \
+            -DEIGEN3_INCLUDE_DIR=/usr/include/eigen3
+          cmake --build ./build/streamer-build --config Release --parallel
+          install -m 0755 ./build/streamer-build/bin/streamer.so ./artifacts/linux-x64/streamer.so
+
+      - name: Verify x64 artifacts
+        run: |
+          for artifact in king.so ColAndreas_static.so sscanf.so Whirlpool.so libRegEx.so streamer.so; do
+            file "./artifacts/linux-x64/$artifact" | grep -F "ELF 64-bit"
+            ldd "./artifacts/linux-x64/$artifact" || true
+          done
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: mrucznik-mta-linux-x64-runtime
+          path: artifacts/linux-x64/*.so
+          if-no-files-found: error

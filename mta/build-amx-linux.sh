@@ -4,11 +4,16 @@ set -euo pipefail
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 SOURCE_DIR="$SCRIPT_DIR/vendor/mta-amx/amx-deps/src"
 OUTPUT_DIR="${1:-$SCRIPT_DIR/artifacts/amx-linux-x86}"
+ARCH="${2:-x86}"
 PREMAKE_URL="https://github.com/premake/premake-core/releases/download/v5.0.0-beta8/premake-5.0.0-beta8-linux.tar.gz"
 PREMAKE_SHA256="63edd3e7461eebdd45b500a3c7e8ad4e7a67d68f230010f9a97cbb71b4ec59c8"
 
 if [[ ! -d "$SOURCE_DIR" ]]; then
     echo "Brak źródeł modułu MTA AMX: $SOURCE_DIR" >&2
+    exit 1
+fi
+if [[ "$ARCH" != "x86" && "$ARCH" != "x64" ]]; then
+    echo "Nieobsługiwana architektura: $ARCH" >&2
     exit 1
 fi
 
@@ -27,7 +32,7 @@ chmod 0755 "$WORK_DIR/premake5"
 (
     cd "$WORK_DIR/src"
     "$WORK_DIR/premake5" --file=premake5.lua gmake2
-    make -C Build config=release_x86 -j"$(nproc)"
+    make -C Build "config=release_$ARCH" -j"$(nproc)"
 )
 
 KING_SO="$(find "$WORK_DIR/src" -type f \( -name king.so -o -name libking.so \) -print -quit)"

@@ -14,6 +14,7 @@ if(NOT CMAKE_BUILD_TYPE)
 endif(NOT CMAKE_BUILD_TYPE)
 
 option(BuildWizard "Compile the Wizard application." OFF)
+option(MRP_BUILD_32BIT "Build the legacy 32-bit SA-MP plugin" ON)
 
 if(WIN32)
 	add_definitions(-DWIN32 -D_WIN32)
@@ -33,9 +34,15 @@ if(WIN32)
 else()
 	add_definitions(-DLINUX)
 
-	set(CMAKE_C_FLAGS "-m32")
-	set(CMAKE_CXX_FLAGS "-m32 -std=c++11 -Wno-write-strings")
-	set(CMAKE_SHARED_LINKER_FLAGS "-m32 -fshort-wchar -shared")
+	if(MRP_BUILD_32BIT)
+		set(MRP_ARCH_FLAGS "-m32")
+	else()
+		set(MRP_ARCH_FLAGS "")
+	endif()
+
+	set(CMAKE_C_FLAGS "${MRP_ARCH_FLAGS}")
+	set(CMAKE_CXX_FLAGS "${MRP_ARCH_FLAGS} -std=c++11 -Wno-write-strings")
+	set(CMAKE_SHARED_LINKER_FLAGS "${MRP_ARCH_FLAGS} -fshort-wchar -shared")
 
 	set(CMAKE_C_FLAGS_DEBUG "-O0 -g3")
 	set(CMAKE_CXX_FLAGS_DEBUG "-O0 -g3")
