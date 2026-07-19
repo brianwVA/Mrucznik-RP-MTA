@@ -27,7 +27,13 @@ jobs:
 
       - name: Compile Mrucznik RP with Vice City disabled
         run: |
-          "$RUNNER_TEMP/sampctl" ensure
+          # The old v2.8.3 sscanf release has a broken Linux plugin asset.
+          # Dependency includes are still installed before that resource error;
+          # provide sscanf2.inc directly and build without forcing runtime setup.
+          "$RUNNER_TEMP/sampctl" ensure || true
+          curl --fail --location --silent --show-error \
+            https://raw.githubusercontent.com/maddinat0r/sscanf/v2.8.3/sscanf2.inc \
+            --output include/sscanf2.inc
           "$RUNNER_TEMP/sampctl" build
           mv gamemodes/Mrucznik-RP.amx "$RUNNER_TEMP/Mrucznik-RP-no-vicecity.amx"
           test -s "$RUNNER_TEMP/Mrucznik-RP-no-vicecity.amx"
