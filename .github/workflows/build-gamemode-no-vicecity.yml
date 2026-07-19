@@ -1,0 +1,42 @@
+name: Build gamemode without Vice City
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - "gamemodes/**"
+      - "include/**"
+      - ".github/workflows/build-gamemode-no-vicecity.yml"
+
+jobs:
+  build:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: true
+          lfs: false
+
+      - name: Install pinned Pawn compiler
+        run: |
+          curl --fail --location --silent --show-error \
+            https://github.com/pawn-lang/compiler/releases/download/v3.10.10/pawnc-3.10.10-linux.tar.gz \
+            --output "$RUNNER_TEMP/pawnc.tar.gz"
+          mkdir -p "$RUNNER_TEMP/pawnc"
+          tar -xzf "$RUNNER_TEMP/pawnc.tar.gz" -C "$RUNNER_TEMP/pawnc" --strip-components=1
+
+      - name: Compile Mrucznik RP with Vice City disabled
+        working-directory: gamemodes
+        run: |
+          export LD_LIBRARY_PATH="$RUNNER_TEMP/pawnc/lib:${LD_LIBRARY_PATH:-}"
+          "$RUNNER_TEMP/pawnc/bin/pawncc" \
+            -i../include -d3 "-;+" "-(+" "-Z+" \
+            -o"$RUNNER_TEMP/Mrucznik-RP-no-vicecity.amx" \
+            Mrucznik-RP.pwn
+          test -s "$RUNNER_TEMP/Mrucznik-RP-no-vicecity.amx"
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: mrucznik-rp-gamemode-no-vicecity
+          path: ${{ runner.temp }}/Mrucznik-RP-no-vicecity.amx
+          if-no-files-found: error

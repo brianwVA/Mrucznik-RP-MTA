@@ -30,6 +30,11 @@
 //-----------------<[ Callbacki: ]>-----------------
 hook OnGameModeInit()
 {
+	#if defined MRP_DISABLE_VICECITY
+		print("Vice City | module disabled");
+		return 1;
+	#endif
+
 	ViceCityInteriors();
 	ViceCityGates();
 	ViceCityAdditionalObjects();
@@ -264,6 +269,10 @@ hook OnGameModeInit()
 
 ViceCity_AddCollisions()
 {
+	#if defined MRP_DISABLE_VICECITY
+		return 1;
+	#endif
+
     for(new i, k = sizeof(ide_infos); i < k; i++) {
         new unpackDFF[40];
 
@@ -300,6 +309,10 @@ hook OnPlayerConnect(playerid) {
 }
 
 hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys) {
+	#if defined MRP_DISABLE_VICECITY
+		return 1;
+	#endif
+
 	if(HOLDING(HOLDING_KEY) && IsPlayerInDynamicArea(playerid, areaViceCity, 0)) {
         TextDrawShowForPlayer(playerid, screenVCMap);
 	    for(new i = 0, k = sizeof(screenVCPlaces); i < k; i++) {

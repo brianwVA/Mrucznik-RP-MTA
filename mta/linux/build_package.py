@@ -204,6 +204,8 @@ def build(args: argparse.Namespace) -> tuple[Path, Path]:
     for required in required_paths:
         if not required.exists():
             raise FileNotFoundError(required)
+    if args.gamemode_amx is not None and not args.gamemode_amx.is_file():
+        raise FileNotFoundError(args.gamemode_amx)
     if serverfiles.stat().st_size < 700 * 1024 * 1024:
         raise RuntimeError("serverfiles.tar.gz jest wskaźnikiem LFS, a nie pełnym archiwum")
 
@@ -257,11 +259,19 @@ def build(args: argparse.Namespace) -> tuple[Path, Path]:
 
     extracted = work / "serverfiles"
     with tarfile.open(serverfiles, "r:gz") as archive:
-        extract_member(archive, "serverfiles/gamemodes/Mrucznik-RP.amx", extracted / "Mrucznik-RP.amx")
+        if args.gamemode_amx is None:
+            extract_member(archive, "serverfiles/gamemodes/Mrucznik-RP.amx", extracted / "Mrucznik-RP.amx")
         for name in ("animy", "realtime", "sobeitblock", "SAN_extPSq"):
             extract_member(archive, f"serverfiles/filterscripts/{name}.amx", extracted / f"{name}.amx")
         extract_prefix(archive, "serverfiles/scriptfiles", extracted / "scriptfiles")
         extract_prefix(archive, "serverfiles/models", extracted / "models")
+
+    if args.gamemode_amx is not None:
+        shutil.copy2(args.gamemode_amx.resolve(), extracted / "Mrucznik-RP.amx")
+
+    # The Vice City map is disabled for this deployment. Do not ship its 4,426
+    # client assets or leave a second copy in the legacy top-level model tree.
+    shutil.rmtree(extracted / "models/vc4samp", ignore_errors=True)
 
     baseline = resources / "amx-mrucznik"
     baseline.mkdir()
@@ -296,12 +306,10 @@ def build(args: argparse.Namespace) -> tuple[Path, Path]:
     for pattern in ("*.dff", "*.txd"):
         for source in (extracted / "models").glob(pattern):
             shutil.copy2(source, model_assets / source.name)
-    copy_tree(extracted / "models/vc4samp", model_assets / "vc4samp")
     samp_assets = model_assets / "samp"
     samp_assets.mkdir(parents=True, exist_ok=True)
     for name, digest in SAMP_ASSETS.items():
         download(f"https://gtastuff.com/api/file/?name={name}", samp_assets / name, digest)
-    shutil.copy2(extracted / "models/vc4samp/dff/concerth04.dff", deploy / "models/concerth04.dff")
     update_models_meta(models_resource / "meta.xml", model_assets)
 
     cookie_jar = http.cookiejar.CookieJar()
@@ -369,6 +377,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--output", type=Path, default=Path("dist/linux"))
     parser.add_argument("--platform", choices=sorted(MTA_BUILDS), default="linux-x86")
     parser.add_argument("--runtime-dir", type=Path)
+    parser.add_argument("--gamemode-amx", type=Path)
     parser.add_argument("--king-so", type=Path)
     parser.add_argument("--colandreas-so", type=Path)
     parser.add_argument("--mysql-host", default="__MYSQL_HOST__")

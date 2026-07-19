@@ -28,6 +28,10 @@
 //-----------------<[ Timery: ]>-------------------
 ViceCity_JednaSekundaTimer()
 {
+	#if defined MRP_DISABLE_VICECITY
+		return 1;
+	#endif
+
 	foreach(new i : Player) 
 	{
 		if(IsPlayerConnected(i)) 
