@@ -30,7 +30,7 @@ chmod 0755 "$WORK_DIR/premake5"
     make -C Build config=release_x86 -j"$(nproc)"
 )
 
-KING_SO="$(find "$WORK_DIR/src" -type f -name king.so -print -quit)"
+KING_SO="$(find "$WORK_DIR/src" -type f \( -name king.so -o -name libking.so \) -print -quit)"
 if [[ -z "$KING_SO" ]]; then
     echo "Build nie utworzył king.so." >&2
     exit 1

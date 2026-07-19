@@ -49,7 +49,8 @@ def download(url: str, destination: Path, expected_sha256: str, opener=None) -> 
     for attempt in range(1, 7):
         try:
             request = urllib.request.Request(url, headers={"User-Agent": "Mrucznik-MTA-Linux/1"})
-            with (opener or urllib.request).open(request, timeout=300) as response:
+            open_request = opener.open if opener is not None else urllib.request.urlopen
+            with open_request(request, timeout=300) as response:
                 with destination.open("wb") as output:
                     shutil.copyfileobj(response, output)
             actual = sha256(destination)
@@ -117,8 +118,19 @@ def extract_plugin(package: Path, archive_type: str, destination: Path) -> Path:
     elif archive_type == "tar.gz":
         with tarfile.open(package, "r:gz") as archive:
             for member in archive.getmembers():
-                safe_archive_path(member.name)
-            archive.extractall(destination, filter="data")
+                path = safe_archive_path(member.name)
+                output = destination.joinpath(*path.parts)
+                if member.isdir():
+                    output.mkdir(parents=True, exist_ok=True)
+                elif member.isfile():
+                    source = archive.extractfile(member)
+                    if source is None:
+                        raise RuntimeError(f"Nie można odczytać {member.name}")
+                    output.parent.mkdir(parents=True, exist_ok=True)
+                    with source, output.open("wb") as stream:
+                        shutil.copyfileobj(source, stream)
+                else:
+                    raise RuntimeError(f"Nieobsługiwany wpis w archiwum: {member.name}")
     else:
         raise RuntimeError(f"Nieobsługiwane archiwum: {archive_type}")
     return destination
@@ -264,7 +276,7 @@ def build(args: argparse.Namespace) -> tuple[Path, Path]:
     samp_assets = model_assets / "samp"
     samp_assets.mkdir(parents=True, exist_ok=True)
     for name, digest in SAMP_ASSETS.items():
-        download(f"https://gtastuff.com/api/file?name={name}", samp_assets / name, digest)
+        download(f"https://gtastuff.com/api/file/?name={name}", samp_assets / name, digest)
     shutil.copy2(extracted / "models/vc4samp/dff/concerth04.dff", deploy / "models/concerth04.dff")
     update_models_meta(models_resource / "meta.xml", model_assets)
 
