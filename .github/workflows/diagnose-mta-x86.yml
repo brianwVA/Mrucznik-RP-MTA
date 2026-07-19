@@ -27,15 +27,20 @@ jobs:
         run: |
           curl --fail --location --retry 3 --output mta-server "$BASE_URL/mta-server"
           curl --fail --location --retry 3 --output core.so "$BASE_URL/core-original.so"
+          curl --fail --location --retry 3 --output net.so "$BASE_URL/net.so"
+          curl --fail --location --retry 3 --output xmll.so "$BASE_URL/xmll.so"
           curl --fail --location --retry 3 --output libncursesw.so.5 "$BASE_URL/libncursesw.so.5"
           curl --fail --location --retry 3 --output libtinfo.so.5 "$BASE_URL/libtinfo.so.5"
+          curl --fail --location --retry 3 --output libz.so.1 "$BASE_URL/libz.so.1"
           chmod +x mta-server
 
       - name: Inspect and execute engine
         run: |
           patchelf --force-rpath --set-rpath '$ORIGIN' core.so
-          file mta-server core.so libncursesw.so.5 libtinfo.so.5
+          patchelf --force-rpath --set-rpath '$ORIGIN' net.so
+          file mta-server core.so net.so xmll.so libncursesw.so.5 libtinfo.so.5 libz.so.1
           readelf -d core.so | grep -E 'NEEDED|RPATH|RUNPATH'
+          readelf -d net.so | grep -E 'NEEDED|RPATH|RUNPATH'
           readelf -V libncursesw.so.5 | grep 'Name: GLIBC_' | sort -u
           ldd core.so
           set +e
@@ -46,8 +51,36 @@ jobs:
           test "$version_status" -eq 1
           grep -F 'MTA:SA Server v1.5.9-release-21630' <<<"$version_output"
 
-      - name: Save patchelf core
+      - name: Smoke-test complete engine
+        run: |
+          mkdir -p mods/deathmatch/logs
+          cat > mods/deathmatch/mtaserver.conf <<'EOF'
+          <config>
+            <servername>MRP x86 CI smoke test</servername>
+            <serverip>auto</serverip>
+            <serverport>22003</serverport>
+            <maxplayers>4</maxplayers>
+            <httpserver>0</httpserver>
+            <httpport>22005</httpport>
+            <ase>0</ase>
+            <logfile>logs/server.log</logfile>
+            <authfile>logs/server_auth.log</authfile>
+            <dbfile>logs/db.log</dbfile>
+          </config>
+          EOF
+          set +e
+          timeout 15s ./mta-server > startup.log 2>&1
+          startup_status=$?
+          set -e
+          cat startup.log
+          test "$startup_status" -eq 124
+          grep -F 'Server started and is ready to accept connections!' startup.log
+
+      - name: Save patched runtime
         uses: actions/upload-artifact@v4
         with:
-          name: core-patchelf
-          path: core.so
+          name: runtime-patchelf
+          path: |
+            core.so
+            net.so
+            startup.log
