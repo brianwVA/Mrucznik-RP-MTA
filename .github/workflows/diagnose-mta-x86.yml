@@ -68,10 +68,28 @@ jobs:
 
           path = Path("mods/deathmatch/deathmatch.so")
           data = bytearray(path.read_bytes())
+
+          # Replace the legacy C++ directory builder with a small ABI-neutral
+          # mkdir -p loop. The original std::vector/SString implementation
+          # corrupts memory with the host's modern libstdc++ runtime.
+          mkdir_offset = 0x136EA4
+          mkdir_legacy = bytes.fromhex(
+              "c389e557e8b0d2000081c753319a00568d75b45381ecd400000065a114000000"
+              "8945e431c0ff750856c78550ffffff00000000c78554ffffff00000000c78558"
+              "ffffff0000000089b538ffffffe8aa13ffff8d45cc8d9550ffffff6a00b92f000000"
+          )
+          mkdir_original = bytes.fromhex("55") + mkdir_legacy[1:]
+          mkdir_replacement = bytes.fromhex(
+              "5589e55356578b45088b0050e80b7df6ff83c40485c00f844100000089c689c7"
+              "8a0784c00f842a0000003c2f0f851c00000039f70f8414000000c6070068fd01"
+              "000056e80479f6ff83c408c6072f47e9ccffffff56e882a1f6ff83c4045f5e5bc9c3"
+          )
+          current = bytes(data[mkdir_offset : mkdir_offset + len(mkdir_replacement)])
+          if current not in (mkdir_legacy, mkdir_original, mkdir_replacement):
+              raise SystemExit(f"unexpected MakeSureDirExists bytes: {current.hex()}")
+          data[mkdir_offset : mkdir_offset + len(mkdir_replacement)] = mkdir_replacement
+
           patches = (
-              # The legacy implementation corrupts memory on modern Linux.
-              # Cache directories are created safely by the launcher instead.
-              (0x136EA4, bytes.fromhex("55"), bytes.fromhex("c3")),
               (0x1619A4, bytes.fromhex("b801000000c3"), bytes.fromhex("5589e55756e8")),
               (
                   0x127E50,
@@ -111,10 +129,7 @@ jobs:
       - name: Smoke-test complete engine
         run: |
           export LD_LIBRARY_PATH="$PWD:$PWD/mods/deathmatch"
-          mkdir -p \
-            mods/deathmatch/resources/mrp_smoke \
-            mods/deathmatch/resource-cache/http-client-files/mrp_smoke \
-            mods/deathmatch/resource-cache/http-client-files-no-client-cache/mrp_smoke
+          mkdir -p mods/deathmatch/resources/mrp_smoke
           cat > mods/deathmatch/resources/mrp_smoke/meta.xml <<'EOF'
           <meta>
             <info author="MRP" name="MRP runtime smoke test" type="script" />
