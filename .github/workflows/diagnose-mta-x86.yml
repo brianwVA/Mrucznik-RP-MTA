@@ -2,6 +2,11 @@ name: Diagnose MTA Linux x86 engine
 
 on:
   workflow_dispatch:
+  push:
+    branches:
+      - codex/mta-port
+    paths:
+      - .github/workflows/diagnose-mta-x86.yml
 
 permissions:
   contents: read
