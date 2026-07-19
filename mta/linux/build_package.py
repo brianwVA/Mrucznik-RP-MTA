@@ -18,7 +18,7 @@ from xml.etree import ElementTree as ET
 
 
 MTA_BUILDS = {
-    "linux-x86": "1.6.0-rc-24124-linux-x86",
+    "linux-x86": "1.5.9-R2-build-21630-linux-x86",
     "linux-x64": "1.6.0-rc-24125-linux-x64",
 }
 OBJECT_PREVIEW_PAGE = (

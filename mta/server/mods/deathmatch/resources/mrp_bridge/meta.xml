@@ -1,6 +1,6 @@
 <meta>
     <info name="Mrucznik RP MTA bridge" author="brianwVA / OpenAI" version="0.1.0" />
-    <min_mta_version server="1.6.0-9.22457" client="1.6.0-9.22420" />
+    <min_mta_version server="1.5.9-9.21630" client="1.5.9-9.21630" />
     <script src="shared/config.lua" type="shared" cache="false" />
     <script src="server/main.lua" type="server" />
     <script src="client/main.lua" type="client" cache="false" />

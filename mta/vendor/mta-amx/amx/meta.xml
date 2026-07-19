@@ -1,6 +1,6 @@
 <meta>
     <info name="AMX" author="adamix" type="gamemode" />
-    <min_mta_version server="1.6.0-9.22457" client="1.6.0-9.22420"></min_mta_version>
+    <min_mta_version server="1.5.9-9.21630" client="1.5.9-9.21630"></min_mta_version>
 
     <script src="server/defines.lua" type="server" />
     <script src="shared/anim_define.lua" type="shared" />
