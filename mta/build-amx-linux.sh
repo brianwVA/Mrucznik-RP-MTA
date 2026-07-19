@@ -22,6 +22,7 @@ curl --fail --location --silent --show-error \
     --output "$WORK_DIR/premake.tar.gz" "$PREMAKE_URL"
 echo "$PREMAKE_SHA256  $WORK_DIR/premake.tar.gz" | sha256sum --check --status
 tar -xzf "$WORK_DIR/premake.tar.gz" -C "$WORK_DIR"
+chmod 0755 "$WORK_DIR/premake5"
 
 (
     cd "$WORK_DIR/src"
