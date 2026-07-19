@@ -43,6 +43,12 @@ jobs:
           curl --fail --location --retry 3 --output mods/deathmatch/libmta-lua-bridge.so "$BASE_URL/libmta-lua-bridge.so"
           curl --fail --location --retry 3 --output mods/deathmatch/liblua5.1-mta-x86.so "$BASE_URL/liblua5.1-mta-x86.so"
           curl --fail --location --retry 3 --output mods/deathmatch/dbconmy.so "$BASE_URL/dbconmy.so"
+          curl --fail --location --retry 3 \
+            --output mods/deathmatch/acl.xml \
+            https://raw.githubusercontent.com/multitheftauto/mtasa-blue/v1.5.9/Server/mods/deathmatch/acl.xml
+          curl --fail --location --retry 3 \
+            --output mods/deathmatch/vehiclecolors.conf \
+            https://raw.githubusercontent.com/multitheftauto/mtasa-blue/v1.5.9/Server/mods/deathmatch/vehiclecolors.conf
           chmod +x mta-server
 
       - name: Inspect and execute engine
@@ -82,6 +88,7 @@ jobs:
             <logfile>logs/server.log</logfile>
             <authfile>logs/server_auth.log</authfile>
             <dbfile>logs/db.log</dbfile>
+            <acl>acl.xml</acl>
           </config>
           EOF
           set +e
