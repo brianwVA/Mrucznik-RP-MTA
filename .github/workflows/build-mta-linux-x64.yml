@@ -55,16 +55,6 @@ jobs:
           fetch_commit https://github.com/Southclaws/samp-whirlpool.git ./build/whirlpool 54a18c5e903b35e693308babea04cb89d8a9b0f0
           fetch_commit https://github.com/MrucznikRolePlay/Regular-Expressions-Plugin-sampctl.git ./build/regex 6290dd7b60bd21bdd03d02b4960ff92c8722d8cd
           fetch_commit https://github.com/samp-incognito/samp-streamer-plugin.git ./build/streamer 6dad0a121d60613b25bd1ec9aa6ca38701da3270
-          # Boost and Eigen are provided by Ubuntu. Fetch the two small pinned
-          # build dependencies directly; the historical git:// submodule URLs
-          # are blocked on modern GitHub runners.
-          mkdir -p ./build/streamer/lib/cmake-modules ./build/streamer/lib/samp-plugin-sdk
-          curl --fail --location --silent --show-error \
-            https://github.com/Zeex/cmake-modules/archive/ed087cc97e84a18f0626a980e45c0491d18da31a.tar.gz \
-            | tar -xz -C ./build/streamer/lib/cmake-modules --strip-components=1
-          curl --fail --location --silent --show-error \
-            https://github.com/Zeex/samp-plugin-sdk/archive/15ffdfcb1faad2c77e57a64ccdd8147a9a7b92f5.tar.gz \
-            | tar -xz -C ./build/streamer/lib/samp-plugin-sdk --strip-components=1
 
       - name: Build sscanf x64
         run: |
@@ -87,12 +77,19 @@ jobs:
 
       - name: Build streamer x64
         run: |
-          cmake -S ./build/streamer -B ./build/streamer-build \
-            -DCMAKE_BUILD_TYPE=Release \
-            -DBOOST_ROOT=/usr \
-            -DEIGEN3_INCLUDE_DIR=/usr/include/eigen3
-          cmake --build ./build/streamer-build --config Release --parallel
-          install -m 0755 ./build/streamer-build/bin/streamer.so ./artifacts/linux-x64/streamer.so
+          mapfile -t STREAMER_CPP < <(find ./build/streamer/src -name '*.cpp' -type f | sort)
+          g++ -std=c++11 -O2 -fPIC -fno-strict-aliasing -shared \
+            -DBOOST_CHRONO_HEADER_ONLY -DSAMPGDK_AMALGAMATION -DSAMPGDK_CPP_WRAPPERS \
+            -I./build/streamer/src \
+            -I./mta/vendor/colandreas/src/SDK \
+            -I./mta/vendor/colandreas/src/SDK/amx \
+            -I/usr/include/eigen3 \
+            "${STREAMER_CPP[@]}" \
+            ./build/streamer/src/sampgdk.c \
+            ./mta/vendor/colandreas/src/SDK/amxplugin.cpp \
+            -lboost_system -pthread -lrt \
+            -o ./artifacts/linux-x64/streamer.so
+          strip ./artifacts/linux-x64/streamer.so
 
       - name: Verify x64 artifacts
         run: |
