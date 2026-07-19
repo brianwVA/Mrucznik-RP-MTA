@@ -32,7 +32,13 @@ jobs:
           curl --fail --location --retry 3 --output libncursesw.so.5 "$BASE_URL/libncursesw.so.5"
           curl --fail --location --retry 3 --output libtinfo.so.5 "$BASE_URL/libtinfo.so.5"
           curl --fail --location --retry 3 --output libz.so.1 "$BASE_URL/libz.so.1"
-          mkdir -p mods/deathmatch/logs mods/deathmatch/resource-cache
+          mkdir -p \
+            mods/deathmatch/backups \
+            mods/deathmatch/databases \
+            mods/deathmatch/dumps \
+            mods/deathmatch/logs \
+            mods/deathmatch/resource-cache \
+            mods/deathmatch/resources
           curl --fail --location --retry 3 --output mods/deathmatch/deathmatch.so "$BASE_URL/deathmatch.so"
           curl --fail --location --retry 3 --output mods/deathmatch/libmta-lua-bridge.so "$BASE_URL/libmta-lua-bridge.so"
           curl --fail --location --retry 3 --output mods/deathmatch/liblua5.1-mta-x86.so "$BASE_URL/liblua5.1-mta-x86.so"
