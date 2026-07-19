@@ -32,18 +32,6 @@ jobs:
       - name: Build patched AMX module x64
         run: ./mta/build-amx-linux.sh ./artifacts/linux-x64 x64
 
-      - name: Build exact ColAndreas fork x64
-        run: |
-          "$VCPKG_INSTALLATION_ROOT/vcpkg" install bullet3:x64-linux
-          cmake -S ./mta/vendor/colandreas -B ./build/colandreas-linux-x64 \
-            -DCMAKE_BUILD_TYPE=Release \
-            -DMRP_BUILD_32BIT=OFF \
-            -DCMAKE_TOOLCHAIN_FILE="$VCPKG_INSTALLATION_ROOT/scripts/buildsystems/vcpkg.cmake" \
-            -DVCPKG_TARGET_TRIPLET=x64-linux
-          cmake --build ./build/colandreas-linux-x64 --config Release --parallel
-          install -m 0755 ./build/colandreas-linux-x64/ColAndreas_static.so \
-            ./artifacts/linux-x64/ColAndreas_static.so
-
       - name: Fetch pinned plugin sources
         run: |
           fetch_commit() {
@@ -71,10 +59,11 @@ jobs:
 
       - name: Build regular expressions plugin x64
         run: |
-          g++ -std=c++11 -O2 -fPIC -shared \
-            -I./build/regex/includes -I./build/regex/includes/SDK \
-            -I./build/regex/includes/SDK/amx -I./build/regex/includes/onig-5.9.5 \
-            ./build/regex/src/RegEx.cpp ./build/regex/includes/SDK/amxplugin.cpp \
+          g++ -std=c++11 -O2 -fPIC -shared -DLINUX -include cstring \
+            -I./mta/vendor/colandreas/src/SDK \
+            -I./mta/vendor/colandreas/src/SDK/amx \
+            ./build/regex/src/RegEx.cpp \
+            ./mta/vendor/colandreas/src/SDK/amxplugin.cpp \
             -lonig -o ./artifacts/linux-x64/libRegEx.so
 
       - name: Build streamer x64
@@ -92,6 +81,18 @@ jobs:
             -lboost_system -pthread -lrt \
             -o ./artifacts/linux-x64/streamer.so
           strip ./artifacts/linux-x64/streamer.so
+
+      - name: Build exact ColAndreas fork x64
+        run: |
+          "$VCPKG_INSTALLATION_ROOT/vcpkg" install bullet3:x64-linux
+          cmake -S ./mta/vendor/colandreas -B ./build/colandreas-linux-x64 \
+            -DCMAKE_BUILD_TYPE=Release \
+            -DMRP_BUILD_32BIT=OFF \
+            -DCMAKE_TOOLCHAIN_FILE="$VCPKG_INSTALLATION_ROOT/scripts/buildsystems/vcpkg.cmake" \
+            -DVCPKG_TARGET_TRIPLET=x64-linux
+          cmake --build ./build/colandreas-linux-x64 --config Release --parallel
+          install -m 0755 ./build/colandreas-linux-x64/ColAndreas_static.so \
+            ./artifacts/linux-x64/ColAndreas_static.so
 
       - name: Verify x64 artifacts
         run: |
