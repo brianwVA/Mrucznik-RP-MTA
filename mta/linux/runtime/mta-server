@@ -5,18 +5,19 @@ SERVER_DIR=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)
 RUNTIME_DIR="$SERVER_DIR/runtime/i386"
 RUNTIME_ARCHIVE="$SERVER_DIR/mrp-glibc-bullseye-i386-2300.zip"
 RUNTIME_MARKER="$RUNTIME_DIR/.mrp-bullseye-2.31"
-CXX_ARCHIVE="$SERVER_DIR/mrp-cxx-bullseye-i386-10.2.1.zip"
-CXX_MARKER="$RUNTIME_DIR/.mrp-gcc-10.2.1"
+LEGACY_LIBS_ARCHIVE="$SERVER_DIR/mrp-legacy-libs-bullseye-i386-r2.zip"
+LEGACY_LIBS_MARKER="$RUNTIME_DIR/.mrp-legacy-libs-r2"
 
 if [ ! -f "$RUNTIME_MARKER" ]; then
     /usr/bin/unzip -oq "$RUNTIME_ARCHIVE" -d "$SERVER_DIR"
     : > "$RUNTIME_MARKER"
 fi
-if [ ! -f "$CXX_MARKER" ]; then
-    /usr/bin/unzip -oq "$CXX_ARCHIVE" -d "$SERVER_DIR"
-    : > "$CXX_MARKER"
+if [ ! -f "$LEGACY_LIBS_MARKER" ]; then
+    /usr/bin/unzip -oq "$LEGACY_LIBS_ARCHIVE" -d "$SERVER_DIR"
+    : > "$LEGACY_LIBS_MARKER"
 fi
 
 exec "$RUNTIME_DIR/ld-linux.so.2" \
     --library-path "$RUNTIME_DIR:$SERVER_DIR:$SERVER_DIR/mods/deathmatch" \
+    --preload "$SERVER_DIR/mods/deathmatch/libmta-lua-bridge.so:$RUNTIME_DIR/libsqlite3.so.0" \
     "$SERVER_DIR/mta-server.bin" --config mtaserver.conf "$@"
