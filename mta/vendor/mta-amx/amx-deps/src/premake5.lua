@@ -12,6 +12,7 @@ solution "king"
 	defines {
 		"_CRT_SECURE_NO_WARNINGS",
 		"HAVE_STDINT_H",
+		"FLOATPOINT",
 	}
 
 	filter "system:windows"
@@ -44,6 +45,14 @@ solution "king"
 			"**.cpp",
 			"*.h",
 			"include/*.h",
+			"amx/amx.c",
+			"amx/amxaux.c",
+			"amx/amxcons.c",
+			"amx/amxcore.c",
+			"amx/amxfile.c",
+			"amx/amxstring.c",
+			"amx/amxtime.c",
+			"amx/amxfloat.c",
 		}
 
 		filter "system:windows"
@@ -51,6 +60,7 @@ solution "king"
 
 		filter "system:linux"
 			includedirs { "linux" }
+			files { "linux/getch.c" }
 
 		filter {"system:linux", "platforms:x86" }
 			linkoptions { "-Wl,-rpath=mods/deathmatch" }
