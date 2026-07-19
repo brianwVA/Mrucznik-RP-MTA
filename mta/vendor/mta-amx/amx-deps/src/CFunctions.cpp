@@ -187,18 +187,20 @@ int CFunctions::amxLoad(lua_State *luaVM) {
 	for (const auto& plugin : loadedPlugins) {
 		AmxLoad_t* pfnAmxLoad = plugin.second->AmxLoad;
 		if (pfnAmxLoad) {
+			pModuleManager->DebugPrintf("Calling AmxLoad for plugin '%s'.\n", plugin.first.c_str());
 			err = pfnAmxLoad(amx);
+			pModuleManager->DebugPrintf("AmxLoad for plugin '%s' returned %d.\n", plugin.first.c_str(), err);
 		}
 	}
 
 	if(err != AMX_ERR_NONE) {
 		pModuleManager->ErrorPrintf("%s can't be loaded due to missing functions:\n", amxName);
 		AMX_HEADER *header = (AMX_HEADER *)amx->base;
-		AMX_FUNCSTUBNT *func = (AMX_FUNCSTUBNT *)((BYTE *)amx->base + header->natives);
-		while( func != ((AMX_FUNCSTUBNT *)((BYTE *)amx->base + header->libraries)) ) {
-			if(!func->address)
-				pModuleManager->ErrorPrintf("  %s\n", (char *)amx->base + func->nameofs);
-			func++;
+		const unsigned nativeCount = NUMENTRIES(header, natives, libraries);
+		for (unsigned index = 0; index < nativeCount; ++index) {
+			AMX_FUNCSTUB *func = GETENTRY(header, natives, index);
+			if (!func->address)
+				pModuleManager->ErrorPrintf("  %s\n", GETENTRYNAME(header, func));
 		}
 		aux_FreeProgram(amx);
 		delete amx;
