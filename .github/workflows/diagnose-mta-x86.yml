@@ -19,7 +19,7 @@ jobs:
         run: |
           sudo dpkg --add-architecture i386
           sudo apt-get update
-          sudo apt-get install --yes libc6:i386 file patchelf
+          sudo apt-get install --yes libc6:i386 file gdb patchelf
 
       - name: Download ServerProject engine files
         env:
@@ -81,6 +81,15 @@ jobs:
           startup_status=$?
           set -e
           cat startup.log
+          if [ "$startup_status" -ne 124 ]; then
+            timeout 20s gdb --quiet --batch \
+              -ex 'set pagination off' \
+              -ex 'set env LD_LIBRARY_PATH=.:./mods/deathmatch' \
+              -ex run \
+              -ex 'thread apply all bt full' \
+              --args ./mta-server > gdb.log 2>&1 || true
+            cat gdb.log
+          fi
           test "$startup_status" -eq 124
           grep -F 'Server started and is ready to accept connections!' startup.log
 
@@ -93,3 +102,4 @@ jobs:
             core.so
             net.so
             startup.log
+            gdb.log
