@@ -33,13 +33,13 @@ jobs:
 
       - name: Inspect and execute engine
         run: |
-          patchelf --set-rpath '$ORIGIN' core.so
+          patchelf --force-rpath --set-rpath '$ORIGIN' core.so
           file mta-server core.so libncursesw.so.5 libtinfo.so.5
           readelf -d core.so | grep -E 'NEEDED|RPATH|RUNPATH'
           readelf -V libncursesw.so.5 | grep 'Name: GLIBC_' | sort -u
-          LD_LIBRARY_PATH="$PWD" ldd core.so
+          ldd core.so
           set +e
-          version_output=$(LD_LIBRARY_PATH="$PWD" ./mta-server --version 2>&1)
+          version_output=$(./mta-server --version 2>&1)
           version_status=$?
           set -e
           echo "$version_output"
