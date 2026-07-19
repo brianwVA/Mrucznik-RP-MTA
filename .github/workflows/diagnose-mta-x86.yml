@@ -79,7 +79,7 @@ jobs:
               (
                   0x127EC0,
                   bytes.fromhex("83ec6c65a1140000008944246031c08d442408508b442478ff306a03e86fa8f7ff83c41089c231c083faff74118b4424142500f000003d004000000f94"),
-                  bytes.fromhex("5589e581ec800000008d5590528b450cff306a03e887a8f7ff83c40c83f8ff74158b45a02500f000003d004000000f94c00fb6c0eb0231c089ec5d5bc3"),
+                  bytes.fromhex("5589e581ec800000008d5590528b450cff306a03e877a8f7ff83c40c83f8ff74158b45a02500f000003d004000000f94c00fb6c0eb0231c089ec5d5bc3"),
               ),
           )
           for offset, original, replacement in patches:
