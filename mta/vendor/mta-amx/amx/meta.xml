@@ -23,6 +23,7 @@
     <script src="server/natives/a_mta.lua" type="server" />
     <script src="server/syscalls.lua" type="server" />
 	<script src="server/mrp_databases.lua" type="server" />
+	<script src="server/mrp_plugin_fallbacks.lua" type="server" />
 	<script src="server/mrp_compat.lua" type="server" />
     <script src="server/events.lua" type="server" />
     <script src="server/amx.lua" type="server" />

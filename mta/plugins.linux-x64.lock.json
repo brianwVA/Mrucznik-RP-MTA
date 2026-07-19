@@ -1,0 +1,42 @@
+{
+  "schema_version": 1,
+  "platform": "linux-x64",
+  "plugins": [],
+  "built_plugins": [
+    {
+      "name": "sscanf",
+      "version": "2.8.3-mrucznik-x64",
+      "load_name": "sscanf",
+      "artifact": "sscanf.so",
+      "destination": "plugins/sscanf.so"
+    },
+    {
+      "name": "streamer",
+      "version": "2.9.4-mrucznik-x64",
+      "load_name": "streamer",
+      "artifact": "streamer.so",
+      "destination": "plugins/streamer.so"
+    },
+    {
+      "name": "libRegEx",
+      "version": "0.2.4-mrucznik-x64",
+      "load_name": "libRegEx",
+      "artifact": "libRegEx.so",
+      "destination": "plugins/libRegEx.so"
+    },
+    {
+      "name": "Whirlpool",
+      "version": "1.0.0-mrucznik-x64",
+      "load_name": "Whirlpool",
+      "artifact": "Whirlpool.so",
+      "destination": "plugins/Whirlpool.so"
+    },
+    {
+      "name": "ColAndreas",
+      "version": "1.5.1-mrucznik-x64",
+      "load_name": "ColAndreas_static",
+      "artifact": "ColAndreas_static.so",
+      "destination": "plugins/ColAndreas_static.so"
+    }
+  ]
+}

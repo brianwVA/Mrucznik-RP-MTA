@@ -17,7 +17,10 @@ from pathlib import Path, PurePosixPath
 from xml.etree import ElementTree as ET
 
 
-MTA_BUILD = "1.6.0-rc-24124-linux-x86"
+MTA_BUILDS = {
+    "linux-x86": "1.6.0-rc-24124-linux-x86",
+    "linux-x64": "1.6.0-rc-24125-linux-x64",
+}
 OBJECT_PREVIEW_PAGE = (
     "https://community.multitheftauto.com/index.php?"
     "p=resources&resource=11836&s=download&selectincludes=1"
@@ -185,8 +188,20 @@ def make_database_dump(project: Path, destination: Path) -> None:
 def build(args: argparse.Namespace) -> tuple[Path, Path]:
     project = args.project.resolve()
     serverfiles = project / "serverfiles.tar.gz"
-    lock_path = project / "mta/plugins.linux-x86.lock.json"
-    for required in (serverfiles, lock_path, args.king_so, args.colandreas_so):
+    lock_path = project / f"mta/plugins.{args.platform}.lock.json"
+    if args.platform == "linux-x64":
+        if args.runtime_dir is None:
+            raise RuntimeError("--runtime-dir jest wymagany dla linux-x64")
+        runtime_dir = args.runtime_dir.resolve()
+        king_so = runtime_dir / "king.so"
+        required_paths = [serverfiles, lock_path, king_so]
+    else:
+        if args.king_so is None or args.colandreas_so is None:
+            raise RuntimeError("--king-so i --colandreas-so są wymagane dla linux-x86")
+        runtime_dir = None
+        king_so = args.king_so.resolve()
+        required_paths = [serverfiles, lock_path, king_so, args.colandreas_so.resolve()]
+    for required in required_paths:
         if not required.exists():
             raise FileNotFoundError(required)
     if serverfiles.stat().st_size < 700 * 1024 * 1024:
@@ -195,12 +210,12 @@ def build(args: argparse.Namespace) -> tuple[Path, Path]:
     output_dir = args.output.resolve()
     output_dir.mkdir(parents=True, exist_ok=True)
     work = Path(tempfile.mkdtemp(prefix="mrp-mta-linux-"))
-    deploy = work / "Mrucznik-RP-MTA-Linux-x86"
+    deploy = work / f"Mrucznik-RP-MTA-{args.platform}"
     resources = deploy / "mods/deathmatch/resources"
-    modules = deploy / "mods/deathmatch/modules"
+    modules = deploy / ("x64/modules" if args.platform == "linux-x64" else "mods/deathmatch/modules")
     resources.mkdir(parents=True)
     modules.mkdir(parents=True)
-    shutil.copy2(args.king_so, modules / "king.so")
+    shutil.copy2(king_so, modules / "king.so")
     (modules / "king.so").chmod(0o755)
 
     amx_resource = resources / "amx"
@@ -224,11 +239,20 @@ def build(args: argparse.Namespace) -> tuple[Path, Path]:
             destination.chmod(0o755)
         plugin_names.append(plugin["load_name"])
 
-    colandreas_destination = amx_resource / lock["built_plugins"][0]["destination"]
-    colandreas_destination.parent.mkdir(parents=True, exist_ok=True)
-    shutil.copy2(args.colandreas_so, colandreas_destination)
-    colandreas_destination.chmod(0o755)
-    plugin_names.append(lock["built_plugins"][0]["load_name"])
+    for built_plugin in lock["built_plugins"]:
+        if runtime_dir is not None:
+            source = runtime_dir / built_plugin["artifact"]
+        elif built_plugin["name"] == "ColAndreas":
+            source = args.colandreas_so.resolve()
+        else:
+            continue
+        if not source.is_file():
+            raise FileNotFoundError(source)
+        destination = amx_resource / built_plugin["destination"]
+        destination.parent.mkdir(parents=True, exist_ok=True)
+        shutil.copy2(source, destination)
+        destination.chmod(0o755)
+        plugin_names.append(built_plugin["load_name"])
     update_amx_meta(amx_resource / "meta.xml", plugin_names)
 
     extracted = work / "serverfiles"
@@ -297,9 +321,9 @@ def build(args: argparse.Namespace) -> tuple[Path, Path]:
         archive.extractall(resources / "object_preview")
 
     instructions = f"""Mrucznik RP MTA — paczka dla ServerProject
-Platforma: {MTA_BUILD}
+Platforma: {MTA_BUILDS[args.platform]}
 
-Wymagany silnik w panelu: MTA 1.6 Linux 32-bit (x86), build 24124.
+Wymagany silnik w panelu: {MTA_BUILDS[args.platform]}.
 Do mtaserver.conf dodaj:
   <module src=\"king.so\" />
   <resource src=\"object_preview\" startup=\"1\" protected=\"0\" />
@@ -314,7 +338,7 @@ Nie uruchamiaj ręcznie amx-mrucznik — zrobi to most po gotowości AMX.
 """
     (deploy / "MRP-LINUX-INSTALL.txt").write_text(instructions, encoding="utf-8")
 
-    archive_path = output_dir / "Mrucznik-RP-MTA-ServerProject-Linux-x86.zip"
+    archive_path = output_dir / f"Mrucznik-RP-MTA-ServerProject-{args.platform}.zip"
     archive_path.unlink(missing_ok=True)
     with zipfile.ZipFile(archive_path, "w", compression=zipfile.ZIP_DEFLATED, compresslevel=6) as archive:
         for path in sorted(deploy.rglob("*")):
@@ -324,7 +348,7 @@ Nie uruchamiaj ręcznie amx-mrucznik — zrobi to most po gotowości AMX.
     database_path = output_dir / "Mrucznik-RP-MTA-ServerProject-database.sql"
     make_database_dump(project, database_path)
     manifest = {
-        "platform": MTA_BUILD,
+        "platform": MTA_BUILDS[args.platform],
         "archive": archive_path.name,
         "archive_sha256": sha256(archive_path),
         "archive_bytes": archive_path.stat().st_size,
@@ -343,8 +367,10 @@ def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser()
     parser.add_argument("--project", type=Path, default=Path(__file__).resolve().parents[2])
     parser.add_argument("--output", type=Path, default=Path("dist/linux"))
-    parser.add_argument("--king-so", type=Path, required=True)
-    parser.add_argument("--colandreas-so", type=Path, required=True)
+    parser.add_argument("--platform", choices=sorted(MTA_BUILDS), default="linux-x86")
+    parser.add_argument("--runtime-dir", type=Path)
+    parser.add_argument("--king-so", type=Path)
+    parser.add_argument("--colandreas-so", type=Path)
     parser.add_argument("--mysql-host", default="__MYSQL_HOST__")
     parser.add_argument("--mysql-user", default="__MYSQL_USER__")
     parser.add_argument("--mysql-database", default="__MYSQL_DATABASE__")
