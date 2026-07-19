@@ -43,7 +43,7 @@ jobs:
           curl --fail --location --retry 3 --output mods/deathmatch/libmta-lua-bridge.so "$BASE_URL/libmta-lua-bridge.so"
           curl --fail --location --retry 3 --output mods/deathmatch/liblua5.1-mta-x86.so "$BASE_URL/liblua5.1-mta-x86.so"
           curl --fail --location --retry 3 --output mods/deathmatch/dbconmy.so "$BASE_URL/dbconmy.so"
-          curl --fail --location --retry 3 --output glibc-runtime.zip "$BASE_URL/mrp-glibc-buster-i386-2256.zip"
+          curl --fail --location --retry 3 --output glibc-runtime.zip "$BASE_URL/mrp-glibc-bullseye-i386-2300.zip"
           unzip -q glibc-runtime.zip
           chmod +x mta-server
 
