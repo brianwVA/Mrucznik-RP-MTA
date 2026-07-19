@@ -269,6 +269,11 @@ function toggleGlitches()
 end
 
 function toggleSpecialProperties()
+	-- This API was introduced after MTA 1.5.9. The properties are visual-only,
+	-- so keep the SA-MP runtime functional when the legacy server omits it.
+	if type(setWorldSpecialPropertyEnabled) ~= 'function' then
+		return
+	end
 	setWorldSpecialPropertyEnabled('randomfoliage', false)
 	setWorldSpecialPropertyEnabled('roadsignstext', false)
 	setWorldSpecialPropertyEnabled('snipermoon', true)

@@ -21,3 +21,4 @@ Kod został przypięty do wskazanego commita, aby zachowanie portu było powtarz
   których adresy procesu oraz protokół nie istnieją w MTA.
 - statyczne dołączenie runtime Pawn AMX do `king.so`, wymagane przez MTA 1.5.9,
   które nie eksportuje funkcji `amx_*` udostępnianych przez MTA 1.6.
+- pominięcie opcjonalnych właściwości świata z MTA 1.6 podczas pracy na 1.5.9.
