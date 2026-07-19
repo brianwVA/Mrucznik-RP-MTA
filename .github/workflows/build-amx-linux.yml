@@ -22,14 +22,18 @@ jobs:
           submodules: false
           lfs: false
 
-      - name: Install Linux x86 toolchain
+      - name: Build patched AMX module for the legacy runtime
         run: |
-          sudo dpkg --add-architecture i386
-          sudo apt-get update
-          sudo apt-get install --yes gcc-multilib g++-multilib libc6-dev-i386
-
-      - name: Build patched AMX module
-        run: ./mta/build-amx-linux.sh ./artifacts/amx-linux-x86
+          docker run --rm \
+            --volume "$PWD:/workspace" \
+            --workdir /workspace \
+            debian:bullseye-slim \
+            bash -ceu '
+              dpkg --add-architecture i386
+              apt-get update
+              apt-get install --yes ca-certificates curl file gcc-multilib g++-multilib make
+              ./mta/build-amx-linux.sh ./artifacts/amx-linux-x86
+            '
 
       - name: Build exact ColAndreas fork
         run: |
@@ -47,6 +51,10 @@ jobs:
           file ./artifacts/amx-linux-x86/king.so | grep -F "ELF 32-bit"
           file ./artifacts/amx-linux-x86/ColAndreas_static.so | grep -F "ELF 32-bit"
           readelf -h ./artifacts/amx-linux-x86/king.so
+          if readelf -V ./artifacts/amx-linux-x86/king.so | grep -Fq 'Name: GLIBC_2.34'; then
+            echo 'king.so requires a newer glibc than the MTA 1.5.9 runtime' >&2
+            exit 1
+          fi
           ldd ./artifacts/amx-linux-x86/king.so || true
           ldd ./artifacts/amx-linux-x86/ColAndreas_static.so || true
 
