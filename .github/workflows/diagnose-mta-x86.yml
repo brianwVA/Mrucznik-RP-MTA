@@ -19,22 +19,35 @@ jobs:
         run: |
           sudo dpkg --add-architecture i386
           sudo apt-get update
-          sudo apt-get install --yes libc6:i386 file
+          sudo apt-get install --yes libc6:i386 file patchelf
 
       - name: Download ServerProject engine files
         env:
           BASE_URL: https://github.com/brianwVA/Mrucznik-RP-MTA/releases/download/v2.8.8-mta-serverproject-linux-x86
         run: |
           curl --fail --location --retry 3 --output mta-server "$BASE_URL/mta-server"
-          curl --fail --location --retry 3 --output core.so "$BASE_URL/core.so"
+          curl --fail --location --retry 3 --output core.so "$BASE_URL/core-original.so"
           curl --fail --location --retry 3 --output libncursesw.so.5 "$BASE_URL/libncursesw.so.5"
           curl --fail --location --retry 3 --output libtinfo.so.5 "$BASE_URL/libtinfo.so.5"
           chmod +x mta-server
 
       - name: Inspect and execute engine
         run: |
+          patchelf --set-rpath '$ORIGIN' core.so
           file mta-server core.so libncursesw.so.5 libtinfo.so.5
           readelf -d core.so | grep -E 'NEEDED|RPATH|RUNPATH'
           readelf -V libncursesw.so.5 | grep 'Name: GLIBC_' | sort -u
           LD_LIBRARY_PATH="$PWD" ldd core.so
-          LD_LIBRARY_PATH="$PWD" ./mta-server --version
+          set +e
+          version_output=$(LD_LIBRARY_PATH="$PWD" ./mta-server --version 2>&1)
+          version_status=$?
+          set -e
+          echo "$version_output"
+          test "$version_status" -eq 1
+          grep -F 'MTA:SA Server v1.5.9-release-21630' <<<"$version_output"
+
+      - name: Save patchelf core
+        uses: actions/upload-artifact@v4
+        with:
+          name: core-patchelf
+          path: core.so
