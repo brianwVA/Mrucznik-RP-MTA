@@ -6,6 +6,7 @@ from __future__ import annotations
 import argparse
 import hashlib
 import http.cookiejar
+import io
 import json
 import shutil
 import tarfile
@@ -34,6 +35,20 @@ SAMP_ASSETS = {
     "wall025.dff": "3f41e84551b6d7ed04f66cbe5fcaad2e8cb1734ace8380a4b8a56200c3e8e87c",
     "all_walls.txd": "3c37105bc9bd3612ad6fcf5e79e35312ae7c401b6a95b74cae43cf236f363241",
     "19377.col": "beb1aca6de4ac61601ff016f5fc79954f0e0a1335010e7dde5989bd53316e67c",
+}
+X86_RUNTIME_DEBS = {
+    "libncursesw5": {
+        "url": "https://deb.debian.org/debian/pool/main/n/ncurses/libncursesw5_6.4-4_i386.deb",
+        "sha256": "2db4650758c07d03e966628e1515b215945760733151e017d352792c34a0ef02",
+        "source": "./lib/i386-linux-gnu/libncursesw.so.5.9",
+        "destinations": ("libncursesw.so.5", "libncursesw.so.5.9"),
+    },
+    "libtinfo5": {
+        "url": "https://deb.debian.org/debian/pool/main/n/ncurses/libtinfo5_6.4-4_i386.deb",
+        "sha256": "dc615c2119b11b5ac6c6b56c359e423378ef5c87e5f2ff6a9adef11bc6262496",
+        "source": "./lib/i386-linux-gnu/libtinfo.so.5.9",
+        "destinations": ("libtinfo.so.5", "libtinfo.so.5.9"),
+    },
 }
 
 
@@ -139,6 +154,39 @@ def extract_plugin(package: Path, archive_type: str, destination: Path) -> Path:
     return destination
 
 
+def extract_deb_file(package: Path, member_name: str, destination: Path) -> None:
+    """Extract one regular file from a Debian package without dpkg/ar."""
+    payload = package.read_bytes()
+    if not payload.startswith(b"!<arch>\n"):
+        raise RuntimeError(f"Niepoprawny pakiet Debian: {package}")
+    offset = 8
+    data_archive = None
+    while offset + 60 <= len(payload):
+        header = payload[offset : offset + 60]
+        if header[58:60] != b"`\n":
+            raise RuntimeError(f"Niepoprawny naglowek ar: {package}")
+        name = header[:16].decode("ascii").strip().rstrip("/")
+        size = int(header[48:58].decode("ascii").strip())
+        start = offset + 60
+        end = start + size
+        if name.startswith("data.tar"):
+            data_archive = payload[start:end]
+            break
+        offset = end + (size % 2)
+    if data_archive is None:
+        raise RuntimeError(f"Brak data.tar w pakiecie: {package}")
+    with tarfile.open(fileobj=io.BytesIO(data_archive), mode="r:*") as archive:
+        member = archive.getmember(member_name)
+        if not member.isfile():
+            raise RuntimeError(f"Oczekiwano pliku {member_name} w {package}")
+        source = archive.extractfile(member)
+        if source is None:
+            raise RuntimeError(f"Nie mozna odczytac {member_name} z {package}")
+        destination.parent.mkdir(parents=True, exist_ok=True)
+        with source, destination.open("wb") as output:
+            shutil.copyfileobj(source, output)
+
+
 def update_amx_meta(meta_path: Path, plugins: list[str]) -> None:
     tree = ET.parse(meta_path)
     root = tree.getroot()
@@ -225,6 +273,16 @@ def build(args: argparse.Namespace) -> tuple[Path, Path]:
 
     lock = json.loads(lock_path.read_text(encoding="utf-8"))
     downloads = work / "downloads"
+    if args.platform == "linux-x86":
+        for name, runtime_deb in X86_RUNTIME_DEBS.items():
+            package = downloads / f"{name}.deb"
+            download(runtime_deb["url"], package, runtime_deb["sha256"])
+            extracted_library = work / f"{name}.so"
+            extract_deb_file(package, runtime_deb["source"], extracted_library)
+            for destination_name in runtime_deb["destinations"]:
+                shutil.copy2(extracted_library, deploy / destination_name)
+                (deploy / destination_name).chmod(0o755)
+
     plugin_names: list[str] = []
     for plugin in lock["plugins"]:
         extension = {"zip": ".zip", "tar.gz": ".tar.gz", "file": ".so"}[plugin["archive"]]
