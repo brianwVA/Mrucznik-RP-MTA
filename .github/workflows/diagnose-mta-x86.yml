@@ -41,8 +41,7 @@ jobs:
 
       - name: Inspect and execute engine
         run: |
-          patchelf --force-rpath --set-rpath '$ORIGIN' core.so
-          patchelf --force-rpath --set-rpath '$ORIGIN' net.so
+          export LD_LIBRARY_PATH="$PWD:$PWD/mods/deathmatch"
           file mta-server core.so net.so xmll.so libncursesw.so.5 libtinfo.so.5 libz.so.1
           readelf -d core.so | grep -E 'NEEDED|RPATH|RUNPATH'
           readelf -d net.so | grep -E 'NEEDED|RPATH|RUNPATH'
@@ -62,6 +61,7 @@ jobs:
 
       - name: Smoke-test complete engine
         run: |
+          export LD_LIBRARY_PATH="$PWD:$PWD/mods/deathmatch"
           cat > mods/deathmatch/mtaserver.conf <<'EOF'
           <config>
             <servername>MRP x86 CI smoke test</servername>
