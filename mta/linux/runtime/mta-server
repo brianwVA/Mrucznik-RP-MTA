@@ -5,10 +5,16 @@ SERVER_DIR=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)
 RUNTIME_DIR="$SERVER_DIR/runtime/i386"
 RUNTIME_ARCHIVE="$SERVER_DIR/mrp-glibc-bullseye-i386-2300.zip"
 RUNTIME_MARKER="$RUNTIME_DIR/.mrp-bullseye-2.31"
+CXX_ARCHIVE="$SERVER_DIR/mrp-cxx-bullseye-i386-10.2.1.zip"
+CXX_MARKER="$RUNTIME_DIR/.mrp-gcc-10.2.1"
 
 if [ ! -f "$RUNTIME_MARKER" ]; then
     /usr/bin/unzip -oq "$RUNTIME_ARCHIVE" -d "$SERVER_DIR"
     : > "$RUNTIME_MARKER"
+fi
+if [ ! -f "$CXX_MARKER" ]; then
+    /usr/bin/unzip -oq "$CXX_ARCHIVE" -d "$SERVER_DIR"
+    : > "$CXX_MARKER"
 fi
 
 exec "$RUNTIME_DIR/ld-linux.so.2" \
