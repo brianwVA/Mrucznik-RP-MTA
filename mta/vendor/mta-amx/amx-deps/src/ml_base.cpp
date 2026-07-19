@@ -136,7 +136,10 @@ MTAEXPORT bool InitModule(ILuaModuleManager10 *pManager, char *szModuleName, cha
 }
 
 void logprintf(char *fmt, ...) {
-	vprintf(fmt, (va_list)(&fmt + 1));
+	va_list args;
+	va_start(args, fmt);
+	vprintf(fmt, args);
+	va_end(args);
 	printf("\n");
 }
 
