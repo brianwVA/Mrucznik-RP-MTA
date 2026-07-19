@@ -148,6 +148,20 @@ function applyObjectMaterial(object, index, model, txdLib, txdName, color)
 	return true
 end
 
+local function applyObjectMaterials(object)
+	if not isElement(object) or getElementType(object) ~= "object" then return end
+	for index, material in pairs(getElementData(object, "amx:materials") or {}) do
+		applyObjectMaterial(
+			object,
+			tonumber(index) or 0,
+			material.model,
+			material.txdLib,
+			material.txdName,
+			material.color
+		)
+	end
+end
+
 addEventHandler("onClientElementDestroy", root, function()
 	pendingObjectModels[source] = nil
 	if releaseObjectModel then releaseObjectModel(source, false) end
@@ -402,6 +416,7 @@ function applyObjectModel(object, customModel)
         -- Reveal the element only after the requested model really exists.
         setElementAlpha(object, 255)
         setElementCollisionsEnabled(object, true)
+		applyObjectMaterials(object)
     end
     return applied
 end
@@ -470,27 +485,30 @@ addEventHandler("onClientElementDataChange", root, function(dataName)
     local elementType = getElementType(source)
     if dataName == "mrp:customSkin" and (elementType == "player" or elementType == "ped") then
         applyModel(source)
-    elseif dataName == "mrp:customObjectModel" and elementType == "object" then
+	elseif dataName == "mrp:customObjectModel" and elementType == "object" then
         local customModel = getElementData(source, "mrp:customObjectModel")
         if not customModel then
             pendingObjectModels[source] = nil
             releaseObjectModel(source, true)
-        elseif isElementStreamedIn(source) then
-            applyObjectModel(source, customModel)
-        end
-    end
+		elseif isElementStreamedIn(source) then
+			applyObjectModel(source, customModel)
+		end
+	elseif dataName == "amx:materials" and elementType == "object" and isElementStreamedIn(source) then
+		applyObjectMaterials(source)
+	end
 end)
 
 addEventHandler("onClientElementStreamIn", root, function()
     local elementType = getElementType(source)
     if elementType == "player" or elementType == "ped" then
         applyModel(source)
-    elseif getElementType(source) == "object" then
-        local customModel = getElementData(source, "mrp:customObjectModel")
-        if customModel then
-            applyObjectModel(source, customModel)
-        end
-    end
+	elseif getElementType(source) == "object" then
+		local customModel = getElementData(source, "mrp:customObjectModel")
+		if customModel then
+			applyObjectModel(source, customModel)
+		end
+		applyObjectMaterials(source)
+	end
 end)
 
 addEventHandler("onClientElementStreamOut", root, function()

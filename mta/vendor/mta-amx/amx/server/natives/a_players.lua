@@ -1236,8 +1236,11 @@ function GetPlayerCameraMode(amx, player)
 end
 
 function EnablePlayerCameraTarget(amx, player, enable)
-	notImplemented('EnablePlayerCameraTarget')
-	return false
+	if not player then return false end
+	-- MTA synchronizes the camera target natively. Keep the SA-MP switch as
+	-- state for compatibility even though no extra network toggle is required.
+	setElementData(player, 'amx:cameraTargetEnabled', enable and true or false, false)
+	return true
 end
 
 function GetPlayerCameraTargetObject(amx, player)

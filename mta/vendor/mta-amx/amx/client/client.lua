@@ -47,7 +47,6 @@ g_Blips = {}
 
 addEventHandler('onClientResourceStart', resourceRoot,
 	function()
-		triggerServerEvent('onLoadedAtClient', resourceRoot)
 		setTimer(checkTextLabels, 500, 0)
 	end,
 	false

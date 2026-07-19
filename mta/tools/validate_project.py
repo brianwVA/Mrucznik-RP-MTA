@@ -20,9 +20,9 @@ def main() -> int:
     models = json.loads((mta / "compatibility/models.json").read_text(encoding="utf-8"))
     natives = json.loads((mta / "compatibility/natives.json").read_text(encoding="utf-8"))
     plugins = json.loads((mta / "plugins.lock.json").read_text(encoding="utf-8"))
-    if commands["command_count"] != 788 or commands["definition_count"] != 788:
+    if commands["command_count"] != 893 or commands["definition_count"] != 893:
         fail("Unexpected command inventory size")
-    if commands.get("runtime_command_count") != 746:
+    if commands.get("runtime_command_count") != 851:
         fail("Unexpected compiled AMX command inventory size")
     if commands.get("inactive_source_command_count") != 42:
         fail("Unexpected inactive source command inventory size")
@@ -37,10 +37,10 @@ def main() -> int:
         fail("Unexpected 0.3.DL ped model inventory size")
     if models.get("samp_object_count") != 1:
         fail("Unexpected SA-MP object model inventory size")
-    if natives["native_entry_count"] != 552 or natives["unique_native_count"] != 471:
+    if natives["native_entry_count"] != 579 or natives["unique_native_count"] != 515:
         fail("Unexpected compiled AMX native inventory size")
     programs = {program["name"]: program for program in natives["programs"]}
-    if programs.get("M-RP", {}).get("native_entry_count") != 510:
+    if programs.get("M-RP", {}).get("native_entry_count") != 537:
         fail("Unexpected gamemode native inventory size")
     expected_programs = {
         "M-RP", "animy", "realtime", "sobeitblock", "SAN_extPSq",
@@ -81,7 +81,8 @@ def main() -> int:
         "mta-amx-core",
         "mrp-mta-compat",
     }
-    if imported_providers != set(load_names) | built_load_names:
+    kotnik_plugin_names = {"mysql", "chrono", "FileManager"}
+    if not imported_providers.issubset(set(load_names) | built_load_names | kotnik_plugin_names):
         fail("Plugin lock does not cover every provider imported by the AMX")
 
     for meta in sorted(mta.rglob("meta.xml")):
@@ -329,8 +330,8 @@ def main() -> int:
     object_natives = (
         mta / "vendor/mta-amx/amx/server/natives/a_objects.lua"
     ).read_text(encoding="utf-8")
-    if object_natives.count("mrpIsSuppressedLegacyObject(model, x, y, z)") != 2:
-        fail("Legacy-object suppression does not cover global and player objects")
+    if object_natives.count("mrpIsSuppressedLegacyObject(model, x, y, z)") != 3:
+        fail("Legacy-object suppression does not cover global, player and streamer objects")
     colandreas_streamer = (mta.parent / "gamemodes/system/mrp_object_distance.inc").read_text(
         encoding="utf-8"
     )

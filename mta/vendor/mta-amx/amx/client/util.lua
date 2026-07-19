@@ -52,6 +52,17 @@ addEventHandler('onClientCall', resourceRoot,
 	false
 )
 
+-- Announce readiness only after every client script in this resource has been
+-- loaded. Keeping the handler in the first client script guarantees that the
+-- event is registered before onClientResourceStart can fire, even when MTA is
+-- validating a large model pack for more than a minute.
+addEventHandler('onClientResourceStart', resourceRoot,
+	function()
+		triggerServerEvent('onLoadedAtClient', resourceRoot)
+	end,
+	false
+)
+
 server = setmetatable(
 	{},
 	{

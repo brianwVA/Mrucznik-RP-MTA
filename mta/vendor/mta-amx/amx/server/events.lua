@@ -158,10 +158,12 @@ function joinHandler(player)
 				streamerPickups = procCallInternal(gamemode, 'MRP_GetStreamerItemCount', 1)
 			end
 			outputDebugString(string.format(
-				'[MTA AMX] Player %d bridge: streamerObjects=%d streamerPickups=%d objects=%d playerObjects=%d pickups=%d markers=%d labels=%d; streamer=%s',
+				'[MTA AMX] Player %d bridge: streamerObjects=%d streamerPickups=%d mirroredObjects=%d mirroredPickups=%d objects=%d playerObjects=%d pickups=%d markers=%d labels=%d; streamer=%s',
 				playerID,
 				streamerObjects,
 				streamerPickups,
+				countElements(g_MRPDynamicObjects or {}),
+				countElements(g_MRPDynamicPickups or {}),
 				countElements(g_Objects),
 				countEntries(playerObjects),
 				countElements(g_Pickups),
@@ -1201,6 +1203,11 @@ addEventHandler('onPlayerPickUpPickup_Ev', root,
 	function(pickup)
 		local playerID, pickupID = getElemID(client), getElemID(pickup)
 		if not playerID or not g_Pickups[pickupID] then return end
+		local dynamicPickupID = getElementData(pickup, 'mrp:dynamicPickupID')
+		if dynamicPickupID then
+			procCallOnAll('OnPlayerPickUpDynamicPickup', playerID, dynamicPickupID)
+			return
+		end
 
 		procCallOnAll('OnPlayerPickUpPickup', playerID, pickupID)
 

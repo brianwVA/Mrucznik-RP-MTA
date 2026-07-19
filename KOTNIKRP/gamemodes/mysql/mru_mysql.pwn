@@ -636,7 +636,42 @@ public OnPlayerDataLoaded(playerid)
 		PlayerInfo[playerid][pBusinessOwner] = INVALID_BIZ_ID;
 		PlayerInfo[playerid][pBusinessMember] = INVALID_BIZ_ID; 
 		DajKaseDone(playerid, 25);
+
+		#if defined MRP_MTA_RUNTIME
+			// Oryginalny samouczek Kotnika opiera się na sekwencji kamer i
+			// dialogów SA-MP, która nie kończy się poprawnie w warstwie MTA.
+			// Utwórz od razu kompletną, grywalną postać i zapisz bezpieczny
+			// spawn przed urzędem zamiast zostawiać konto na ekranie logowania.
+			PlayerInfo[playerid][pTut] = 1;
+			PlayerInfo[playerid][pSkin] = 136;
+			PlayerInfo[playerid][pPos_x] = 1481.2053;
+			PlayerInfo[playerid][pPos_y] = -1768.3350;
+			PlayerInfo[playerid][pPos_z] = 18.5228;
+			PlayerInfo[playerid][pInt] = 0;
+			PlayerInfo[playerid][pLocal] = 255;
+			MruMySQL_SaveAccount(playerid);
+		#endif
 	}
+
+	#if defined MRP_MTA_RUNTIME
+		// Konta utworzone przed poprawką mogły mieć już Registered=1, ale nadal
+		// Tutorial=0.  Taki rekord wracał przy każdym logowaniu do niedokończonej
+		// sekwencji kamer SA-MP.  Domykamy także te rozpoczęte profile.
+		if(PlayerInfo[playerid][pTut] == 0)
+		{
+			PlayerInfo[playerid][pTut] = 1;
+			if(PlayerInfo[playerid][pSkin] < 0 || PlayerInfo[playerid][pSkin] > 311)
+			{
+				PlayerInfo[playerid][pSkin] = 136;
+			}
+			PlayerInfo[playerid][pPos_x] = 1481.2053;
+			PlayerInfo[playerid][pPos_y] = -1768.3350;
+			PlayerInfo[playerid][pPos_z] = 18.5228;
+			PlayerInfo[playerid][pInt] = 0;
+			PlayerInfo[playerid][pLocal] = 255;
+			MruMySQL_SaveAccount(playerid);
+		}
+	#endif
 
 	premium_loadForPlayer(playerid);
 
@@ -779,6 +814,10 @@ public OnPlayerDataLoaded(playerid)
 			SetCameraBehindPlayer(playerid);
 			TogglePlayerControllable(playerid, true);
 		}
+
+		SetTimerEx("MRP_MTA_RefreshStreamer", 250, false, "i", playerid);
+		SetTimerEx("MRP_MTA_RefreshStreamer", 1500, false, "i", playerid);
+		SetTimerEx("MRP_MTA_RefreshStreamer", 5000, false, "i", playerid);
 	#endif
 
 	format(lStr, sizeof(lStr), "UPDATE `mru_konta` SET `connected`='1', `online`='1' WHERE `UID`='%d'", PlayerInfo[playerid][pUID]);
@@ -788,6 +827,16 @@ public OnPlayerDataLoaded(playerid)
 
 public MruMySQL_LoadAccount(playerid)
 {
+	// Zawsze wyznacz UID z nicku aktualnego polaczenia. Chroni to konto przed
+	// odziedziczeniem danych po poprzednim graczu na tym samym slocie MTA.
+	PlayerInfo[playerid][pUID] = MruMySQL_GetUIDFromName(GetNick(playerid));
+	if(PlayerInfo[playerid][pUID] < 1)
+	{
+		printf("[M-RP account] Brak UID dla gracza %s (slot %d)", GetNick(playerid), playerid);
+		return 0;
+	}
+	printf("[M-RP account] Ladowanie %s: slot=%d uid=%d", GetNick(playerid), playerid, PlayerInfo[playerid][pUID]);
+
 	MruMySQL_CreateORM(playerid);
 
 	new fault = orm_load(PlayerInfo[playerid][pORM], "OnPlayerDataLoaded", "d", playerid);

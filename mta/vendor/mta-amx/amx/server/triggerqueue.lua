@@ -6,14 +6,19 @@ local beginClientQueue
 local function joinHandler(player)
 	player = player or source
 	playerData[player] = { loaded = false, pending = {}, queueStarted = false }
-	-- Some large resource packs finish loading client Lua but lose the one-shot
-	-- readiness event while MTA is validating files. Do not let that strand the
-	-- player behind the startup queue forever.
+	-- Never flush before the client explicitly confirms that onClientCall is
+	-- registered. MTA buffers remote events while downloading resources; an
+	-- elapsed-time fallback can therefore release thousands of calls into a
+	-- client that has not started its Lua scripts yet.
 	setTimer(function()
 		if playerData and playerData[player] and not playerData[player].queueStarted then
-			beginClientQueue(player, 'fallback')
+			outputDebugString(string.format(
+				'[MTA AMX] Still waiting for client scripts: %s (%d queued events)',
+				isElement(player) and getPlayerName(player) or 'disconnected',
+				#(playerData[player].pending or {})
+			), 2)
 		end
-	end, 6000, 1)
+	end, 120000, 1)
 end
 
 addEventHandler('onResourceStart', resourceRoot,
@@ -47,10 +52,24 @@ beginClientQueue = function(player, reason)
 			getPlayerName(player), tostring(reason), #pending
 		), 3)
 
-		-- The Pawn login dialog is emitted shortly after the client reports that
-		-- its scripts are ready. Give it an unobstructed path, then replay old
-		-- initialization traffic one event per frame. The original implementation
-		-- sent the entire queue in one loop and could freeze MTA for many minutes.
+		-- Login dialogs are generated near the end of the Pawn join path. Move
+		-- them ahead of bulk textdraw initialization so the player can authenticate
+		-- immediately after the client becomes ready.
+		local priority, normal = {}, {}
+		for _, event in ipairs(pending) do
+			if event.name == 'onClientCall' and event.args[1] == 'ShowPlayerDialog' then
+				priority[#priority + 1] = event
+			else
+				normal[#normal + 1] = event
+			end
+		end
+		pending = priority
+		for _, event in ipairs(normal) do
+			pending[#pending + 1] = event
+		end
+
+		-- Replay one call per frame. The original implementation sent the entire
+		-- queue in one loop and could freeze MTA for many minutes.
 		local head = 1
 		local function flushNext()
 			if not playerData or not playerData[player] or not isElement(player) then
@@ -62,7 +81,7 @@ beginClientQueue = function(player, reason)
 			_triggerClientEvent(player, event.name, event.source, unpack(event.args))
 			setTimer(flushNext, 16, 1)
 		end
-		setTimer(flushNext, 5000, 1)
+		setTimer(flushNext, 50, 1)
 	end
 
 addEvent('onLoadedAtClient', true)

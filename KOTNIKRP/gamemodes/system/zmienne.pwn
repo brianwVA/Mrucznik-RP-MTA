@@ -1119,6 +1119,9 @@ ClearVariableDisconnect(playerid)
 }
 ZerujZmienne(playerid)
 {
+	// Identyfikator konta nie moze przezyc ponownego uzycia slotu gracza.
+	// W MTA ten sam slot jest natychmiast wykorzystywany po reconnect.
+	PlayerInfo[playerid][pUID] = 0;
     SetPVarInt(playerid, "budka-Mobile", 999);
     SetPVarInt(playerid, "budka-used", 999);
     SetPVarInt(playerid, "prawnik-oferuje", 999);

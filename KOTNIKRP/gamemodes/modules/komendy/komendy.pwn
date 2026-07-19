@@ -65,6 +65,13 @@ public e_COMMAND_ERRORS:OnPlayerCommandPerformed(playerid, cmdtext[], e_COMMAND_
 */ 
 public e_COMMAND_ERRORS:OnPlayerCommandReceived(playerid, cmdtext[], e_COMMAND_ERRORS:success)
 {
+	#if defined MRP_MTA_RUNTIME
+		if(success != COMMAND_OK)
+		{
+			printf("[M-RP command] player=%s slot=%d result=%d command=%s", GetNick(playerid), playerid, _:success, cmdtext);
+		}
+	#endif
+
 	//antyspam
     if(GetTickDiff(GetTickCount(), StaryCzas[playerid]) < 100)
 	{
@@ -99,7 +106,9 @@ public e_COMMAND_ERRORS:OnPlayerCommandReceived(playerid, cmdtext[], e_COMMAND_E
 		}
 		case COMMAND_DENIED:
 		{
-			sendErrorMessage(playerid, "Nie jesteś uprawniony do używania tej komendy.");
+			#if !defined MRP_MTA_RUNTIME
+				sendErrorMessage(playerid, "Nie jesteś uprawniony do używania tej komendy.");
+			#endif
 		}
 		case COMMAND_INVALID_INPUT:
 		{

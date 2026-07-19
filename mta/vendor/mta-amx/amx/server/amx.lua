@@ -84,12 +84,25 @@ addEventHandler('onResourceStart', resourceRoot,
 		setTimer(function()
 			local gamemode = getRunningGameMode()
 			if not gamemode or not gamemode.publics.MRP_GetStreamerItemCount then return end
+			local function countMirrored(items)
+				local count = 0
+				for _, element in pairs(items or {}) do
+					if isElement(element) then count = count + 1 end
+				end
+				return count
+			end
 			outputDebugString(string.format(
-				'[MTA AMX] Streamer inventory: objects=%d pickups=%d labels=%d areas=%d',
+				'[MTA AMX] Streamer inventory: objects=%d pickups=%d labels=%d areas=%d; validObjects=%d validPickups=%d pawnMirroredObjects=%d pawnMirroredPickups=%d mirroredObjects=%d mirroredPickups=%d',
 				procCallInternal(gamemode, 'MRP_GetStreamerItemCount', 0),
 				procCallInternal(gamemode, 'MRP_GetStreamerItemCount', 1),
 				procCallInternal(gamemode, 'MRP_GetStreamerItemCount', 3),
-				procCallInternal(gamemode, 'MRP_GetStreamerItemCount', 6)
+				procCallInternal(gamemode, 'MRP_GetStreamerItemCount', 6),
+				gamemode.publics.MRP_GetStreamerMirrorCount and procCallInternal(gamemode, 'MRP_GetStreamerMirrorCount', 0) or -1,
+				gamemode.publics.MRP_GetStreamerMirrorCount and procCallInternal(gamemode, 'MRP_GetStreamerMirrorCount', 1) or -1,
+				gamemode.publics.MRP_GetStreamerMirrorCount and procCallInternal(gamemode, 'MRP_GetStreamerMirrorCount', 2) or -1,
+				gamemode.publics.MRP_GetStreamerMirrorCount and procCallInternal(gamemode, 'MRP_GetStreamerMirrorCount', 3) or -1,
+				countMirrored(g_MRPDynamicObjects),
+				countMirrored(g_MRPDynamicPickups)
 			), 3)
 		end, 20000, 1)
 	end,

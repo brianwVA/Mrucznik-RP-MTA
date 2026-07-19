@@ -71,7 +71,7 @@ def read_amx_programs(root: Path, explicit: Path | None) -> dict[str, bytes]:
         raise FileNotFoundError("serverfiles.tar.gz is missing; run git lfs pull")
     with tarfile.open(archive, "r:gz") as tar:
         programs = {}
-        compiled_gamemode = root / "gamemodes/Mrucznik-RP.amx"
+        compiled_gamemode = root / "KOTNIKRP/gamemodes/Kotnik-RP-MTA.amx"
         for name, member_name in AMX_MEMBERS.items():
             if name == "M-RP" and compiled_gamemode.exists() and compiled_gamemode.stat().st_size > 1024:
                 programs[name] = compiled_gamemode.read_bytes()
@@ -108,6 +108,8 @@ def extract_names(amx: bytes) -> list[str]:
 
 
 def provider(name: str) -> str:
+    if name.startswith(("mysql_", "cache_", "orm_")):
+        return "mysql"
     if name in CUSTOM_NATIVES:
         return "mrp-mta-compat"
     if name == "PrintBacktrace":

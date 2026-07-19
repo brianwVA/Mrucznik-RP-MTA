@@ -432,6 +432,55 @@ end
 
 CreatePickup = AddStaticPickup
 
+g_MRPDynamicPickups = g_MRPDynamicPickups or {}
+
+function MRP_MirrorStreamerPickup(amx, dynamicID, model, pickupType, x, y, z, world, interior)
+	if not g_MRPMirrorPickupNativeSeen then
+		g_MRPMirrorPickupNativeSeen = true
+		outputDebugString(string.format('[MTA AMX] First streamer pickup mirror: id=%s model=%s pos=%.2f,%.2f,%.2f', tostring(dynamicID), tostring(model), tonumber(x) or 0, tonumber(y) or 0, tonumber(z) or 0), 3)
+	end
+	local previous = g_MRPDynamicPickups[dynamicID]
+	if previous and isElement(previous) then
+		if getElementData(previous, 'mrp:sourcePickupModel') == model
+			and getElementData(previous, 'mrp:sourcePickupType') == pickupType then
+			setElementPosition(previous, x, y, z)
+			setElementDimension(previous, world and world >= 0 and world or 0)
+			setElementInterior(previous, interior and interior >= 0 and interior or 0)
+			return true
+		end
+		local previousID = getElemID(previous)
+		if previousID and g_Pickups[previousID] then
+			g_Pickups[previousID] = nil
+		end
+		destroyElement(previous)
+	end
+
+	local pickupID = AddStaticPickup(amx, model, pickupType, x, y, z, world)
+	local pickupData = g_Pickups[pickupID]
+	local pickup = pickupData and pickupData.elem
+	if not pickup then return false end
+
+	setElementInterior(pickup, interior and interior >= 0 and interior or 0)
+	setElementData(pickup, 'mrp:dynamicPickupID', dynamicID, false)
+	setElementData(pickup, 'mrp:sourcePickupModel', model, false)
+	setElementData(pickup, 'mrp:sourcePickupType', pickupType, false)
+	g_MRPDynamicPickups[dynamicID] = pickup
+	return true
+end
+
+function MRP_DestroyStreamerPickup(amx, dynamicID)
+	local pickup = g_MRPDynamicPickups[dynamicID]
+	if pickup and isElement(pickup) then
+		local pickupID = getElemID(pickup)
+		if pickupID and g_Pickups[pickupID] then
+			g_Pickups[pickupID] = nil
+		end
+		destroyElement(pickup)
+	end
+	g_MRPDynamicPickups[dynamicID] = nil
+	return true
+end
+
 function DestroyPickup(amx, pickup)
 	removeElem(g_Pickups, pickup)
 	destroyElement(pickup)
@@ -1341,6 +1390,5 @@ function NetStats_PacketLossPercent(amx, player)
 end
 
 function GetServerTickRate(amx)
-	notImplemented('GetServerTickRate')
-	return 0
+	return getFPSLimit()
 end

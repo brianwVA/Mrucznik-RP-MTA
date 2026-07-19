@@ -23,13 +23,13 @@
     "serverfiles/scriptfiles/fs-count-P.amx",
     "serverfiles/scriptfiles/callbackfix.amx"
   ],
-  "native_entry_count": 552,
-  "unique_native_count": 471,
+  "native_entry_count": 579,
+  "unique_native_count": 515,
   "programs": [
     {
       "name": "M-RP",
-      "native_entry_count": 510,
-      "unique_native_count": 469
+      "native_entry_count": 537,
+      "unique_native_count": 515
     },
     {
       "name": "animy",
@@ -138,28 +138,30 @@
     }
   ],
   "provider_counts": {
-    "ColAndreas": 10,
+    "ColAndreas": 4,
     "Whirlpool": 1,
     "crashdetect": 1,
-    "discord-connector": 2,
-    "libRegEx": 6,
     "log-plugin": 3,
-    "mrp-mta-compat": 29,
-    "mta-amx-core": 320,
+    "mrp-mta-compat": 10,
+    "mta-amx-core": 383,
+    "mysql": 29,
     "pawn-memory": 13,
-    "profiler": 4,
-    "requests": 7,
-    "sscanf": 6,
-    "streamer": 69
+    "sscanf": 7,
+    "streamer": 64
   },
   "natives": [
     {
-      "name": "AddSimpleModel",
+      "name": "AddCharModel",
       "occurrences": 1,
-      "provider": "mrp-mta-compat"
+      "provider": "mta-amx-core"
     },
     {
-      "name": "AddSimpleModelTimed",
+      "name": "AddPlayerClass",
+      "occurrences": 1,
+      "provider": "mta-amx-core"
+    },
+    {
+      "name": "AddSimpleModel",
       "occurrences": 1,
       "provider": "mrp-mta-compat"
     },
@@ -170,6 +172,16 @@
     },
     {
       "name": "AddVehicleComponent",
+      "occurrences": 1,
+      "provider": "mta-amx-core"
+    },
+    {
+      "name": "AllowInteriorWeapons",
+      "occurrences": 1,
+      "provider": "mta-amx-core"
+    },
+    {
+      "name": "AllowPlayerTeleport",
       "occurrences": 1,
       "provider": "mta-amx-core"
     },
@@ -194,7 +206,27 @@
       "provider": "mta-amx-core"
     },
     {
+      "name": "atan",
+      "occurrences": 1,
+      "provider": "mta-amx-core"
+    },
+    {
       "name": "atan2",
+      "occurrences": 1,
+      "provider": "mta-amx-core"
+    },
+    {
+      "name": "Attach3DTextLabelToPlayer",
+      "occurrences": 1,
+      "provider": "mta-amx-core"
+    },
+    {
+      "name": "AttachCameraToDynamicObject",
+      "occurrences": 1,
+      "provider": "streamer"
+    },
+    {
+      "name": "AttachCameraToObject",
       "occurrences": 1,
       "provider": "mta-amx-core"
     },
@@ -209,6 +241,11 @@
       "provider": "streamer"
     },
     {
+      "name": "AttachObjectToPlayer",
+      "occurrences": 1,
+      "provider": "mta-amx-core"
+    },
+    {
       "name": "AttachTrailerToVehicle",
       "occurrences": 1,
       "provider": "mta-amx-core"
@@ -219,14 +256,59 @@
       "provider": "mta-amx-core"
     },
     {
+      "name": "BeginObjectSelecting",
+      "occurrences": 1,
+      "provider": "mta-amx-core"
+    },
+    {
+      "name": "BlockIpAddress",
+      "occurrences": 1,
+      "provider": "mta-amx-core"
+    },
+    {
+      "name": "BS_Delete",
+      "occurrences": 1,
+      "provider": "mrp-mta-compat"
+    },
+    {
+      "name": "BS_GetNumberOfBytesUsed",
+      "occurrences": 1,
+      "provider": "mta-amx-core"
+    },
+    {
+      "name": "BS_IgnoreBits",
+      "occurrences": 1,
+      "provider": "mrp-mta-compat"
+    },
+    {
+      "name": "BS_New",
+      "occurrences": 1,
+      "provider": "mrp-mta-compat"
+    },
+    {
       "name": "BS_ReadValue",
       "occurrences": 1,
       "provider": "mrp-mta-compat"
     },
     {
-      "name": "CA_CreateObject",
+      "name": "BS_ResetReadPointer",
       "occurrences": 1,
-      "provider": "ColAndreas"
+      "provider": "mta-amx-core"
+    },
+    {
+      "name": "BS_SetReadOffset",
+      "occurrences": 1,
+      "provider": "mta-amx-core"
+    },
+    {
+      "name": "BS_SetWriteOffset",
+      "occurrences": 1,
+      "provider": "mrp-mta-compat"
+    },
+    {
+      "name": "BS_WriteValue",
+      "occurrences": 1,
+      "provider": "mrp-mta-compat"
     },
     {
       "name": "CA_DestroyObject",
@@ -235,16 +317,6 @@
     },
     {
       "name": "CA_Init",
-      "occurrences": 1,
-      "provider": "ColAndreas"
-    },
-    {
-      "name": "CA_IsValidObject",
-      "occurrences": 1,
-      "provider": "ColAndreas"
-    },
-    {
-      "name": "CA_LoadFromDff",
       "occurrences": 1,
       "provider": "ColAndreas"
     },
@@ -259,33 +331,68 @@
       "provider": "ColAndreas"
     },
     {
-      "name": "CA_RemoveBuilding",
+      "name": "cache_affected_rows",
       "occurrences": 1,
-      "provider": "ColAndreas"
+      "provider": "mysql"
     },
     {
-      "name": "CA_SetObjectPos",
+      "name": "cache_delete",
       "occurrences": 1,
-      "provider": "ColAndreas"
+      "provider": "mysql"
     },
     {
-      "name": "CA_SetObjectRot",
+      "name": "cache_get_row_count",
       "occurrences": 1,
-      "provider": "ColAndreas"
+      "provider": "mysql"
+    },
+    {
+      "name": "cache_get_value_index",
+      "occurrences": 1,
+      "provider": "mysql"
+    },
+    {
+      "name": "cache_get_value_index_float",
+      "occurrences": 1,
+      "provider": "mysql"
+    },
+    {
+      "name": "cache_get_value_index_int",
+      "occurrences": 1,
+      "provider": "mysql"
+    },
+    {
+      "name": "cache_get_value_name",
+      "occurrences": 1,
+      "provider": "mysql"
+    },
+    {
+      "name": "cache_get_value_name_float",
+      "occurrences": 1,
+      "provider": "mysql"
+    },
+    {
+      "name": "cache_get_value_name_int",
+      "occurrences": 1,
+      "provider": "mysql"
+    },
+    {
+      "name": "cache_insert_id",
+      "occurrences": 1,
+      "provider": "mysql"
+    },
+    {
+      "name": "cache_set_active",
+      "occurrences": 1,
+      "provider": "mysql"
     },
     {
       "name": "CallLocalFunction",
-      "occurrences": 2,
+      "occurrences": 3,
       "provider": "mta-amx-core"
     },
     {
       "name": "CallRemoteFunction",
       "occurrences": 5,
-      "provider": "mta-amx-core"
-    },
-    {
-      "name": "CancelEdit",
-      "occurrences": 1,
       "provider": "mta-amx-core"
     },
     {
@@ -309,14 +416,29 @@
       "provider": "mta-amx-core"
     },
     {
+      "name": "ClearActorAnimations",
+      "occurrences": 1,
+      "provider": "mta-amx-core"
+    },
+    {
       "name": "ClearAnimations",
       "occurrences": 1,
       "provider": "mta-amx-core"
     },
     {
-      "name": "ClearDynamicActorAnimations",
+      "name": "CountRunningTimers",
       "occurrences": 1,
-      "provider": "streamer"
+      "provider": "mta-amx-core"
+    },
+    {
+      "name": "Create3DTextLabel",
+      "occurrences": 1,
+      "provider": "mta-amx-core"
+    },
+    {
+      "name": "CreateActor",
+      "occurrences": 1,
+      "provider": "mta-amx-core"
     },
     {
       "name": "CreateDynamic3DTextLabel",
@@ -354,13 +476,13 @@
       "provider": "streamer"
     },
     {
-      "name": "CreateDynamicMapIconEx",
-      "occurrences": 1,
+      "name": "CreateDynamicObject",
+      "occurrences": 2,
       "provider": "streamer"
     },
     {
-      "name": "CreateDynamicObject",
-      "occurrences": 2,
+      "name": "CreateDynamicObjectEx",
+      "occurrences": 1,
       "provider": "streamer"
     },
     {
@@ -370,6 +492,11 @@
     },
     {
       "name": "CreateDynamicRectangle",
+      "occurrences": 1,
+      "provider": "streamer"
+    },
+    {
+      "name": "CreateDynamicSphere",
       "occurrences": 1,
       "provider": "streamer"
     },
@@ -404,67 +531,47 @@
       "provider": "mta-amx-core"
     },
     {
-      "name": "db_free_result",
+      "name": "DB_ExecuteQuery",
       "occurrences": 1,
       "provider": "mta-amx-core"
     },
     {
-      "name": "db_get_field",
+      "name": "DB_FreeResultSet",
       "occurrences": 1,
       "provider": "mta-amx-core"
     },
     {
-      "name": "db_get_field_assoc",
+      "name": "DB_GetFieldFloatByName",
       "occurrences": 1,
       "provider": "mta-amx-core"
     },
     {
-      "name": "db_get_field_assoc_float",
+      "name": "DB_GetFieldIntByName",
       "occurrences": 1,
       "provider": "mta-amx-core"
     },
     {
-      "name": "db_get_field_assoc_int",
+      "name": "DB_GetFieldString",
       "occurrences": 1,
       "provider": "mta-amx-core"
     },
     {
-      "name": "db_next_row",
+      "name": "DB_GetRowCount",
       "occurrences": 1,
       "provider": "mta-amx-core"
     },
     {
-      "name": "db_num_rows",
+      "name": "DB_Open",
       "occurrences": 1,
       "provider": "mta-amx-core"
     },
     {
-      "name": "db_open",
+      "name": "DB_SelectNextRow",
       "occurrences": 1,
       "provider": "mta-amx-core"
-    },
-    {
-      "name": "db_query",
-      "occurrences": 1,
-      "provider": "mta-amx-core"
-    },
-    {
-      "name": "DCC_FindChannelById",
-      "occurrences": 1,
-      "provider": "discord-connector"
-    },
-    {
-      "name": "DCC_SendChannelMessage",
-      "occurrences": 1,
-      "provider": "discord-connector"
     },
     {
       "name": "DeletePlayer3DTextLabel",
-      "occurrences": 1,
-      "provider": "mta-amx-core"
-    },
-    {
-      "name": "deleteproperty",
       "occurrences": 1,
       "provider": "mta-amx-core"
     },
@@ -475,6 +582,11 @@
     },
     {
       "name": "DeleteSVar",
+      "occurrences": 1,
+      "provider": "mta-amx-core"
+    },
+    {
+      "name": "DestroyActor",
       "occurrences": 1,
       "provider": "mta-amx-core"
     },
@@ -529,6 +641,11 @@
       "provider": "mta-amx-core"
     },
     {
+      "name": "DestroyPickup",
+      "occurrences": 1,
+      "provider": "mta-amx-core"
+    },
+    {
       "name": "DestroyPlayerObject",
       "occurrences": 1,
       "provider": "mta-amx-core"
@@ -540,6 +657,11 @@
     },
     {
       "name": "DetachTrailerFromVehicle",
+      "occurrences": 1,
+      "provider": "mta-amx-core"
+    },
+    {
+      "name": "dir_create",
       "occurrences": 1,
       "provider": "mta-amx-core"
     },
@@ -569,7 +691,27 @@
       "provider": "streamer"
     },
     {
+      "name": "EnablePlayerCameraTarget",
+      "occurrences": 1,
+      "provider": "mta-amx-core"
+    },
+    {
       "name": "EnableStuntBonusForAll",
+      "occurrences": 1,
+      "provider": "mta-amx-core"
+    },
+    {
+      "name": "EnableStuntBonusForPlayer",
+      "occurrences": 1,
+      "provider": "mta-amx-core"
+    },
+    {
+      "name": "EnableVehicleFriendlyFire",
+      "occurrences": 1,
+      "provider": "mta-amx-core"
+    },
+    {
+      "name": "EndObjectEditing",
       "occurrences": 1,
       "provider": "mta-amx-core"
     },
@@ -589,6 +731,11 @@
       "provider": "mta-amx-core"
     },
     {
+      "name": "fcreatedir",
+      "occurrences": 1,
+      "provider": "mta-amx-core"
+    },
+    {
       "name": "fexist",
       "occurrences": 1,
       "provider": "mta-amx-core"
@@ -599,14 +746,9 @@
       "provider": "mta-amx-core"
     },
     {
-      "name": "FindModelFileNameFromCRC",
+      "name": "file_write",
       "occurrences": 1,
-      "provider": "mrp-mta-compat"
-    },
-    {
-      "name": "FindTextureFileNameFromCRC",
-      "occurrences": 1,
-      "provider": "mrp-mta-compat"
+      "provider": "mta-amx-core"
     },
     {
       "name": "flength",
@@ -644,7 +786,7 @@
       "provider": "mta-amx-core"
     },
     {
-      "name": "floatlog",
+      "name": "floatfract",
       "occurrences": 1,
       "provider": "mta-amx-core"
     },
@@ -689,8 +831,13 @@
       "provider": "mta-amx-core"
     },
     {
+      "name": "ForceClassSelection",
+      "occurrences": 1,
+      "provider": "mta-amx-core"
+    },
+    {
       "name": "format",
-      "occurrences": 4,
+      "occurrences": 2,
       "provider": "mta-amx-core"
     },
     {
@@ -715,7 +862,7 @@
     },
     {
       "name": "funcidx",
-      "occurrences": 2,
+      "occurrences": 4,
       "provider": "mta-amx-core"
     },
     {
@@ -754,6 +901,11 @@
       "provider": "mta-amx-core"
     },
     {
+      "name": "GangZoneHideForAll",
+      "occurrences": 1,
+      "provider": "mta-amx-core"
+    },
+    {
       "name": "GangZoneHideForPlayer",
       "occurrences": 1,
       "provider": "mta-amx-core"
@@ -774,22 +926,22 @@
       "provider": "mta-amx-core"
     },
     {
-      "name": "GetActorPos",
-      "occurrences": 1,
-      "provider": "mta-amx-core"
-    },
-    {
-      "name": "GetActorVirtualWorld",
-      "occurrences": 1,
-      "provider": "mta-amx-core"
-    },
-    {
       "name": "GetAnimationName",
-      "occurrences": 2,
+      "occurrences": 1,
       "provider": "mta-amx-core"
     },
     {
       "name": "getarg",
+      "occurrences": 1,
+      "provider": "mta-amx-core"
+    },
+    {
+      "name": "GetConsoleVarAsBool",
+      "occurrences": 1,
+      "provider": "mta-amx-core"
+    },
+    {
+      "name": "GetConsoleVarAsInt",
       "occurrences": 1,
       "provider": "mta-amx-core"
     },
@@ -814,6 +966,11 @@
       "provider": "streamer"
     },
     {
+      "name": "GetDynamicObjectMaterial",
+      "occurrences": 1,
+      "provider": "streamer"
+    },
+    {
       "name": "GetDynamicObjectPos",
       "occurrences": 1,
       "provider": "streamer"
@@ -829,13 +986,18 @@
       "provider": "mta-amx-core"
     },
     {
+      "name": "GetObjectModel",
+      "occurrences": 1,
+      "provider": "mta-amx-core"
+    },
+    {
       "name": "GetPlayerAmmo",
-      "occurrences": 2,
+      "occurrences": 1,
       "provider": "mta-amx-core"
     },
     {
       "name": "GetPlayerAnimationIndex",
-      "occurrences": 2,
+      "occurrences": 1,
       "provider": "mta-amx-core"
     },
     {
@@ -850,11 +1012,16 @@
     },
     {
       "name": "GetPlayerCameraMode",
-      "occurrences": 2,
+      "occurrences": 1,
       "provider": "mta-amx-core"
     },
     {
       "name": "GetPlayerCameraPos",
+      "occurrences": 1,
+      "provider": "mta-amx-core"
+    },
+    {
+      "name": "GetPlayerClass",
       "occurrences": 1,
       "provider": "mta-amx-core"
     },
@@ -900,7 +1067,7 @@
     },
     {
       "name": "GetPlayerKeys",
-      "occurrences": 2,
+      "occurrences": 1,
       "provider": "mta-amx-core"
     },
     {
@@ -910,12 +1077,17 @@
     },
     {
       "name": "GetPlayerMoney",
-      "occurrences": 2,
+      "occurrences": 1,
       "provider": "mta-amx-core"
     },
     {
       "name": "GetPlayerName",
-      "occurrences": 2,
+      "occurrences": 1,
+      "provider": "mta-amx-core"
+    },
+    {
+      "name": "GetPlayerObjectModel",
+      "occurrences": 1,
       "provider": "mta-amx-core"
     },
     {
@@ -929,13 +1101,8 @@
       "provider": "mta-amx-core"
     },
     {
-      "name": "GetPlayerPoolSize",
-      "occurrences": 1,
-      "provider": "mta-amx-core"
-    },
-    {
       "name": "GetPlayerPos",
-      "occurrences": 2,
+      "occurrences": 1,
       "provider": "mta-amx-core"
     },
     {
@@ -945,16 +1112,31 @@
     },
     {
       "name": "GetPlayerSpecialAction",
-      "occurrences": 2,
+      "occurrences": 1,
+      "provider": "mta-amx-core"
+    },
+    {
+      "name": "GetPlayerSpectateID",
+      "occurrences": 1,
       "provider": "mta-amx-core"
     },
     {
       "name": "GetPlayerState",
-      "occurrences": 3,
+      "occurrences": 2,
       "provider": "mta-amx-core"
     },
     {
       "name": "GetPlayerSurfingObjectID",
+      "occurrences": 1,
+      "provider": "mta-amx-core"
+    },
+    {
+      "name": "GetPlayerSurfingPlayerObjectID",
+      "occurrences": 1,
+      "provider": "mta-amx-core"
+    },
+    {
+      "name": "GetPlayerSurfingVehicleID",
       "occurrences": 1,
       "provider": "mta-amx-core"
     },
@@ -965,7 +1147,7 @@
     },
     {
       "name": "GetPlayerTeam",
-      "occurrences": 2,
+      "occurrences": 1,
       "provider": "mta-amx-core"
     },
     {
@@ -975,12 +1157,12 @@
     },
     {
       "name": "GetPlayerVehicleID",
-      "occurrences": 2,
+      "occurrences": 1,
       "provider": "mta-amx-core"
     },
     {
       "name": "GetPlayerVehicleSeat",
-      "occurrences": 2,
+      "occurrences": 1,
       "provider": "mta-amx-core"
     },
     {
@@ -989,14 +1171,14 @@
       "provider": "mta-amx-core"
     },
     {
-      "name": "GetPlayerVirtualWorld",
+      "name": "GetPlayerVersion",
       "occurrences": 1,
       "provider": "mta-amx-core"
     },
     {
-      "name": "GetPlayerVisibleDynamicCP",
+      "name": "GetPlayerVirtualWorld",
       "occurrences": 1,
-      "provider": "streamer"
+      "provider": "mta-amx-core"
     },
     {
       "name": "GetPlayerWeapon",
@@ -1039,23 +1221,28 @@
       "provider": "mta-amx-core"
     },
     {
+      "name": "GetServerTickRate",
+      "occurrences": 1,
+      "provider": "mta-amx-core"
+    },
+    {
+      "name": "GetSpawnInfo",
+      "occurrences": 1,
+      "provider": "mta-amx-core"
+    },
+    {
       "name": "GetSVarInt",
       "occurrences": 1,
       "provider": "mta-amx-core"
     },
     {
       "name": "GetTickCount",
-      "occurrences": 2,
+      "occurrences": 1,
       "provider": "mta-amx-core"
     },
     {
       "name": "gettime",
       "occurrences": 2,
-      "provider": "mta-amx-core"
-    },
-    {
-      "name": "GetVehicleComponentInSlot",
-      "occurrences": 1,
       "provider": "mta-amx-core"
     },
     {
@@ -1079,12 +1266,22 @@
       "provider": "mta-amx-core"
     },
     {
+      "name": "GetVehicleInterior",
+      "occurrences": 1,
+      "provider": "mta-amx-core"
+    },
+    {
       "name": "GetVehicleModel",
-      "occurrences": 2,
+      "occurrences": 1,
       "provider": "mta-amx-core"
     },
     {
       "name": "GetVehicleModelInfo",
+      "occurrences": 1,
+      "provider": "mta-amx-core"
+    },
+    {
+      "name": "GetVehicleParamsCarWindows",
       "occurrences": 1,
       "provider": "mta-amx-core"
     },
@@ -1094,17 +1291,22 @@
       "provider": "mta-amx-core"
     },
     {
-      "name": "GetVehiclePoolSize",
+      "name": "GetVehiclePos",
       "occurrences": 1,
       "provider": "mta-amx-core"
     },
     {
-      "name": "GetVehiclePos",
-      "occurrences": 2,
+      "name": "GetVehicleRotationQuat",
+      "occurrences": 1,
       "provider": "mta-amx-core"
     },
     {
-      "name": "GetVehicleRotationQuat",
+      "name": "GetVehicleSeats",
+      "occurrences": 1,
+      "provider": "mta-amx-core"
+    },
+    {
+      "name": "GetVehicleSpawnInfo",
       "occurrences": 1,
       "provider": "mta-amx-core"
     },
@@ -1129,13 +1331,13 @@
       "provider": "mta-amx-core"
     },
     {
-      "name": "GetWeaponName",
+      "name": "GetWeaponSlot",
       "occurrences": 1,
       "provider": "mta-amx-core"
     },
     {
       "name": "GivePlayerMoney",
-      "occurrences": 2,
+      "occurrences": 1,
       "provider": "mta-amx-core"
     },
     {
@@ -1169,29 +1371,54 @@
       "provider": "mta-amx-core"
     },
     {
+      "name": "IsActorStreamedIn",
+      "occurrences": 1,
+      "provider": "mta-amx-core"
+    },
+    {
+      "name": "IsAdminTeleportAllowed",
+      "occurrences": 1,
+      "provider": "mta-amx-core"
+    },
+    {
       "name": "IsPlayerAdmin",
-      "occurrences": 2,
+      "occurrences": 1,
       "provider": "mta-amx-core"
     },
     {
       "name": "IsPlayerAttachedObjectSlotUsed",
-      "occurrences": 2,
+      "occurrences": 1,
       "provider": "mta-amx-core"
     },
     {
       "name": "IsPlayerConnected",
-      "occurrences": 2,
+      "occurrences": 1,
       "provider": "mta-amx-core"
     },
     {
       "name": "IsPlayerInAnyVehicle",
-      "occurrences": 2,
+      "occurrences": 1,
+      "provider": "mta-amx-core"
+    },
+    {
+      "name": "IsPlayerInCheckpoint",
+      "occurrences": 1,
+      "provider": "mta-amx-core"
+    },
+    {
+      "name": "IsPlayerInDriveByMode",
+      "occurrences": 1,
       "provider": "mta-amx-core"
     },
     {
       "name": "IsPlayerInDynamicArea",
       "occurrences": 1,
       "provider": "streamer"
+    },
+    {
+      "name": "IsPlayerInRaceCheckpoint",
+      "occurrences": 1,
+      "provider": "mta-amx-core"
     },
     {
       "name": "IsPlayerInRangeOfPoint",
@@ -1209,14 +1436,19 @@
       "provider": "mta-amx-core"
     },
     {
+      "name": "IsPlayerSpawned",
+      "occurrences": 1,
+      "provider": "mta-amx-core"
+    },
+    {
       "name": "IsPlayerStreamedIn",
       "occurrences": 1,
       "provider": "mta-amx-core"
     },
     {
-      "name": "IsPointInDynamicArea",
+      "name": "IsPlayerTeleportAllowed",
       "occurrences": 1,
-      "provider": "streamer"
+      "provider": "mta-amx-core"
     },
     {
       "name": "IsTrailerAttachedToVehicle",
@@ -1229,12 +1461,22 @@
       "provider": "mta-amx-core"
     },
     {
+      "name": "IsValidCustomModel",
+      "occurrences": 1,
+      "provider": "mta-amx-core"
+    },
+    {
       "name": "IsValidDynamic3DTextLabel",
       "occurrences": 1,
       "provider": "streamer"
     },
     {
       "name": "IsValidDynamicArea",
+      "occurrences": 1,
+      "provider": "streamer"
+    },
+    {
+      "name": "IsValidDynamicCP",
       "occurrences": 1,
       "provider": "streamer"
     },
@@ -1259,38 +1501,28 @@
       "provider": "mta-amx-core"
     },
     {
+      "name": "IsValidTimer",
+      "occurrences": 1,
+      "provider": "mta-amx-core"
+    },
+    {
+      "name": "IsValidVehicle",
+      "occurrences": 2,
+      "provider": "mta-amx-core"
+    },
+    {
       "name": "IsVehicleStreamedIn",
       "occurrences": 1,
       "provider": "mta-amx-core"
     },
     {
-      "name": "JsonCleanup",
-      "occurrences": 1,
-      "provider": "requests"
-    },
-    {
-      "name": "JsonGetInt",
-      "occurrences": 1,
-      "provider": "requests"
-    },
-    {
-      "name": "JsonGetString",
-      "occurrences": 1,
-      "provider": "requests"
-    },
-    {
-      "name": "JsonObject",
-      "occurrences": 1,
-      "provider": "requests"
-    },
-    {
       "name": "Kick",
-      "occurrences": 3,
+      "occurrences": 2,
       "provider": "mta-amx-core"
     },
     {
       "name": "KillTimer",
-      "occurrences": 2,
+      "occurrences": 1,
       "provider": "mta-amx-core"
     },
     {
@@ -1380,7 +1612,7 @@
     },
     {
       "name": "memcpy",
-      "occurrences": 1,
+      "occurrences": 3,
       "provider": "mta-amx-core"
     },
     {
@@ -1404,77 +1636,97 @@
       "provider": "mta-amx-core"
     },
     {
-      "name": "mysql_connect",
+      "name": "MRP_DestroyStreamerObject",
       "occurrences": 1,
-      "provider": "mrp-mta-compat"
+      "provider": "mta-amx-core"
     },
     {
-      "name": "mysql_debug",
+      "name": "MRP_DestroyStreamerPickup",
       "occurrences": 1,
-      "provider": "mrp-mta-compat"
+      "provider": "mta-amx-core"
     },
     {
-      "name": "mysql_fetch_field_row",
+      "name": "MRP_MirrorStreamerObject",
       "occurrences": 1,
-      "provider": "mrp-mta-compat"
+      "provider": "mta-amx-core"
     },
     {
-      "name": "mysql_fetch_int",
+      "name": "MRP_MirrorStreamerPickup",
       "occurrences": 1,
-      "provider": "mrp-mta-compat"
+      "provider": "mta-amx-core"
     },
     {
-      "name": "mysql_fetch_row_format",
+      "name": "MRP_MoveStreamerObject",
       "occurrences": 1,
-      "provider": "mrp-mta-compat"
+      "provider": "mta-amx-core"
     },
     {
-      "name": "mysql_free_result",
+      "name": "MRP_SetStreamerObjectMaterial",
       "occurrences": 1,
-      "provider": "mrp-mta-compat"
+      "provider": "mta-amx-core"
     },
     {
-      "name": "mysql_insert_id",
+      "name": "MRP_SetStreamerObjectPos",
       "occurrences": 1,
-      "provider": "mrp-mta-compat"
+      "provider": "mta-amx-core"
     },
     {
-      "name": "mysql_num_rows",
+      "name": "MRP_SetStreamerObjectRot",
       "occurrences": 1,
-      "provider": "mrp-mta-compat"
+      "provider": "mta-amx-core"
     },
     {
-      "name": "mysql_ping",
+      "name": "mysql_close",
       "occurrences": 1,
-      "provider": "mrp-mta-compat"
+      "provider": "mysql"
+    },
+    {
+      "name": "mysql_connect_file",
+      "occurrences": 1,
+      "provider": "mysql"
+    },
+    {
+      "name": "mysql_errno",
+      "occurrences": 1,
+      "provider": "mysql"
+    },
+    {
+      "name": "mysql_error",
+      "occurrences": 1,
+      "provider": "mysql"
+    },
+    {
+      "name": "mysql_escape_string",
+      "occurrences": 1,
+      "provider": "mysql"
+    },
+    {
+      "name": "mysql_format",
+      "occurrences": 1,
+      "provider": "mysql"
     },
     {
       "name": "mysql_query",
       "occurrences": 1,
-      "provider": "mrp-mta-compat"
+      "provider": "mysql"
     },
     {
-      "name": "mysql_real_escape_string",
+      "name": "mysql_set_charset",
       "occurrences": 1,
-      "provider": "mrp-mta-compat"
+      "provider": "mysql"
     },
     {
-      "name": "mysql_reconnect",
+      "name": "mysql_tquery",
       "occurrences": 1,
-      "provider": "mrp-mta-compat"
-    },
-    {
-      "name": "mysql_retrieve_row",
-      "occurrences": 1,
-      "provider": "mrp-mta-compat"
-    },
-    {
-      "name": "mysql_store_result",
-      "occurrences": 1,
-      "provider": "mrp-mta-compat"
+      "provider": "mysql"
     },
     {
       "name": "NetStats_GetConnectedTime",
+      "occurrences": 1,
+      "provider": "mta-amx-core"
+    },
+    {
+      "name": "NetStats_MessagesRecvPerSecond",
       "occurrences": 1,
       "provider": "mta-amx-core"
     },
@@ -1484,9 +1736,54 @@
       "provider": "mta-amx-core"
     },
     {
-      "name": "numargs",
+      "name": "Now",
       "occurrences": 1,
       "provider": "mta-amx-core"
+    },
+    {
+      "name": "orm_addvar_float",
+      "occurrences": 1,
+      "provider": "mysql"
+    },
+    {
+      "name": "orm_addvar_int",
+      "occurrences": 1,
+      "provider": "mysql"
+    },
+    {
+      "name": "orm_addvar_string",
+      "occurrences": 1,
+      "provider": "mysql"
+    },
+    {
+      "name": "orm_create",
+      "occurrences": 1,
+      "provider": "mysql"
+    },
+    {
+      "name": "orm_destroy",
+      "occurrences": 1,
+      "provider": "mysql"
+    },
+    {
+      "name": "orm_save",
+      "occurrences": 1,
+      "provider": "mysql"
+    },
+    {
+      "name": "orm_select",
+      "occurrences": 1,
+      "provider": "mysql"
+    },
+    {
+      "name": "orm_setkey",
+      "occurrences": 1,
+      "provider": "mysql"
+    },
+    {
+      "name": "orm_update",
+      "occurrences": 1,
+      "provider": "mysql"
     },
     {
       "name": "PlayAudioStreamForPlayer",
@@ -1559,6 +1856,11 @@
       "provider": "mta-amx-core"
     },
     {
+      "name": "PlayerTextDrawSetPos",
+      "occurrences": 1,
+      "provider": "mta-amx-core"
+    },
+    {
       "name": "PlayerTextDrawSetPreviewModel",
       "occurrences": 1,
       "provider": "mta-amx-core"
@@ -1619,8 +1921,18 @@
       "provider": "mrp-mta-compat"
     },
     {
+      "name": "PR_SendPacket",
+      "occurrences": 1,
+      "provider": "mta-amx-core"
+    },
+    {
+      "name": "PR_SendRPC",
+      "occurrences": 1,
+      "provider": "mrp-mta-compat"
+    },
+    {
       "name": "print",
-      "occurrences": 3,
+      "occurrences": 4,
       "provider": "mta-amx-core"
     },
     {
@@ -1630,28 +1942,8 @@
     },
     {
       "name": "printf",
-      "occurrences": 1,
+      "occurrences": 3,
       "provider": "mta-amx-core"
-    },
-    {
-      "name": "Profiler_Dump",
-      "occurrences": 1,
-      "provider": "profiler"
-    },
-    {
-      "name": "Profiler_GetState",
-      "occurrences": 1,
-      "provider": "profiler"
-    },
-    {
-      "name": "Profiler_Start",
-      "occurrences": 1,
-      "provider": "profiler"
-    },
-    {
-      "name": "Profiler_Stop",
-      "occurrences": 1,
-      "provider": "profiler"
     },
     {
       "name": "PutPlayerInVehicle",
@@ -1664,83 +1956,13 @@
       "provider": "mta-amx-core"
     },
     {
-      "name": "RedirectDownload",
-      "occurrences": 1,
-      "provider": "mrp-mta-compat"
-    },
-    {
-      "name": "Redis_Command",
-      "occurrences": 1,
-      "provider": "mrp-mta-compat"
-    },
-    {
-      "name": "Redis_Connect",
-      "occurrences": 1,
-      "provider": "mrp-mta-compat"
-    },
-    {
-      "name": "Redis_Exists",
-      "occurrences": 1,
-      "provider": "mrp-mta-compat"
-    },
-    {
-      "name": "Redis_GetInt",
-      "occurrences": 1,
-      "provider": "mrp-mta-compat"
-    },
-    {
-      "name": "Redis_GetString",
-      "occurrences": 1,
-      "provider": "mrp-mta-compat"
-    },
-    {
-      "name": "Redis_SetInt",
-      "occurrences": 1,
-      "provider": "mrp-mta-compat"
-    },
-    {
-      "name": "Redis_SetString",
-      "occurrences": 1,
-      "provider": "mrp-mta-compat"
-    },
-    {
-      "name": "regex_exbuild",
-      "occurrences": 1,
-      "provider": "libRegEx"
-    },
-    {
-      "name": "regex_exmatch",
-      "occurrences": 1,
-      "provider": "libRegEx"
-    },
-    {
-      "name": "regex_match",
-      "occurrences": 1,
-      "provider": "libRegEx"
-    },
-    {
-      "name": "regex_replace",
-      "occurrences": 1,
-      "provider": "libRegEx"
-    },
-    {
-      "name": "regex_search",
-      "occurrences": 1,
-      "provider": "libRegEx"
-    },
-    {
-      "name": "regex_syntax",
-      "occurrences": 1,
-      "provider": "libRegEx"
-    },
-    {
       "name": "RemoveBuildingForPlayer",
-      "occurrences": 2,
+      "occurrences": 1,
       "provider": "mta-amx-core"
     },
     {
       "name": "RemovePlayerAttachedObject",
-      "occurrences": 2,
+      "occurrences": 1,
       "provider": "mta-amx-core"
     },
     {
@@ -1754,32 +1976,12 @@
       "provider": "mta-amx-core"
     },
     {
-      "name": "RequestHeaders",
-      "occurrences": 1,
-      "provider": "requests"
-    },
-    {
-      "name": "RequestJSON",
-      "occurrences": 1,
-      "provider": "requests"
-    },
-    {
-      "name": "RequestsClient",
-      "occurrences": 1,
-      "provider": "requests"
-    },
-    {
       "name": "ResetPlayerMoney",
-      "occurrences": 2,
+      "occurrences": 1,
       "provider": "mta-amx-core"
     },
     {
       "name": "ResetPlayerWeapons",
-      "occurrences": 1,
-      "provider": "mta-amx-core"
-    },
-    {
-      "name": "SelectObject",
       "occurrences": 1,
       "provider": "mta-amx-core"
     },
@@ -1790,12 +1992,12 @@
     },
     {
       "name": "SendClientCheck",
-      "occurrences": 1,
+      "occurrences": 2,
       "provider": "mta-amx-core"
     },
     {
       "name": "SendClientMessage",
-      "occurrences": 2,
+      "occurrences": 3,
       "provider": "mta-amx-core"
     },
     {
@@ -1810,7 +2012,12 @@
     },
     {
       "name": "SendRconCommand",
-      "occurrences": 2,
+      "occurrences": 1,
+      "provider": "mta-amx-core"
+    },
+    {
+      "name": "SetActorHealth",
+      "occurrences": 1,
       "provider": "mta-amx-core"
     },
     {
@@ -1825,23 +2032,8 @@
     },
     {
       "name": "SetCameraBehindPlayer",
-      "occurrences": 2,
+      "occurrences": 1,
       "provider": "mta-amx-core"
-    },
-    {
-      "name": "SetDynamicActorFacingAngle",
-      "occurrences": 1,
-      "provider": "streamer"
-    },
-    {
-      "name": "SetDynamicActorPos",
-      "occurrences": 1,
-      "provider": "streamer"
-    },
-    {
-      "name": "SetDynamicActorVirtualWorld",
-      "occurrences": 1,
-      "provider": "streamer"
     },
     {
       "name": "SetDynamicObjectMaterial",
@@ -1870,6 +2062,11 @@
     },
     {
       "name": "SetNameTagDrawDistance",
+      "occurrences": 1,
+      "provider": "mta-amx-core"
+    },
+    {
+      "name": "SetObjectMaterial",
       "occurrences": 1,
       "provider": "mta-amx-core"
     },
@@ -1944,12 +2141,12 @@
       "provider": "mta-amx-core"
     },
     {
-      "name": "SetPlayerName",
+      "name": "SetPlayerMapIcon",
       "occurrences": 1,
       "provider": "mta-amx-core"
     },
     {
-      "name": "SetPlayerObjectMaterial",
+      "name": "SetPlayerName",
       "occurrences": 1,
       "provider": "mta-amx-core"
     },
@@ -1990,7 +2187,7 @@
     },
     {
       "name": "SetPlayerTeam",
-      "occurrences": 2,
+      "occurrences": 1,
       "provider": "mta-amx-core"
     },
     {
@@ -2025,7 +2222,7 @@
     },
     {
       "name": "setproperty",
-      "occurrences": 18,
+      "occurrences": 19,
       "provider": "mta-amx-core"
     },
     {
@@ -2060,7 +2257,7 @@
     },
     {
       "name": "SetTimerEx",
-      "occurrences": 3,
+      "occurrences": 2,
       "provider": "mta-amx-core"
     },
     {
@@ -2079,7 +2276,17 @@
       "provider": "mta-amx-core"
     },
     {
+      "name": "SetVehicleParamsCarWindows",
+      "occurrences": 1,
+      "provider": "mta-amx-core"
+    },
+    {
       "name": "SetVehicleParamsEx",
+      "occurrences": 1,
+      "provider": "mta-amx-core"
+    },
+    {
+      "name": "SetVehicleParamsForPlayer",
       "occurrences": 1,
       "provider": "mta-amx-core"
     },
@@ -2144,7 +2351,7 @@
       "provider": "mta-amx-core"
     },
     {
-      "name": "sscanf",
+      "name": "SSCANF__",
       "occurrences": 1,
       "provider": "sscanf"
     },
@@ -2174,9 +2381,9 @@
       "provider": "sscanf"
     },
     {
-      "name": "StartRecordingPlayerData",
+      "name": "SSCANF_TextSimilarity",
       "occurrences": 1,
-      "provider": "mta-amx-core"
+      "provider": "sscanf"
     },
     {
       "name": "StopAudioStreamForPlayer",
@@ -2194,29 +2401,19 @@
       "provider": "mta-amx-core"
     },
     {
-      "name": "StopRecordingPlayerData",
-      "occurrences": 1,
-      "provider": "mta-amx-core"
-    },
-    {
       "name": "strcat",
       "occurrences": 1,
       "provider": "mta-amx-core"
     },
     {
       "name": "strcmp",
-      "occurrences": 3,
+      "occurrences": 4,
       "provider": "mta-amx-core"
     },
     {
       "name": "strdel",
       "occurrences": 1,
       "provider": "mta-amx-core"
-    },
-    {
-      "name": "Streamer_AppendArrayData",
-      "occurrences": 1,
-      "provider": "streamer"
     },
     {
       "name": "Streamer_CountItems",
@@ -2249,27 +2446,17 @@
       "provider": "streamer"
     },
     {
-      "name": "Streamer_GetItemPos",
+      "name": "Streamer_GetItemStreamerID",
+      "occurrences": 1,
+      "provider": "streamer"
+    },
+    {
+      "name": "Streamer_GetNearbyItems",
       "occurrences": 1,
       "provider": "streamer"
     },
     {
       "name": "Streamer_GetTickRate",
-      "occurrences": 1,
-      "provider": "streamer"
-    },
-    {
-      "name": "Streamer_IsInArrayData",
-      "occurrences": 1,
-      "provider": "streamer"
-    },
-    {
-      "name": "Streamer_IsItemVisible",
-      "occurrences": 1,
-      "provider": "streamer"
-    },
-    {
-      "name": "Streamer_RemoveArrayData",
       "occurrences": 1,
       "provider": "streamer"
     },
@@ -2280,6 +2467,11 @@
     },
     {
       "name": "Streamer_SetCellSize",
+      "occurrences": 1,
+      "provider": "streamer"
+    },
+    {
+      "name": "Streamer_SetFloatData",
       "occurrences": 1,
       "provider": "streamer"
     },
@@ -2314,6 +2506,11 @@
       "provider": "streamer"
     },
     {
+      "name": "Streamer_ToggleItem",
+      "occurrences": 1,
+      "provider": "streamer"
+    },
+    {
       "name": "Streamer_Update",
       "occurrences": 1,
       "provider": "streamer"
@@ -2324,18 +2521,13 @@
       "provider": "streamer"
     },
     {
-      "name": "Streamer_VisibleItems",
-      "occurrences": 1,
-      "provider": "streamer"
-    },
-    {
       "name": "strfind",
       "occurrences": 1,
       "provider": "mta-amx-core"
     },
     {
       "name": "strins",
-      "occurrences": 2,
+      "occurrences": 1,
       "provider": "mta-amx-core"
     },
     {
@@ -2355,11 +2547,16 @@
     },
     {
       "name": "strunpack",
-      "occurrences": 1,
+      "occurrences": 2,
       "provider": "mta-amx-core"
     },
     {
       "name": "strval",
+      "occurrences": 2,
+      "provider": "mta-amx-core"
+    },
+    {
+      "name": "swapchars",
       "occurrences": 2,
       "provider": "mta-amx-core"
     },
@@ -2469,14 +2666,14 @@
       "provider": "mta-amx-core"
     },
     {
-      "name": "TogglePlayerControllable",
+      "name": "TimeFormat",
       "occurrences": 1,
       "provider": "mta-amx-core"
     },
     {
-      "name": "TogglePlayerDynamicCP",
+      "name": "TogglePlayerControllable",
       "occurrences": 1,
-      "provider": "streamer"
+      "provider": "mta-amx-core"
     },
     {
       "name": "TogglePlayerSpectating",
@@ -2485,6 +2682,16 @@
     },
     {
       "name": "tolower",
+      "occurrences": 2,
+      "provider": "mta-amx-core"
+    },
+    {
+      "name": "toupper",
+      "occurrences": 1,
+      "provider": "mta-amx-core"
+    },
+    {
+      "name": "Update3DTextLabelText",
       "occurrences": 1,
       "provider": "mta-amx-core"
     },
@@ -2495,6 +2702,16 @@
     },
     {
       "name": "UpdateVehicleDamageStatus",
+      "occurrences": 1,
+      "provider": "mta-amx-core"
+    },
+    {
+      "name": "UsePlayerPedAnims",
+      "occurrences": 1,
+      "provider": "mta-amx-core"
+    },
+    {
+      "name": "valstr",
       "occurrences": 1,
       "provider": "mta-amx-core"
     },

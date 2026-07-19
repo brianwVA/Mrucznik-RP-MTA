@@ -41,6 +41,105 @@
 #include <log-plugin>
 #include <sscanf2>
 #include <streamer>
+
+#if defined MRP_MTA_RUNTIME
+	native MRP_MirrorStreamerObject(dynamicid, modelid, Float:x, Float:y, Float:z, Float:rx, Float:ry, Float:rz, worldid, interiorid, Float:drawdistance);
+	native MRP_MirrorStreamerPickup(dynamicid, modelid, type, Float:x, Float:y, Float:z, worldid, interiorid);
+	native MRP_DestroyStreamerObject(dynamicid);
+	native MRP_SetStreamerObjectPos(dynamicid, Float:x, Float:y, Float:z);
+	native MRP_SetStreamerObjectRot(dynamicid, Float:rx, Float:ry, Float:rz);
+	native MRP_MoveStreamerObject(dynamicid, Float:x, Float:y, Float:z, Float:speed, Float:rx, Float:ry, Float:rz);
+	native MRP_SetStreamerObjectMaterial(dynamicid, materialindex, modelid, const txdname[], const texturename[], materialcolor);
+	native MRP_DestroyStreamerPickup(dynamicid);
+	new MRP_MirrorValidObjects, MRP_MirrorValidPickups, MRP_MirrorCreatedObjects, MRP_MirrorCreatedPickups;
+
+	stock STREAMER_TAG_OBJECT:MRP_MTA_CreateDynamicObject(modelid, Float:x, Float:y, Float:z, Float:rx, Float:ry, Float:rz, worldid = -1, interiorid = -1, playerid = -1, Float:streamdistance = STREAMER_OBJECT_SD, Float:drawdistance = STREAMER_OBJECT_DD, STREAMER_TAG_AREA:areaid = STREAMER_TAG_AREA:-1, priority = 0)
+	{
+		new STREAMER_TAG_OBJECT:objectid = CreateDynamicObject(modelid, x, y, z, rx, ry, rz, worldid, interiorid, playerid, streamdistance, drawdistance, areaid, priority);
+		if(_:objectid != INVALID_STREAMER_ID && MRP_MirrorStreamerObject(_:objectid, modelid, x, y, z, rx, ry, rz, worldid, interiorid, drawdistance))
+		{
+			MRP_MirrorCreatedObjects++;
+		}
+		return objectid;
+	}
+
+	stock MRP_MTA_DestroyDynamicObject(STREAMER_TAG_OBJECT:objectid)
+	{
+		MRP_DestroyStreamerObject(_:objectid);
+		return DestroyDynamicObject(objectid);
+	}
+
+	stock MRP_MTA_SetDynamicObjectPos(STREAMER_TAG_OBJECT:objectid, Float:x, Float:y, Float:z)
+	{
+		MRP_SetStreamerObjectPos(_:objectid, x, y, z);
+		return SetDynamicObjectPos(objectid, x, y, z);
+	}
+
+	stock MRP_MTA_SetDynamicObjectRot(STREAMER_TAG_OBJECT:objectid, Float:rx, Float:ry, Float:rz)
+	{
+		MRP_SetStreamerObjectRot(_:objectid, rx, ry, rz);
+		return SetDynamicObjectRot(objectid, rx, ry, rz);
+	}
+
+	stock MRP_MTA_MoveDynamicObject(STREAMER_TAG_OBJECT:objectid, Float:x, Float:y, Float:z, Float:speed, Float:rx = -1000.0, Float:ry = -1000.0, Float:rz = -1000.0)
+	{
+		MRP_MoveStreamerObject(_:objectid, x, y, z, speed, rx, ry, rz);
+		return MoveDynamicObject(objectid, x, y, z, speed, rx, ry, rz);
+	}
+
+	stock MRP_MTA_SetDynamicObjectMaterial(STREAMER_TAG_OBJECT:objectid, materialindex, modelid, const txdname[], const texturename[], materialcolor = 0)
+	{
+		MRP_SetStreamerObjectMaterial(_:objectid, materialindex, modelid, txdname, texturename, materialcolor);
+		return SetDynamicObjectMaterial(objectid, materialindex, modelid, txdname, texturename, materialcolor);
+	}
+
+	stock STREAMER_TAG_PICKUP:MRP_MTA_CreateDynamicPickup(modelid, type, Float:x, Float:y, Float:z, worldid = -1, interiorid = -1, playerid = -1, Float:streamdistance = STREAMER_PICKUP_SD, STREAMER_TAG_AREA:areaid = STREAMER_TAG_AREA:-1, priority = 0)
+	{
+		new STREAMER_TAG_PICKUP:pickupid = CreateDynamicPickup(modelid, type, x, y, z, worldid, interiorid, playerid, streamdistance, areaid, priority);
+		if(_:pickupid != INVALID_STREAMER_ID && MRP_MirrorStreamerPickup(_:pickupid, modelid, type, x, y, z, worldid, interiorid))
+		{
+			MRP_MirrorCreatedPickups++;
+		}
+		return pickupid;
+	}
+
+	stock MRP_MTA_DestroyDynamicPickup(STREAMER_TAG_PICKUP:pickupid)
+	{
+		MRP_DestroyStreamerPickup(_:pickupid);
+		return DestroyDynamicPickup(pickupid);
+	}
+
+	stock STREAMER_TAG_OBJECT:MRP_MTA_CreateDynamicObjectEx(modelid, Float:x, Float:y, Float:z, Float:rx, Float:ry, Float:rz, Float:streamdistance = STREAMER_OBJECT_SD, Float:drawdistance = STREAMER_OBJECT_DD, const worlds[] = { -1 }, const interiors[] = { -1 }, const players[] = { -1 }, const STREAMER_TAG_AREA:areas[] = { STREAMER_TAG_AREA:-1 }, priority = 0, maxworlds = sizeof worlds, maxinteriors = sizeof interiors, maxplayers = sizeof players, maxareas = sizeof areas)
+	{
+		new STREAMER_TAG_OBJECT:objectid = CreateDynamicObjectEx(modelid, x, y, z, rx, ry, rz, streamdistance, drawdistance, worlds, interiors, players, areas, priority, maxworlds, maxinteriors, maxplayers, maxareas);
+		if(_:objectid != INVALID_STREAMER_ID && MRP_MirrorStreamerObject(_:objectid, modelid, x, y, z, rx, ry, rz, worlds[0], interiors[0], drawdistance))
+		{
+			MRP_MirrorCreatedObjects++;
+		}
+		return objectid;
+	}
+
+	stock STREAMER_TAG_PICKUP:MRP_MTA_CreateDynamicPickupEx(modelid, type, Float:x, Float:y, Float:z, Float:streamdistance = STREAMER_PICKUP_SD, const worlds[] = { -1 }, const interiors[] = { -1 }, const players[] = { -1 }, const STREAMER_TAG_AREA:areas[] = { STREAMER_TAG_AREA:-1 }, priority = 0, maxworlds = sizeof worlds, maxinteriors = sizeof interiors, maxplayers = sizeof players, maxareas = sizeof areas)
+	{
+		new STREAMER_TAG_PICKUP:pickupid = CreateDynamicPickupEx(modelid, type, x, y, z, streamdistance, worlds, interiors, players, areas, priority, maxworlds, maxinteriors, maxplayers, maxareas);
+		if(_:pickupid != INVALID_STREAMER_ID && MRP_MirrorStreamerPickup(_:pickupid, modelid, type, x, y, z, worlds[0], interiors[0]))
+		{
+			MRP_MirrorCreatedPickups++;
+		}
+		return pickupid;
+	}
+
+	#define CreateDynamicObject MRP_MTA_CreateDynamicObject
+	#define DestroyDynamicObject MRP_MTA_DestroyDynamicObject
+	#define SetDynamicObjectPos MRP_MTA_SetDynamicObjectPos
+	#define SetDynamicObjectRot MRP_MTA_SetDynamicObjectRot
+	#define MoveDynamicObject MRP_MTA_MoveDynamicObject
+	#define SetDynamicObjectMaterial MRP_MTA_SetDynamicObjectMaterial
+	#define CreateDynamicPickup MRP_MTA_CreateDynamicPickup
+	#define DestroyDynamicPickup MRP_MTA_DestroyDynamicPickup
+	#define CreateDynamicObjectEx MRP_MTA_CreateDynamicObjectEx
+	#define CreateDynamicPickupEx MRP_MTA_CreateDynamicPickupEx
+#endif
 #include <a_mysql>
 #include <whirlpool>
 #include <samp_bcrypt>
@@ -847,6 +946,15 @@ public OnGameModeInit()
 	CreateActorsInDMV(INVALID_PLAYER_ID);
 	LoadTurfSystem();
 
+	#if defined MRP_MTA_RUNTIME
+		MRP_MTA_MirrorStreamerItems();
+		// Część pickupów i obiektów powstaje w asynchronicznych callbackach MySQL
+		// już po OnGameModeInit. Kolejne przebiegi dopisują brakujące elementy.
+		SetTimer("MRP_MTA_MirrorStreamerItems", 5000, false);
+		SetTimer("MRP_MTA_MirrorStreamerItems", 15000, false);
+		SetTimer("MRP_MTA_MirrorStreamerItems", 45000, false);
+	#endif
+
 	Log(serverLog, WARNING,
 		"[M-RP port] Streamer: objects=%d pickups=%d mapicons=%d labels=%d areas=%d actors=%d",
 		Streamer_CountItems(STREAMER_TYPE_OBJECT),
@@ -874,6 +982,19 @@ forward MRP_GetStreamerItemCount(type);
 public MRP_GetStreamerItemCount(type)
 {
 	return Streamer_CountItems(type);
+}
+
+forward MRP_GetStreamerMirrorCount(type);
+public MRP_GetStreamerMirrorCount(type)
+{
+	switch(type)
+	{
+		case 0: return MRP_MirrorValidObjects;
+		case 1: return MRP_MirrorValidPickups;
+		case 2: return MRP_MirrorCreatedObjects;
+		case 3: return MRP_MirrorCreatedPickups;
+	}
+	return -1;
 }
 #endif
 
@@ -2745,6 +2866,8 @@ public OnPlayerSpawn(playerid)
 		// MTA tworzy peda przed callbackiem OnPlayerSpawn. Ponowne pokazanie HUD-u
 		// po zakończeniu całej ścieżki spawnu naprawia jego ukrycie przez login/BW.
 		SetTimerEx("MRP_MTA_RestoreHUD", 750, false, "i", playerid);
+		MRP_MTA_MirrorVisible(playerid);
+		SetTimerEx("MRP_MTA_MirrorVisible", 3000, false, "i", playerid);
 	#endif
 	return 1;
 }
@@ -4798,7 +4921,18 @@ OnPlayerRegister(playerid, password[])
 	if(IsPlayerConnected(playerid))
 	{
 		if(GetPVarInt(playerid, "IsDownloadingContent") == 1) DeletePVar(playerid, "IsDownloadingContent");
-		MruMySQL_CreateAccount(playerid, password);
+		if(!MruMySQL_CreateAccount(playerid, password))
+		{
+			sendErrorMessage(playerid, "Nie udalo sie utworzyc konta w bazie danych.");
+			return 0;
+		}
+		PlayerInfo[playerid][pUID] = MruMySQL_GetUIDFromName(GetNick(playerid));
+		if(PlayerInfo[playerid][pUID] < 1)
+		{
+			sendErrorMessage(playerid, "Konto zostalo utworzone, ale nie mozna odczytac jego UID.");
+			return 0;
+		}
+		gPlayerAccount[playerid] = 1;
 		OnPlayerLogin(playerid, password);
 	}
 	return 1;

@@ -38,6 +38,7 @@ aresztuj,,,legacy,gamemodes/commands/cmd/aresztuj.pwn,True,pending
 asystem,,,legacy,gamemodes/commands/cmd/asystem.pwn,True,pending
 atakuj,,,legacy,gamemodes/commands/cmd/atakuj.pwn,True,pending
 atuning,,everyone,tune,gamemodes/modules/tune/commands/atuning/atuning_impl.pwn,True,pending
+auto,,,legacy,gamemodes/commands/cmd/car.pwn,True,pending
 autok,,,legacy,gamemodes/commands/cmd/autok.pwn,True,pending
 autoranny,,,legacy,gamemodes/commands/cmd/autoranny.pwn,True,pending
 autorzy,,,legacy,gamemodes/commands/cmd/autorzy.pwn,False,not-loaded-by-v2.9

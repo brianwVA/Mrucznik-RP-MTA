@@ -3605,6 +3605,14 @@ static AntiCheatGetNextDialog(playerid)
 
 public OnGameModeInit()
 {
+	#if defined MRP_MTA_RUNTIME
+		// MTA has its own maintained anti-cheat and authoritative synchronization.
+		// Disable every legacy SA-MP/Nex-AC detector before its initialization so
+		// bridge timing and MTA movement cannot produce false positives or kicks.
+		for(new ac_i; ac_i < sizeof ac_ACAllow; ++ac_i) ac_ACAllow[ac_i] = false;
+		for(new ac_i; ac_i < sizeof ac_NOPAllow; ++ac_i) ac_NOPAllow[ac_i] = false;
+		print("[M-RP MTA] Legacy Nex-AC detectors disabled; using native MTA AC.");
+	#endif
 	#if AC_USE_CONFIG_FILES
 		if(!ac_LoadCfg()) printf(CFG_OPENING_ERROR, AC_CONFIG_FILE);
 		if(!ac_LoadNOPCfg()) printf(CFG_OPENING_ERROR, AC_NOP_CONFIG_FILE);

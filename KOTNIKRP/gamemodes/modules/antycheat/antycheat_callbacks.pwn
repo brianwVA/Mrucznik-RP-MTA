@@ -171,6 +171,9 @@ public OnCheatDetected(playerid, const ip_address[], type, code)
 
 AntiSpawn_Timer()
 {
+	#if defined MRP_MTA_RUNTIME
+		return 1;
+	#else
 	foreach(new playerid : Player)
 	{
 		if(gPlayerLogged[playerid] == 0)
@@ -189,10 +192,14 @@ AntiSpawn_Timer()
 		}
 	}
 	return 1;
+	#endif
 }
 
 hook OnPlayerStateChange(playerid, newstate, oldstate)
 {
+	#if defined MRP_MTA_RUNTIME
+		return 1;
+	#else
     //---------------------------------------------- Anti Cheat ------------------------------------//
 	if(gPlayerLogged[playerid] == 0 && GetPVarInt(playerid, "spawn") != 1)
 	{
@@ -205,6 +212,7 @@ hook OnPlayerStateChange(playerid, newstate, oldstate)
 		}
 	}
 	return 1;
+	#endif
 }
 
 hook OnPlayerDisconnect(playerid, reason)

@@ -1,6 +1,28 @@
 //timery.pwn
 
 //25.06.2014 Aktualizacja timerów (wszystkich) - optymalizacja Kubi
+#if defined MRP_MTA_RUNTIME
+forward MRP_MTA_RefreshStreamer(playerid);
+public MRP_MTA_RefreshStreamer(playerid)
+{
+    if(!IsPlayerConnected(playerid) || gPlayerLogged[playerid] != 1) return 0;
+
+    // Logowanie odbywa sie w VW 1488. Po spawnie przelicz elementy jeszcze raz
+    // dla wlasciwej pozycji, interioru i virtual world gracza.
+    Streamer_ToggleAllItems(playerid, STREAMER_TYPE_OBJECT, 1);
+    Streamer_ToggleAllItems(playerid, STREAMER_TYPE_PICKUP, 1);
+    Streamer_ToggleAllItems(playerid, STREAMER_TYPE_MAP_ICON, 1);
+    Streamer_Update(playerid);
+
+    printf("[M-RP streamer] refresh player=%s objects=%d pickups=%d icons=%d",
+        GetNick(playerid),
+        Streamer_CountVisibleItems(playerid, STREAMER_TYPE_OBJECT),
+        Streamer_CountVisibleItems(playerid, STREAMER_TYPE_PICKUP),
+        Streamer_CountVisibleItems(playerid, STREAMER_TYPE_MAP_ICON));
+    return 1;
+}
+#endif
+
 forward SpecToggle(playerid);
 public SpecToggle(playerid)
 {
@@ -1126,13 +1148,16 @@ public Spectator()
                 else if(!IsPlayerInAnyVehicle(specid) && GetPVarInt(i, "spec-type") != 1) PlayerSpectatePlayer(i, specid, SPECTATE_MODE_NORMAL), SetPVarInt(i, "spec-type", 1);
 			}
 		}
-		if(GetPlayerSpecialAction(i) == SPECIAL_ACTION_USEJETPACK)
-		{
-			KickEx(i);
-		}
+		#if !defined MRP_MTA_RUNTIME
+			if(GetPlayerSpecialAction(i) == SPECIAL_ACTION_USEJETPACK)
+			{
+				KickEx(i);
+			}
+		#endif
 
-        weaponID = GetPlayerWeapon(i);
-        playerState = GetPlayerState(i);
+		#if !defined MRP_MTA_RUNTIME
+		weaponID = GetPlayerWeapon(i);
+		playerState = GetPlayerState(i);
 
 		if(gPlayerLogged[i] == 1 || TutTime[i] >= 1)
 		{
@@ -1706,6 +1731,7 @@ public Spectator()
 		{
 			ResetPlayerWeapons(i);
 		}
+		#endif
 		//CheckPlayersAimAtNPC(i);
 	//}
 	//tu bylo /me wyciaga bron
@@ -3430,3 +3456,73 @@ public InitVehicleParams()
 }
 
 //EOF
+#if defined MRP_MTA_RUNTIME
+forward MRP_MTA_MirrorVisible(playerid);
+public MRP_MTA_MirrorVisible(playerid)
+{
+	if(!IsPlayerConnected(playerid)) return 0;
+
+	Streamer_Update(playerid, STREAMER_TYPE_OBJECT);
+	new items[1500];
+	new count = Streamer_GetAllVisibleItems(playerid, STREAMER_TYPE_OBJECT, items, sizeof(items));
+	for(new index = 0; index < count && index < sizeof(items); index++)
+	{
+		new id = _:items[index];
+		if(id == INVALID_STREAMER_ID) continue;
+
+		new Float:x, Float:y, Float:z, Float:rx, Float:ry, Float:rz, Float:drawdistance;
+		Streamer_GetFloatData(STREAMER_TYPE_OBJECT, id, E_STREAMER_X, x);
+		Streamer_GetFloatData(STREAMER_TYPE_OBJECT, id, E_STREAMER_Y, y);
+		Streamer_GetFloatData(STREAMER_TYPE_OBJECT, id, E_STREAMER_Z, z);
+		Streamer_GetFloatData(STREAMER_TYPE_OBJECT, id, E_STREAMER_R_X, rx);
+		Streamer_GetFloatData(STREAMER_TYPE_OBJECT, id, E_STREAMER_R_Y, ry);
+		Streamer_GetFloatData(STREAMER_TYPE_OBJECT, id, E_STREAMER_R_Z, rz);
+		Streamer_GetFloatData(STREAMER_TYPE_OBJECT, id, E_STREAMER_DRAW_DISTANCE, drawdistance);
+
+		if(MRP_MirrorStreamerObject(
+			id,
+			Streamer_GetIntData(STREAMER_TYPE_OBJECT, id, E_STREAMER_MODEL_ID),
+			x, y, z, rx, ry, rz,
+			Streamer_GetIntData(STREAMER_TYPE_OBJECT, id, E_STREAMER_WORLD_ID),
+			Streamer_GetIntData(STREAMER_TYPE_OBJECT, id, E_STREAMER_INTERIOR_ID),
+			drawdistance))
+		{
+			MRP_MirrorCreatedObjects++;
+		}
+	}
+
+	Streamer_Update(playerid, STREAMER_TYPE_PICKUP);
+	count = Streamer_GetAllVisibleItems(playerid, STREAMER_TYPE_PICKUP, items, sizeof(items));
+	for(new index = 0; index < count && index < sizeof(items); index++)
+	{
+		new id = _:items[index];
+		if(id == INVALID_STREAMER_ID) continue;
+
+		new Float:x, Float:y, Float:z;
+		Streamer_GetFloatData(STREAMER_TYPE_PICKUP, id, E_STREAMER_X, x);
+		Streamer_GetFloatData(STREAMER_TYPE_PICKUP, id, E_STREAMER_Y, y);
+		Streamer_GetFloatData(STREAMER_TYPE_PICKUP, id, E_STREAMER_Z, z);
+
+		if(MRP_MirrorStreamerPickup(
+			id,
+			Streamer_GetIntData(STREAMER_TYPE_PICKUP, id, E_STREAMER_MODEL_ID),
+			Streamer_GetIntData(STREAMER_TYPE_PICKUP, id, E_STREAMER_TYPE),
+			x, y, z,
+			Streamer_GetIntData(STREAMER_TYPE_PICKUP, id, E_STREAMER_WORLD_ID),
+			Streamer_GetIntData(STREAMER_TYPE_PICKUP, id, E_STREAMER_INTERIOR_ID)))
+		{
+			MRP_MirrorCreatedPickups++;
+		}
+	}
+	return 1;
+}
+
+forward MRP_MTA_MirrorStreamerItems();
+public MRP_MTA_MirrorStreamerItems()
+{
+	MRP_MirrorValidObjects = Streamer_CountItems(STREAMER_TYPE_OBJECT);
+	MRP_MirrorValidPickups = Streamer_CountItems(STREAMER_TYPE_PICKUP);
+	printf("[M-RP MTA] Zmaterializowano obiekty streamera=%d/%d pickupy=%d/%d", MRP_MirrorCreatedObjects, MRP_MirrorValidObjects, MRP_MirrorCreatedPickups, MRP_MirrorValidPickups);
+	return 1;
+}
+#endif

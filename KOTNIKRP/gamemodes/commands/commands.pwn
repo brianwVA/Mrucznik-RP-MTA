@@ -725,7 +725,6 @@ static Aliases()
 	Command_AddAltNamed("bus", "businfo");
 
 	//car
-	Command_AddAltNamed("car", "auto");
 	Command_AddAltNamed("car", "pojazd");
 	Command_AddAltNamed("car", "samochod");
 	Command_AddAltNamed("car", "v");

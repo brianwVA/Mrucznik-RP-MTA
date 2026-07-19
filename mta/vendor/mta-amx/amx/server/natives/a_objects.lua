@@ -28,6 +28,112 @@ function CreateObject(amx, model, x, y, z, rX, rY, rZ, drawDistance)
 	return addElem(g_Objects, obj)
 end
 
+g_MRPDynamicObjects = g_MRPDynamicObjects or {}
+
+-- Incognito's SA-MP streamer keeps its item inventory under MTA, but its
+-- player-object emission is not compatible with the AMX module.  Materialize
+-- the inventory as real MTA objects while retaining the streamer's IDs in Pawn.
+function MRP_MirrorStreamerObject(amx, dynamicID, model, x, y, z, rX, rY, rZ, world, interior, drawDistance)
+	if not g_MRPMirrorObjectNativeSeen then
+		g_MRPMirrorObjectNativeSeen = true
+		outputDebugString(string.format('[MTA AMX] First streamer object mirror: id=%s model=%s pos=%.2f,%.2f,%.2f', tostring(dynamicID), tostring(model), tonumber(x) or 0, tonumber(y) or 0, tonumber(z) or 0), 3)
+	end
+	local previous = g_MRPDynamicObjects[dynamicID]
+	if previous and isElement(previous) then
+		if getElementData(previous, 'mrp:sourceObjectModel') == model then
+			setElementPosition(previous, x, y, z)
+			setElementRotation(previous, rX, rY, rZ)
+			setElementDimension(previous, world and world >= 0 and world or 0)
+			setElementInterior(previous, interior and interior >= 0 and interior or 0)
+			return true
+		end
+		destroyElement(previous)
+	end
+
+	local suppressed = mrpIsSuppressedLegacyObject(model, x, y, z)
+	local runtimeModel, customModel
+	if suppressed then
+		runtimeModel, customModel = 1337, MRP_SUPPRESSED_OBJECT_MODEL
+	else
+		runtimeModel, customModel = mrpResolveObjectModel(model)
+	end
+
+	local object = createObject(runtimeModel, x, y, z, rX, rY, rZ)
+	if not object then
+		object = createObject(1337, x, y, z, rX, rY, rZ)
+		if object then
+			setElementAlpha(object, 0)
+			setElementCollisionsEnabled(object, false)
+		end
+	end
+	if not object then return false end
+
+	if customModel then
+		setElementAlpha(object, 0)
+		setElementCollisionsEnabled(object, false)
+	end
+	if not customModel and (not tonumber(model) or model < 321 or model > 18630) then
+		setElementAlpha(object, 0)
+		setElementCollisionsEnabled(object, false)
+	end
+
+	setElementDimension(object, world and world >= 0 and world or 0)
+	setElementInterior(object, interior and interior >= 0 and interior or 0)
+	setElementData(object, 'mrp:dynamicObjectID', dynamicID, false)
+	setElementData(object, 'mrp:sourceObjectModel', model, false)
+	mrpApplyCustomObjectModel(object, customModel)
+	g_MRPDynamicObjects[dynamicID] = object
+	return true
+end
+
+function MRP_DestroyStreamerObject(amx, dynamicID)
+	local object = g_MRPDynamicObjects[dynamicID]
+	if object and isElement(object) then
+		destroyElement(object)
+	end
+	g_MRPDynamicObjects[dynamicID] = nil
+	return true
+end
+
+function MRP_SetStreamerObjectPos(amx, dynamicID, x, y, z)
+	local object = g_MRPDynamicObjects[dynamicID]
+	if not object or not isElement(object) then return false end
+	setElementPosition(object, x, y, z)
+	return true
+end
+
+function MRP_SetStreamerObjectRot(amx, dynamicID, rX, rY, rZ)
+	local object = g_MRPDynamicObjects[dynamicID]
+	if not object or not isElement(object) then return false end
+	setElementRotation(object, rX, rY, rZ)
+	return true
+end
+
+function MRP_MoveStreamerObject(amx, dynamicID, x, y, z, speed, rX, rY, rZ)
+	local object = g_MRPDynamicObjects[dynamicID]
+	if not object or not isElement(object) or speed <= 0.0 then return false end
+	local currentX, currentY, currentZ = getElementPosition(object)
+	local time = getDistanceBetweenPoints3D(x, y, z, currentX, currentY, currentZ) / speed * 1000
+	local currentRX, currentRY, currentRZ = getElementRotation(object)
+	local moveRX = rX - currentRX
+	local moveRY = rY - currentRY
+	local moveRZ = rZ - currentRZ
+	if rX <= -1000.0 then moveRX = 0.0 end
+	if rY <= -1000.0 then moveRY = 0.0 end
+	if rZ <= -1000.0 then moveRZ = 0.0 end
+	moveObject(object, time, x, y, z, moveRX, moveRY, moveRZ)
+	return true
+end
+
+function MRP_SetStreamerObjectMaterial(amx, dynamicID, index, model, txdLib, txdName, color)
+	local object = g_MRPDynamicObjects[dynamicID]
+	if not object or not isElement(object) or index < 0 or index > 15 then return false end
+	local materials = getElementData(object, 'amx:materials') or {}
+	materials[index] = { model = model, txdLib = txdLib, txdName = txdName, color = color }
+	setElementData(object, 'amx:materials', materials, 'broadcast')
+	return true
+end
+
 function AttachObjectToVehicle(amx, object, vehicle, offsetX, offsetY, offsetZ, rX, rY, rZ)
 	return attachElements(object, vehicle, offsetX, offsetY, offsetZ, rX, rY, rZ)
 end
@@ -352,8 +458,13 @@ function EditPlayerObject(amx, player, objID)
 end
 
 function SetObjectMaterial(amx, object, index, model, txdLib, txdName, color)
-	notImplemented('SetObjectMaterial')
-	return false
+	if not object or index < 0 or index > 15 then return false end
+	local materials = getElementData(object, 'amx:materials') or {}
+	materials[index] = { model = model, txdLib = txdLib, txdName = txdName, color = color }
+	-- Synchronize the description so late joiners and streamed-in objects can
+	-- rebuild the equivalent SA-MP material shader client-side.
+	setElementData(object, 'amx:materials', materials, 'broadcast')
+	return true
 end
 
 function SetPlayerObjectMaterial(amx, player, objID, index, model, txdLib, txdName, color)
