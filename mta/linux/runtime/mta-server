@@ -2,6 +2,33 @@
 set -eu
 
 SERVER_DIR=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)
-export LD_LIBRARY_PATH="$SERVER_DIR:$SERVER_DIR/mods/deathmatch${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}"
+RUNTIME_DIR="$SERVER_DIR/runtime/i386"
+RUNTIME_ARCHIVE="$SERVER_DIR/mrp-glibc-bullseye-i386-2300.zip"
+RUNTIME_MARKER="$RUNTIME_DIR/.mrp-bullseye-2.31"
+RESOURCE_DIR="$SERVER_DIR/mods/deathmatch/resources"
+CACHE_DIR="$SERVER_DIR/mods/deathmatch/resource-cache"
 
-exec "$SERVER_DIR/mta-server.bin" --config mtaserver.conf "$@"
+if [ ! -f "$RUNTIME_MARKER" ]; then
+    /usr/bin/unzip -oq "$RUNTIME_ARCHIVE" -d "$SERVER_DIR"
+    : > "$RUNTIME_MARKER"
+fi
+
+# MTA 1.5.9's legacy directory helper is not ABI-safe on the host's modern
+# Linux userland. Mirror every resource directory into both client caches
+# before startup so the engine never needs that helper while copying files.
+/usr/bin/mkdir -p \
+    "$CACHE_DIR/http-client-files" \
+    "$CACHE_DIR/http-client-files-no-client-cache"
+if [ -d "$RESOURCE_DIR" ]; then
+    /usr/bin/find "$RESOURCE_DIR" -type d -print | while IFS= read -r directory; do
+        relative=${directory#"$RESOURCE_DIR"/}
+        [ "$relative" = "$directory" ] && continue
+        /usr/bin/mkdir -p \
+            "$CACHE_DIR/http-client-files/$relative" \
+            "$CACHE_DIR/http-client-files-no-client-cache/$relative"
+    done
+fi
+
+exec "$RUNTIME_DIR/ld-linux.so.2" \
+    --library-path "$RUNTIME_DIR:$SERVER_DIR:$SERVER_DIR/mods/deathmatch" \
+    "$SERVER_DIR/mta-server.bin" --config mtaserver.conf "$@"
