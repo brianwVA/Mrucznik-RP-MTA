@@ -32,6 +32,11 @@ jobs:
           curl --fail --location --retry 3 --output libncursesw.so.5 "$BASE_URL/libncursesw.so.5"
           curl --fail --location --retry 3 --output libtinfo.so.5 "$BASE_URL/libtinfo.so.5"
           curl --fail --location --retry 3 --output libz.so.1 "$BASE_URL/libz.so.1"
+          mkdir -p mods/deathmatch/logs
+          curl --fail --location --retry 3 --output mods/deathmatch/deathmatch.so "$BASE_URL/deathmatch.so"
+          curl --fail --location --retry 3 --output mods/deathmatch/libmta-lua-bridge.so "$BASE_URL/libmta-lua-bridge.so"
+          curl --fail --location --retry 3 --output mods/deathmatch/liblua5.1-mta-x86.so "$BASE_URL/liblua5.1-mta-x86.so"
+          curl --fail --location --retry 3 --output mods/deathmatch/dbconmy.so "$BASE_URL/dbconmy.so"
           chmod +x mta-server
 
       - name: Inspect and execute engine
@@ -43,6 +48,10 @@ jobs:
           readelf -d net.so | grep -E 'NEEDED|RPATH|RUNPATH'
           readelf -V libncursesw.so.5 | grep 'Name: GLIBC_' | sort -u
           ldd core.so
+          ldd net.so
+          ldd mods/deathmatch/deathmatch.so
+          ldd mods/deathmatch/libmta-lua-bridge.so
+          ldd mods/deathmatch/liblua5.1-mta-x86.so
           set +e
           version_output=$(./mta-server --version 2>&1)
           version_status=$?
@@ -53,7 +62,6 @@ jobs:
 
       - name: Smoke-test complete engine
         run: |
-          mkdir -p mods/deathmatch/logs
           cat > mods/deathmatch/mtaserver.conf <<'EOF'
           <config>
             <servername>MRP x86 CI smoke test</servername>
@@ -77,6 +85,7 @@ jobs:
           grep -F 'Server started and is ready to accept connections!' startup.log
 
       - name: Save patched runtime
+        if: always()
         uses: actions/upload-artifact@v4
         with:
           name: runtime-patchelf
