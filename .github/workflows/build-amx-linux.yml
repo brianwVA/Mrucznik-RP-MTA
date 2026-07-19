@@ -49,7 +49,7 @@ jobs:
               apt-get install --yes gcc-multilib g++-multilib make
               make -C ./mta/vendor/mta-amx/amx-deps/src/Build config=release_x86 -j"$(nproc)"
               mkdir -p ./artifacts/amx-linux-x86
-              king_so=$(find ./mta/vendor/mta-amx/amx-deps/src -type f -name king.so -print -quit)
+              king_so=$(find ./mta/vendor/mta-amx/amx-deps/src -type f \( -name king.so -o -name libking.so \) -print -quit)
               test -n "$king_so"
               install -m 0755 "$king_so" ./artifacts/amx-linux-x86/king.so
             '
