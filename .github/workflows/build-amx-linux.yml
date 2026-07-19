@@ -22,6 +22,21 @@ jobs:
           submodules: false
           lfs: false
 
+      - name: Generate AMX module makefiles
+        run: |
+          work_dir=$(mktemp -d)
+          curl --fail --location --silent --show-error \
+            --output "$work_dir/premake.tar.gz" \
+            https://github.com/premake/premake-core/releases/download/v5.0.0-beta8/premake-5.0.0-beta8-linux.tar.gz
+          echo "63edd3e7461eebdd45b500a3c7e8ad4e7a67d68f230010f9a97cbb71b4ec59c8  $work_dir/premake.tar.gz" \
+            | sha256sum --check --status
+          tar -xzf "$work_dir/premake.tar.gz" -C "$work_dir"
+          chmod 0755 "$work_dir/premake5"
+          (
+            cd ./mta/vendor/mta-amx/amx-deps/src
+            "$work_dir/premake5" --file=premake5.lua gmake2
+          )
+
       - name: Build patched AMX module for the legacy runtime
         run: |
           docker run --rm \
@@ -31,8 +46,12 @@ jobs:
             bash -ceu '
               dpkg --add-architecture i386
               apt-get update
-              apt-get install --yes ca-certificates curl file gcc-multilib g++-multilib make
-              ./mta/build-amx-linux.sh ./artifacts/amx-linux-x86
+              apt-get install --yes gcc-multilib g++-multilib make
+              make -C ./mta/vendor/mta-amx/amx-deps/src/Build config=release_x86 -j"$(nproc)"
+              mkdir -p ./artifacts/amx-linux-x86
+              king_so=$(find ./mta/vendor/mta-amx/amx-deps/src -type f -name king.so -print -quit)
+              test -n "$king_so"
+              install -m 0755 "$king_so" ./artifacts/amx-linux-x86/king.so
             '
 
       - name: Build exact ColAndreas fork
