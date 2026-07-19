@@ -17,22 +17,19 @@ jobs:
           submodules: true
           lfs: false
 
-      - name: Install pinned Pawn compiler
+      - name: Install pinned sampctl
         run: |
           curl --fail --location --silent --show-error \
-            https://github.com/pawn-lang/compiler/releases/download/v3.10.10/pawnc-3.10.10-linux.tar.gz \
-            --output "$RUNNER_TEMP/pawnc.tar.gz"
-          mkdir -p "$RUNNER_TEMP/pawnc"
-          tar -xzf "$RUNNER_TEMP/pawnc.tar.gz" -C "$RUNNER_TEMP/pawnc" --strip-components=1
+            https://github.com/Southclaws/sampctl/releases/download/1.14.0/sampctl_1.14.0_linux_amd64.tar.gz \
+            --output "$RUNNER_TEMP/sampctl.tar.gz"
+          echo "62b5cd18f1969168f147b3e9595c300b902622b4a547b5dbd1b99c49dab8544d  $RUNNER_TEMP/sampctl.tar.gz" | sha256sum --check
+          tar -xzf "$RUNNER_TEMP/sampctl.tar.gz" -C "$RUNNER_TEMP"
 
       - name: Compile Mrucznik RP with Vice City disabled
-        working-directory: gamemodes
         run: |
-          export LD_LIBRARY_PATH="$RUNNER_TEMP/pawnc/lib:${LD_LIBRARY_PATH:-}"
-          "$RUNNER_TEMP/pawnc/bin/pawncc" \
-            -i../include -d3 "-;+" "-(+" "-Z+" \
-            -o"$RUNNER_TEMP/Mrucznik-RP-no-vicecity.amx" \
-            Mrucznik-RP.pwn
+          "$RUNNER_TEMP/sampctl" package ensure
+          "$RUNNER_TEMP/sampctl" package build
+          mv gamemodes/Mrucznik-RP.amx "$RUNNER_TEMP/Mrucznik-RP-no-vicecity.amx"
           test -s "$RUNNER_TEMP/Mrucznik-RP-no-vicecity.amx"
 
       - uses: actions/upload-artifact@v4
