@@ -1,0 +1,44 @@
+name: Build patched MTA AMX module Linux x86
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - "mta/vendor/mta-amx/amx-deps/src/**"
+      - "mta/build-amx-linux.sh"
+      - ".github/workflows/build-amx-linux.yml"
+  pull_request:
+    paths:
+      - "mta/vendor/mta-amx/amx-deps/src/**"
+      - "mta/build-amx-linux.sh"
+      - ".github/workflows/build-amx-linux.yml"
+
+jobs:
+  build:
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: false
+          lfs: false
+
+      - name: Install Linux x86 toolchain
+        run: |
+          sudo dpkg --add-architecture i386
+          sudo apt-get update
+          sudo apt-get install --yes gcc-multilib g++-multilib libc6-dev-i386
+
+      - name: Build patched AMX module
+        run: ./mta/build-amx-linux.sh ./artifacts/amx-linux-x86
+
+      - name: Verify artifact architecture
+        run: |
+          file ./artifacts/amx-linux-x86/king.so | grep -F "ELF 32-bit"
+          readelf -h ./artifacts/amx-linux-x86/king.so
+          ldd ./artifacts/amx-linux-x86/king.so || true
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: king-mrucznik-mta-amx-linux-x86
+          path: artifacts/amx-linux-x86/king.so
+          if-no-files-found: error
