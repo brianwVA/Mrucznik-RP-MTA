@@ -1,0 +1,130 @@
+{
+  "schema_version": 1,
+  "platform": "linux-x86",
+  "plugins": [
+    {
+      "name": "crashdetect",
+      "version": "4.22",
+      "url": "https://github.com/Y-Less/samp-plugin-crashdetect/releases/download/v4.22/crashdetect-4.22-linux.tar.gz",
+      "sha256": "4234ac5ffa54f2eaa322ab2bb8b6096042fe65d5574ae15e3431df15b709f2ef",
+      "archive": "tar.gz",
+      "load_name": "crashdetect",
+      "files": {
+        "crashdetect-4.22-linux/crashdetect.so": "plugins/crashdetect.so"
+      }
+    },
+    {
+      "name": "sscanf",
+      "version": "2.8.3",
+      "url": "https://github.com/Y-Less/sscanf/releases/download/v2.8.3/sscanf-2.8.3-linux.tar.gz",
+      "sha256": "9abda8765adbbb5414b85bdc67e13752edd476de3fc70f32853fdd19cfe1d339",
+      "archive": "tar.gz",
+      "load_name": "sscanf",
+      "files": {
+        "plugins/sscanf.so": "plugins/sscanf.so"
+      }
+    },
+    {
+      "name": "streamer",
+      "version": "2.9.4",
+      "url": "https://github.com/samp-incognito/samp-streamer-plugin/releases/download/v2.9.4/samp-streamer-plugin-2.9.4.zip",
+      "sha256": "803fce40b730e2723007e9ffd5a2c8985a8b50a3bee3df3692b42f134bd999d5",
+      "archive": "zip",
+      "load_name": "streamer",
+      "files": {
+        "plugins/streamer.so": "plugins/streamer.so"
+      }
+    },
+    {
+      "name": "libRegEx",
+      "version": "0.2.4",
+      "url": "https://github.com/MrucznikRolePlay/Regular-Expressions-Plugin-sampctl/releases/download/v0.2.4/regex-v0.2-linux.tar.gz",
+      "sha256": "1edcdac2b5de3b495d7bae0b86332e31b58b30fdfbfacd02f9640e3fb95ddd12",
+      "archive": "tar.gz",
+      "load_name": "libRegEx_static",
+      "files": {
+        "linuxregexv0.2/linuxstatic/plugins/libRegEx_static.so": "plugins/libRegEx_static.so"
+      }
+    },
+    {
+      "name": "Whirlpool",
+      "version": "1.0.0",
+      "url": "https://github.com/Southclaws/samp-whirlpool/releases/download/v1.0.0/Whirlpool.so",
+      "sha256": "e47f5bd9524869c76716905c6b6910349b47c04d890a8f6df3ea407b47d832fd",
+      "archive": "file",
+      "load_name": "Whirlpool",
+      "files": {
+        ".": "plugins/Whirlpool.so"
+      }
+    },
+    {
+      "name": "log-plugin",
+      "version": "0.5",
+      "url": "https://github.com/maddinat0r/samp-log/releases/download/v0.5/log-plugin-v0.5-Linux.tar.gz",
+      "sha256": "26102df2cbd5f96d20879931a30ab6fe3ad7725ceebf645a6333d327f07c7a36",
+      "archive": "tar.gz",
+      "load_name": "log-plugin",
+      "files": {
+        "log-plugin-v0.5-Linux/plugins/log-plugin.so": "plugins/log-plugin.so",
+        "log-plugin-v0.5-Linux/log-core2.so": "plugins/log-core2.so"
+      }
+    },
+    {
+      "name": "pawn-memory",
+      "version": "2.0.1",
+      "url": "https://github.com/BigETI/pawn-memory/releases/download/2.0.1/pawn-memory-linux-x86.zip",
+      "sha256": "88bffc057a0a66f1b2874176dff648bfad216ec7f31634ff893c3e031f13a4f3",
+      "archive": "zip",
+      "load_name": "pawn-memory",
+      "files": {
+        "plugins/pawn-memory.so": "plugins/pawn-memory.so"
+      }
+    },
+    {
+      "name": "requests",
+      "version": "0.10.0",
+      "url": "https://github.com/Southclaws/pawn-requests/releases/download/0.10.0/pawn-requests-linux.zip",
+      "sha256": "eb1eabc4cd0a3a62f9c671b05255ac73812717e0cfdffe1cf2cd04f1cf488fae",
+      "archive": "zip",
+      "load_name": "requests",
+      "files": {
+        "plugins/requests.so": "plugins/requests.so"
+      }
+    },
+    {
+      "name": "discord-connector",
+      "version": "0.3.6-pre",
+      "url": "https://github.com/maddinat0r/samp-discord-connector/releases/download/v0.3.6-pre/discord-connector-v0.3.6-pre-Linux.tar.gz",
+      "sha256": "9671718a412b88db64b4daf001707873836d1c0bd301968dd66c4f61229b697e",
+      "archive": "tar.gz",
+      "load_name": "discord-connector",
+      "files": {
+        "plugins/discord-connector.so": "plugins/discord-connector.so",
+        "log-core2.so": "plugins/log-core2.so"
+      }
+    },
+    {
+      "name": "profiler",
+      "version": "2.15.4",
+      "url": "https://github.com/MrucznikRolePlay/samp-plugin-profiler/releases/download/v2.15.4/profiler-2.15.4-linux.tar.gz",
+      "sha256": "89f55b110bee66eecb9af99dc91f6fb8013df18d68e69016dd47f4b8f8a2b6c2",
+      "archive": "tar.gz",
+      "load_name": "profiler",
+      "files": {
+        "profiler-2.15.4-linux/profiler.so": "plugins/profiler.so"
+      }
+    }
+  ],
+  "built_plugins": [
+    {
+      "name": "ColAndreas",
+      "version": "1.5.1-mrucznik",
+      "load_name": "ColAndreas_static",
+      "input_parameter": "ColAndreasSo",
+      "destination": "plugins/ColAndreas_static.so"
+    }
+  ],
+  "allowed_overwrites": {
+    "plugins/log-core2.so": "discord-connector"
+  }
+}
