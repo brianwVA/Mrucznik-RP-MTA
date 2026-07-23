@@ -131,7 +131,7 @@ MTAEXPORT bool InitModule(ILuaModuleManager10 *pManager, char *szModuleName, cha
 	} else {
 		const std::string message =
 			"scriptfiles directory doesn't exist at: " + scriptfilespath.string() + "\n";
-		pModuleManager->ErrorPrintf(message.c_str());
+		fputs(message.c_str(), stderr);
 	}
 
 	return true;

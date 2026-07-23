@@ -21,7 +21,7 @@ static cell AMX_NATIVE_CALL n_samp(AMX *amx, const cell *params, const char* fnN
 	lua_remove(mainVM, -2);
 	if(lua_isnil(mainVM, -1)) {
 		const std::string message = "No implementation for function " + std::string(fnName);
-		pModuleManager->ErrorPrintf(message.c_str());
+		fputs(message.c_str(), stderr);
 		lua_settop(mainVM, mainTop);
 		return 0;
 	}
@@ -55,7 +55,7 @@ static cell AMX_NATIVE_CALL n_samp(AMX *amx, const cell *params, const char* fnN
 		const char* luaError = lua_tostring(mainVM, -1);
 		const std::string message =
 			std::to_string(static_cast<long>(amx->cip)) + " " + (luaError ? luaError : "(unknown Lua error)") + "\n";
-		pModuleManager->ErrorPrintf(message.c_str());
+		fputs(message.c_str(), stderr);
 		lua_pop(mainVM, 1);
 		return 0;
 	} else {
@@ -256,7 +256,7 @@ static cell AMX_NATIVE_CALL n_lua(AMX *amx, const cell *params) {
 	if(lua_isnil(mainVM, -1)) {
 		const std::string message =
 			"callLua: " + loadedAMXs[amx].resourceName + " does not have any registered Lua functions\n";
-		pModuleManager->ErrorPrintf(message.c_str());
+		fputs(message.c_str(), stderr);
 		lua_settop(mainVM, mainTop);
 		return 0;
 	}
@@ -267,7 +267,7 @@ static cell AMX_NATIVE_CALL n_lua(AMX *amx, const cell *params) {
 		const char* functionName = lua_tostring(mainVM, -1);
 		const std::string message =
 			"callLua: no Lua function named " + std::string(functionName ? functionName : "(unknown)") + " is registered\n";
-		pModuleManager->ErrorPrintf(message.c_str());
+		fputs(message.c_str(), stderr);
 		lua_settop(mainVM, mainTop);
 		return 0;
 	}
@@ -355,7 +355,7 @@ static cell AMX_NATIVE_CALL n_lua(AMX *amx, const cell *params) {
 		const char* luaError = lua_tostring(resVM, -1);
 		const std::string message =
 			std::to_string(static_cast<long>(amx->cip)) + " " + (luaError ? luaError : "(unknown Lua error)") + "\n";
-		pModuleManager->ErrorPrintf(message.c_str());
+		fputs(message.c_str(), stderr);
 		lua_pop(resVM, 1);
 		return 0;
 	}
@@ -500,7 +500,7 @@ void initSAMPSyscalls() {
 			const std::string message =
 				"syscall count exceeded MAX_SAMP_NATIVES (" + std::to_string(MAX_SAMP_NATIVES) +
 				") definition - Recompile with higher value";
-			pModuleManager->ErrorPrintf(message.c_str());
+			fputs(message.c_str(), stderr);
 			break;
 		}
 

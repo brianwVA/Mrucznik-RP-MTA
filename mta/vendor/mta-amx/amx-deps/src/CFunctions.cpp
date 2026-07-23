@@ -95,7 +95,7 @@ int CFunctions::amxLoadPlugin(lua_State *luaVM) {
 		if(!getProcAddr(hPlugin, *fnName)) {
 			const std::string message =
 				"Plugin \"" + std::string(pluginName) + "\" does not export required function " + *fnName + "\n";
-			pModuleManager->ErrorPrintf(message.c_str());
+			fputs(message.c_str(), stderr);
 			hasAllReqFns = false;
 		}
 	}
@@ -182,39 +182,29 @@ int CFunctions::amxLoad(lua_State *luaVM) {
 	}
 
 	// Register SA-MP and plugin natives
-	pModuleManager->ErrorPrintf("AMX init: program loaded\n");
 	amx_CoreInit(amx);
-	pModuleManager->ErrorPrintf("AMX init: core natives registered\n");
 	amx_ConsoleInit(amx);
-	pModuleManager->ErrorPrintf("AMX init: console natives registered\n");
 	amx_FloatInit(amx);
-	pModuleManager->ErrorPrintf("AMX init: float natives registered\n");
 	amx_StringInit(amx);
-	pModuleManager->ErrorPrintf("AMX init: string natives registered\n");
 	amx_TimeInit(amx);
-	pModuleManager->ErrorPrintf("AMX init: time natives registered\n");
 	amx_FileInit(amx);
-	pModuleManager->ErrorPrintf("AMX init: file natives registered\n");
 	err = amx_SAMPInit(amx);
-	pModuleManager->ErrorPrintf("AMX init: SA-MP natives registered\n");
 	for (const auto& plugin : loadedPlugins) {
 		AmxLoad_t* pfnAmxLoad = plugin.second->AmxLoad;
 		if (pfnAmxLoad) {
 			const std::string loadMessage = "Calling AmxLoad for plugin '" + plugin.first + "'.\n";
-			pModuleManager->DebugPrintf(luaVM, loadMessage.c_str());
+			fputs(loadMessage.c_str(), stdout);
 			err = pfnAmxLoad(amx);
 			const std::string resultMessage =
 				"AmxLoad for plugin '" + plugin.first + "' returned " + std::to_string(err) + ".\n";
-			pModuleManager->DebugPrintf(luaVM, resultMessage.c_str());
+			fputs(resultMessage.c_str(), stdout);
 		}
 	}
-	pModuleManager->ErrorPrintf("AMX init: plugin natives registered\n");
 	err = amx_Register(amx, NULL, 0);
-	pModuleManager->ErrorPrintf("AMX init: native resolution complete\n");
 
 	if(err != AMX_ERR_NONE) {
 		const std::string missingHeader = amxNameCopy + " can't be loaded due to missing functions:\n";
-		pModuleManager->ErrorPrintf(missingHeader.c_str());
+		fputs(missingHeader.c_str(), stderr);
 		AMX_HEADER *header = (AMX_HEADER *)amx->base;
 		if (header->defsize > 0 && header->libraries >= header->natives) {
 			const unsigned nativeCount = NUMENTRIES(header, natives, libraries);
@@ -223,7 +213,7 @@ int CFunctions::amxLoad(lua_State *luaVM) {
 					AMX_FUNCSTUB *func = GETENTRY(header, natives, index);
 					if (!func->address) {
 						const std::string missingNative = "  " + std::string(GETENTRYNAME(header, func)) + "\n";
-						pModuleManager->ErrorPrintf(missingNative.c_str());
+						fputs(missingNative.c_str(), stderr);
 					}
 				}
 			}
@@ -259,7 +249,7 @@ int CFunctions::amxLoad(lua_State *luaVM) {
 int CFunctions::amxCall(lua_State *luaVM) {
 	AMX *amx = (AMX *)lua_touserdata(luaVM, 1);
 	if(!amx) {
-		pModuleManager->ErrorPrintf("amxCall: invalid amx parameter\n");
+		fputs("amxCall: invalid amx parameter\n", stderr);
 		lua_pushboolean(luaVM, 0);
 		return 1;
 	}
@@ -400,7 +390,7 @@ int CFunctions::amxWriteString(lua_State *luaVM) {
 int CFunctions::amxUnload(lua_State *luaVM) {
 	AMX *amx = (AMX *)lua_touserdata(luaVM, 1);
 	if(!amx) {
-		pModuleManager->ErrorPrintf("amxUnload: invalid amx parameter\n");
+		fputs("amxUnload: invalid amx parameter\n", stderr);
 		lua_pushboolean(luaVM, 0);
 		return 1;
 	}
