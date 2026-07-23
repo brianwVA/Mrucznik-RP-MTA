@@ -22,6 +22,14 @@ jobs:
           submodules: false
           lfs: false
 
+      - name: Fetch pinned streamer source
+        run: |
+          git init --quiet ./build/streamer
+          git -C ./build/streamer fetch --quiet --depth 1 \
+            https://github.com/samp-incognito/samp-streamer-plugin.git \
+            6dad0a121d60613b25bd1ec9aa6ca38701da3270
+          git -C ./build/streamer checkout --quiet FETCH_HEAD
+
       - name: Generate AMX module makefiles
         run: |
           work_dir=$(mktemp -d)
@@ -46,12 +54,26 @@ jobs:
             bash -ceu '
               dpkg --add-architecture i386
               apt-get update
-              apt-get install --yes gcc-multilib g++-multilib make
+              apt-get install --yes gcc-multilib g++-multilib make libboost-system-dev:i386 libeigen3-dev
               make -C ./mta/vendor/mta-amx/amx-deps/src/Build config=release_x86 -j"$(nproc)"
               mkdir -p ./artifacts/amx-linux-x86
               king_so=$(find ./mta/vendor/mta-amx/amx-deps/src -type f \( -name king.so -o -name libking.so \) -print -quit)
               test -n "$king_so"
               install -m 0755 "$king_so" ./artifacts/amx-linux-x86/king.so
+
+              mapfile -t streamer_cpp < <(find ./build/streamer/src -name "*.cpp" -type f | sort)
+              g++ -m32 -std=c++11 -O2 -fPIC -fno-strict-aliasing -shared \
+                -DBOOST_CHRONO_HEADER_ONLY -DSAMPGDK_AMALGAMATION -DSAMPGDK_CPP_WRAPPERS \
+                -I./build/streamer/src \
+                -I./mta/vendor/colandreas/src/SDK \
+                -I./mta/vendor/colandreas/src/SDK/amx \
+                -I/usr/include/eigen3 \
+                "${streamer_cpp[@]}" \
+                ./build/streamer/src/sampgdk.c \
+                ./mta/vendor/colandreas/src/SDK/amxplugin.cpp \
+                -lboost_system -pthread -lrt \
+                -o ./artifacts/amx-linux-x86/streamer.so
+              strip ./artifacts/amx-linux-x86/streamer.so
             '
 
       - name: Build exact ColAndreas fork
@@ -69,6 +91,7 @@ jobs:
       - name: Verify artifact architecture
         run: |
           file ./artifacts/amx-linux-x86/king.so | grep -F "ELF 32-bit"
+          file ./artifacts/amx-linux-x86/streamer.so | grep -F "ELF 32-bit"
           if [ -f ./artifacts/amx-linux-x86/ColAndreas_static.so ]; then
             file ./artifacts/amx-linux-x86/ColAndreas_static.so | grep -F "ELF 32-bit"
             ldd ./artifacts/amx-linux-x86/ColAndreas_static.so || true
@@ -83,11 +106,13 @@ jobs:
             exit 1
           fi
           ldd ./artifacts/amx-linux-x86/king.so || true
+          ldd ./artifacts/amx-linux-x86/streamer.so || true
 
       - uses: actions/upload-artifact@v4
         with:
           name: king-mrucznik-mta-amx-linux-x86
           path: |
             artifacts/amx-linux-x86/king.so
+            artifacts/amx-linux-x86/streamer.so
             artifacts/amx-linux-x86/ColAndreas_static.so
           if-no-files-found: error
