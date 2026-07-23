@@ -1687,9 +1687,24 @@ int AMXAPI amx_Register(AMX *amx, const AMX_NATIVE_INFO *list, int number)
   FILE *trace;
 
   hdr=(AMX_HEADER *)amx->base;
+  trace=fopen("mods/deathmatch/resources/amx/amx-runtime-trace.log","a");
+  if (trace!=NULL) {
+    if (hdr!=NULL) {
+      fprintf(trace,
+              "REGISTER raw magic=%u defsize=%d natives=%ld libraries=%ld size=%ld\n",
+              (unsigned)hdr->magic,(int)hdr->defsize,(long)hdr->natives,
+              (long)hdr->libraries,(long)hdr->size);
+    } else {
+      fputs("REGISTER raw header=NULL\n",trace);
+    }
+    fclose(trace);
+  }
   assert(hdr!=NULL);
   assert(hdr->magic==AMX_MAGIC);
   assert(hdr->natives<=hdr->libraries);
+  if (hdr->defsize<=0 || hdr->natives<0 || hdr->libraries<hdr->natives
+      || hdr->libraries>hdr->size)
+    return AMX_ERR_FORMAT;
   numnatives=NUMENTRIES(hdr,natives,libraries);
   trace=fopen("mods/deathmatch/resources/amx/amx-runtime-trace.log","a");
   if (trace!=NULL) {
