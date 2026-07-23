@@ -173,12 +173,14 @@ int CFunctions::amxLoad(lua_State *luaVM) {
 
 	// Load .amx
 	AMX *amx = new AMX;
+	pModuleManager->ErrorPrintf("AMX stage: aux_LoadProgram('%s')\n", amxNameCopy.c_str());
 	int err = aux_LoadProgram(amx, amxPath, NULL);
 	if(err != AMX_ERR_NONE) {
 		delete amx;
 		lua_pushboolean(luaVM, 0);
 		return 1;
 	}
+	pModuleManager->ErrorPrintf("AMX stage: program loaded\n");
 
 	AMX_HEADER *header = (AMX_HEADER *)amx->base;
 	const unsigned nativeCount = NUMENTRIES(header, natives, libraries);
@@ -186,6 +188,7 @@ int CFunctions::amxLoad(lua_State *luaVM) {
 	nativeNames.reserve(nativeCount);
 	for (unsigned index = 0; index < nativeCount; ++index)
 		nativeNames.emplace_back(GETENTRYNAME(header, GETENTRY(header, natives, index)));
+	pModuleManager->ErrorPrintf("AMX stage: copied %u native names\n", nativeCount);
 
 	// Register SA-MP and plugin natives
 	amx_CoreInit(amx);
@@ -195,12 +198,13 @@ int CFunctions::amxLoad(lua_State *luaVM) {
 	amx_TimeInit(amx);
 	amx_FileInit(amx);
 	err = amx_SAMPInit(amx);
+	pModuleManager->ErrorPrintf("AMX stage: core natives registered\n");
 	for (const auto& plugin : loadedPlugins) {
 		AmxLoad_t* pfnAmxLoad = plugin.second->AmxLoad;
 		if (pfnAmxLoad) {
-			pModuleManager->DebugPrintf(luaVM, "Calling AmxLoad for plugin '%s'.\n", plugin.first.c_str());
+			pModuleManager->ErrorPrintf("Calling AmxLoad for plugin '%s'.\n", plugin.first.c_str());
 			err = pfnAmxLoad(amx);
-			pModuleManager->DebugPrintf(luaVM, "AmxLoad for plugin '%s' returned %d.\n", plugin.first.c_str(), err);
+			pModuleManager->ErrorPrintf("AmxLoad for plugin '%s' returned %d.\n", plugin.first.c_str(), err);
 		}
 	}
 	err = amx_Register(amx, NULL, 0);
