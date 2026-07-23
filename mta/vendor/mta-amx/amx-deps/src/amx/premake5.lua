@@ -14,8 +14,7 @@ project "amx"
 	kind "StaticLib"
 
 	defines {
-		-- From original project, but causes crashes?
-		-- "AMX_DONT_RELOCATE"
+		"AMX_DONT_RELOCATE",
 		"FLOATPOINT",
 	}
 
