@@ -187,9 +187,9 @@ int CFunctions::amxLoad(lua_State *luaVM) {
 	for (const auto& plugin : loadedPlugins) {
 		AmxLoad_t* pfnAmxLoad = plugin.second->AmxLoad;
 		if (pfnAmxLoad) {
-			pModuleManager->DebugPrintf("Calling AmxLoad for plugin '%s'.\n", plugin.first.c_str());
+			pModuleManager->DebugPrintf(luaVM, "Calling AmxLoad for plugin '%s'.\n", plugin.first.c_str());
 			err = pfnAmxLoad(amx);
-			pModuleManager->DebugPrintf("AmxLoad for plugin '%s' returned %d.\n", plugin.first.c_str(), err);
+			pModuleManager->DebugPrintf(luaVM, "AmxLoad for plugin '%s' returned %d.\n", plugin.first.c_str(), err);
 		}
 	}
 
