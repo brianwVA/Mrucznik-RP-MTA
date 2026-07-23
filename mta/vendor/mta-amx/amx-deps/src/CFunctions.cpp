@@ -19,7 +19,6 @@
 #include "StdInc.h"
 #include <filesystem>
 #include <string>
-#include <vector>
 
 using namespace std;
 namespace fs = std::filesystem;
@@ -182,14 +181,6 @@ int CFunctions::amxLoad(lua_State *luaVM) {
 	}
 	pModuleManager->ErrorPrintf("AMX stage: program loaded\n");
 
-	AMX_HEADER *header = (AMX_HEADER *)amx->base;
-	const unsigned nativeCount = NUMENTRIES(header, natives, libraries);
-	std::vector<std::string> nativeNames;
-	nativeNames.reserve(nativeCount);
-	for (unsigned index = 0; index < nativeCount; ++index)
-		nativeNames.emplace_back(GETENTRYNAME(header, GETENTRY(header, natives, index)));
-	pModuleManager->ErrorPrintf("AMX stage: copied %u native names\n", nativeCount);
-
 	// Register SA-MP and plugin natives
 	amx_CoreInit(amx);
 	amx_ConsoleInit(amx);
@@ -211,10 +202,16 @@ int CFunctions::amxLoad(lua_State *luaVM) {
 
 	if(err != AMX_ERR_NONE) {
 		pModuleManager->ErrorPrintf("%s can't be loaded due to missing functions:\n", amxNameCopy.c_str());
-		for (unsigned index = 0; index < nativeCount; ++index) {
-			AMX_FUNCSTUB *func = GETENTRY(header, natives, index);
-			if (!func->address)
-				pModuleManager->ErrorPrintf("  %s\n", nativeNames[index].c_str());
+		AMX_HEADER *header = (AMX_HEADER *)amx->base;
+		if (header->defsize > 0 && header->libraries >= header->natives) {
+			const unsigned nativeCount = NUMENTRIES(header, natives, libraries);
+			if (nativeCount <= 4096) {
+				for (unsigned index = 0; index < nativeCount; ++index) {
+					AMX_FUNCSTUB *func = GETENTRY(header, natives, index);
+					if (!func->address)
+						pModuleManager->ErrorPrintf("  %s\n", GETENTRYNAME(header, func));
+				}
+			}
 		}
 		aux_FreeProgram(amx);
 		delete amx;
