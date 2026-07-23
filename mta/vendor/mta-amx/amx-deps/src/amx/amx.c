@@ -1684,19 +1684,39 @@ int AMXAPI amx_Register(AMX *amx, const AMX_NATIVE_INFO *list, int number)
   AMX_HEADER *hdr;
   int i,numnatives,err;
   AMX_NATIVE funcptr;
+  FILE *trace;
 
   hdr=(AMX_HEADER *)amx->base;
   assert(hdr!=NULL);
   assert(hdr->magic==AMX_MAGIC);
   assert(hdr->natives<=hdr->libraries);
   numnatives=NUMENTRIES(hdr,natives,libraries);
+  trace=fopen("mods/deathmatch/resources/amx/amx-runtime-trace.log","a");
+  if (trace!=NULL) {
+    fprintf(trace,
+            "REGISTER header defsize=%d natives=%ld libraries=%ld count=%d list=%p number=%d\n",
+            (int)hdr->defsize,(long)hdr->natives,(long)hdr->libraries,
+            numnatives,(const void *)list,number);
+    fclose(trace);
+  }
 
   err=AMX_ERR_NONE;
   func=GETENTRY(hdr,natives,0);
   for (i=0; i<numnatives; i++) {
     if (func->address==0) {
+      const char *native_name=GETENTRYNAME(hdr,func);
+      trace=fopen("mods/deathmatch/resources/amx/amx-runtime-trace.log","a");
+      if (trace!=NULL) {
+        fprintf(trace,"REGISTER before find index=%d name=%.80s\n",i,native_name);
+        fclose(trace);
+      }
       /* this function is not yet located */
-      funcptr=(list!=NULL) ? findfunction(GETENTRYNAME(hdr,func),list,number) : NULL;
+      funcptr=(list!=NULL) ? findfunction(native_name,list,number) : NULL;
+      trace=fopen("mods/deathmatch/resources/amx/amx-runtime-trace.log","a");
+      if (trace!=NULL) {
+        fprintf(trace,"REGISTER after find index=%d found=%d\n",i,funcptr!=NULL);
+        fclose(trace);
+      }
       if (funcptr!=NULL)
         func->address=(ucell)funcptr;
       else
