@@ -66,13 +66,13 @@ solution "king"
 		filter {"system:linux", "platforms:x86" }
 			linkoptions {
 				"-Wl,-rpath=mods/deathmatch",
-				"-Wl,-Bsymbolic-functions",
+				"-Wl,-Bsymbolic",
 			}
 
 		filter {"system:linux", "platforms:x64" }
 			linkoptions {
 				"-Wl,-rpath=x64",
-				"-Wl,-Bsymbolic-functions",
+				"-Wl,-Bsymbolic",
 			}
 
 		filter "system:windows"
