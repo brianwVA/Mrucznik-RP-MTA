@@ -192,6 +192,7 @@ int CFunctions::amxLoad(lua_State *luaVM) {
 			pModuleManager->DebugPrintf(luaVM, "AmxLoad for plugin '%s' returned %d.\n", plugin.first.c_str(), err);
 		}
 	}
+	err = amx_Register(amx, NULL, 0);
 
 	if(err != AMX_ERR_NONE) {
 		pModuleManager->ErrorPrintf("%s can't be loaded due to missing functions:\n", amxName);
