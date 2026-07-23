@@ -64,10 +64,16 @@ solution "king"
 			files { "linux/getch.c" }
 
 		filter {"system:linux", "platforms:x86" }
-			linkoptions { "-Wl,-rpath=mods/deathmatch" }
+			linkoptions {
+				"-Wl,-rpath=mods/deathmatch",
+				"-Wl,-Bsymbolic-functions",
+			}
 
 		filter {"system:linux", "platforms:x64" }
-			linkoptions { "-Wl,-rpath=x64" }
+			linkoptions {
+				"-Wl,-rpath=x64",
+				"-Wl,-Bsymbolic-functions",
+			}
 
 		filter "system:windows"
 			links { "lua5.1", "sqlite3", "Ws2_32" }
