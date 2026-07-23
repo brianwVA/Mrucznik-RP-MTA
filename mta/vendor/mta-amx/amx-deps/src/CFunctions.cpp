@@ -209,6 +209,11 @@ int CFunctions::amxLoad(lua_State *luaVM) {
 	err = amx_SAMPInit(amx);
 	traceAMXStage("OK amx_SAMPInit " + amxNameCopy);
 	for (const auto& plugin : loadedPlugins) {
+		// The legacy libRegEx plugin keeps process-wide state and deadlocks when
+		// its AmxLoad entry point is called for a second Pawn program. The
+		// filterscripts do not import its natives; only the main gamemode does.
+		if (plugin.first == "libRegEx_static" && amxNameCopy != "Mrucznik-RP.amx")
+			continue;
 		AmxLoad_t* pfnAmxLoad = plugin.second->AmxLoad;
 		if (pfnAmxLoad) {
 			traceAMXStage("CALL plugin " + plugin.first + " " + amxNameCopy);
