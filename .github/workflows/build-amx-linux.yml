@@ -29,11 +29,6 @@ jobs:
             https://github.com/samp-incognito/samp-streamer-plugin.git \
             6dad0a121d60613b25bd1ec9aa6ca38701da3270
           git -C ./build/streamer checkout --quiet FETCH_HEAD
-          git init --quiet ./build/streamer/lib/samp-plugin-sdk
-          git -C ./build/streamer/lib/samp-plugin-sdk fetch --quiet --depth 1 \
-            https://github.com/Zeex/samp-plugin-sdk.git \
-            15ffdfcb1faad2c77e57a64ccdd8147a9a7b92f5
-          git -C ./build/streamer/lib/samp-plugin-sdk checkout --quiet FETCH_HEAD
 
       - name: Generate AMX module makefiles
         run: |
@@ -68,15 +63,15 @@ jobs:
 
               mapfile -t streamer_cpp < <(find ./build/streamer/src -name "*.cpp" -type f | sort)
               g++ -m32 -std=c++11 -O2 -fPIC -fno-strict-aliasing -shared \
-                -DLINUX -include cstddef \
+                -DLINUX -DSUPPORTS_PROCESS_TICK=0x20000 -include cstddef \
                 -DBOOST_CHRONO_HEADER_ONLY -DSAMPGDK_AMALGAMATION -DSAMPGDK_CPP_WRAPPERS \
                 -I./build/streamer/src \
-                -I./build/streamer/lib/samp-plugin-sdk \
-                -I./build/streamer/lib/samp-plugin-sdk/amx \
+                -I./mta/vendor/colandreas/src/SDK \
+                -I./mta/vendor/colandreas/src/SDK/amx \
                 -I/usr/include/eigen3 \
                 "${streamer_cpp[@]}" \
                 ./build/streamer/src/sampgdk.c \
-                ./build/streamer/lib/samp-plugin-sdk/amxplugin.cpp \
+                ./mta/vendor/colandreas/src/SDK/amxplugin.cpp \
                 -lboost_system -pthread -lrt \
                 -o ./artifacts/amx-linux-x86/streamer.so
               strip ./artifacts/amx-linux-x86/streamer.so
