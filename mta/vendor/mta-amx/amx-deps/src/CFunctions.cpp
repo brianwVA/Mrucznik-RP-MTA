@@ -182,13 +182,21 @@ int CFunctions::amxLoad(lua_State *luaVM) {
 	}
 
 	// Register SA-MP and plugin natives
+	pModuleManager->ErrorPrintf("AMX init: program loaded\n");
 	amx_CoreInit(amx);
+	pModuleManager->ErrorPrintf("AMX init: core natives registered\n");
 	amx_ConsoleInit(amx);
+	pModuleManager->ErrorPrintf("AMX init: console natives registered\n");
 	amx_FloatInit(amx);
+	pModuleManager->ErrorPrintf("AMX init: float natives registered\n");
 	amx_StringInit(amx);
+	pModuleManager->ErrorPrintf("AMX init: string natives registered\n");
 	amx_TimeInit(amx);
+	pModuleManager->ErrorPrintf("AMX init: time natives registered\n");
 	amx_FileInit(amx);
+	pModuleManager->ErrorPrintf("AMX init: file natives registered\n");
 	err = amx_SAMPInit(amx);
+	pModuleManager->ErrorPrintf("AMX init: SA-MP natives registered\n");
 	for (const auto& plugin : loadedPlugins) {
 		AmxLoad_t* pfnAmxLoad = plugin.second->AmxLoad;
 		if (pfnAmxLoad) {
@@ -200,7 +208,9 @@ int CFunctions::amxLoad(lua_State *luaVM) {
 			pModuleManager->DebugPrintf(luaVM, resultMessage.c_str());
 		}
 	}
+	pModuleManager->ErrorPrintf("AMX init: plugin natives registered\n");
 	err = amx_Register(amx, NULL, 0);
+	pModuleManager->ErrorPrintf("AMX init: native resolution complete\n");
 
 	if(err != AMX_ERR_NONE) {
 		const std::string missingHeader = amxNameCopy + " can't be loaded due to missing functions:\n";
