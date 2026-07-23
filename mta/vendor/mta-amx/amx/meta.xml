@@ -59,7 +59,7 @@
     </aclrequest>
 
     <settings>
-        <setting name="filterscripts" value="" />
-        <setting name="plugins" value="" />
+        <setting name="filterscripts" value="animy realtime sobeitblock SAN_extPSq" />
+        <setting name="plugins" value="sscanf streamer libRegEx_static Whirlpool ColAndreas_static" />
     </settings>
 </meta>
