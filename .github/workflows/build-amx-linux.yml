@@ -1,4 +1,5 @@
 name: Build patched MTA AMX module Linux x86
+# Produces ServerProject-compatible artifacts against the Bullseye i386 ABI.
 
 on:
   workflow_dispatch:
