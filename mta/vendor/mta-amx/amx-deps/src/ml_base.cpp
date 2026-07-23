@@ -129,7 +129,9 @@ MTAEXPORT bool InitModule(ILuaModuleManager10 *pManager, char *szModuleName, cha
 	if (exists(scriptfilespath)) {
 		setenv_portable("AMXFILE", scriptfilespath.string().c_str(), 0);
 	} else {
-		pModuleManager->ErrorPrintf("scriptfiles directory doesn't exist at: %s\n", scriptfilespath.string());
+		const std::string message =
+			"scriptfiles directory doesn't exist at: " + scriptfilespath.string() + "\n";
+		pModuleManager->ErrorPrintf(message.c_str());
 	}
 
 	return true;

@@ -20,7 +20,8 @@ static cell AMX_NATIVE_CALL n_samp(AMX *amx, const cell *params, const char* fnN
 	lua_getfield(mainVM, -1, fnName);
 	lua_remove(mainVM, -2);
 	if(lua_isnil(mainVM, -1)) {
-		pModuleManager->ErrorPrintf("No implementation for function %s", fnName);
+		const std::string message = "No implementation for function " + std::string(fnName);
+		pModuleManager->ErrorPrintf(message.c_str());
 		lua_settop(mainVM, mainTop);
 		return 0;
 	}
@@ -51,7 +52,10 @@ static cell AMX_NATIVE_CALL n_samp(AMX *amx, const cell *params, const char* fnN
 	}
 
 	if(lua_pcall(mainVM, 3 + numParams, 1, 0) != 0) {
-		pModuleManager->ErrorPrintf("%lX %s\n", amx->cip, lua_tostring(mainVM, -1));
+		const char* luaError = lua_tostring(mainVM, -1);
+		const std::string message =
+			std::to_string(static_cast<long>(amx->cip)) + " " + (luaError ? luaError : "(unknown Lua error)") + "\n";
+		pModuleManager->ErrorPrintf(message.c_str());
 		lua_pop(mainVM, 1);
 		return 0;
 	} else {
@@ -250,7 +254,9 @@ static cell AMX_NATIVE_CALL n_lua(AMX *amx, const cell *params) {
 	lua_getfield(mainVM, -1, loadedAMXs[amx].resourceName.c_str());
 	lua_getfield(mainVM, -1, "luaprototypes");
 	if(lua_isnil(mainVM, -1)) {
-		pModuleManager->ErrorPrintf("callLua: %s does not have any registered Lua functions\n", loadedAMXs[amx].resourceName.c_str());
+		const std::string message =
+			"callLua: " + loadedAMXs[amx].resourceName + " does not have any registered Lua functions\n";
+		pModuleManager->ErrorPrintf(message.c_str());
 		lua_settop(mainVM, mainTop);
 		return 0;
 	}
@@ -258,7 +264,10 @@ static cell AMX_NATIVE_CALL n_lua(AMX *amx, const cell *params) {
 	lua_gettable(mainVM, -2);
 	if(lua_isnil(mainVM, -1)) {
 		lua_pushamxstring(mainVM, amx, params[1]);
-		pModuleManager->ErrorPrintf("callLua: no Lua function named %s is registered\n", lua_tostring(mainVM, -1));
+		const char* functionName = lua_tostring(mainVM, -1);
+		const std::string message =
+			"callLua: no Lua function named " + std::string(functionName ? functionName : "(unknown)") + " is registered\n";
+		pModuleManager->ErrorPrintf(message.c_str());
 		lua_settop(mainVM, mainTop);
 		return 0;
 	}
@@ -343,7 +352,10 @@ static cell AMX_NATIVE_CALL n_lua(AMX *amx, const cell *params) {
 	lua_setglobal(resVM, "_");
 	if(!success) {
 		lua_settop(mainVM, mainTop);
-		pModuleManager->ErrorPrintf("%lX %s\n", amx->cip, lua_tostring(resVM, -1));
+		const char* luaError = lua_tostring(resVM, -1);
+		const std::string message =
+			std::to_string(static_cast<long>(amx->cip)) + " " + (luaError ? luaError : "(unknown Lua error)") + "\n";
+		pModuleManager->ErrorPrintf(message.c_str());
 		lua_pop(resVM, 1);
 		return 0;
 	}
@@ -485,7 +497,10 @@ void initSAMPSyscalls() {
 	lua_pushnil(mainVM);
 	while(lua_next(mainVM, -2)) {
 		if (i >= MAX_SAMP_NATIVES) {
-			pModuleManager->ErrorPrintf("syscall count exceeded MAX_SAMP_NATIVES (%d) definition - Recompile with higher value", MAX_SAMP_NATIVES);
+			const std::string message =
+				"syscall count exceeded MAX_SAMP_NATIVES (" + std::to_string(MAX_SAMP_NATIVES) +
+				") definition - Recompile with higher value";
+			pModuleManager->ErrorPrintf(message.c_str());
 			break;
 		}
 

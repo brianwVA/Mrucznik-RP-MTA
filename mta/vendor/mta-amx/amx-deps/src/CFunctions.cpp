@@ -93,7 +93,9 @@ int CFunctions::amxLoadPlugin(lua_State *luaVM) {
 	bool hasAllReqFns = true;
 	for(const char **fnName = requiredExports; *fnName; fnName++) {
 		if(!getProcAddr(hPlugin, *fnName)) {
-			pModuleManager->ErrorPrintf("Plugin \"%s\" does not export required function %s\n", pluginName, *fnName);
+			const std::string message =
+				"Plugin \"" + std::string(pluginName) + "\" does not export required function " + *fnName + "\n";
+			pModuleManager->ErrorPrintf(message.c_str());
 			hasAllReqFns = false;
 		}
 	}
