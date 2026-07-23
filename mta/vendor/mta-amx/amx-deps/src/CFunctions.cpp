@@ -172,58 +172,44 @@ int CFunctions::amxLoad(lua_State *luaVM) {
 
 	// Load .amx
 	AMX *amx = new AMX;
-	pModuleManager->ErrorPrintf("AMX stage: aux_LoadProgram('%s')\n", amxNameCopy.c_str());
 	int err = aux_LoadProgram(amx, amxPath, NULL);
 	if(err != AMX_ERR_NONE) {
 		delete amx;
 		lua_pushboolean(luaVM, 0);
 		return 1;
 	}
-	pModuleManager->ErrorPrintf("AMX stage: program loaded\n");
-	AMX_HEADER *loadedHeader = (AMX_HEADER *)amx->base;
-	pModuleManager->ErrorPrintf(
-		"AMX header: defsize=%d natives=%d libraries=%d\n",
-		(int)loadedHeader->defsize,
-		(int)loadedHeader->natives,
-		(int)loadedHeader->libraries
-	);
 
 	// Register SA-MP and plugin natives
-	pModuleManager->ErrorPrintf("AMX stage: amx_CoreInit\n");
 	amx_CoreInit(amx);
-	pModuleManager->ErrorPrintf("AMX stage: amx_ConsoleInit\n");
 	amx_ConsoleInit(amx);
-	pModuleManager->ErrorPrintf("AMX stage: amx_FloatInit\n");
 	amx_FloatInit(amx);
-	pModuleManager->ErrorPrintf("AMX stage: amx_StringInit\n");
 	amx_StringInit(amx);
-	pModuleManager->ErrorPrintf("AMX stage: amx_TimeInit\n");
 	amx_TimeInit(amx);
-	pModuleManager->ErrorPrintf("AMX stage: amx_FileInit\n");
 	amx_FileInit(amx);
-	pModuleManager->ErrorPrintf("AMX stage: amx_SAMPInit\n");
 	err = amx_SAMPInit(amx);
-	pModuleManager->ErrorPrintf("AMX stage: core natives registered\n");
 	for (const auto& plugin : loadedPlugins) {
 		AmxLoad_t* pfnAmxLoad = plugin.second->AmxLoad;
 		if (pfnAmxLoad) {
-			pModuleManager->ErrorPrintf("Calling AmxLoad for plugin '%s'.\n", plugin.first.c_str());
+			pModuleManager->DebugPrintf(luaVM, "Calling AmxLoad for plugin '%s'.\n", plugin.first.c_str());
 			err = pfnAmxLoad(amx);
-			pModuleManager->ErrorPrintf("AmxLoad for plugin '%s' returned %d.\n", plugin.first.c_str(), err);
+			pModuleManager->DebugPrintf(luaVM, "AmxLoad for plugin '%s' returned %d.\n", plugin.first.c_str(), err);
 		}
 	}
 	err = amx_Register(amx, NULL, 0);
 
 	if(err != AMX_ERR_NONE) {
-		pModuleManager->ErrorPrintf("%s can't be loaded due to missing functions:\n", amxNameCopy.c_str());
+		const std::string missingHeader = amxNameCopy + " can't be loaded due to missing functions:\n";
+		pModuleManager->ErrorPrintf(missingHeader.c_str());
 		AMX_HEADER *header = (AMX_HEADER *)amx->base;
 		if (header->defsize > 0 && header->libraries >= header->natives) {
 			const unsigned nativeCount = NUMENTRIES(header, natives, libraries);
 			if (nativeCount <= 4096) {
 				for (unsigned index = 0; index < nativeCount; ++index) {
 					AMX_FUNCSTUB *func = GETENTRY(header, natives, index);
-					if (!func->address)
-						pModuleManager->ErrorPrintf("  %s\n", GETENTRYNAME(header, func));
+					if (!func->address) {
+						const std::string missingNative = "  " + std::string(GETENTRYNAME(header, func)) + "\n";
+						pModuleManager->ErrorPrintf(missingNative.c_str());
+					}
 				}
 			}
 		}
