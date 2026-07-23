@@ -63,6 +63,7 @@ jobs:
 
               mapfile -t streamer_cpp < <(find ./build/streamer/src -name "*.cpp" -type f | sort)
               g++ -m32 -std=c++11 -O2 -fPIC -fno-strict-aliasing -shared \
+                -DLINUX -include cstddef \
                 -DBOOST_CHRONO_HEADER_ONLY -DSAMPGDK_AMALGAMATION -DSAMPGDK_CPP_WRAPPERS \
                 -I./build/streamer/src \
                 -I./mta/vendor/colandreas/src/SDK \
