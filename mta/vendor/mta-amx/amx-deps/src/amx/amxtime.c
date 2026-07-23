@@ -450,7 +450,7 @@ static int AMXAPI amx_TimeIdle(AMX *amx, int AMXAPI Exec(AMX *, cell *, int))
 #if defined __cplusplus
   extern "C"
 #endif
-const AMX_NATIVE_INFO time_Natives[] = {
+static const AMX_NATIVE_INFO time_Natives[] = {
   { "gettime",      n_gettime },
   { "settime",      n_settime },
   { "getdate",      n_getdate },

@@ -1230,7 +1230,7 @@ static cell AMX_NATIVE_CALL n_deletecfg(AMX *amx, const cell *params)
 #if defined __cplusplus
   extern "C"
 #endif
-AMX_NATIVE_INFO file_Natives[] = {
+static AMX_NATIVE_INFO file_Natives[] = {
   { "fopen",        n_fopen },
   { "fclose",       n_fclose },
   { "fwrite",       n_fwrite },

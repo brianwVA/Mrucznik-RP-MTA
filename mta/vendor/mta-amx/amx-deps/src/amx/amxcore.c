@@ -467,7 +467,7 @@ static cell AMX_NATIVE_CALL core_random(AMX *amx,const cell *params)
 #if defined __cplusplus
   extern "C"
 #endif
-const AMX_NATIVE_INFO core_Natives[] = {
+static const AMX_NATIVE_INFO core_Natives[] = {
   { "numargs",       numargs },
   { "getarg",        getarg },
   { "setarg",        setarg },

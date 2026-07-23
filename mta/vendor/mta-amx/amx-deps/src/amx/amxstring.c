@@ -1060,7 +1060,7 @@ static cell AMX_NATIVE_CALL n_strformat(AMX *amx,const cell *params)
 #if defined __cplusplus
   extern "C"
 #endif
-const AMX_NATIVE_INFO string_Natives[] = {
+static const AMX_NATIVE_INFO string_Natives[] = {
   { "ispacked",  n_ispacked },
   { "memcpy",    n_memcpy },
   { "strcat",    n_strcat },

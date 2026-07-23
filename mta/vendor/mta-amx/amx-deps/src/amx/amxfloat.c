@@ -352,7 +352,7 @@ static cell AMX_NATIVE_CALL n_floatint(AMX *amx,const cell *params)
 #if defined __cplusplus
   extern "C"
 #endif
-const AMX_NATIVE_INFO float_Natives[] = {
+static const AMX_NATIVE_INFO float_Natives[] = {
   { "float",       n_float      },
   { "strfloat",    n_strfloat   },
   { "floatmul",    n_floatmul   },
