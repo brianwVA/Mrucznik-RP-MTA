@@ -18,6 +18,8 @@
 
 #include "StdInc.h"
 #include <filesystem>
+#include <string>
+#include <vector>
 
 using namespace std;
 namespace fs = std::filesystem;
@@ -149,6 +151,8 @@ int CFunctions::amxLoad(lua_State *luaVM) {
 		lua_pushboolean(luaVM, 0);
 		return 1;
 	}
+	const std::string resNameCopy(resName);
+	const std::string amxNameCopy(amxName);
 
 	lua_State* theirLuaVM = pModuleManager->GetResourceFromName(resName);
 	if (theirLuaVM == nullptr) {
@@ -176,6 +180,13 @@ int CFunctions::amxLoad(lua_State *luaVM) {
 		return 1;
 	}
 
+	AMX_HEADER *header = (AMX_HEADER *)amx->base;
+	const unsigned nativeCount = NUMENTRIES(header, natives, libraries);
+	std::vector<std::string> nativeNames;
+	nativeNames.reserve(nativeCount);
+	for (unsigned index = 0; index < nativeCount; ++index)
+		nativeNames.emplace_back(GETENTRYNAME(header, GETENTRY(header, natives, index)));
+
 	// Register SA-MP and plugin natives
 	amx_CoreInit(amx);
 	amx_ConsoleInit(amx);
@@ -195,13 +206,11 @@ int CFunctions::amxLoad(lua_State *luaVM) {
 	err = amx_Register(amx, NULL, 0);
 
 	if(err != AMX_ERR_NONE) {
-		pModuleManager->ErrorPrintf("%s can't be loaded due to missing functions:\n", amxName);
-		AMX_HEADER *header = (AMX_HEADER *)amx->base;
-		const unsigned nativeCount = NUMENTRIES(header, natives, libraries);
+		pModuleManager->ErrorPrintf("%s can't be loaded due to missing functions:\n", amxNameCopy.c_str());
 		for (unsigned index = 0; index < nativeCount; ++index) {
 			AMX_FUNCSTUB *func = GETENTRY(header, natives, index);
 			if (!func->address)
-				pModuleManager->ErrorPrintf("  %s\n", GETENTRYNAME(header, func));
+				pModuleManager->ErrorPrintf("  %s\n", nativeNames[index].c_str());
 		}
 		aux_FreeProgram(amx);
 		delete amx;
@@ -212,7 +221,7 @@ int CFunctions::amxLoad(lua_State *luaVM) {
 	// Save info about the amx
 	AMXPROPS props;
 	props.filePath = amxPath;
-	props.resourceName = resName;
+	props.resourceName = resNameCopy;
 	props.resourceVM = theirLuaVM;
 
 	lua_register(props.resourceVM, "pawn", CFunctions::pawn);
