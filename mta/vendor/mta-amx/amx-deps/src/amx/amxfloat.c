@@ -375,7 +375,7 @@ const AMX_NATIVE_INFO float_Natives[] = {
 
 int AMXEXPORT AMXAPI amx_FloatInit(AMX *amx)
 {
-  return amx_Register(amx,float_Natives,-1);
+  return amx_Register(amx,float_Natives,(int)arraysize(float_Natives)-1);
 }
 
 int AMXEXPORT AMXAPI amx_FloatCleanup(AMX *amx)

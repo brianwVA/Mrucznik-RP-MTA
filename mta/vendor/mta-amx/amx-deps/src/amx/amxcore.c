@@ -493,7 +493,7 @@ const AMX_NATIVE_INFO core_Natives[] = {
 
 int AMXEXPORT AMXAPI amx_CoreInit(AMX *amx)
 {
-  return amx_Register(amx, core_Natives, -1);
+  return amx_Register(amx, core_Natives, (int)arraysize(core_Natives)-1);
 }
 
 int AMXEXPORT AMXAPI amx_CoreCleanup(AMX *amx)

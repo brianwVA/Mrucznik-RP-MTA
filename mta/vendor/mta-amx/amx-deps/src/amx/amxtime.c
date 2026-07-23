@@ -475,7 +475,7 @@ int AMXEXPORT AMXAPI amx_TimeInit(AMX *amx)
     } /* if */
   #endif
 
-  return amx_Register(amx, time_Natives, -1);
+  return amx_Register(amx, time_Natives, (int)arraysize(time_Natives)-1);
 }
 
 int AMXEXPORT AMXAPI amx_TimeCleanup(AMX *amx)

@@ -1085,7 +1085,7 @@ const AMX_NATIVE_INFO string_Natives[] = {
 
 int AMXEXPORT AMXAPI amx_StringInit(AMX *amx)
 {
-  return amx_Register(amx, string_Natives, -1);
+  return amx_Register(amx, string_Natives, (int)arraysize(string_Natives)-1);
 }
 
 int AMXEXPORT AMXAPI amx_StringCleanup(AMX *amx)

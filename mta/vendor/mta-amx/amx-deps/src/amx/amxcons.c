@@ -1518,7 +1518,7 @@ int AMXEXPORT AMXAPI amx_ConsoleInit(AMX *amx)
     } /* if */
   #endif
 
-  return amx_Register(amx, console_Natives, -1);
+  return amx_Register(amx, console_Natives, (int)arraysize(console_Natives)-1);
 }
 
 int AMXEXPORT AMXAPI amx_ConsoleCleanup(AMX *amx)

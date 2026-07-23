@@ -1261,7 +1261,7 @@ AMX_NATIVE_INFO file_Natives[] = {
 
 int AMXEXPORT AMXAPI amx_FileInit(AMX *amx)
 {
-  return amx_Register(amx, file_Natives, -1);
+  return amx_Register(amx, file_Natives, (int)arraysize(file_Natives)-1);
 }
 
 int AMXEXPORT AMXAPI amx_FileCleanup(AMX *amx)
