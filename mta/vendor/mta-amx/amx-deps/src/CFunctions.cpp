@@ -65,6 +65,15 @@ vector<ProcessTick_t*> vecPfnProcessTick;
 
 AMX *suspendedAMX = NULL;
 
+static void traceAMXStage(const std::string& message) {
+	FILE* trace = fopen("mods/deathmatch/resources/amx/amx-runtime-trace.log", "a");
+	if (!trace)
+		return;
+	fputs(message.c_str(), trace);
+	fputc('\n', trace);
+	fclose(trace);
+}
+
 // amxLoadPlugin(pluginName)
 int CFunctions::amxLoadPlugin(lua_State *luaVM) {
 	static const char *requiredExports[] = { "Load", "Supports", 0 };
@@ -154,6 +163,7 @@ int CFunctions::amxLoad(lua_State *luaVM) {
 	}
 	const std::string resNameCopy(resName);
 	const std::string amxNameCopy(amxName);
+	traceAMXStage("START " + amxNameCopy);
 
 	lua_State* theirLuaVM = pModuleManager->GetResourceFromName(resName);
 	if (theirLuaVM == nullptr) {
@@ -176,31 +186,43 @@ int CFunctions::amxLoad(lua_State *luaVM) {
 	AMX *amx = new AMX;
 	int err = aux_LoadProgram(amx, amxPath, NULL);
 	if(err != AMX_ERR_NONE) {
+		traceAMXStage("FAILED aux_LoadProgram " + amxNameCopy);
 		delete amx;
 		lua_pushboolean(luaVM, 0);
 		return 1;
 	}
+	traceAMXStage("OK aux_LoadProgram " + amxNameCopy);
 
 	// Register SA-MP and plugin natives
 	amx_CoreInit(amx);
+	traceAMXStage("OK amx_CoreInit " + amxNameCopy);
 	amx_ConsoleInit(amx);
+	traceAMXStage("OK amx_ConsoleInit " + amxNameCopy);
 	amx_FloatInit(amx);
+	traceAMXStage("OK amx_FloatInit " + amxNameCopy);
 	amx_StringInit(amx);
+	traceAMXStage("OK amx_StringInit " + amxNameCopy);
 	amx_TimeInit(amx);
+	traceAMXStage("OK amx_TimeInit " + amxNameCopy);
 	amx_FileInit(amx);
+	traceAMXStage("OK amx_FileInit " + amxNameCopy);
 	err = amx_SAMPInit(amx);
+	traceAMXStage("OK amx_SAMPInit " + amxNameCopy);
 	for (const auto& plugin : loadedPlugins) {
 		AmxLoad_t* pfnAmxLoad = plugin.second->AmxLoad;
 		if (pfnAmxLoad) {
+			traceAMXStage("CALL plugin " + plugin.first + " " + amxNameCopy);
 			const std::string loadMessage = "Calling AmxLoad for plugin '" + plugin.first + "'.\n";
 			fputs(loadMessage.c_str(), stdout);
 			err = pfnAmxLoad(amx);
+			traceAMXStage("OK plugin " + plugin.first + " " + amxNameCopy);
 			const std::string resultMessage =
 				"AmxLoad for plugin '" + plugin.first + "' returned " + std::to_string(err) + ".\n";
 			fputs(resultMessage.c_str(), stdout);
 		}
 	}
 	err = amx_Register(amx, NULL, 0);
+	traceAMXStage("DONE amx_Register " + amxNameCopy + " result " + std::to_string(err));
 
 	if(err != AMX_ERR_NONE) {
 		const std::string missingHeader = amxNameCopy + " can't be loaded due to missing functions:\n";
