@@ -1667,14 +1667,33 @@ int AMXAPI amx_SetUserData(AMX *amx, long tag, void *ptr)
 #endif /* AMX_XXXUSERDATA */
 
 #if defined AMX_REGISTER || defined AMX_EXEC || defined AMX_INIT
-static AMX_NATIVE findfunction(const char *name, const AMX_NATIVE_INFO *list, int number)
+static int bounded_name_equal(const char *name, size_t name_limit,
+                              const char *candidate)
+{
+  size_t i;
+
+  if (name==NULL || candidate==NULL)
+    return 0;
+  for (i=0; i<name_limit && i<128; i++) {
+    unsigned char left=(unsigned char)name[i];
+    unsigned char right=(unsigned char)candidate[i];
+    if (left!=right)
+      return 0;
+    if (left=='\0')
+      return 1;
+  }
+  return 0;
+}
+
+static AMX_NATIVE findfunction(const char *name, size_t name_limit,
+                               const AMX_NATIVE_INFO *list, int number)
 {
   int i,limit;
 
   assert(list!=NULL);
   limit=(number<0 || number>4096) ? 4096 : number;
   for (i=0; i<limit && list[i].name!=NULL; i++)
-    if (strcmp(name,list[i].name)==0)
+    if (bounded_name_equal(name,name_limit,list[i].name))
       return list[i].func;
   return NULL;
 }
@@ -1703,15 +1722,31 @@ int AMXAPI amx_Register(AMX *amx, const AMX_NATIVE_INFO *list, int number)
   for (i=0; i<numnatives; i++) {
     if (func->address==0) {
       const char *native_name;
+      size_t native_name_limit;
       if (USENAMETABLE(hdr)) {
         uint32_t nameofs=((AMX_FUNCSTUBNT*)func)->nameofs;
-        if (nameofs>=(uint32_t)hdr->size
-            || memchr((unsigned char *)hdr+nameofs,'\0',(size_t)hdr->size-nameofs)==NULL)
+        size_t name_index;
+        if (nameofs>=(uint32_t)hdr->size)
+          return AMX_ERR_FORMAT;
+        native_name_limit=(size_t)hdr->size-nameofs;
+        for (name_index=0;
+             name_index<native_name_limit
+               && ((unsigned char *)hdr)[nameofs+name_index]!='\0';
+             name_index++)
+          /* scan within the loaded AMX image */;
+        if (name_index>=native_name_limit)
+          return AMX_ERR_FORMAT;
+        native_name_limit=name_index+1;
+      } else {
+        native_name_limit=sizeof(func->name);
+        if (func->name[sizeof(func->name)-1]!='\0')
           return AMX_ERR_FORMAT;
       }
       native_name=GETENTRYNAME(hdr,func);
       /* this function is not yet located */
-      funcptr=(list!=NULL) ? findfunction(native_name,list,number) : NULL;
+      funcptr=(list!=NULL)
+                ? findfunction(native_name,native_name_limit,list,number)
+                : NULL;
       if (funcptr!=NULL)
         func->address=(ucell)funcptr;
       else
