@@ -7,11 +7,13 @@ on:
     paths:
       - "mta/vendor/mta-amx/amx-deps/src/**"
       - "mta/build-amx-linux.sh"
+      - "mta/patches/streamer-mta-amx.patch"
       - ".github/workflows/build-amx-linux.yml"
   pull_request:
     paths:
       - "mta/vendor/mta-amx/amx-deps/src/**"
       - "mta/build-amx-linux.sh"
+      - "mta/patches/streamer-mta-amx.patch"
       - ".github/workflows/build-amx-linux.yml"
 
 jobs:
@@ -30,6 +32,8 @@ jobs:
             https://github.com/samp-incognito/samp-streamer-plugin.git \
             6dad0a121d60613b25bd1ec9aa6ca38701da3270
           git -C ./build/streamer checkout --quiet FETCH_HEAD
+          git -C ./build/streamer apply \
+            "$GITHUB_WORKSPACE/mta/patches/streamer-mta-amx.patch"
 
       - name: Generate AMX module makefiles
         run: |
