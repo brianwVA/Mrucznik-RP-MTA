@@ -1928,7 +1928,19 @@ int AMXAPI amx_PushString(AMX *amx, cell *amx_addr, cell **phys_addr, const char
      * supports this too.
      */
 
-#define NEXT(cip)       goto **(void **)cip++
+#define NEXT(cip)                                                       \
+  do {                                                                  \
+    exec_steps++;                                                       \
+    if (exec_steps % 1000000UL == 0 && exec_steps <= 200000000UL) {    \
+      FILE *trace = fopen("mods/deathmatch/resources/amx/amx-opcode-trace.log", "a"); \
+      if (trace != NULL) {                                              \
+        fprintf(trace, "STEP %lu CIP %ld\\n", exec_steps,              \
+                (long)((unsigned char *)(cip) - code));                 \
+        fclose(trace);                                                  \
+      }                                                                 \
+    }                                                                   \
+    goto **(void **)(cip)++;                                            \
+  } while (0)
 
 int AMXAPI amx_Exec(AMX *amx, cell *retval, int index)
 {
@@ -1981,6 +1993,7 @@ static const void * const amx_opcodelist[] = {
   cell offs,val;
   ucell codesize;
   int num,i;
+  unsigned long exec_steps=0;
 
   /* HACK: return label table (for amx_BrowseRelocate) if amx structure
    * has the AMX_FLAG_BROWSE flag set.
