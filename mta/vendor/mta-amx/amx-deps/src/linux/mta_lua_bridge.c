@@ -1,6 +1,8 @@
 #define _GNU_SOURCE
 #include <dlfcn.h>
+#include <link.h>
 #include <stddef.h>
+#include <string.h>
 
 /*
  * MTA 1.6 links its Lua runtime statically into deathmatch.so and loads
@@ -25,6 +27,21 @@ static const char* const g_names[] = {
 static void* g_functions[sizeof(g_names) / sizeof(g_names[0])];
 static void* g_deathmatch;
 
+static int find_deathmatch(struct dl_phdr_info* info, size_t size, void* data)
+{
+    (void)size;
+    (void)data;
+
+    const char* path = info->dlpi_name;
+    const char* file = strrchr(path, '/');
+    file = file ? file + 1 : path;
+    if (strcmp(file, "deathmatch.so") != 0)
+        return 0;
+
+    g_deathmatch = dlopen(path, RTLD_LAZY | RTLD_NOLOAD);
+    return g_deathmatch ? 1 : 0;
+}
+
 __attribute__((visibility("hidden")))
 void* mrp_resolve_mta_lua(unsigned int index)
 {
@@ -35,6 +52,8 @@ void* mrp_resolve_mta_lua(unsigned int index)
         g_deathmatch = dlopen("mods/deathmatch/deathmatch.so", RTLD_LAZY | RTLD_NOLOAD);
         if (!g_deathmatch)
             g_deathmatch = dlopen("deathmatch.so", RTLD_LAZY | RTLD_NOLOAD);
+        if (!g_deathmatch)
+            dl_iterate_phdr(find_deathmatch, NULL);
     }
 
     if (!g_deathmatch)
