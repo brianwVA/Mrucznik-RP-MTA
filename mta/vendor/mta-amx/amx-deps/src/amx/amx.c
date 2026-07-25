@@ -533,7 +533,7 @@ static int amx_BrowseRelocate(AMX *amx)
   long codesize;
   OPCODE op;
   int sysreq_flg;
-  #if defined __GNUC__ || defined __ICC || defined ASM32 || defined JIT
+  #if ((defined __GNUC__ || defined __ICC) && !defined AMX_DONT_RELOCATE) || defined ASM32 || defined JIT
     cell *opcode_list;
   #endif
   #if defined JIT
@@ -562,7 +562,7 @@ static int amx_BrowseRelocate(AMX *amx)
 
   amx->sysreq_d=0;      /* preset */
   sysreq_flg=0;
-  #if defined __GNUC__ || defined __ICC || defined ASM32 || defined JIT
+  #if ((defined __GNUC__ || defined __ICC) && !defined AMX_DONT_RELOCATE) || defined ASM32 || defined JIT
     amx_Exec(amx, (cell*)(void*)&opcode_list, 0);
   #endif
 
@@ -573,7 +573,7 @@ static int amx_BrowseRelocate(AMX *amx)
       amx->flags &= ~AMX_FLAG_BROWSE;
       return AMX_ERR_INVINSTR;
     } /* if */
-    #if defined __GNUC__ || defined __ICC || defined ASM32 || defined JIT
+    #if ((defined __GNUC__ || defined __ICC) && !defined AMX_DONT_RELOCATE) || defined ASM32 || defined JIT
       /* relocate opcode (only works if the size of an opcode is at least
        * as big as the size of a pointer (jump address); so basically we
        * rely on the opcode and a pointer being 32-bit
