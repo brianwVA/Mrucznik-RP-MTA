@@ -1931,7 +1931,8 @@ int AMXAPI amx_PushString(AMX *amx, cell *amx_addr, cell **phys_addr, const char
 #define NEXT(cip)                                                       \
   do {                                                                  \
     exec_steps++;                                                       \
-    if (exec_steps % 1000000UL == 0 && exec_steps <= 200000000UL) {    \
+    if (exec_steps <= 20000UL ||                                      \
+        (exec_steps % 1000UL == 0 && exec_steps <= 1000000UL)) {      \
       FILE *trace = fopen("mods/deathmatch/resources/amx/amx-opcode-trace.log", "a"); \
       if (trace != NULL) {                                              \
         fprintf(trace, "STEP %lu CIP %ld\\n", exec_steps,              \
