@@ -1,12 +1,12 @@
 local amxfiles = {
-	"amx/amx.c",
-	"amx/amxaux.c",
-	"amx/amxcons.c",
-	"amx/amxcore.c",
-	"amx/amxfile.c",
-	"amx/amxstring.c",
-	"amx/amxtime.c",
-	"amx/amxfloat.c",
+	path.join(_SCRIPT_DIR, "amx.c"),
+	path.join(_SCRIPT_DIR, "amxaux.c"),
+	path.join(_SCRIPT_DIR, "amxcons.c"),
+	path.join(_SCRIPT_DIR, "amxcore.c"),
+	path.join(_SCRIPT_DIR, "amxfile.c"),
+	path.join(_SCRIPT_DIR, "amxstring.c"),
+	path.join(_SCRIPT_DIR, "amxtime.c"),
+	path.join(_SCRIPT_DIR, "amxfloat.c"),
 }
 
 project "amx"
@@ -23,20 +23,20 @@ project "amx"
 		-- "__WIN32__" needed for amx
 		defines { "__WIN32__" }
 
+	filter {}
+
 	vpaths {
 		["Headers/*"] = {"**.h", "../linux/**.h"},
 		["Sources/*"] = amxfiles,
 	}
 
-	files {
-		amxfiles,
-	}
+	files(amxfiles)
 
 	filter "system:linux"
-		files { "linux/getch.c" }
+		files { path.join(_SCRIPT_DIR, "../linux/getch.c") }
 
 	filter "system:linux"
-		includedirs { "linux" }
+		includedirs { path.join(_SCRIPT_DIR, "../linux") }
 
 	filter "system:windows"
 		links { "winmm" }
