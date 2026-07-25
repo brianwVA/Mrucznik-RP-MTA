@@ -1849,7 +1849,7 @@ int AMXAPI amx_PushString(AMX *amx, cell *amx_addr, cell **phys_addr, const char
 #define CHKSTACK()      if (stk>amx->stp) return AMX_ERR_STACKLOW
 #define CHKHEAP()       if (hea<amx->hlw) return AMX_ERR_HEAPLOW
 
-#if (defined __GNUC__ || defined __ICC) && !(defined ASM32 || defined JIT)
+#if (defined __GNUC__ || defined __ICC) && !(defined ASM32 || defined JIT) && !defined AMX_DONT_RELOCATE
     /* GNU C version uses the "labels as values" extension to create
      * fast "indirect threaded" interpreter. The Intel C/C++ compiler
      * supports this too.
