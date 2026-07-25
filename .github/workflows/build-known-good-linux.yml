@@ -1,0 +1,66 @@
+name: Build known-good MTA AMX Linux x86
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - codex/fix-mta-runtime-linux
+    paths:
+      - "mta/vendor/mta-amx/amx-deps/src/**"
+      - ".github/workflows/build-known-good-linux.yml"
+
+jobs:
+  build:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: false
+          lfs: false
+
+      - name: Generate makefiles
+        run: |
+          work_dir=$(mktemp -d)
+          curl --fail --location --silent --show-error \
+            --output "$work_dir/premake.tar.gz" \
+            https://github.com/premake/premake-core/releases/download/v5.0.0-beta8/premake-5.0.0-beta8-linux.tar.gz
+          echo "63edd3e7461eebdd45b500a3c7e8ad4e7a67d68f230010f9a97cbb71b4ec59c8  $work_dir/premake.tar.gz" \
+            | sha256sum --check --status
+          tar -xzf "$work_dir/premake.tar.gz" -C "$work_dir"
+          chmod 0755 "$work_dir/premake5"
+          (
+            cd mta/vendor/mta-amx/amx-deps/src
+            "$work_dir/premake5" --file=premake5.lua gmake2
+          )
+
+      - name: Build the runtime from commit 735b56de
+        run: |
+          docker run --rm \
+            --volume "$PWD:/workspace" \
+            --workdir /workspace \
+            debian:bullseye-slim \
+            bash -ceu '
+              dpkg --add-architecture i386
+              apt-get update
+              apt-get install --yes gcc-multilib g++-multilib make libboost-system-dev:i386
+              make -C mta/vendor/mta-amx/amx-deps/src/Build config=release_x86 -j"$(nproc)"
+              mkdir -p artifacts/known-good-linux-x86
+              king_so=$(find mta/vendor/mta-amx/amx-deps/src -type f \( -name king.so -o -name libking.so \) -print -quit)
+              test -n "$king_so"
+              install -m 0755 "$king_so" artifacts/known-good-linux-x86/king.so
+            '
+
+      - name: Verify the hosting ABI
+        run: |
+          file artifacts/known-good-linux-x86/king.so | grep -F "ELF 32-bit"
+          if readelf -V artifacts/known-good-linux-x86/king.so | grep -Fq "Name: GLIBC_2.34"; then
+            echo "king.so requires a newer glibc than the MTA 1.5.9 hosting runtime" >&2
+            exit 1
+          fi
+          sha256sum artifacts/known-good-linux-x86/king.so
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: king-known-good-linux-x86
+          path: artifacts/known-good-linux-x86/king.so
+          if-no-files-found: error
