@@ -12,7 +12,6 @@ solution "king"
 	defines {
 		"_CRT_SECURE_NO_WARNINGS",
 		"HAVE_STDINT_H",
-		"AMX_DONT_RELOCATE",
 		"FLOATPOINT",
 	}
 
