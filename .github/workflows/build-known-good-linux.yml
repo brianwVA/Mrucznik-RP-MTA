@@ -42,7 +42,7 @@ jobs:
             bash -ceu '
               dpkg --add-architecture i386
               apt-get update
-              apt-get install --yes gcc-multilib g++-multilib make libboost-system-dev:i386
+              apt-get install --yes gcc-multilib g++-multilib make libboost-system-dev:i386 liblua5.1-0-dev:i386
               make -C mta/vendor/mta-amx/amx-deps/src/Build config=release_x86 -j"$(nproc)"
               mkdir -p artifacts/known-good-linux-x86
               king_so=$(find mta/vendor/mta-amx/amx-deps/src -type f \( -name king.so -o -name libking.so \) -print -quit)

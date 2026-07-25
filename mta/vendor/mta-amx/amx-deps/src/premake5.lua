@@ -51,8 +51,10 @@ solution "king"
 
 		filter "system:linux"
 			includedirs { "linux" }
-			files { "linux/mta_lua_bridge.c" }
-			links { "dl" }
+			links { "dl", "m" }
+			linkoptions {
+				"-Wl,--whole-archive,/usr/lib/i386-linux-gnu/liblua5.1.a,--no-whole-archive",
+			}
 
 		filter {"system:linux", "platforms:x86" }
 			linkoptions { "-Wl,-rpath=mods/deathmatch" }
