@@ -143,14 +143,17 @@ int CFunctions::amxIsPluginLoaded(lua_State *luaVM) {
 
 // amxLoad(resName, amxName)
 int CFunctions::amxLoad(lua_State *luaVM) {
+	pModuleManager->ErrorPrintf("MRP amxLoad: enter\n");
 	const char *resName = luaL_checkstring(luaVM, 1);
 	const char *amxName = luaL_checkstring(luaVM, 2);
+	pModuleManager->ErrorPrintf("MRP amxLoad: arguments %s/%s\n", resName, amxName);
 	if(!resName || !isSafePath(resName) || !amxName || !isSafePath(amxName)) {
 		lua_pushboolean(luaVM, 0);
 		return 1;
 	}
 
 	lua_State* theirLuaVM = pModuleManager->GetResourceFromName(resName);
+	pModuleManager->ErrorPrintf("MRP amxLoad: resource resolved\n");
 	if (theirLuaVM == nullptr) {
 		using namespace std::string_literals;
 		std::string errMsg = "resource "s + resName + " does not exist!";
@@ -166,10 +169,13 @@ int CFunctions::amxLoad(lua_State *luaVM) {
 		lua_pushstring(luaVM, "file not found");
 		return 2;
 	}
+	pModuleManager->ErrorPrintf("MRP amxLoad: path %s\n", amxPath);
 
 	// Load .amx
 	AMX *amx = new AMX;
+	pModuleManager->ErrorPrintf("MRP amxLoad: aux_LoadProgram begin\n");
 	int err = aux_LoadProgram(amx, amxPath, NULL);
+	pModuleManager->ErrorPrintf("MRP amxLoad: aux_LoadProgram end (%d)\n", err);
 	if(err != AMX_ERR_NONE) {
 		delete amx;
 		lua_pushboolean(luaVM, 0);
@@ -184,6 +190,7 @@ int CFunctions::amxLoad(lua_State *luaVM) {
 	amx_TimeInit(amx);
 	amx_FileInit(amx);
 	err = amx_SAMPInit(amx);
+	pModuleManager->ErrorPrintf("MRP amxLoad: natives registered (%d)\n", err);
 	for (const auto& plugin : loadedPlugins) {
 		AmxLoad_t* pfnAmxLoad = plugin.second->AmxLoad;
 		if (pfnAmxLoad) {
@@ -213,6 +220,7 @@ int CFunctions::amxLoad(lua_State *luaVM) {
 	props.resourceVM = theirLuaVM;
 
 	lua_register(props.resourceVM, "pawn", CFunctions::pawn);
+	pModuleManager->ErrorPrintf("MRP amxLoad: pawn registered\n");
 	loadedAMXs[amx] = props;
 
 	lua_getfield(luaVM, LUA_REGISTRYINDEX, "amx");
