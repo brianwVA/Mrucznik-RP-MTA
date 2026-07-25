@@ -3092,6 +3092,7 @@ int AMXAPI amx_Exec(AMX *amx, cell *retval, int index)
     cell offs,val;
     int num;
     unsigned long long diagnostic_steps=0;
+    FILE *diagnostic_trace=NULL;
   #endif
   #if defined ASM32
     extern void const *amx_opcodelist[];
@@ -3251,9 +3252,29 @@ int AMXAPI amx_Exec(AMX *amx, cell *retval, int index)
 
 #else
 
+  diagnostic_trace=fopen("mods/deathmatch/resources/amx/amx-instruction-trace.log","a");
+  if (diagnostic_trace!=NULL) {
+    setvbuf(diagnostic_trace,NULL,_IONBF,0);
+    fprintf(diagnostic_trace,
+            "EXEC index=%d cip=%ld hea=%ld stk=%ld\n",
+            index,
+            (long)((unsigned char *)cip-code),
+            (long)hea,
+            (long)stk);
+  }
   for ( ;; ) {
     op=(OPCODE) _RCODE();
     diagnostic_steps++;
+    if (diagnostic_trace!=NULL &&
+        (diagnostic_steps<=1000ULL || diagnostic_steps % 1000000ULL == 0)) {
+      fprintf(diagnostic_trace,
+              "step=%llu cip=%ld opcode=%ld pri=%ld alt=%ld\n",
+              diagnostic_steps,
+              (long)((unsigned char *)cip-code-sizeof(cell)),
+              (long)op,
+              (long)pri,
+              (long)alt);
+    }
     if (diagnostic_steps % 1000000ULL == 0) {
       fprintf(stderr,
               "MRP AMX instruction trace: steps=%llu cip=%ld opcode=%ld pri=%ld alt=%ld\n",
