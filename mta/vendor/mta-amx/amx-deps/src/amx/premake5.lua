@@ -1,12 +1,12 @@
 local amxfiles = {
-	"amx.c",
-	"amxaux.c",
-	"amxcons.c",
-	"amxcore.c",
-	"amxfile.c",
-	"amxstring.c",
-	"amxtime.c",
-	"amxfloat.c",
+	path.join(_SCRIPT_DIR, "amx.c"),
+	path.join(_SCRIPT_DIR, "amxaux.c"),
+	path.join(_SCRIPT_DIR, "amxcons.c"),
+	path.join(_SCRIPT_DIR, "amxcore.c"),
+	path.join(_SCRIPT_DIR, "amxfile.c"),
+	path.join(_SCRIPT_DIR, "amxstring.c"),
+	path.join(_SCRIPT_DIR, "amxtime.c"),
+	path.join(_SCRIPT_DIR, "amxfloat.c"),
 }
 
 project "amx"
@@ -33,10 +33,10 @@ project "amx"
 	}
 
 	filter "system:linux"
-		files { "../linux/getch.c" }
+		files { path.join(_SCRIPT_DIR, "../linux/getch.c") }
 
 	filter "system:linux"
-		includedirs { "../linux" }
+		includedirs { path.join(_SCRIPT_DIR, "../linux") }
 
 	filter "system:windows"
 		links { "winmm" }
