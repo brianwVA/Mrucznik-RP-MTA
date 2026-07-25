@@ -3091,6 +3091,7 @@ int AMXAPI amx_Exec(AMX *amx, cell *retval, int index)
     OPCODE op;
     cell offs,val;
     int num;
+    unsigned long long diagnostic_steps=0;
   #endif
   #if defined ASM32
     extern void const *amx_opcodelist[];
@@ -3252,6 +3253,16 @@ int AMXAPI amx_Exec(AMX *amx, cell *retval, int index)
 
   for ( ;; ) {
     op=(OPCODE) _RCODE();
+    diagnostic_steps++;
+    if (diagnostic_steps % 1000000ULL == 0) {
+      fprintf(stderr,
+              "MRP AMX instruction trace: steps=%llu cip=%ld opcode=%ld pri=%ld alt=%ld\n",
+              diagnostic_steps,
+              (long)((unsigned char *)cip-code-sizeof(cell)),
+              (long)op,
+              (long)pri,
+              (long)alt);
+    }
     switch (op) {
     case OP_LOAD_PRI:
       GETPARAM(offs);
