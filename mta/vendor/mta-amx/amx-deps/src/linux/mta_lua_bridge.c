@@ -18,7 +18,8 @@ static const char* const g_names[] = {
     "lua_pushlstring", "lua_pushnil", "lua_pushnumber", "lua_pushstring",
     "lua_pushvalue", "lua_remove", "lua_setfield", "lua_setmetatable",
     "lua_settable", "lua_settop", "lua_toboolean", "lua_tolstring",
-    "lua_tonumber", "lua_touserdata", "lua_type"
+    "lua_tonumber", "lua_touserdata", "lua_type", "lua_error",
+    "lua_pushvfstring", "lua_typename"
 };
 
 static void* g_functions[sizeof(g_names) / sizeof(g_names[0])];
@@ -84,3 +85,6 @@ MTA_LUA_TRAMPOLINE(lua_tolstring, 27)
 MTA_LUA_TRAMPOLINE(lua_tonumber, 28)
 MTA_LUA_TRAMPOLINE(lua_touserdata, 29)
 MTA_LUA_TRAMPOLINE(lua_type, 30)
+MTA_LUA_TRAMPOLINE(lua_error, 31)
+MTA_LUA_TRAMPOLINE(lua_pushvfstring, 32)
+MTA_LUA_TRAMPOLINE(lua_typename, 33)
