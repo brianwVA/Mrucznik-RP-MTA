@@ -52,10 +52,6 @@ solution "king"
 		filter "system:linux"
 			includedirs { "linux" }
 			removefiles { "linux/lauxlib_compat.cpp" }
-			links { "dl", "m" }
-			linkoptions {
-				"-Wl,--whole-archive,/usr/lib/i386-linux-gnu/liblua5.1.a,--no-whole-archive",
-			}
 
 		filter {"system:linux", "platforms:x86" }
 			linkoptions { "-Wl,-rpath=mods/deathmatch" }

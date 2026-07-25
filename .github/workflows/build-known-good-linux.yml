@@ -42,7 +42,7 @@ jobs:
             bash -ceu '
               dpkg --add-architecture i386
               apt-get update
-              apt-get install --yes gcc-multilib g++-multilib make libboost-system-dev:i386 liblua5.1-0-dev:i386
+              apt-get install --yes gcc-multilib g++-multilib make libboost-system-dev:i386
               make -C mta/vendor/mta-amx/amx-deps/src/Build config=release_x86 -j"$(nproc)"
               mkdir -p artifacts/known-good-linux-x86
               king_so=$(find mta/vendor/mta-amx/amx-deps/src -type f \( -name king.so -o -name libking.so \) -print -quit)
@@ -55,10 +55,6 @@ jobs:
           file artifacts/known-good-linux-x86/king.so | grep -F "ELF 32-bit"
           if nm -D artifacts/known-good-linux-x86/king.so | grep -Eq ' U amx_(Allot|Exec|Init)$'; then
             echo "king.so was built without the AMX runtime linked in" >&2
-            exit 1
-          fi
-          if nm -D artifacts/known-good-linux-x86/king.so | grep -Eq ' U (lua|luaL_)'; then
-            echo "king.so was built without the MTA Lua bridge linked in" >&2
             exit 1
           fi
           if readelf -V artifacts/known-good-linux-x86/king.so | grep -Fq "Name: GLIBC_2.34"; then
