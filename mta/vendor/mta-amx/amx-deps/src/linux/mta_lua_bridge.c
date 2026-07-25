@@ -54,10 +54,6 @@ void* mrp_resolve_mta_lua(unsigned int index)
             "jmp *%eax\n\t");                                              \
     }
 
-MTA_LUA_TRAMPOLINE(luaL_checklstring, 0)
-MTA_LUA_TRAMPOLINE(luaL_checknumber, 1)
-MTA_LUA_TRAMPOLINE(luaL_checktype, 2)
-MTA_LUA_TRAMPOLINE(luaL_error, 3)
 MTA_LUA_TRAMPOLINE(lua_createtable, 4)
 MTA_LUA_TRAMPOLINE(lua_getfield, 5)
 MTA_LUA_TRAMPOLINE(lua_gettable, 6)
