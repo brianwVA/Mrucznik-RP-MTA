@@ -14,6 +14,7 @@ project "amx"
 	kind "StaticLib"
 
 	defines {
+		"AMX_DONT_RELOCATE",
 		"FLOATPOINT",
 	}
 
