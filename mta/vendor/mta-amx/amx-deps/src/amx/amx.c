@@ -462,18 +462,6 @@ int AMXAPI amx_Callback(AMX *amx, cell index, cell *result, const cell *params)
 #endif
   assert(f!=NULL);
 
-  {
-    static unsigned long native_trace_count = 0;
-    if (native_trace_count < 5000) {
-      FILE *trace = fopen("mods/deathmatch/resources/amx/amx-native-trace.log", "a");
-      if (trace != NULL) {
-        fprintf(trace, "BEGIN %ld %s\n", (long)index, GETENTRYNAME(hdr,func));
-        fclose(trace);
-      }
-      native_trace_count++;
-    }
-  }
-
   /* Now that we have found the function, patch the program so that any
    * subsequent call will call the function directly (bypassing this
    * callback).
@@ -513,17 +501,6 @@ int AMXAPI amx_Callback(AMX *amx, cell index, cell *result, const cell *params)
 
   amx->error=AMX_ERR_NONE;
   *result = f(amx,params);
-  {
-    static unsigned long native_trace_done_count = 0;
-    if (native_trace_done_count < 5000) {
-      FILE *trace = fopen("mods/deathmatch/resources/amx/amx-native-trace.log", "a");
-      if (trace != NULL) {
-        fprintf(trace, "END %ld %s error %d\n", (long)index, GETENTRYNAME(hdr,func), amx->error);
-        fclose(trace);
-      }
-      native_trace_done_count++;
-    }
-  }
   return amx->error;
 }
 #endif /* defined AMX_DEFCALLBACK */
@@ -1928,20 +1905,7 @@ int AMXAPI amx_PushString(AMX *amx, cell *amx_addr, cell **phys_addr, const char
      * supports this too.
      */
 
-#define NEXT(cip)                                                       \
-  do {                                                                  \
-    exec_steps++;                                                       \
-    if (exec_steps <= 20000UL ||                                      \
-        (exec_steps % 1000UL == 0 && exec_steps <= 1000000UL)) {      \
-      FILE *trace = fopen("mods/deathmatch/resources/amx/amx-runtime-trace.log", "a"); \
-      if (trace != NULL) {                                              \
-        fprintf(trace, "STEP %lu CIP %ld\\n", exec_steps,              \
-                (long)((unsigned char *)(cip) - code));                 \
-        fclose(trace);                                                  \
-      }                                                                 \
-    }                                                                   \
-    goto **(void **)(cip)++;                                            \
-  } while (0)
+#define NEXT(cip)       goto **(void **)cip++
 
 int AMXAPI amx_Exec(AMX *amx, cell *retval, int index)
 {
@@ -1994,7 +1958,6 @@ static const void * const amx_opcodelist[] = {
   cell offs,val;
   ucell codesize;
   int num,i;
-  unsigned long exec_steps=0;
 
   /* HACK: return label table (for amx_BrowseRelocate) if amx structure
    * has the AMX_FLAG_BROWSE flag set.

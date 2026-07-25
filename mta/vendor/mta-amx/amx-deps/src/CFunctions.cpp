@@ -334,13 +334,7 @@ int CFunctions::amxCall(lua_State *luaVM) {
 
 	// Do the call
 	cell ret;
-	traceAMXStage("EXEC begin index " + std::to_string(fnIndex));
-	// Keep native dispatches routed through amx_Callback while diagnosing and
-	// protecting the legacy runtime. Direct SYSREQ patching hides the native
-	// that is currently executing and can permanently embed plugin pointers.
-	amx->sysreq_d = 0;
 	int err = amx_Exec(amx, &ret, fnIndex);
-	traceAMXStage("EXEC end index " + std::to_string(fnIndex) + " result " + std::to_string(err));
 	// Release string arguments
 	for (const auto& amxStringAddr : stringsToRelease) {
 		amx_Release(amx, amxStringAddr);

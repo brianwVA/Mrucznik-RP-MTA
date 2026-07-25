@@ -8,6 +8,8 @@ local nextFallbackMemory = 1
 local fallbackLogs = {}
 local nextFallbackLog = 1
 local fallbackDiscordChannels = {}
+local fallbackCAObjects = {}
+local nextFallbackCAObject = 1
 
 local function cellCount(value)
     return math.max(0, math.floor(tonumber(value) or 0))
@@ -175,6 +177,98 @@ function RequestJSON(amx, client, path, method, callback, node, headers)
     return 0
 end
 
+-- ColAndreas' legacy i386 build is not loadable on every hosted MTA runtime.
+-- MTA already exposes world collision queries, so provide the subset imported
+-- by Mrucznik through native MTA primitives.
+function CA_Init(amx)
+    return 1
+end
+
+function CA_RemoveBuilding(amx, model, x, y, z, radius)
+    return removeWorldModel(model, radius, x, y, z) and 1 or 0
+end
+
+local function writeCAFloat(amx, address, value)
+    if address and address ~= 0 then
+        amx.memDAT[address] = float2cell(tonumber(value) or 0)
+    end
+end
+
+local function rayCastWorld(startX, startY, startZ, endX, endY, endZ)
+    local hit, x, y, z, element = processLineOfSight(
+        startX, startY, startZ, endX, endY, endZ,
+        true, true, true, true, true, false, false, false
+    )
+    local model = hit and isElement(element) and getElementModel(element) or 0
+    return hit, x or endX, y or endY, z or endZ, model or 0
+end
+
+function CA_RayCastLine(amx, startX, startY, startZ, endX, endY, endZ, outX, outY, outZ)
+    local hit, x, y, z, model = rayCastWorld(startX, startY, startZ, endX, endY, endZ)
+    writeCAFloat(amx, outX, x)
+    writeCAFloat(amx, outY, y)
+    writeCAFloat(amx, outZ, z)
+    return hit and model or 0
+end
+
+function CA_RayCastMultiLine(amx, startX, startY, startZ, endX, endY, endZ, outX, outY, outZ, outDistance, outModels, size)
+    size = math.max(0, math.floor(tonumber(size) or 0))
+    if size == 0 then return 0 end
+
+    local hit, x, y, z, model = rayCastWorld(startX, startY, startZ, endX, endY, endZ)
+    if not hit then return 0 end
+
+    writeCAFloat(amx, outX, x)
+    writeCAFloat(amx, outY, y)
+    writeCAFloat(amx, outZ, z)
+    local dx, dy, dz = x - startX, y - startY, z - startZ
+    writeCAFloat(amx, outDistance, math.sqrt(dx * dx + dy * dy + dz * dz))
+    if outModels and outModels ~= 0 then
+        amx.memDAT[outModels] = model
+    end
+    return 1
+end
+
+function CA_LoadFromDff(amx, model, fileName)
+    -- Custom Vice City collision models are intentionally disabled.
+    return 1
+end
+
+function CA_CreateObject(amx, model, x, y, z, rx, ry, rz, add)
+    local id = nextFallbackCAObject
+    nextFallbackCAObject = nextFallbackCAObject + 1
+    fallbackCAObjects[id] = {
+        model = model,
+        position = { x, y, z },
+        rotation = { rx, ry, rz },
+    }
+    return id
+end
+
+function CA_DestroyObject(amx, id)
+    if not fallbackCAObjects[id] then return 0 end
+    fallbackCAObjects[id] = nil
+    return 1
+end
+
+function CA_IsValidObject(amx, id)
+    return fallbackCAObjects[id] and 1 or 0
+end
+
+function CA_SetObjectPos(amx, id, x, y, z)
+    local object = fallbackCAObjects[id]
+    if not object then return 0 end
+    object.position = { x, y, z }
+    return 1
+end
+
+function CA_SetObjectRot(amx, id, rx, ry, rz)
+    local object = fallbackCAObjects[id]
+    if not object then return 0 end
+    object.rotation = { rx, ry, rz }
+    return 1
+end
+
 g_SAMPSyscallPrototypes.PrintBacktrace = {}
 g_SAMPSyscallPrototypes.MEM_clone = {'i'}
 g_SAMPSyscallPrototypes.MEM_copy = {'i', 'i', 'i', 'i', 'i'}
@@ -205,3 +299,13 @@ g_SAMPSyscallPrototypes.JsonCleanup = {'i', 'b'}
 g_SAMPSyscallPrototypes.JsonGetInt = {'i', 's', 'i'}
 g_SAMPSyscallPrototypes.JsonGetString = {'i', 's', 'i', 'i'}
 g_SAMPSyscallPrototypes.RequestJSON = {'i', 's', 'i', 's', 'i', 'i'}
+g_SAMPSyscallPrototypes.CA_Init = {}
+g_SAMPSyscallPrototypes.CA_RemoveBuilding = {'i', 'f', 'f', 'f', 'f'}
+g_SAMPSyscallPrototypes.CA_RayCastLine = {'f', 'f', 'f', 'f', 'f', 'f', 'r', 'r', 'r'}
+g_SAMPSyscallPrototypes.CA_RayCastMultiLine = {'f', 'f', 'f', 'f', 'f', 'f', 'r', 'r', 'r', 'r', 'r', 'i'}
+g_SAMPSyscallPrototypes.CA_LoadFromDff = {'i', 's'}
+g_SAMPSyscallPrototypes.CA_CreateObject = {'i', 'f', 'f', 'f', 'f', 'f', 'f', 'b'}
+g_SAMPSyscallPrototypes.CA_DestroyObject = {'i'}
+g_SAMPSyscallPrototypes.CA_IsValidObject = {'i'}
+g_SAMPSyscallPrototypes.CA_SetObjectPos = {'i', 'f', 'f', 'f'}
+g_SAMPSyscallPrototypes.CA_SetObjectRot = {'i', 'f', 'f', 'f'}

@@ -60,7 +60,7 @@
     </aclrequest>
 
     <settings>
-        <setting name="filterscripts" value="animy sobeitblock SAN_extPSq" />
-        <setting name="plugins" value="sscanf streamer libRegEx_static Whirlpool ColAndreas_static" />
+        <setting name="filterscripts" value="animy" />
+        <setting name="plugins" value="sscanf streamer libRegEx_static Whirlpool" />
     </settings>
 </meta>
