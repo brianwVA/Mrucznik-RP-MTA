@@ -1165,58 +1165,32 @@ int amx_printstring(AMX *amx,cell *cstr,AMX_FMTINFO *info)
 /* print(const string[], start=0, end=cellmax) */
 static cell AMX_NATIVE_CALL n_print(AMX *amx,const cell *params)
 {
-  cell *cstr;
-  AMX_FMTINFO info;
-
-  memset(&info,0,sizeof info);
-  info.skip= ((size_t)params[0]>=2*sizeof(cell)) ? (int)params[2] : 0;
-  info.length= ((size_t)params[0]>=3*sizeof(cell)) ? (int)(params[3]-info.skip) : INT_MAX;
-
-  CreateConsole();
-  amx_GetAddr(amx,params[1],&cstr);
-  amx_printstring(amx,cstr,&info);
-  amx_fflush();
+  /*
+   * MTA owns the server console. Initialising or flushing Pawn's standalone
+   * console from a module callback can block the whole MTA process on hosted
+   * Linux servers. Pawn print output is diagnostic only, so keep the native
+   * successful and let gameplay continue.
+   */
+  (void)amx;
+  (void)params;
   return 0;
 }
 #else
 /* print(const string[], foreground=-1, background=-1, highlight=-1) */
 static cell AMX_NATIVE_CALL n_print(AMX *amx,const cell *params)
 {
-  cell *cstr;
-  int oldcolours;
-
-  CreateConsole();
-
-  /* set the new colours */
-  oldcolours=amx_setattr((int)params[2],(int)params[3],(int)params[4]);
-
-  amx_GetAddr(amx,params[1],&cstr);
-  amx_printstring(amx,cstr,NULL);
-  cons_putchar(NULL, __T('\n'));
-
-  /* reset the colours */
-  (void)amx_setattr(oldcolours & 0xff,(oldcolours >> 8) & 0x7f,(oldcolours >> 15) & 0x01);
-  amx_fflush();
+  /* See the AMX_ALTPRINT implementation above. */
+  (void)amx;
+  (void)params;
   return 0;
 }
 #endif
 
 static cell AMX_NATIVE_CALL n_printf(AMX *amx,const cell *params)
 {
-  cell *cstr;
-  AMX_FMTINFO info;
-
-  memset(&info,0,sizeof info);
-  info.params=params+2;
-  info.numparams=(int)(params[0]/sizeof(cell))-1;
-  info.skip=0;
-  info.length=INT_MAX;
-
-  CreateConsole();
-  amx_GetAddr(amx,params[1],&cstr);
-  amx_printstring(amx,cstr,&info);
-  cons_putchar(NULL, __T('\n'));
-  amx_fflush();
+  /* printf is diagnostic as well; never enter the standalone Pawn console. */
+  (void)amx;
+  (void)params;
   return 0;
 }
 

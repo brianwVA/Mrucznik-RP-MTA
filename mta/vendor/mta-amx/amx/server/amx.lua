@@ -168,9 +168,9 @@ function loadAMX(fileName, res)
 		toggleGlitches()
 		initGameModeGlobals()
 		ShowPlayerMarkers(amx, g_PlayerMarkersMode)
-		-- The exact Mrucznik map synchronously registers thousands of Vice City
-		-- models and collision objects.  That legitimate one-time initialization
-		-- exceeds MTA's Lua watchdog, although Pawn is still making progress.
+		-- The exact Mrucznik map synchronously registers thousands of map
+		-- objects. That legitimate one-time initialization exceeds MTA's Lua
+		-- watchdog, although Pawn is still making progress.
 		-- Suspend the hook only for this trusted, pinned callback and restore it
 		-- immediately afterwards.
 		local watchdogHook, watchdogMask, watchdogCount = debug.gethook()
@@ -372,7 +372,10 @@ function readPrefixTable(hFile, offset, length, nameAsKey)
 		entryOffset = readDWORDAt(hFile, offset)
 		local entryName = readString(hFile, readDWORD(hFile))
 		if nameAsKey then
-			result[entryName] = entryOffset
+			-- amx_Exec expects the public table index, not its bytecode
+			-- address. Keeping the index also lets procCallInternal bypass
+			-- the legacy runtime's unreliable name lookup.
+			result[entryName] = i
 		else
 			result[i] = entryName
 		end
@@ -398,6 +401,14 @@ function procCallInternal(amx, nameOrOffset, ...)
 			 ret = amxCall(amx.cptr, -1, ...)
 		end
 	else
+		-- Avoid passing a missing public name into the legacy AMX runtime.
+		-- Some original filterscripts expose OnGameModeInit instead of
+		-- OnFilterScriptInit, and the old binary search can stall on a miss.
+		local publicIndex = amx.publics[nameOrOffset]
+		if publicIndex == nil and not g_EventNames[nameOrOffset] then
+			amx.proc = prevProc
+			return 0
+		end
 		if (g_EventNames[nameOrOffset]) then
 			for k, v in pairs(g_Events) do
 				if v == nameOrOffset then
@@ -405,7 +416,9 @@ function procCallInternal(amx, nameOrOffset, ...)
 				end
 			end
 		end
-		ret = amxCall(amx.cptr, nameOrOffset, ...)
+		if publicIndex ~= nil then
+			ret = amxCall(amx.cptr, publicIndex, ...)
+		end
 	end
 	amx.proc = prevProc
 	return ret or 0

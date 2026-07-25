@@ -27,6 +27,7 @@
 	<script src="server/mrp_compat.lua" type="server" />
     <script src="server/events.lua" type="server" />
     <script src="server/amx.lua" type="server" />
+    <script src="server/mrp_realtime.lua" type="server" />
 
     <script src="client/util.lua" type="client" />
     <script src="client/anim.lua" type="client" />
@@ -59,7 +60,7 @@
     </aclrequest>
 
     <settings>
-        <setting name="filterscripts" value="animy realtime sobeitblock SAN_extPSq" />
+        <setting name="filterscripts" value="animy sobeitblock SAN_extPSq" />
         <setting name="plugins" value="sscanf streamer libRegEx_static Whirlpool ColAndreas_static" />
     </settings>
 </meta>
