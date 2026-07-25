@@ -462,6 +462,18 @@ int AMXAPI amx_Callback(AMX *amx, cell index, cell *result, const cell *params)
 #endif
   assert(f!=NULL);
 
+  {
+    static unsigned long native_trace_count = 0;
+    if (native_trace_count < 5000) {
+      FILE *trace = fopen("mods/deathmatch/resources/amx/amx-native-trace.log", "a");
+      if (trace != NULL) {
+        fprintf(trace, "BEGIN %ld %s\n", (long)index, GETENTRYNAME(hdr,func));
+        fclose(trace);
+      }
+      native_trace_count++;
+    }
+  }
+
   /* Now that we have found the function, patch the program so that any
    * subsequent call will call the function directly (bypassing this
    * callback).
@@ -501,6 +513,17 @@ int AMXAPI amx_Callback(AMX *amx, cell index, cell *result, const cell *params)
 
   amx->error=AMX_ERR_NONE;
   *result = f(amx,params);
+  {
+    static unsigned long native_trace_done_count = 0;
+    if (native_trace_done_count < 5000) {
+      FILE *trace = fopen("mods/deathmatch/resources/amx/amx-native-trace.log", "a");
+      if (trace != NULL) {
+        fprintf(trace, "END %ld %s error %d\n", (long)index, GETENTRYNAME(hdr,func), amx->error);
+        fclose(trace);
+      }
+      native_trace_done_count++;
+    }
+  }
   return amx->error;
 }
 #endif /* defined AMX_DEFCALLBACK */
