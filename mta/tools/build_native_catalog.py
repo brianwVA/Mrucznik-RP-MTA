@@ -65,7 +65,7 @@ CUSTOM_NATIVES = {
 
 def read_amx_programs(root: Path, explicit: Path | None) -> dict[str, bytes]:
     if explicit:
-        return {"M-RP": explicit.read_bytes()}
+        return {explicit.stem: explicit.read_bytes()}
     archive = root / "serverfiles.tar.gz"
     if not archive.exists() or archive.stat().st_size < 1024:
         raise FileNotFoundError("serverfiles.tar.gz is missing; run git lfs pull")
@@ -112,6 +112,30 @@ def provider(name: str) -> str:
         return "mysql"
     if name in CUSTOM_NATIVES:
         return "mrp-mta-compat"
+    if (
+        name.startswith("cache_")
+        or name.startswith("orm_")
+        or name
+        in {
+            "mysql_close",
+            "mysql_connect_file",
+            "mysql_errno",
+            "mysql_error",
+            "mysql_escape_string",
+            "mysql_format",
+            "mysql_set_charset",
+            "mysql_tquery",
+        }
+    ):
+        return "mysql-r41"
+    if name.startswith("PR_") or name.startswith("BS_"):
+        return "Pawn.RakNet"
+    if (
+        name.startswith("handle_")
+        or name.startswith("task_")
+        or name in {"amx_try_decode_value", "pawn_unregister_callback"}
+    ):
+        return "PawnPlus"
     if name == "PrintBacktrace":
         return "crashdetect"
     if name == "sscanf" or name.startswith("SSCANF_"):
@@ -130,12 +154,18 @@ def provider(name: str) -> str:
         return "pawn-memory"
     if name.startswith("DCC_"):
         return "discord-connector"
+    if name in {"dir_create", "file_write"}:
+        return "FileManager"
     if name.startswith("regex_"):
         return "libRegEx"
     if name.startswith("Profiler_"):
         return "profiler"
     if name == "WP_Hash":
         return "Whirlpool"
+    if name in {"Now", "TimeFormat"}:
+        return "chrono"
+    if name in {"AddCharModel", "IsValidCustomModel"}:
+        return "custom-models"
     if (
         name.startswith("Json")
         or name.startswith("Request")
@@ -161,7 +191,11 @@ def main() -> int:
     counts = Counter(names)
     providers = Counter(provider(name) for name in counts)
     report = {
-        "sources": [AMX_MEMBERS[name] for name in programs],
+        "sources": (
+            [args.amx.name]
+            if args.amx
+            else [AMX_MEMBERS[name] for name in programs]
+        ),
         "native_entry_count": len(names),
         "unique_native_count": len(counts),
         "programs": [

@@ -13,7 +13,6 @@ import hashlib
 import json
 import re
 import shutil
-import tarfile
 from dataclasses import dataclass
 from pathlib import Path
 from xml.sax.saxutils import escape
@@ -25,9 +24,6 @@ CHAR_MODEL = re.compile(
 SIMPLE_MODEL = re.compile(
     r'AddSimpleModel\(\s*(-?\d+)\s*,\s*(-?\d+)\s*,\s*(-?\d+)\s*,\s*"([^"]+)"\s*,\s*"([^"]+)"\s*\)\s*;'
 )
-AMX_MEMBER = "serverfiles/gamemodes/Mrucznik-RP.amx"
-
-
 @dataclass(frozen=True)
 class Model:
     kind: str
@@ -186,12 +182,21 @@ def write_meta(path: Path, asset_names: list[str]) -> None:
     path.write_text("".join(lines), encoding="utf-8")
 
 
-def build_overlay(source: Path, runtime: Path, output: Path) -> None:
+def build_overlay(
+    source: Path, runtime: Path, output: Path, amx: Path | None = None
+) -> None:
     artconfig = source / "KRP-V2-Modele/models/artconfig.txt"
     assets = artconfig.parent
-    archive = source / "serverfiles.tar.gz"
+    amx = amx or source / "gamemodes/Kotnik-RP.amx"
+    scriptfiles = source / "scriptfiles"
     template = runtime / "mta/server/mods/deathmatch/resources/mrp_models"
-    required = (artconfig, archive, template / "client/main.lua", template / "server/main.lua")
+    required = (
+        artconfig,
+        amx,
+        scriptfiles,
+        template / "client/main.lua",
+        template / "server/main.lua",
+    )
     missing_required = [str(path) for path in required if not path.exists()]
     if missing_required:
         raise FileNotFoundError("Missing input: " + ", ".join(missing_required))
@@ -202,7 +207,7 @@ def build_overlay(source: Path, runtime: Path, output: Path) -> None:
     models, asset_repairs, fallback_peds = resolve_assets(models, assets)
 
     resource = output / "mods/deathmatch/resources/mrp_models"
-    amx_resource = output / "mods/deathmatch/resources/amx-mrucznik"
+    amx_resource = output / "mods/deathmatch/resources/amx-kotnik"
     (resource / "shared").mkdir(parents=True, exist_ok=True)
     (resource / "assets").mkdir(parents=True, exist_ok=True)
     amx_resource.mkdir(parents=True, exist_ok=True)
@@ -227,23 +232,28 @@ def build_overlay(source: Path, runtime: Path, output: Path) -> None:
         shutil.copy2(assets / filename, resource / "assets" / filename)
     write_meta(resource / "meta.xml", asset_names)
 
-    shutil.copy2(
-        runtime / "mta/server/mods/deathmatch/resources/amx-mrucznik/meta.xml",
-        amx_resource / "meta.xml",
+    (amx_resource / "meta.xml").write_text(
+        "<meta>\n"
+        '    <info type="map" gamemodes="amx" name="KotnikRP test" '
+        'author="KotnikRP" />\n'
+        '    <amx src="Kotnik-RP.amx" />\n'
+        "</meta>\n",
+        encoding="utf-8",
     )
-    with tarfile.open(archive, "r:gz") as handle:
-        member = handle.getmember(AMX_MEMBER)
-        extracted = handle.extractfile(member)
-        if not extracted:
-            raise FileNotFoundError(AMX_MEMBER)
-        with (amx_resource / "Mrucznik-RP.amx").open("wb") as destination:
-            shutil.copyfileobj(extracted, destination)
+    shutil.copy2(amx, amx_resource / "Kotnik-RP.amx")
+    shutil.copytree(scriptfiles, amx_resource / "scriptfiles")
 
     report = {
         "schema_version": 1,
         "source": source.name,
-        "gamemode_size": (amx_resource / "Mrucznik-RP.amx").stat().st_size,
-        "gamemode_sha256": sha256(amx_resource / "Mrucznik-RP.amx"),
+        "status": "compatibility-audit-required",
+        "gamemode": "Kotnik-RP.amx",
+        "gamemode_size": (amx_resource / "Kotnik-RP.amx").stat().st_size,
+        "gamemode_sha256": sha256(amx_resource / "Kotnik-RP.amx"),
+        "scriptfiles": sum(path.is_file() for path in scriptfiles.rglob("*")),
+        "scriptfiles_bytes": sum(
+            path.stat().st_size for path in scriptfiles.rglob("*") if path.is_file()
+        ),
         "ped_models": sum(model.kind == "ped" for model in models),
         "object_models": sum(model.kind == "object" for model in models),
         "asset_files": len(asset_names),
@@ -257,13 +267,13 @@ def build_overlay(source: Path, runtime: Path, output: Path) -> None:
         json.dumps(report, ensure_ascii=False, indent=2) + "\n", encoding="utf-8"
     )
     (output / "README-INSTALL.txt").write_text(
-        "KotnikRP MTA overlay\n"
-        "====================\n"
-        "This overlay must be installed only together with the known-good AMX runtime.\n"
-        "Back up the running amx-mrucznik and mrp_models resources first.\n"
-        "Never replace king.so, the amx resource, or the MTA server binaries.\n"
-        "Replace amx-mrucznik and mrp_models as one atomic set, then restart once.\n"
-        "Verify MANIFEST.sha256 before upload and after download.\n",
+        "KotnikRP MTA evaluation overlay\n"
+        "================================\n"
+        "DO NOT INSTALL THIS OVERLAY ON THE RUNNING SERVER.\n"
+        "It contains the real Kotnik-RP.amx and model assets for isolated tests,\n"
+        "but the AMX still requires a compatibility audit and plugin fallbacks.\n"
+        "The production amx-mrucznik resource is intentionally not included.\n"
+        "Verify MANIFEST.sha256 before every isolated test.\n",
         encoding="utf-8",
     )
     # Write the checksum list last so it also protects the installation notes
@@ -285,9 +295,19 @@ def main() -> int:
     parser.add_argument(
         "--runtime", type=Path, default=Path(__file__).resolve().parents[2]
     )
+    parser.add_argument(
+        "--amx",
+        type=Path,
+        help="Compiled Kotnik-RP.amx (defaults to SOURCE/gamemodes/Kotnik-RP.amx)",
+    )
     parser.add_argument("--output", type=Path, required=True)
     args = parser.parse_args()
-    build_overlay(args.source.resolve(), args.runtime.resolve(), args.output.resolve())
+    build_overlay(
+        args.source.resolve(),
+        args.runtime.resolve(),
+        args.output.resolve(),
+        args.amx.resolve() if args.amx else None,
+    )
     return 0
 
 
