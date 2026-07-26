@@ -8,6 +8,8 @@ for model, definition in pairs(MRP_OBJECT_MODELS or {}) do
 end
 local loadedObjectModels = {}
 local objectMaterialShaders = {}
+local materialTextureCache = {}
+local materialShaderCache = {}
 local pendingObjectModels = {}
 local activeObjectModels = {}
 local objectModelUsers = {}
@@ -25,6 +27,7 @@ local retryPendingObjectModels
 -- COL/TXD/DFF files. Keep the complete Mrucznik map set warm for a normal
 -- session; the cache remains bounded for any runtime registrations.
 local OBJECT_MODEL_RELEASE_DELAY = 60 * 60 * 1000
+local MATERIAL_SHADER_RELEASE_DELAY = 60 * 1000
 local MAX_IDLE_OBJECT_MODELS = 128
 local PREWARM_OBJECT_MODELS = 24
 -- One COL/TXD/DFF replacement can briefly occupy the GTA streaming thread.
@@ -131,13 +134,33 @@ local function materialColor(color)
 	return red / 255, green / 255, blue / 255, alpha / 255
 end
 
+local function releaseMaterialBinding(object, material)
+	engineRemoveShaderFromWorldTexture(material.shader, material.sourceTexture, object)
+	local cached = material.cacheKey and materialShaderCache[material.cacheKey]
+	if not cached then
+		if isElement(material.shader) then destroyElement(material.shader) end
+		return
+	end
+	cached.users = math.max(0, cached.users - 1)
+	if cached.users > 0 then return end
+	if cached.releaseTimer and isTimer(cached.releaseTimer) then
+		killTimer(cached.releaseTimer)
+	end
+	local cacheKey = material.cacheKey
+	local expected = cached
+	cached.releaseTimer = setTimer(function()
+		local current = materialShaderCache[cacheKey]
+		if current ~= expected or current.users > 0 then return end
+		if isElement(current.shader) then destroyElement(current.shader) end
+		materialShaderCache[cacheKey] = nil
+	end, MATERIAL_SHADER_RELEASE_DELAY, 1)
+end
+
 local function clearObjectMaterials(object)
 	local materials = objectMaterialShaders[object]
 	if not materials then return end
 	for _, material in pairs(materials) do
-		engineRemoveShaderFromWorldTexture(material.shader, material.sourceTexture, object)
-		if isElement(material.shader) then destroyElement(material.shader) end
-		if material.ownsTexture and isElement(material.texture) then destroyElement(material.texture) end
+		releaseMaterialBinding(object, material)
 	end
 	objectMaterialShaders[object] = nil
 end
@@ -149,32 +172,48 @@ function applyObjectMaterial(object, index, model, txdLib, txdName, color)
 	local sourceTexture = textures[index + 1]
 	if not sourceTexture then return false end
 	local asset = materialAssetPath(txdLib, txdName)
-	local texture = asset and dxCreateTexture(asset, "argb", true, "clamp")
-	local ownsTexture = texture and true or false
-	if not texture then texture = modelTexture(model, txdName) end
+	local textureKey = asset and ("asset:" .. asset)
+		or ("stock:" .. tostring(model) .. ":" .. tostring(txdName))
+	local texture = materialTextureCache[textureKey]
+	if not texture then
+		texture = asset and dxCreateTexture(asset, "argb", true, "clamp")
+			or modelTexture(model, txdName)
+		if texture then materialTextureCache[textureKey] = texture end
+	end
 	if not texture then return false end
 
 	objectMaterialShaders[object] = objectMaterialShaders[object] or {}
 	local previous = objectMaterialShaders[object][index]
-	if previous then
-		engineRemoveShaderFromWorldTexture(previous.shader, previous.sourceTexture, object)
-		if isElement(previous.shader) then destroyElement(previous.shader) end
-		if previous.ownsTexture and isElement(previous.texture) then destroyElement(previous.texture) end
+	if previous then releaseMaterialBinding(object, previous) end
+	local cacheKey = table.concat({
+		tostring(sourceTexture), textureKey, tostring(tonumber(color) or 0)
+	}, "\31")
+	local cached = materialShaderCache[cacheKey]
+	if cached and not isElement(cached.shader) then
+		materialShaderCache[cacheKey] = nil
+		cached = nil
 	end
-	local shader = dxCreateShader("client/material_replace.fx", 0, 0, false, "object")
+	local shader = cached and cached.shader
+		or dxCreateShader("client/material_replace.fx", 0, 0, false, "object")
 	if not shader or not texture then
 		if isElement(shader) then destroyElement(shader) end
-		if ownsTexture and isElement(texture) then destroyElement(texture) end
 		return false
 	end
-	dxSetShaderValue(shader, "replacementTexture", texture)
-	dxSetShaderValue(shader, "materialColor", materialColor(color))
+	if not cached then
+		dxSetShaderValue(shader, "replacementTexture", texture)
+		dxSetShaderValue(shader, "materialColor", materialColor(color))
+		cached = { shader = shader, users = 0 }
+		materialShaderCache[cacheKey] = cached
+	elseif cached.releaseTimer and isTimer(cached.releaseTimer) then
+		killTimer(cached.releaseTimer)
+		cached.releaseTimer = nil
+	end
+	cached.users = cached.users + 1
 	engineApplyShaderToWorldTexture(shader, sourceTexture, object)
 	objectMaterialShaders[object][index] = {
 		shader = shader,
-		texture = texture,
-		ownsTexture = ownsTexture,
 		sourceTexture = sourceTexture,
+		cacheKey = cacheKey,
 	}
 	return true
 end

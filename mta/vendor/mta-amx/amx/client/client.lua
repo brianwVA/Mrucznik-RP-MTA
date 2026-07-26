@@ -661,7 +661,9 @@ function CreatePlayerObject(objID, model, x, y, z, rX, rY, rZ, customModel)
 	local object = g_PlayerObjectPool[objID]
 	g_PlayerObjectPool[objID] = nil
 	if isElement(object) then
-		setElementModel(object, createModel)
+		if getElementModel(object) ~= createModel then
+			setElementModel(object, createModel)
+		end
 		setElementPosition(object, x, y, z)
 		setElementRotation(object, rX, rY, rZ)
 	else
