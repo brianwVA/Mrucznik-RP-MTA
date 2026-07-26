@@ -464,7 +464,7 @@ addEventHandler('mrp:rawInput', root,
 		text = text:gsub('[%z\1-\31]', '')
 		if kind == 'command' then
 			text = text:gsub('^/+', '')
-			if text ~= '' then
+			if text ~= '' and not mrpBlockDisabledCommand(client, text) then
 				procCallOnAll('OnPlayerCommandText', getElemID(client), '/' .. text)
 			end
 		elseif kind == 'chat' then
@@ -1249,6 +1249,7 @@ addEventHandler('onConsole', root,
 
 		cmd = '/' .. cmd:gsub('^([^%s]*)', g_CommandMapping)
 		if getElementType(source) ~= 'player' then return end
+		if mrpBlockDisabledCommand(source, cmd) then return end
 		procCallOnAll('OnPlayerCommandText', getElemID(source), cmd)
 	end
 )

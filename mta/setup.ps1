@@ -261,7 +261,6 @@ $ModelAssets = Join-Path $ModelsResource "assets"
 New-Item -ItemType Directory -Force $ModelAssets | Out-Null
 Copy-Item -Path (Join-Path $Work "serverfiles\models\*.dff") -Destination $ModelAssets -Force
 Copy-Item -Path (Join-Path $Work "serverfiles\models\*.txd") -Destination $ModelAssets -Force
-Copy-Item -Path (Join-Path $Work "serverfiles\models\vc4samp") -Destination $ModelAssets -Recurse -Force
 $SampModelAssets = Join-Path $ModelAssets "samp"
 New-Item -ItemType Directory -Force $SampModelAssets | Out-Null
 foreach ($Asset in $SampObjectAssets) {
@@ -272,9 +271,6 @@ foreach ($Asset in $SampObjectAssets) {
         throw "Niepoprawna suma SHA-256 obiektu SA-MP $($Asset.Name)`: $AssetHash"
     }
 }
-$ConvertedConcertHall = Join-Path $Work "serverfiles\models\vc4samp\dff\concerth04.dff"
-Copy-Item $ConvertedConcertHall (Join-Path $MtaServerRoot "models\concerth04.dff") -Force
-
 [xml]$ModelsMeta = Get-Content (Join-Path $ModelsResource "meta.xml")
 Get-ChildItem $ModelAssets -File -Recurse | Sort-Object FullName | ForEach-Object {
     $RelativeAssetPath = $_.FullName.Substring($ModelAssets.Length + 1).Replace("\", "/")

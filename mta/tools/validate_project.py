@@ -287,11 +287,10 @@ def main() -> int:
     vc_catalog = (
         mta / "server/mods/deathmatch/resources/mrp_models/shared/vc_objects.lua"
     ).read_text(encoding="utf-8")
-    if len(re.findall(r"MRP_OBJECT_MODELS\[-\d+\]", vc_catalog)) != 2747:
-        fail("Unexpected loadable Vice City object inventory size")
-    for repaired_texture in ("docksvc.txd", "subcratesvc.txd"):
-        if repaired_texture not in vc_catalog:
-            fail(f"Vice City texture alias is absent: {repaired_texture}")
+    if "Vice City was intentionally disabled" not in vc_catalog:
+        fail("Vice City catalog must stay explicitly disabled")
+    if re.search(r"MRP_OBJECT_MODELS\[-\d+\]", vc_catalog):
+        fail("Disabled Vice City catalog still contains loadable models")
     material_shader = (
         mta / "server/mods/deathmatch/resources/mrp_models/client/material_replace.fx"
     ).read_text(encoding="utf-8")
