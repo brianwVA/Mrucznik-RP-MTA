@@ -67,7 +67,6 @@ setmetatable(g_Vehicles, defaultEmptyTableMt)
 
 g_Menus = {}
 g_PlayerObjects = {}
-local g_PlayerObjectPool = {}
 -- 1000 with extended LOD made every script-created object visible far beyond
 -- the normal GTA streaming range and produced micro-stutters while travelling.
 -- 170 still reaches MTA's normal maximum on high client draw-distance settings.
@@ -219,8 +218,6 @@ function destroyGlobalElements()
 
 	table.each(g_Blips, destroyElement)
 	table.each(g_PlayerObjects, destroyElement)
-	table.each(g_PlayerObjectPool, destroyElement)
-	g_PlayerObjectPool = {}
 end
 
 function gamemodeUnload()
@@ -658,19 +655,8 @@ function CreatePlayerObject(objID, model, x, y, z, rX, rY, rZ, customModel)
 	-- probing engineGetModelNameFromID with an invalid ID emits a client warning.
 	local validModel = not customModel and mrpIsValidObjectModel(model)
 	local createModel = validModel and model or 1337
-	local object = g_PlayerObjectPool[objID]
-	g_PlayerObjectPool[objID] = nil
-	if isElement(object) then
-		if getElementModel(object) ~= createModel then
-			setElementModel(object, createModel)
-		end
-		setElementPosition(object, x, y, z)
-		setElementRotation(object, rX, rY, rZ)
-	else
-		object = createObject(createModel, x, y, z, rX, rY, rZ)
-	end
-	g_PlayerObjects[objID] = object
-	applyObjectDrawDistance(object)
+	g_PlayerObjects[objID] = createObject(createModel, x, y, z, rX, rY, rZ)
+	applyObjectDrawDistance(g_PlayerObjects[objID])
 	if not g_PlayerObjects[objID] then
 		g_PlayerObjects[objID] = createObject(1337, x, y, z, rX, rY, rZ) -- Create a dummy object anyway since createobject can also be used to make camera attachments
 		setElementAlpha(g_PlayerObjects[objID], 0)
@@ -704,23 +690,8 @@ function DestroyPlayerObject(objID)
 		return
 	end
 	mrpPerformance.destroyedObjects = mrpPerformance.destroyedObjects + 1
+	destroyElement(obj)
 	g_PlayerObjects[objID] = nil
-	stopObject(obj)
-	detachElements(obj)
-	local models = getResourceFromName('mrp_models')
-	if models and getResourceState(models) == 'running' then
-		call(models, 'resetObjectState', obj)
-	end
-	-- removeElementData is unavailable on the host's MTA 1.5.9 build.
-	-- Assigning nil provides the same local-only cleanup on older clients.
-	setElementData(obj, 'mrp:customObjectModel', nil, false)
-	setElementData(obj, 'amx:materials', nil, false)
-	setElementAlpha(obj, 0)
-	setElementCollisionsEnabled(obj, false)
-	setElementDimension(obj, 65535)
-	setElementInterior(obj, 0)
-	setElementPosition(obj, 0, 0, -1000)
-	g_PlayerObjectPool[objID] = obj
 end
 
 function MovePlayerObject(objID, x, y, z, speed, rX, rY, rZ)

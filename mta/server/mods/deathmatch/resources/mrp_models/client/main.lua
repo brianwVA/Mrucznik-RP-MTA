@@ -536,14 +536,6 @@ function applyObjectModel(object, customModel)
     return applied
 end
 
-function resetObjectState(object)
-	if not isElement(object) then return false end
-	pendingObjectModels[object] = nil
-	releaseObjectModel(object, true)
-	clearObjectMaterials(object)
-	return true
-end
-
 retryPendingObjectModels = function(customModel)
     customModel = tonumber(customModel)
     for object, pendingModel in pairs(pendingObjectModels) do
