@@ -204,7 +204,34 @@ end
 
 function mysql_connect(amx, host, user, database, password)
     mysqlState.config = {host=host, user=user, database=database, password=password}
-    return connectMysql() and 1 or 0
+    if not connectMysql() then return 0 end
+
+    -- Keep the account-side house pointer consistent with the one-time INI
+    -- migration in mrp_compat.lua. The backup table makes the operation
+    -- reversible even if an older database snapshot still contains owners.
+    local marker = "scriptfiles/Domy/.owners-reset-database-20260726-v1.done"
+    if not fileExists(marker) then
+        local backupRows = pollMysql(
+            "CREATE TABLE IF NOT EXISTS `mrp_backup_house_owners_20260726` "
+            .. "AS SELECT `UID`, `Nick`, `Dom` FROM `mru_konta` WHERE `Dom` <> 0",
+            mysqlState.writeConnection
+        )
+        local resetRows = backupRows ~= false and pollMysql(
+            "UPDATE `mru_konta` SET `Dom` = 0 WHERE `Dom` <> 0",
+            mysqlState.writeConnection
+        )
+        if backupRows ~= false and resetRows ~= false then
+            local done = fileCreate(marker)
+            if done then
+                fileWrite(done, "reset=20260726-v1\n")
+                fileClose(done)
+            end
+            outputDebugString("[MRP houses] Wyzerowano przypisania domow w MySQL.")
+        else
+            outputDebugString("[MRP houses] Reset przypisan MySQL nie powiodl sie.", 1)
+        end
+    end
+    return 1
 end
 
 function mysql_ping(amx, connectionHandle)

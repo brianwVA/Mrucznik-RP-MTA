@@ -525,7 +525,7 @@ addEventHandler('mrp:rawInput', root,
 		text = text:gsub('[%z\1-\31]', '')
 		if kind == 'command' then
 			text = text:gsub('^/+', '')
-			if text ~= '' then
+			if text ~= '' and not mrpBlockDisabledCommand(client, text) then
 				procCallOnAll('OnPlayerCommandText', getElemID(client), '/' .. text)
 			end
 		elseif kind == 'chat' then
@@ -1315,7 +1315,34 @@ addEventHandler('onConsole', root,
 
 		cmd = '/' .. cmd:gsub('^([^%s]*)', g_CommandMapping)
 		if getElementType(source) ~= 'player' then return end
+		if mrpBlockDisabledCommand(source, cmd) then return end
 		procCallOnAll('OnPlayerCommandText', getElemID(source), cmd)
+	end
+)
+
+addEvent('mrp:clientStreamingTelemetry', true)
+addEventHandler('mrp:clientStreamingTelemetry', resourceRoot,
+	function(maxFrame, framesOver33, framesOver50, created, destroyed, speed, usedMemory, memoryLimit)
+		if not client or getElementType(client) ~= 'player' then return end
+		local values = {
+			tonumber(maxFrame), tonumber(framesOver33), tonumber(framesOver50),
+			tonumber(created), tonumber(destroyed), tonumber(speed),
+			tonumber(usedMemory), tonumber(memoryLimit),
+		}
+		for _, value in ipairs(values) do
+			if not value or value ~= value or math.abs(value) > 10000000000 then return end
+		end
+		maxFrame, framesOver33, framesOver50 = values[1], values[2], values[3]
+		created, destroyed, speed = values[4], values[5], values[6]
+		usedMemory, memoryLimit = values[7], values[8]
+		if maxFrame < 45 and created + destroyed < 10 then return end
+		outputDebugString(string.format(
+			'[MRP perf] %s | max %.1f ms, >=33 %d, >=50 %d, objects +%d/-%d, speed %.0f km/h, stream %.1f/%.1f MB',
+			getPlayerName(client),
+			maxFrame, framesOver33, framesOver50,
+			created, destroyed, speed,
+			usedMemory / 1048576, memoryLimit / 1048576
+		))
 	end
 )
 

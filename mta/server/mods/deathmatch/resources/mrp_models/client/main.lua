@@ -8,10 +8,13 @@ for model, definition in pairs(MRP_OBJECT_MODELS or {}) do
 end
 local loadedObjectModels = {}
 local objectMaterialShaders = {}
+local materialTextureCache = {}
+local materialShaderCache = {}
 local pendingObjectModels = {}
 local activeObjectModels = {}
 local objectModelUsers = {}
 local objectModelReleaseTimers = {}
+local objectModelLastUsed = {}
 local objectModelLoadQueue = {}
 local objectModelLoadHead = 1
 local objectModelLoadTail = 0
@@ -20,10 +23,30 @@ local objectModelLoadTimer = false
 local releaseObjectModel
 local retryPendingObjectModels
 
-local OBJECT_MODEL_RELEASE_DELAY = 15000
+-- A short release delay made longer drives repeatedly free and reload the same
+-- COL/TXD/DFF files. Keep the complete Mrucznik map set warm for a normal
+-- session; the cache remains bounded for any runtime registrations.
+local OBJECT_MODEL_RELEASE_DELAY = 60 * 60 * 1000
+local MATERIAL_SHADER_RELEASE_DELAY = 60 * 1000
+local MAX_IDLE_OBJECT_MODELS = 128
+local PREWARM_OBJECT_MODELS = 24
 -- One COL/TXD/DFF replacement can briefly occupy the GTA streaming thread.
 -- Spread dense-area loads across more frames instead of issuing 40 per second.
-local OBJECT_MODEL_LOAD_INTERVAL = 50
+local OBJECT_MODEL_LOAD_INTERVAL = 100
+-- Constant custom-object IDs referenced by the current Pawn source. Preloading
+-- these while the player is still logging in moves disk parsing and model
+-- replacement away from the first fast drive through each district.
+local GAMEMODE_PREWARM_OBJECT_MODELS = {
+    18651, 18632, 18648, 18649, 18647, 18650, 19836, 19939,
+    19463, 19294, 19464, 19797, 18728, 18766, 19128, 19280,
+    19300, 19377, 18716, 18747, 19302, 19326, 18652, 18653,
+    18727, 19150, 19310, 19482, 18646, 18680, 18689, 18849,
+    19311, 19328, 19608,
+}
+-- MTA's own guidance recommends about 170 for ordinary high-detail objects.
+-- The previous extended value of 1000 forced large map sections to remain
+-- visible and caused world/model streaming bursts while moving quickly.
+local OBJECT_MODEL_DRAW_DISTANCE = 170
 
 if type(engineSetAsynchronousLoading) == "function" then
     -- Respect the player's preference while avoiding first-use model stalls on
@@ -111,6 +134,37 @@ local function materialColor(color)
 	return red / 255, green / 255, blue / 255, alpha / 255
 end
 
+local function releaseMaterialBinding(object, material)
+	engineRemoveShaderFromWorldTexture(material.shader, material.sourceTexture, object)
+	local cached = material.cacheKey and materialShaderCache[material.cacheKey]
+	if not cached then
+		if isElement(material.shader) then destroyElement(material.shader) end
+		return
+	end
+	cached.users = math.max(0, cached.users - 1)
+	if cached.users > 0 then return end
+	if cached.releaseTimer and isTimer(cached.releaseTimer) then
+		killTimer(cached.releaseTimer)
+	end
+	local cacheKey = material.cacheKey
+	local expected = cached
+	cached.releaseTimer = setTimer(function()
+		local current = materialShaderCache[cacheKey]
+		if current ~= expected or current.users > 0 then return end
+		if isElement(current.shader) then destroyElement(current.shader) end
+		materialShaderCache[cacheKey] = nil
+	end, MATERIAL_SHADER_RELEASE_DELAY, 1)
+end
+
+local function clearObjectMaterials(object)
+	local materials = objectMaterialShaders[object]
+	if not materials then return end
+	for _, material in pairs(materials) do
+		releaseMaterialBinding(object, material)
+	end
+	objectMaterialShaders[object] = nil
+end
+
 function applyObjectMaterial(object, index, model, txdLib, txdName, color)
 	if not isElement(object) then return false end
 	index = tonumber(index) or 0
@@ -118,32 +172,48 @@ function applyObjectMaterial(object, index, model, txdLib, txdName, color)
 	local sourceTexture = textures[index + 1]
 	if not sourceTexture then return false end
 	local asset = materialAssetPath(txdLib, txdName)
-	local texture = asset and dxCreateTexture(asset, "argb", true, "clamp")
-	local ownsTexture = texture and true or false
-	if not texture then texture = modelTexture(model, txdName) end
+	local textureKey = asset and ("asset:" .. asset)
+		or ("stock:" .. tostring(model) .. ":" .. tostring(txdName))
+	local texture = materialTextureCache[textureKey]
+	if not texture then
+		texture = asset and dxCreateTexture(asset, "argb", true, "clamp")
+			or modelTexture(model, txdName)
+		if texture then materialTextureCache[textureKey] = texture end
+	end
 	if not texture then return false end
 
 	objectMaterialShaders[object] = objectMaterialShaders[object] or {}
 	local previous = objectMaterialShaders[object][index]
-	if previous then
-		engineRemoveShaderFromWorldTexture(previous.shader, previous.sourceTexture, object)
-		if isElement(previous.shader) then destroyElement(previous.shader) end
-		if previous.ownsTexture and isElement(previous.texture) then destroyElement(previous.texture) end
+	if previous then releaseMaterialBinding(object, previous) end
+	local cacheKey = table.concat({
+		tostring(sourceTexture), textureKey, tostring(tonumber(color) or 0)
+	}, "\31")
+	local cached = materialShaderCache[cacheKey]
+	if cached and not isElement(cached.shader) then
+		materialShaderCache[cacheKey] = nil
+		cached = nil
 	end
-	local shader = dxCreateShader("client/material_replace.fx", 0, 0, false, "object")
+	local shader = cached and cached.shader
+		or dxCreateShader("client/material_replace.fx", 0, 0, false, "object")
 	if not shader or not texture then
 		if isElement(shader) then destroyElement(shader) end
-		if ownsTexture and isElement(texture) then destroyElement(texture) end
 		return false
 	end
-	dxSetShaderValue(shader, "replacementTexture", texture)
-	dxSetShaderValue(shader, "materialColor", materialColor(color))
+	if not cached then
+		dxSetShaderValue(shader, "replacementTexture", texture)
+		dxSetShaderValue(shader, "materialColor", materialColor(color))
+		cached = { shader = shader, users = 0 }
+		materialShaderCache[cacheKey] = cached
+	elseif cached.releaseTimer and isTimer(cached.releaseTimer) then
+		killTimer(cached.releaseTimer)
+		cached.releaseTimer = nil
+	end
+	cached.users = cached.users + 1
 	engineApplyShaderToWorldTexture(shader, sourceTexture, object)
 	objectMaterialShaders[object][index] = {
 		shader = shader,
-		texture = texture,
-		ownsTexture = ownsTexture,
 		sourceTexture = sourceTexture,
+		cacheKey = cacheKey,
 	}
 	return true
 end
@@ -165,19 +235,19 @@ end
 addEventHandler("onClientElementDestroy", root, function()
 	pendingObjectModels[source] = nil
 	if releaseObjectModel then releaseObjectModel(source, false) end
-	local materials = objectMaterialShaders[source]
-	if not materials then return end
-	for _, material in pairs(materials) do
-		if isElement(material.shader) then destroyElement(material.shader) end
-		if material.ownsTexture and isElement(material.texture) then destroyElement(material.texture) end
-	end
-	objectMaterialShaders[source] = nil
+	clearObjectMaterials(source)
 end)
 
 local function loadCustomModel(customModel)
     local definition = MRP_MODELS[tonumber(customModel)]
     if not definition then
         return false
+    end
+    -- A source pack can reference a custom skin whose DFF/TXD was never
+    -- shipped. Use its declared stock base instead of making the player
+    -- invisible or repeatedly attempting a missing disk load.
+    if definition.fallback then
+        return tonumber(definition.base) or false
     end
     if loadedModels[customModel] then
         return loadedModels[customModel]
@@ -224,6 +294,7 @@ local function loadCustomObjectModel(customModel)
         return false
     end
     -- MTA requires custom object assets in COL -> TXD -> DFF order.
+    local loadStartedAt = getTickCount()
     local col, hasEmbeddedCOL = false, false
     if definition.col then
         col = engineLoadCOL(definition.col)
@@ -250,15 +321,21 @@ local function loadCustomObjectModel(customModel)
     if timeOn and timeOff then
         engineSetModelVisibleTime(runtimeModel, timeOn, timeOff)
     end
-    -- Match the Pawn streamer's one-kilometre range in GTA's renderer. The
-    -- extended flag bypasses MTA's legacy 325-unit ceiling.
-    engineSetModelLODDistance(runtimeModel, 1000, true)
+    engineSetModelLODDistance(runtimeModel, OBJECT_MODEL_DRAW_DISTANCE)
     loadedObjectModels[customModel] = {
         runtimeModel = runtimeModel,
         col = col,
         txd = txd,
         dff = dff,
     }
+    objectModelLastUsed[customModel] = getTickCount()
+    local loadDuration = getTickCount() - loadStartedAt
+    if loadDuration >= 20 then
+        outputDebugString(string.format(
+            "[MRP models] Wolne ladowanie modelu %d: %d ms",
+            customModel, loadDuration
+        ), 2)
+    end
     return runtimeModel
 end
 
@@ -269,6 +346,7 @@ local function freeCustomObjectModel(customModel)
     local loaded = loadedObjectModels[customModel]
     if not loaded then return false end
     loadedObjectModels[customModel] = nil
+    objectModelLastUsed[customModel] = nil
     engineFreeModel(loaded.runtimeModel)
     destroyEngineAsset(loaded.dff)
     destroyEngineAsset(loaded.txd)
@@ -280,6 +358,24 @@ local function cancelObjectModelRelease(customModel)
     local timer = objectModelReleaseTimers[customModel]
     if timer and isTimer(timer) then killTimer(timer) end
     objectModelReleaseTimers[customModel] = nil
+end
+
+local function trimIdleObjectModels()
+    local idle = {}
+    for customModel in pairs(loadedObjectModels) do
+        local users = objectModelUsers[customModel]
+        if not users or not next(users) then
+            idle[#idle + 1] = customModel
+        end
+    end
+    if #idle <= MAX_IDLE_OBJECT_MODELS then return end
+    table.sort(idle, function(a, b)
+        return (objectModelLastUsed[a] or 0) < (objectModelLastUsed[b] or 0)
+    end)
+    for index = 1, #idle - MAX_IDLE_OBJECT_MODELS do
+        cancelObjectModelRelease(idle[index])
+        freeCustomObjectModel(idle[index])
+    end
 end
 
 local function scheduleObjectModelRelease(customModel)
@@ -299,6 +395,7 @@ releaseObjectModel = function(object, resetPlaceholder)
         users[object] = nil
         if not next(users) then
             objectModelUsers[customModel] = nil
+            objectModelLastUsed[customModel] = getTickCount()
             scheduleObjectModelRelease(customModel)
         end
     end
@@ -319,6 +416,7 @@ local function retainObjectModel(object, customModel)
     activeObjectModels[object] = customModel
     objectModelUsers[customModel] = objectModelUsers[customModel] or {}
     objectModelUsers[customModel][object] = true
+    objectModelLastUsed[customModel] = getTickCount()
     cancelObjectModelRelease(customModel)
 end
 
@@ -338,11 +436,14 @@ local function processObjectModelLoadQueue()
         objectModelLoadHead = objectModelLoadHead + 1
     end
     if customModel then
+        local preload = customModel.preload
+        customModel = customModel.model
         queuedObjectModels[customModel] = nil
-        if hasPendingObjectModel(customModel) and objectModels[customModel]
+        if (preload or hasPendingObjectModel(customModel)) and objectModels[customModel]
             and not loadedObjectModels[customModel]
         then
             loadCustomObjectModel(customModel)
+            trimIdleObjectModels()
         end
         if retryPendingObjectModels then retryPendingObjectModels(customModel) end
     end
@@ -357,15 +458,44 @@ local function processObjectModelLoadQueue()
     end
 end
 
-local function queueObjectModelLoad(customModel)
+local function queueObjectModelLoad(customModel, preload)
     if loadedObjectModels[customModel] or queuedObjectModels[customModel] then return end
     queuedObjectModels[customModel] = true
     objectModelLoadTail = objectModelLoadTail + 1
-    objectModelLoadQueue[objectModelLoadTail] = customModel
+    objectModelLoadQueue[objectModelLoadTail] = {
+        model = customModel,
+        preload = preload and true or false,
+    }
     if not objectModelLoadTimer or not isTimer(objectModelLoadTimer) then
         objectModelLoadTimer = setTimer(
             processObjectModelLoadQueue, OBJECT_MODEL_LOAD_INTERVAL, 1
         )
+    end
+end
+
+local function prewarmCommonObjectModels()
+    for _, customModel in ipairs(GAMEMODE_PREWARM_OBJECT_MODELS) do
+        if objectModels[customModel] then
+            queueObjectModelLoad(customModel, true)
+        end
+    end
+    local counts = {}
+    for _, object in ipairs(getElementsByType("object")) do
+        local customModel = tonumber(getElementData(object, "mrp:customObjectModel"))
+        if customModel and objectModels[customModel] then
+            counts[customModel] = (counts[customModel] or 0) + 1
+        end
+    end
+    local common = {}
+    for customModel, count in pairs(counts) do
+        common[#common + 1] = { model = customModel, count = count }
+    end
+    table.sort(common, function(a, b)
+        if a.count == b.count then return a.model < b.model end
+        return a.count > b.count
+    end)
+    for index = 1, math.min(PREWARM_OBJECT_MODELS, #common) do
+        queueObjectModelLoad(common[index].model, true)
     end
 end
 
@@ -544,6 +674,7 @@ addEventHandler("onClientResourceStop", resourceRoot, function()
     end
     for customModel, loaded in pairs(loadedObjectModels) do
         loadedObjectModels[customModel] = nil
+        objectModelLastUsed[customModel] = nil
         engineFreeModel(loaded.runtimeModel)
         destroyEngineAsset(loaded.dff)
         destroyEngineAsset(loaded.txd)
@@ -568,6 +699,9 @@ addEventHandler("mrp:onObjectModelsReady", resourceRoot, function(models)
     for model, definition in pairs(models or {}) do
         objectModels[tonumber(model)] = definition
     end
+    -- Warm the most common replacements while the player is still joining or
+    -- selecting a class, not when the first fast vehicle reaches the district.
+    prewarmCommonObjectModels()
     retryPendingObjectModels()
     for _, object in ipairs(getElementsByType("object")) do
         local customModel = getElementData(object, "mrp:customObjectModel")

@@ -3,6 +3,51 @@ local tocolor = tocolor
 
 local VEHICLE_DROP_TRY_INTERVAL = 100
 local VEHICLE_DROP_MAX_TRIES = 30
+local MRP_PERFORMANCE_SAMPLE_INTERVAL = 5000
+
+local mrpPerformance = {
+	createdObjects = 0,
+	destroyedObjects = 0,
+	framesOver33 = 0,
+	framesOver50 = 0,
+	maxFrameTime = 0,
+}
+
+addEventHandler('onClientPreRender', root, function(timeSlice)
+	timeSlice = tonumber(timeSlice) or 0
+	if timeSlice > mrpPerformance.maxFrameTime then
+		mrpPerformance.maxFrameTime = timeSlice
+	end
+	if timeSlice >= 33 then mrpPerformance.framesOver33 = mrpPerformance.framesOver33 + 1 end
+	if timeSlice >= 50 then mrpPerformance.framesOver50 = mrpPerformance.framesOver50 + 1 end
+end)
+
+setTimer(function()
+	local vehicle = getPedOccupiedVehicle(localPlayer)
+	local movingElement = vehicle or localPlayer
+	local vx, vy, vz = getElementVelocity(movingElement)
+	local speed = math.sqrt(vx * vx + vy * vy + vz * vz) * 180
+	local usedMemory = type(engineStreamingGetUsedMemory) == 'function'
+		and engineStreamingGetUsedMemory() or 0
+	local memoryLimit = type(engineStreamingGetMemorySize) == 'function'
+		and engineStreamingGetMemorySize() or 0
+	triggerServerEvent(
+		'mrp:clientStreamingTelemetry', resourceRoot,
+		mrpPerformance.maxFrameTime,
+		mrpPerformance.framesOver33,
+		mrpPerformance.framesOver50,
+		mrpPerformance.createdObjects,
+		mrpPerformance.destroyedObjects,
+		speed,
+		usedMemory,
+		memoryLimit
+	)
+	mrpPerformance.createdObjects = 0
+	mrpPerformance.destroyedObjects = 0
+	mrpPerformance.framesOver33 = 0
+	mrpPerformance.framesOver50 = 0
+	mrpPerformance.maxFrameTime = 0
+end, MRP_PERFORMANCE_SAMPLE_INTERVAL, 0)
 
 local MENU_ITEM_HEIGHT = 25
 local MENU_TOP_PADDING = MENU_ITEM_HEIGHT * 2
@@ -22,24 +67,27 @@ setmetatable(g_Vehicles, defaultEmptyTableMt)
 
 g_Menus = {}
 g_PlayerObjects = {}
-local MRP_OBJECT_DRAW_DISTANCE = 1000
-local extendedObjectModels = {}
+-- 1000 with extended LOD made every script-created object visible far beyond
+-- the normal GTA streaming range and produced micro-stutters while travelling.
+-- 170 still reaches MTA's normal maximum on high client draw-distance settings.
+local MRP_OBJECT_DRAW_DISTANCE = 170
+local configuredObjectModels = {}
 
-local function applyExtendedObjectDrawDistance(object)
+local function applyObjectDrawDistance(object)
 	if not isElement(object) or getElementType(object) ~= 'object' then return end
 	local model = getElementModel(object)
-	if model and model >= 321 and model <= 18630 and not extendedObjectModels[model] then
-		-- Extended LOD removes the legacy 325-unit ceiling. It affects only
-		-- script-created objects, so the stock GTA world remains untouched.
+	if model and model >= 321 and model <= 18630 and not configuredObjectModels[model] then
+		-- This affects only script-created objects, so the stock GTA world
+		-- remains untouched.
 		-- The setting is global per model ID, therefore doing it once avoids
 		-- thousands of identical engine calls while objects stream in.
-		engineSetModelLODDistance(model, MRP_OBJECT_DRAW_DISTANCE, true)
-		extendedObjectModels[model] = true
+		engineSetModelLODDistance(model, MRP_OBJECT_DRAW_DISTANCE)
+		configuredObjectModels[model] = true
 	end
 end
 
 addEventHandler('onClientElementCreate', root, function()
-	applyExtendedObjectDrawDistance(source)
+	applyObjectDrawDistance(source)
 end)
 g_TextDraws = {}
 g_TextLabels = {}
@@ -634,13 +682,14 @@ addEventHandler('onClientElementDimensionChange', localPlayer, syncAllPlayerObje
 addEventHandler('onClientElementInteriorChange', localPlayer, syncAllPlayerObjectWorlds)
 
 function CreatePlayerObject(objID, model, x, y, z, rX, rY, rZ, customModel)
+	mrpPerformance.createdObjects = mrpPerformance.createdObjects + 1
 	model = tonumber(model)
 	-- GTA:SA object IDs contain holes. Validate against the local model bitmap:
 	-- probing engineGetModelNameFromID with an invalid ID emits a client warning.
 	local validModel = not customModel and mrpIsValidObjectModel(model)
 	local createModel = validModel and model or 1337
 	g_PlayerObjects[objID] = createObject(createModel, x, y, z, rX, rY, rZ)
-	applyExtendedObjectDrawDistance(g_PlayerObjects[objID])
+	applyObjectDrawDistance(g_PlayerObjects[objID])
 	if not g_PlayerObjects[objID] then
 		g_PlayerObjects[objID] = createObject(1337, x, y, z, rX, rY, rZ) -- Create a dummy object anyway since createobject can also be used to make camera attachments
 		setElementAlpha(g_PlayerObjects[objID], 0)
@@ -650,6 +699,9 @@ function CreatePlayerObject(objID, model, x, y, z, rX, rY, rZ, customModel)
 		-- mrp_models only after their DFF/TXD/COL have loaded successfully.
 		setElementAlpha(g_PlayerObjects[objID], 0)
 		setElementCollisionsEnabled(g_PlayerObjects[objID], false)
+	else
+		setElementAlpha(g_PlayerObjects[objID], 255)
+		setElementCollisionsEnabled(g_PlayerObjects[objID], true)
 	end
 	syncPlayerObjectWorld(g_PlayerObjects[objID])
 	if customModel then
@@ -670,6 +722,7 @@ function DestroyPlayerObject(objID)
 	if not obj then
 		return
 	end
+	mrpPerformance.destroyedObjects = mrpPerformance.destroyedObjects + 1
 	destroyElement(obj)
 	g_PlayerObjects[objID] = nil
 end
