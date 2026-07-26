@@ -11,6 +11,7 @@ never rewritten.
 from __future__ import annotations
 
 import argparse
+import hashlib
 import shutil
 import subprocess
 import tempfile
@@ -50,6 +51,11 @@ def main() -> int:
     )
     parser.add_argument("--compiler", type=Path)
     parser.add_argument("--output", type=Path)
+    parser.add_argument(
+        "--log",
+        type=Path,
+        help="Write full compiler diagnostics here instead of flooding the terminal",
+    )
     args = parser.parse_args()
 
     source_root = args.source_root.resolve()
@@ -73,14 +79,34 @@ def main() -> int:
             "-d3",
             "-Z+",
         ]
-        subprocess.run(command, cwd=work / "gamemodes", check=True)
+        completed = subprocess.run(
+            command,
+            cwd=work / "gamemodes",
+            check=False,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.STDOUT,
+        )
+        diagnostics = completed.stdout
+        log = (args.log or output.with_suffix(".compile.log")).resolve()
+        log.parent.mkdir(parents=True, exist_ok=True)
+        log.write_bytes(diagnostics)
+        if completed.returncode:
+            tail = diagnostics.decode("cp1250", errors="replace").splitlines()[-40:]
+            raise SystemExit(
+                f"Pawn compiler failed ({completed.returncode}); log: {log}\n"
+                + "\n".join(tail)
+            )
         built = work / "gamemodes" / "Kotnik-RP-MTA.amx"
         output.parent.mkdir(parents=True, exist_ok=True)
         shutil.copy2(built, output)
 
+    digest = hashlib.sha256(output.read_bytes()).hexdigest()
+    warning_count = diagnostics.count(b"warning ")
     print(
         f"Built {output} ({output.stat().st_size} bytes); "
-        f"converted={converted}, ansi_includes={invalid_utf8}, replacements={replaced}"
+        f"sha256={digest}; warnings={warning_count}; "
+        f"converted={converted}, ansi_includes={invalid_utf8}, replacements={replaced}; "
+        f"log={log}"
     )
     return 0
 

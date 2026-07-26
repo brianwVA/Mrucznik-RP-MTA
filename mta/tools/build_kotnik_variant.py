@@ -187,7 +187,7 @@ def build_overlay(
 ) -> None:
     artconfig = source / "KRP-V2-Modele/models/artconfig.txt"
     assets = artconfig.parent
-    amx = amx or source / "gamemodes/Kotnik-RP.amx"
+    amx = amx or source / "gamemodes/Kotnik-RP-MTA.amx"
     scriptfiles = source / "scriptfiles"
     template = runtime / "mta/server/mods/deathmatch/resources/mrp_models"
     required = (
@@ -236,20 +236,20 @@ def build_overlay(
         "<meta>\n"
         '    <info type="map" gamemodes="amx" name="KotnikRP test" '
         'author="KotnikRP" />\n'
-        '    <amx src="Kotnik-RP.amx" />\n'
+        '    <amx src="Kotnik-RP-MTA.amx" />\n'
         "</meta>\n",
         encoding="utf-8",
     )
-    shutil.copy2(amx, amx_resource / "Kotnik-RP.amx")
+    shutil.copy2(amx, amx_resource / "Kotnik-RP-MTA.amx")
     shutil.copytree(scriptfiles, amx_resource / "scriptfiles")
 
     report = {
         "schema_version": 1,
         "source": source.name,
         "status": "compatibility-audit-required",
-        "gamemode": "Kotnik-RP.amx",
-        "gamemode_size": (amx_resource / "Kotnik-RP.amx").stat().st_size,
-        "gamemode_sha256": sha256(amx_resource / "Kotnik-RP.amx"),
+        "gamemode": "Kotnik-RP-MTA.amx",
+        "gamemode_size": (amx_resource / "Kotnik-RP-MTA.amx").stat().st_size,
+        "gamemode_sha256": sha256(amx_resource / "Kotnik-RP-MTA.amx"),
         "scriptfiles": sum(path.is_file() for path in scriptfiles.rglob("*")),
         "scriptfiles_bytes": sum(
             path.stat().st_size for path in scriptfiles.rglob("*") if path.is_file()
@@ -270,7 +270,7 @@ def build_overlay(
         "KotnikRP MTA evaluation overlay\n"
         "================================\n"
         "DO NOT INSTALL THIS OVERLAY ON THE RUNNING SERVER.\n"
-        "It contains the real Kotnik-RP.amx and model assets for isolated tests,\n"
+        "It contains the MTA-adapted Kotnik-RP-MTA.amx and model assets for isolated tests,\n"
         "but the AMX still requires a compatibility audit and plugin fallbacks.\n"
         "The production amx-mrucznik resource is intentionally not included.\n"
         "Verify MANIFEST.sha256 before every isolated test.\n",
@@ -298,7 +298,7 @@ def main() -> int:
     parser.add_argument(
         "--amx",
         type=Path,
-        help="Compiled Kotnik-RP.amx (defaults to SOURCE/gamemodes/Kotnik-RP.amx)",
+        help="Compiled Kotnik-RP-MTA.amx (defaults to SOURCE/gamemodes/Kotnik-RP-MTA.amx)",
     )
     parser.add_argument("--output", type=Path, required=True)
     args = parser.parse_args()
