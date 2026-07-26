@@ -12,6 +12,7 @@ local pendingObjectModels = {}
 local activeObjectModels = {}
 local objectModelUsers = {}
 local objectModelReleaseTimers = {}
+local objectModelLastUsed = {}
 local objectModelLoadQueue = {}
 local objectModelLoadHead = 1
 local objectModelLoadTail = 0
@@ -20,10 +21,15 @@ local objectModelLoadTimer = false
 local releaseObjectModel
 local retryPendingObjectModels
 
-local OBJECT_MODEL_RELEASE_DELAY = 15000
+-- A 15-second release delay made a short drive repeatedly free and reload the
+-- same COL/TXD/DFF files. Keep a bounded warm cache instead: revisiting a
+-- district no longer hits disk and the GTA model pool still has a hard cap.
+local OBJECT_MODEL_RELEASE_DELAY = 5 * 60 * 1000
+local MAX_IDLE_OBJECT_MODELS = 96
+local PREWARM_OBJECT_MODELS = 24
 -- One COL/TXD/DFF replacement can briefly occupy the GTA streaming thread.
 -- Spread dense-area loads across more frames instead of issuing 40 per second.
-local OBJECT_MODEL_LOAD_INTERVAL = 50
+local OBJECT_MODEL_LOAD_INTERVAL = 100
 
 if type(engineSetAsynchronousLoading) == "function" then
     -- Respect the player's preference while avoiding first-use model stalls on
@@ -165,6 +171,12 @@ local function loadCustomModel(customModel)
     if not definition then
         return false
     end
+    -- A source pack can reference a custom skin whose DFF/TXD was never
+    -- shipped. Use its declared stock base instead of making the player
+    -- invisible or repeatedly attempting a missing disk load.
+    if definition.fallback then
+        return tonumber(definition.base) or false
+    end
     if loadedModels[customModel] then
         return loadedModels[customModel]
     end
@@ -210,6 +222,7 @@ local function loadCustomObjectModel(customModel)
         return false
     end
     -- MTA requires custom object assets in COL -> TXD -> DFF order.
+    local loadStartedAt = getTickCount()
     local col, hasEmbeddedCOL = false, false
     if definition.col then
         col = engineLoadCOL(definition.col)
@@ -245,6 +258,14 @@ local function loadCustomObjectModel(customModel)
         txd = txd,
         dff = dff,
     }
+    objectModelLastUsed[customModel] = getTickCount()
+    local loadDuration = getTickCount() - loadStartedAt
+    if loadDuration >= 20 then
+        outputDebugString(string.format(
+            "[MRP models] Wolne ladowanie modelu %d: %d ms",
+            customModel, loadDuration
+        ), 2)
+    end
     return runtimeModel
 end
 
@@ -255,6 +276,7 @@ local function freeCustomObjectModel(customModel)
     local loaded = loadedObjectModels[customModel]
     if not loaded then return false end
     loadedObjectModels[customModel] = nil
+    objectModelLastUsed[customModel] = nil
     engineFreeModel(loaded.runtimeModel)
     destroyEngineAsset(loaded.dff)
     destroyEngineAsset(loaded.txd)
@@ -266,6 +288,24 @@ local function cancelObjectModelRelease(customModel)
     local timer = objectModelReleaseTimers[customModel]
     if timer and isTimer(timer) then killTimer(timer) end
     objectModelReleaseTimers[customModel] = nil
+end
+
+local function trimIdleObjectModels()
+    local idle = {}
+    for customModel in pairs(loadedObjectModels) do
+        local users = objectModelUsers[customModel]
+        if not users or not next(users) then
+            idle[#idle + 1] = customModel
+        end
+    end
+    if #idle <= MAX_IDLE_OBJECT_MODELS then return end
+    table.sort(idle, function(a, b)
+        return (objectModelLastUsed[a] or 0) < (objectModelLastUsed[b] or 0)
+    end)
+    for index = 1, #idle - MAX_IDLE_OBJECT_MODELS do
+        cancelObjectModelRelease(idle[index])
+        freeCustomObjectModel(idle[index])
+    end
 end
 
 local function scheduleObjectModelRelease(customModel)
@@ -285,6 +325,7 @@ releaseObjectModel = function(object, resetPlaceholder)
         users[object] = nil
         if not next(users) then
             objectModelUsers[customModel] = nil
+            objectModelLastUsed[customModel] = getTickCount()
             scheduleObjectModelRelease(customModel)
         end
     end
@@ -305,6 +346,7 @@ local function retainObjectModel(object, customModel)
     activeObjectModels[object] = customModel
     objectModelUsers[customModel] = objectModelUsers[customModel] or {}
     objectModelUsers[customModel][object] = true
+    objectModelLastUsed[customModel] = getTickCount()
     cancelObjectModelRelease(customModel)
 end
 
@@ -324,11 +366,14 @@ local function processObjectModelLoadQueue()
         objectModelLoadHead = objectModelLoadHead + 1
     end
     if customModel then
+        local preload = customModel.preload
+        customModel = customModel.model
         queuedObjectModels[customModel] = nil
-        if hasPendingObjectModel(customModel) and objectModels[customModel]
+        if (preload or hasPendingObjectModel(customModel)) and objectModels[customModel]
             and not loadedObjectModels[customModel]
         then
             loadCustomObjectModel(customModel)
+            trimIdleObjectModels()
         end
         if retryPendingObjectModels then retryPendingObjectModels(customModel) end
     end
@@ -343,15 +388,39 @@ local function processObjectModelLoadQueue()
     end
 end
 
-local function queueObjectModelLoad(customModel)
+local function queueObjectModelLoad(customModel, preload)
     if loadedObjectModels[customModel] or queuedObjectModels[customModel] then return end
     queuedObjectModels[customModel] = true
     objectModelLoadTail = objectModelLoadTail + 1
-    objectModelLoadQueue[objectModelLoadTail] = customModel
+    objectModelLoadQueue[objectModelLoadTail] = {
+        model = customModel,
+        preload = preload and true or false,
+    }
     if not objectModelLoadTimer or not isTimer(objectModelLoadTimer) then
         objectModelLoadTimer = setTimer(
             processObjectModelLoadQueue, OBJECT_MODEL_LOAD_INTERVAL, 1
         )
+    end
+end
+
+local function prewarmCommonObjectModels()
+    local counts = {}
+    for _, object in ipairs(getElementsByType("object")) do
+        local customModel = tonumber(getElementData(object, "mrp:customObjectModel"))
+        if customModel and objectModels[customModel] then
+            counts[customModel] = (counts[customModel] or 0) + 1
+        end
+    end
+    local common = {}
+    for customModel, count in pairs(counts) do
+        common[#common + 1] = { model = customModel, count = count }
+    end
+    table.sort(common, function(a, b)
+        if a.count == b.count then return a.model < b.model end
+        return a.count > b.count
+    end)
+    for index = 1, math.min(PREWARM_OBJECT_MODELS, #common) do
+        queueObjectModelLoad(common[index].model, true)
     end
 end
 
@@ -526,6 +595,7 @@ addEventHandler("onClientResourceStop", resourceRoot, function()
     end
     for customModel, loaded in pairs(loadedObjectModels) do
         loadedObjectModels[customModel] = nil
+        objectModelLastUsed[customModel] = nil
         engineFreeModel(loaded.runtimeModel)
         destroyEngineAsset(loaded.dff)
         destroyEngineAsset(loaded.txd)
@@ -550,6 +620,9 @@ addEventHandler("mrp:onObjectModelsReady", resourceRoot, function(models)
     for model, definition in pairs(models or {}) do
         objectModels[tonumber(model)] = definition
     end
+    -- Warm the most common replacements while the player is still joining or
+    -- selecting a class, not when the first fast vehicle reaches the district.
+    prewarmCommonObjectModels()
     retryPendingObjectModels()
     for _, object in ipairs(getElementsByType("object")) do
         local customModel = getElementData(object, "mrp:customObjectModel")
