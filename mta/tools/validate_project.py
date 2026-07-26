@@ -302,8 +302,13 @@ def main() -> int:
         fail("Vice City objects do not load the COL data embedded by SA-MP")
     if "engineSetModelVisibleTime(runtimeModel, timeOn, timeOff)" not in models_client:
         fail("Vice City day/night models ignore their original visibility times")
-    if "engineSetModelLODDistance(runtimeModel, 1000, true)" not in models_client:
-        fail("Custom objects do not use the extended one-kilometre draw distance")
+    if (
+        "local OBJECT_MODEL_DRAW_DISTANCE = 170" not in models_client
+        or "engineSetModelLODDistance(runtimeModel, OBJECT_MODEL_DRAW_DISTANCE)"
+        not in models_client
+        or "GAMEMODE_PREWARM_OBJECT_MODELS" not in models_client
+    ):
+        fail("Custom objects do not use the bounded, prewarmed streaming profile")
     required_model_streaming_tokens = {
         'addEventHandler("onClientElementStreamOut", root',
         "OBJECT_MODEL_RELEASE_DELAY",
@@ -318,8 +323,11 @@ def main() -> int:
     amx_client = (
         mta / "vendor/mta-amx/amx/client/client.lua"
     ).read_text(encoding="utf-8")
-    if "engineSetModelLODDistance(model, MRP_OBJECT_DRAW_DISTANCE, true)" not in amx_client:
-        fail("Stock script objects do not use the extended draw distance")
+    if (
+        "local MRP_OBJECT_DRAW_DISTANCE = 170" not in amx_client
+        or "engineSetModelLODDistance(model, MRP_OBJECT_DRAW_DISTANCE)" not in amx_client
+    ):
+        fail("Stock script objects do not use the bounded draw distance")
     attached_objects = (
         mta / "vendor/mta-amx/amx/server/natives/a_players.lua"
     ).read_text(encoding="utf-8")

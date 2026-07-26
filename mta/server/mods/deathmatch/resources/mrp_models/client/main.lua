@@ -21,15 +21,29 @@ local objectModelLoadTimer = false
 local releaseObjectModel
 local retryPendingObjectModels
 
--- A 15-second release delay made a short drive repeatedly free and reload the
--- same COL/TXD/DFF files. Keep a bounded warm cache instead: revisiting a
--- district no longer hits disk and the GTA model pool still has a hard cap.
-local OBJECT_MODEL_RELEASE_DELAY = 5 * 60 * 1000
-local MAX_IDLE_OBJECT_MODELS = 96
+-- A short release delay made longer drives repeatedly free and reload the same
+-- COL/TXD/DFF files. Keep the complete Mrucznik map set warm for a normal
+-- session; the cache remains bounded for any runtime registrations.
+local OBJECT_MODEL_RELEASE_DELAY = 60 * 60 * 1000
+local MAX_IDLE_OBJECT_MODELS = 128
 local PREWARM_OBJECT_MODELS = 24
 -- One COL/TXD/DFF replacement can briefly occupy the GTA streaming thread.
 -- Spread dense-area loads across more frames instead of issuing 40 per second.
 local OBJECT_MODEL_LOAD_INTERVAL = 100
+-- Constant custom-object IDs referenced by the current Pawn source. Preloading
+-- these while the player is still logging in moves disk parsing and model
+-- replacement away from the first fast drive through each district.
+local GAMEMODE_PREWARM_OBJECT_MODELS = {
+    18651, 18632, 18648, 18649, 18647, 18650, 19836, 19939,
+    19463, 19294, 19464, 19797, 18728, 18766, 19128, 19280,
+    19300, 19377, 18716, 18747, 19302, 19326, 18652, 18653,
+    18727, 19150, 19310, 19482, 18646, 18680, 18689, 18849,
+    19311, 19328, 19608,
+}
+-- MTA's own guidance recommends about 170 for ordinary high-detail objects.
+-- The previous extended value of 1000 forced large map sections to remain
+-- visible and caused world/model streaming bursts while moving quickly.
+local OBJECT_MODEL_DRAW_DISTANCE = 170
 
 if type(engineSetAsynchronousLoading) == "function" then
     -- Respect the player's preference while avoiding first-use model stalls on
@@ -249,9 +263,7 @@ local function loadCustomObjectModel(customModel)
     if timeOn and timeOff then
         engineSetModelVisibleTime(runtimeModel, timeOn, timeOff)
     end
-    -- Match the Pawn streamer's one-kilometre range in GTA's renderer. The
-    -- extended flag bypasses MTA's legacy 325-unit ceiling.
-    engineSetModelLODDistance(runtimeModel, 1000, true)
+    engineSetModelLODDistance(runtimeModel, OBJECT_MODEL_DRAW_DISTANCE)
     loadedObjectModels[customModel] = {
         runtimeModel = runtimeModel,
         col = col,
@@ -404,6 +416,11 @@ local function queueObjectModelLoad(customModel, preload)
 end
 
 local function prewarmCommonObjectModels()
+    for _, customModel in ipairs(GAMEMODE_PREWARM_OBJECT_MODELS) do
+        if objectModels[customModel] then
+            queueObjectModelLoad(customModel, true)
+        end
+    end
     local counts = {}
     for _, object in ipairs(getElementsByType("object")) do
         local customModel = tonumber(getElementData(object, "mrp:customObjectModel"))
