@@ -10,6 +10,7 @@
     <export function="registerObjectModel" type="server" />
     <export function="applyObjectModel" type="client" />
     <export function="applyObjectMaterial" type="client" />
+    <export function="resetObjectState" type="client" />
     <export function="createPreviewElement" type="client" />
     <file src="client/material_replace.fx" />
     <!-- setup.ps1 appends one <file> entry for every verified DFF/TXD asset. -->

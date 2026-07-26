@@ -131,6 +131,17 @@ local function materialColor(color)
 	return red / 255, green / 255, blue / 255, alpha / 255
 end
 
+local function clearObjectMaterials(object)
+	local materials = objectMaterialShaders[object]
+	if not materials then return end
+	for _, material in pairs(materials) do
+		engineRemoveShaderFromWorldTexture(material.shader, material.sourceTexture, object)
+		if isElement(material.shader) then destroyElement(material.shader) end
+		if material.ownsTexture and isElement(material.texture) then destroyElement(material.texture) end
+	end
+	objectMaterialShaders[object] = nil
+end
+
 function applyObjectMaterial(object, index, model, txdLib, txdName, color)
 	if not isElement(object) then return false end
 	index = tonumber(index) or 0
@@ -171,13 +182,7 @@ end
 addEventHandler("onClientElementDestroy", root, function()
 	pendingObjectModels[source] = nil
 	if releaseObjectModel then releaseObjectModel(source, false) end
-	local materials = objectMaterialShaders[source]
-	if not materials then return end
-	for _, material in pairs(materials) do
-		if isElement(material.shader) then destroyElement(material.shader) end
-		if material.ownsTexture and isElement(material.texture) then destroyElement(material.texture) end
-	end
-	objectMaterialShaders[source] = nil
+	clearObjectMaterials(source)
 end)
 
 local function loadCustomModel(customModel)
@@ -490,6 +495,14 @@ function applyObjectModel(object, customModel)
         setElementCollisionsEnabled(object, true)
     end
     return applied
+end
+
+function resetObjectState(object)
+	if not isElement(object) then return false end
+	pendingObjectModels[object] = nil
+	releaseObjectModel(object, true)
+	clearObjectMaterials(object)
+	return true
 end
 
 retryPendingObjectModels = function(customModel)
