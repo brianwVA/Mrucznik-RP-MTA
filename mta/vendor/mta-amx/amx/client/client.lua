@@ -2565,6 +2565,23 @@ function createListDialog(titleText, message, button1txt, button2txt)
 end
 
 local sampInputDialog
+local MRP_LOGIN_DIALOG_ID = 230
+local mrpLoginCameraLocked = false
+
+local function renderMRPLoginCamera()
+	setCameraMatrix(1288.0, -793.0, 109.0, 1288.0, -794.0, 109.0)
+end
+
+local function setMRPLoginCameraLocked(locked)
+	if mrpLoginCameraLocked == locked then return end
+	mrpLoginCameraLocked = locked
+	if locked then
+		addEventHandler('onClientRender', root, renderMRPLoginCamera)
+		renderMRPLoginCamera()
+	else
+		removeEventHandler('onClientRender', root, renderMRPLoginCamera)
+	end
+end
 
 local function closeSampInputDialog(response)
 	if not inputDialog then return end
@@ -2579,6 +2596,11 @@ local function closeSampInputDialog(response)
 		showCursor(false)
 	end
 	inputDialog = nil
+	setTimer(function()
+		if inputDialog ~= MRP_LOGIN_DIALOG_ID then
+			setMRPLoginCameraLocked(false)
+		end
+	end, 750, 1)
 end
 
 local function pointInRect(px, py, rect)
@@ -2818,6 +2840,7 @@ function ShowPlayerDialog(dialogid, dialogtype, caption, info, button1, button2)
 	end
 
 	if dialogid == -1 then
+		setMRPLoginCameraLocked(false)
 		if g_ClassSelectionInfo and g_ClassSelectionInfo.gui then
 			showCursor(true)
 		elseif not g_TextDrawSelectMode and (not g_CurrentMenu or g_CurrentMenu.disabled) then
@@ -2826,6 +2849,7 @@ function ShowPlayerDialog(dialogid, dialogtype, caption, info, button1, button2)
 		return true
 	end
 
+	setMRPLoginCameraLocked(dialogid == MRP_LOGIN_DIALOG_ID)
 	showCursor(true)
 	caption = caption:gsub('(=?{[0-9A-Fa-f]*})', '')
 
