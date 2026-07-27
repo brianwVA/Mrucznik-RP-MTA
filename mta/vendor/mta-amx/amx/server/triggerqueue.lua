@@ -5,7 +5,13 @@ local beginClientQueue
 
 local function joinHandler(player)
 	player = player or source
-	playerData[player] = { loaded = false, pending = {}, queueStarted = false }
+	playerData[player] = {
+		loaded = false,
+		pending = {},
+		queueStarted = false,
+		textDrawVisibility = {},
+		visibilitySequence = 0
+	}
 	-- Never flush before the client explicitly confirms that onClientCall is
 	-- registered. MTA buffers remote events while downloading resources; an
 	-- elapsed-time fallback can therefore release thousands of calls into a
@@ -78,7 +84,13 @@ beginClientQueue = function(player, reason)
 			local event = pending[head]
 			if not event then return end
 			head = head + 1
-			_triggerClientEvent(player, event.name, event.source, unpack(event.args))
+			local data = playerData[player]
+			local latestVisibility = event.visibilityKey
+				and data.textDrawVisibility[event.visibilityKey]
+			if not latestVisibility
+				or latestVisibility.sequence == event.visibilitySequence then
+				_triggerClientEvent(player, event.name, event.source, unpack(event.args))
+			end
 			setTimer(flushNext, 16, 1)
 		end
 		setTimer(flushNext, 50, 1)
@@ -98,6 +110,32 @@ addEventHandler('onPlayerQuit', root,
 	end
 )
 
+-- Login dialogs are allowed to overtake the startup queue. A player can
+-- therefore finish logging in while older show/hide calls are still pending.
+-- Remember the newest state per textdraw so a stale "show" cannot overwrite a
+-- newer "hide" after the player has already spawned.
+local function recordTextDrawVisibility(player, name, args)
+	local data = playerData[player]
+	if not data
+		or name ~= 'onClientCall'
+		or (args[1] ~= 'TextDrawShowForPlayer'
+			and args[1] ~= 'TextDrawHideForPlayer') then
+		return nil, nil
+	end
+
+	local textDrawID = args[2]
+	if textDrawID == nil then
+		return nil, nil
+	end
+
+	data.visibilitySequence = data.visibilitySequence + 1
+	data.textDrawVisibility[textDrawID] = {
+		action = args[1],
+		sequence = data.visibilitySequence
+	}
+	return textDrawID, data.visibilitySequence
+end
+
 local function addToQueue(player, name, source, args)
 	if not playerData[player] or not playerData[player].pending then
 		return
@@ -108,7 +146,15 @@ local function addToQueue(player, name, source, args)
 			args[i] = table.deepcopy(a)
 		end
 	end
-	table.insert(playerData[player].pending, { name = name, source = source, args = args })
+	local visibilityKey, visibilitySequence =
+		recordTextDrawVisibility(player, name, args)
+	table.insert(playerData[player].pending, {
+		name = name,
+		source = source,
+		args = args,
+		visibilityKey = visibilityKey,
+		visibilitySequence = visibilitySequence
+	})
 end
 
 function triggerClientEvent(...)
@@ -136,10 +182,14 @@ function triggerClientEvent(...)
 			end
 		end
 		if triggerNow then
+			for player in pairs(playerData) do
+				recordTextDrawVisibility(player, name, args)
+			end
 			_triggerClientEvent(root, name, source, unpack(args))
 		else
 			for player, data in pairs(playerData) do
 				if data.loaded then
+					recordTextDrawVisibility(player, name, args)
 					_triggerClientEvent(player, name, source, unpack(args))
 				else
 					addToQueue(player, name, source, args)
@@ -149,6 +199,7 @@ function triggerClientEvent(...)
 	elseif playerData[triggerFor] then
 		-- trigger for single player
 		if playerData[triggerFor].loaded then
+			recordTextDrawVisibility(triggerFor, name, args)
 			_triggerClientEvent(triggerFor, name, source, unpack(args))
 		else
 			addToQueue(triggerFor, name, source, args)
