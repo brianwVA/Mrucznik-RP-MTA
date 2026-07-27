@@ -38,11 +38,13 @@ oraz ładowanie pluginów Kotnika. Nadal wymagają sprawdzenia:
    requests, profiler, ColAndreas i pozostałe wymagane pluginy. Chrono
    (`Now`, `TimeFormat`) oraz używane przez Kotnika funkcje FileManagera
    (`file_write`, `dir_create`) są obsługiwane bezpośrednio przez adapter Lua,
-   aby nie uzależniać serwera od starych binariów. MySQL R41-4 korzysta z
-   oficjalnego 32-bitowego wydania CentOS 7, zgodnego ze starszym systemem
-   bibliotecznym hostingu. Streamer musi być uruchamiany dokładnie w wersji
-   2.9.6 zgodnej z dołączonym include. Discord Connector jest celowo
-   zastąpiony bezpiecznymi stubami.
+   aby nie uzależniać serwera od starych binariów. Dokładny zestaw 29
+   natywnych funkcji MySQL R41 importowanych przez AMX jest obsługiwany przez
+   adapter Lua korzystający z wbudowanego sterownika MySQL MTA. Obejmuje
+   zapytania synchroniczne i callbacki, cache oraz ORM używany do danych
+   gracza; dzięki temu Kotnik nie ładuje niezgodnego `mysql.so`. Streamer musi
+   być uruchamiany dokładnie w wersji 2.9.6 zgodnej z dołączonym include.
+   Discord Connector jest celowo zastąpiony bezpiecznymi stubami.
 4. `config.json` odwołuje się do trzech filtrów skryptowych, których nie ma w
    przekazanej paczce: `animy`, `realtime` i `sobeitblock`.
 5. Źródłowy `config.json` zawiera dane uwierzytelniające. Generator celowo go

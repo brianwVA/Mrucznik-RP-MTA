@@ -352,6 +352,447 @@ function mysql_real_escape_string(amx, source, output, connectionHandle)
     return 1
 end
 
+-- BlueG MySQL R41 compatibility used by KotnikRP.  The hosting platform runs
+-- an older 32-bit Linux userland on which recent mysql.so builds are not
+-- reliably loadable.  These adapters keep the original Pawn API while using
+-- MTA's maintained database driver.
+local r41State = {
+    nextCache = 0,
+    caches = {},
+    activeCache = false,
+    nextOrm = 0,
+    orms = {},
+    lastError = 0,
+    lastErrorText = "",
+}
+
+local function r41ReadFile(path)
+    if not fileExists(path) then return false end
+    local handle = fileOpen(path, true)
+    if not handle then return false end
+    local content = fileRead(handle, fileGetSize(handle))
+    fileClose(handle)
+    return content
+end
+
+local function r41Escape(value)
+    value = tostring(value or "")
+    if mysqlState.connection and isElement(mysqlState.connection) then
+        local prepared = dbPrepareString(mysqlState.connection, "?", value)
+        if prepared and prepared:sub(1, 1) == "'" and prepared:sub(-1) == "'" then
+            return prepared:sub(2, -2)
+        end
+    end
+    return value:gsub("\\", "\\\\")
+        :gsub("\0", "\\0")
+        :gsub("\n", "\\n")
+        :gsub("\r", "\\r")
+        :gsub("\26", "\\Z")
+        :gsub("'", "\\'")
+        :gsub('"', '\\"')
+end
+
+local function r41NewCache(query, rows, affectedRows, insertId)
+    r41State.nextCache = r41State.nextCache + 1
+    local id = r41State.nextCache
+    rows = type(rows) == "table" and rows or {}
+    r41State.caches[id] = {
+        query = query,
+        rows = rows,
+        columns = resolveResultColumns(query, rows),
+        affectedRows = tonumber(affectedRows) or 0,
+        insertId = tonumber(insertId) or 0,
+    }
+    r41State.activeCache = id
+    return id
+end
+
+local function r41Cache()
+    return r41State.caches[r41State.activeCache]
+end
+
+local function r41RunQuery(query)
+    local write = isMysqlWrite(query)
+    local connection = write and mysqlState.writeConnection or mysqlState.connection
+    local rows, affectedOrError, insertOrMessage = pollMysql(query, connection)
+    if rows == false then
+        r41State.lastError = tonumber(affectedOrError) or 1
+        r41State.lastErrorText = tostring(insertOrMessage or "Database query failed")
+        return false
+    end
+    r41State.lastError, r41State.lastErrorText = 0, ""
+    return r41NewCache(query, rows, affectedOrError, insertOrMessage)
+end
+
+local function r41CallbackArgs(amx, formatString, rawArgs)
+    local values = {}
+    local rawIndex = 0
+    for index = 1, #tostring(formatString or "") do
+        local kind = formatString:sub(index, index)
+        if kind ~= " " then
+            rawIndex = rawIndex + 1
+            local address = rawArgs[rawIndex]
+            if kind == "s" then
+                values[#values + 1] = readMemString(amx, address) or ""
+            elseif kind == "f" then
+                values[#values + 1] = amx.memDAT[address] or 0
+            else
+                values[#values + 1] = amx.memDAT[address] or 0
+            end
+        end
+    end
+    return values
+end
+
+local function r41Format(amx, pattern, rawArgs)
+    local argumentIndex = 0
+    local function nextValue(kind)
+        argumentIndex = argumentIndex + 1
+        local address = rawArgs[argumentIndex]
+        if not address then return kind == "string" and "" or 0 end
+        if kind == "string" or kind == "escape" then
+            return readMemString(amx, address) or ""
+        elseif kind == "float" then
+            return cell2float(amx.memDAT[address] or 0)
+        end
+        return amx.memDAT[address] or 0
+    end
+
+    return tostring(pattern or ""):gsub("%%(%-?)(%d*)(%.?%d*)([%a%%])",
+        function(flag, width, precision, conversion)
+            if conversion == "%" then return "%" end
+            local kind
+            if conversion == "s" then
+                kind = "string"
+            elseif conversion == "e" then
+                kind = "escape"
+            elseif conversion == "f" then
+                kind = "float"
+            elseif conversion == "d" or conversion == "i"
+                or conversion == "u" or conversion == "x"
+            then
+                kind = "int"
+            else
+                return "%" .. flag .. width .. precision .. conversion
+            end
+
+            local value = nextValue(kind)
+            if kind == "escape" then return r41Escape(value) end
+            if conversion == "i" or conversion == "u" then conversion = "d" end
+            local specifier = "%" .. flag .. width .. precision .. conversion
+            local ok, formatted = pcall(string.format, specifier, value)
+            return ok and formatted or tostring(value)
+        end)
+end
+
+function mysql_connect_file(amx, fileName)
+    fileName = tostring(fileName or "mysql.ini")
+    local content = r41ReadFile(fileName)
+        or r41ReadFile("scriptfiles/" .. fileName:gsub("^.*/", ""))
+    if not content then
+        r41State.lastError, r41State.lastErrorText = 2, "mysql.ini not found"
+        return 0
+    end
+
+    local config = {}
+    for line in content:gmatch("[^\r\n]+") do
+        local key, value = line:match("^%s*([%w_]+)%s*=%s*(.-)%s*$")
+        if key and value and not key:match("^[#;]") then
+            config[key:lower()] = value:gsub('^"(.*)"$', "%1"):gsub("^'(.*)'$", "%1")
+        end
+    end
+    mysqlState.config = {
+        host = config.hostname or config.host or config.server or "127.0.0.1",
+        user = config.username or config.user or "root",
+        password = config.password or "",
+        database = config.database or config.dbname or "",
+    }
+    if mysqlState.config.database == "" or not connectMysql() then
+        r41State.lastError, r41State.lastErrorText = 2006, "MySQL connection failed"
+        return 0
+    end
+    r41State.lastError, r41State.lastErrorText = 0, ""
+    return 1
+end
+
+function mysql_close(amx, handle)
+    if mysqlState.connection and isElement(mysqlState.connection) then
+        destroyElement(mysqlState.connection)
+    end
+    if mysqlState.writeConnection and isElement(mysqlState.writeConnection) then
+        destroyElement(mysqlState.writeConnection)
+    end
+    mysqlState.connection, mysqlState.writeConnection = false, false
+    return 1
+end
+
+function mysql_errno(amx, handle)
+    return r41State.lastError
+end
+
+function mysql_error(amx, output, length, handle)
+    writeMemString(amx, output, r41State.lastErrorText:sub(1, math.max(0, length - 1)))
+    return 1
+end
+
+function mysql_escape_string(amx, source, output, length, handle)
+    writeMemString(amx, output, r41Escape(source):sub(1, math.max(0, length - 1)))
+    return 1
+end
+
+function mysql_format(amx, handle, output, length, pattern, ...)
+    local result = r41Format(amx, pattern, {...})
+    writeMemString(amx, output, result:sub(1, math.max(0, length - 1)))
+    return 1
+end
+
+function mysql_set_charset(amx, charset, handle)
+    if not mysqlState.connection then return 0 end
+    local safeCharset = tostring(charset or ""):match("^([%w_]+)$")
+    if not safeCharset then return 0 end
+    local cache = r41RunQuery("SET NAMES " .. safeCharset)
+    if cache then
+        r41State.caches[cache] = nil
+        r41State.activeCache = false
+        return 1
+    end
+    return 0
+end
+
+function mysql_query(amx, handle, query, useCache)
+    return r41RunQuery(query) or 0
+end
+
+function mysql_tquery(amx, handle, query, callback, formatString, ...)
+    local previousCache = r41State.activeCache
+    local cache = r41RunQuery(query)
+    if not cache then
+        if amx.publics and amx.publics.OnQueryError then
+            procCallInternal(amx, "OnQueryError", r41State.lastError,
+                r41State.lastErrorText, callback or "", query, handle or 1)
+        end
+        r41State.activeCache = previousCache
+        return 0
+    end
+
+    if callback and callback ~= "" then
+        local callbackArgs = r41CallbackArgs(amx, formatString, {...})
+        procCallInternal(amx, callback, unpack(callbackArgs))
+    end
+    r41State.caches[cache] = nil
+    r41State.activeCache = previousCache
+    return 1
+end
+
+function cache_get_row_count(amx, output)
+    local cache = r41Cache()
+    amx.memDAT[output] = cache and #cache.rows or 0
+    return 1
+end
+
+local function r41Column(cache, index)
+    return cache and cache.columns[(tonumber(index) or 0) + 1]
+end
+
+local function r41Value(rowIndex, column)
+    local cache = r41Cache()
+    local row = cache and cache.rows[(tonumber(rowIndex) or 0) + 1]
+    return rowValue(row, column)
+end
+
+function cache_get_value_index(amx, rowIndex, columnIndex, output, length)
+    local cache = r41Cache()
+    local value = r41Value(rowIndex, r41Column(cache, columnIndex))
+    writeMemString(amx, output, tostring(value or ""):sub(1, math.max(0, length - 1)))
+    return 1
+end
+
+function cache_get_value_index_int(amx, rowIndex, columnIndex, output)
+    local cache = r41Cache()
+    amx.memDAT[output] = tonumber(r41Value(rowIndex, r41Column(cache, columnIndex))) or 0
+    return 1
+end
+
+function cache_get_value_index_float(amx, rowIndex, columnIndex, output)
+    local cache = r41Cache()
+    amx.memDAT[output] = float2cell(tonumber(r41Value(rowIndex, r41Column(cache, columnIndex))) or 0)
+    return 1
+end
+
+function cache_get_value_name(amx, rowIndex, column, output, length)
+    writeMemString(amx, output,
+        tostring(r41Value(rowIndex, column) or ""):sub(1, math.max(0, length - 1)))
+    return 1
+end
+
+function cache_get_value_name_int(amx, rowIndex, column, output)
+    amx.memDAT[output] = tonumber(r41Value(rowIndex, column)) or 0
+    return 1
+end
+
+function cache_get_value_name_float(amx, rowIndex, column, output)
+    amx.memDAT[output] = float2cell(tonumber(r41Value(rowIndex, column)) or 0)
+    return 1
+end
+
+function cache_delete(amx, cacheId)
+    r41State.caches[cacheId] = nil
+    if r41State.activeCache == cacheId then r41State.activeCache = false end
+    return 1
+end
+
+function cache_set_active(amx, cacheId)
+    if not r41State.caches[cacheId] then return 0 end
+    r41State.activeCache = cacheId
+    return 1
+end
+
+function cache_is_valid(amx, cacheId)
+    return r41State.caches[cacheId] and 1 or 0
+end
+
+function cache_affected_rows(amx)
+    local cache = r41Cache()
+    return cache and cache.affectedRows or 0
+end
+
+function cache_insert_id(amx)
+    local cache = r41Cache()
+    return cache and cache.insertId or 0
+end
+
+local function r41Identifier(value)
+    return tostring(value or ""):match("^([%w_]+)$")
+end
+
+local function r41OrmValue(amx, variable)
+    if variable.kind == "string" then
+        return "'" .. r41Escape(readMemString(amx, variable.address) or "") .. "'"
+    elseif variable.kind == "float" then
+        return tostring(cell2float(amx.memDAT[variable.address] or 0))
+    end
+    return tostring(tonumber(amx.memDAT[variable.address]) or 0)
+end
+
+function orm_create(amx, tableName, handle)
+    tableName = r41Identifier(tableName)
+    if not tableName then return 0 end
+    r41State.nextOrm = r41State.nextOrm + 1
+    r41State.orms[r41State.nextOrm] = {
+        amx = amx,
+        tableName = tableName,
+        variables = {},
+        key = false,
+        error = 1,
+    }
+    return r41State.nextOrm
+end
+
+function orm_destroy(amx, ormId)
+    r41State.orms[ormId] = nil
+    return 1
+end
+
+function orm_addvar_int(amx, ormId, address, column)
+    local orm, safeColumn = r41State.orms[ormId], r41Identifier(column)
+    if not orm or not safeColumn then return 0 end
+    orm.variables[safeColumn] = {kind="int", address=address, column=safeColumn}
+    return 1
+end
+
+function orm_addvar_float(amx, ormId, address, column)
+    local orm, safeColumn = r41State.orms[ormId], r41Identifier(column)
+    if not orm or not safeColumn then return 0 end
+    orm.variables[safeColumn] = {kind="float", address=address, column=safeColumn}
+    return 1
+end
+
+function orm_addvar_string(amx, ormId, address, length, column)
+    local orm, safeColumn = r41State.orms[ormId], r41Identifier(column)
+    if not orm or not safeColumn then return 0 end
+    orm.variables[safeColumn] = {
+        kind="string", address=address, length=tonumber(length) or 1, column=safeColumn
+    }
+    return 1
+end
+
+function orm_setkey(amx, ormId, column)
+    local orm, safeColumn = r41State.orms[ormId], r41Identifier(column)
+    if not orm or not safeColumn or not orm.variables[safeColumn] then return 0 end
+    orm.key = safeColumn
+    return 1
+end
+
+local function r41OrmCallback(amx, callback, formatString, rawArgs)
+    if callback and callback ~= "" then
+        procCallInternal(amx, callback,
+            unpack(r41CallbackArgs(amx, formatString, rawArgs)))
+    end
+end
+
+function orm_load(amx, ormId, callback, formatString, ...)
+    local orm = r41State.orms[ormId]
+    if not orm or not orm.key then return 0 end
+    local keyVariable = orm.variables[orm.key]
+    local query = ("SELECT * FROM `%s` WHERE `%s`=%s LIMIT 1"):format(
+        orm.tableName, orm.key, r41OrmValue(amx, keyVariable))
+    local cacheId = r41RunQuery(query)
+    local cache = cacheId and r41State.caches[cacheId]
+    local row = cache and cache.rows[1]
+    if not row then
+        orm.error = 2
+    else
+        orm.error = 1
+        for column, variable in pairs(orm.variables) do
+            local value = rowValue(row, column)
+            if variable.kind == "string" then
+                writeMemString(amx, variable.address,
+                    tostring(value or ""):sub(1, math.max(0, variable.length - 1)))
+            elseif variable.kind == "float" then
+                amx.memDAT[variable.address] = float2cell(tonumber(value) or 0)
+            else
+                amx.memDAT[variable.address] = tonumber(value) or 0
+            end
+        end
+    end
+    if cacheId then r41State.caches[cacheId] = nil end
+    r41State.activeCache = false
+    r41OrmCallback(amx, callback, formatString, {...})
+    return orm.error
+end
+
+orm_select = orm_load
+
+local function r41OrmSave(amx, ormId, callback, formatString, rawArgs)
+    local orm = r41State.orms[ormId]
+    if not orm or not orm.key then return 0 end
+    local assignments = {}
+    for column, variable in pairs(orm.variables) do
+        if column ~= orm.key then
+            assignments[#assignments + 1] = ("`%s`=%s"):format(
+                column, r41OrmValue(amx, variable))
+        end
+    end
+    table.sort(assignments)
+    local query = ("UPDATE `%s` SET %s WHERE `%s`=%s"):format(
+        orm.tableName, table.concat(assignments, ","),
+        orm.key, r41OrmValue(amx, orm.variables[orm.key]))
+    local cacheId = r41RunQuery(query)
+    orm.error = cacheId and 1 or 0
+    if cacheId then r41State.caches[cacheId] = nil end
+    r41State.activeCache = false
+    r41OrmCallback(amx, callback, formatString, rawArgs)
+    return orm.error
+end
+
+function orm_update(amx, ormId, callback, formatString, ...)
+    return r41OrmSave(amx, ormId, callback, formatString, {...})
+end
+
+function orm_save(amx, ormId, callback, formatString, ...)
+    return r41OrmSave(amx, ormId, callback, formatString, {...})
+end
+
 -- pawn-redis subset imported by the compiled AMX. SET clears an existing TTL;
 -- INCRBY preserves it, exactly like Redis.
 local redisState = {connection=false, clientId=0}
@@ -456,11 +897,6 @@ g_SAMPSyscallPrototypes.mysql_free_result = {'i'}
 g_SAMPSyscallPrototypes.mysql_insert_id = {'i'}
 g_SAMPSyscallPrototypes.mysql_num_rows = {'i'}
 g_SAMPSyscallPrototypes.mysql_ping = {'i'}
--- Do not register the legacy R5 `mysql_query(query, ...)` adapter in the
--- Kotnik runtime. BlueG R41 uses the same native name with the incompatible
--- `mysql_query(handle, query, use_cache)` signature; registering this Lua
--- prototype shadowed the real plugin and turned the numeric DB handle into a
--- one-byte SQL string. The R41 plugin now owns this native end-to-end.
 g_SAMPSyscallPrototypes.mysql_real_escape_string = {'s', 'r', 'i'}
 g_SAMPSyscallPrototypes.mysql_reconnect = {'i'}
 g_SAMPSyscallPrototypes.mysql_retrieve_row = {'i'}
@@ -472,3 +908,34 @@ g_SAMPSyscallPrototypes.Redis_GetInt = {'i', 's', 'r'}
 g_SAMPSyscallPrototypes.Redis_GetString = {'i', 's', 'r', 'i'}
 g_SAMPSyscallPrototypes.Redis_SetInt = {'i', 's', 'i'}
 g_SAMPSyscallPrototypes.Redis_SetString = {'i', 's', 's'}
+
+-- Exact BlueG R41 native set imported by Kotnik-RP-MTA.amx.
+g_SAMPSyscallPrototypes.mysql_connect_file = {'s'}
+g_SAMPSyscallPrototypes.mysql_close = {'i'}
+g_SAMPSyscallPrototypes.mysql_errno = {'i'}
+g_SAMPSyscallPrototypes.mysql_error = {'r', 'i', 'i'}
+g_SAMPSyscallPrototypes.mysql_escape_string = {'s', 'r', 'i', 'i'}
+g_SAMPSyscallPrototypes.mysql_format = {'i', 'r', 'i', 's'}
+g_SAMPSyscallPrototypes.mysql_query = {'i', 's', 'b'}
+g_SAMPSyscallPrototypes.mysql_set_charset = {'s', 'i'}
+g_SAMPSyscallPrototypes.mysql_tquery = {'i', 's', 's', 's'}
+g_SAMPSyscallPrototypes.cache_get_row_count = {'r'}
+g_SAMPSyscallPrototypes.cache_get_value_index = {'i', 'i', 'r', 'i'}
+g_SAMPSyscallPrototypes.cache_get_value_index_float = {'i', 'i', 'r'}
+g_SAMPSyscallPrototypes.cache_get_value_index_int = {'i', 'i', 'r'}
+g_SAMPSyscallPrototypes.cache_get_value_name = {'i', 's', 'r', 'i'}
+g_SAMPSyscallPrototypes.cache_get_value_name_float = {'i', 's', 'r'}
+g_SAMPSyscallPrototypes.cache_get_value_name_int = {'i', 's', 'r'}
+g_SAMPSyscallPrototypes.cache_delete = {'i'}
+g_SAMPSyscallPrototypes.cache_set_active = {'i'}
+g_SAMPSyscallPrototypes.cache_affected_rows = {}
+g_SAMPSyscallPrototypes.cache_insert_id = {}
+g_SAMPSyscallPrototypes.orm_create = {'s', 'i'}
+g_SAMPSyscallPrototypes.orm_destroy = {'i'}
+g_SAMPSyscallPrototypes.orm_addvar_int = {'i', 'r', 's'}
+g_SAMPSyscallPrototypes.orm_addvar_float = {'i', 'r', 's'}
+g_SAMPSyscallPrototypes.orm_addvar_string = {'i', 'r', 'i', 's'}
+g_SAMPSyscallPrototypes.orm_setkey = {'i', 's'}
+g_SAMPSyscallPrototypes.orm_select = {'i', 's', 's'}
+g_SAMPSyscallPrototypes.orm_update = {'i', 's', 's'}
+g_SAMPSyscallPrototypes.orm_save = {'i', 's', 's'}
