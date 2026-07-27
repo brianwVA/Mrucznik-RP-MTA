@@ -559,7 +559,7 @@ function mysql_set_charset(amx, charset, handle)
     return 0
 end
 
-function mysql_query(amx, handle, query, useCache)
+function mysql_query_r41(amx, handle, query, useCache)
     return r41RunQuery(query) or 0
 end
 
@@ -916,7 +916,11 @@ g_SAMPSyscallPrototypes.mysql_errno = {'i'}
 g_SAMPSyscallPrototypes.mysql_error = {'r', 'i', 'i'}
 g_SAMPSyscallPrototypes.mysql_escape_string = {'s', 'r', 'i', 'i'}
 g_SAMPSyscallPrototypes.mysql_format = {'i', 'r', 'i', 's'}
-g_SAMPSyscallPrototypes.mysql_query = {'i', 's', 'b'}
+-- The active production gamemode is Mrucznik-RP (BlueG R5), whose
+-- mysql_query native receives the SQL string as its first argument.
+-- Kotnik's R41 implementation remains available internally as
+-- mysql_query_r41, but must not override the R5 native/prototype.
+g_SAMPSyscallPrototypes.mysql_query = {'s', 'i', 'i', 'i'}
 g_SAMPSyscallPrototypes.mysql_set_charset = {'s', 'i'}
 g_SAMPSyscallPrototypes.mysql_tquery = {'i', 's', 's', 's'}
 g_SAMPSyscallPrototypes.cache_get_row_count = {'r'}
