@@ -406,6 +406,92 @@ function GetVehicleSeats(amx, vehicle)
     return passengers and passengers + 1 or 1
 end
 
+-- Kotnik uses two small natives from the chrono plugin.  Keeping them in the
+-- compatibility layer avoids loading an obsolete Linux binary on MTA.
+function Now(amx)
+    local realTime = getRealTime()
+    return realTime and realTime.timestamp or 0
+end
+
+local function padNumber(value, width, padding)
+    local text = tostring(tonumber(value) or 0)
+    padding = padding or "0"
+    return padding:rep(math.max(0, width - #text)) .. text
+end
+
+local function formatKotnikTime(timestamp, pattern)
+    local value = getRealTime(tonumber(timestamp) or 0)
+    if not value then return "" end
+
+    local year = value.year + 1900
+    local month = value.month + 1
+    local monthDay = value.monthday
+    local hour = value.hour
+    local replacements = {
+        ["%Y"] = padNumber(year, 4),
+        ["%y"] = padNumber(year % 100, 2),
+        ["%m"] = padNumber(month, 2),
+        ["%d"] = padNumber(monthDay, 2),
+        ["%e"] = padNumber(monthDay, 2, " "),
+        ["%H"] = padNumber(hour, 2),
+        ["%I"] = padNumber((hour % 12 == 0) and 12 or hour % 12, 2),
+        ["%M"] = padNumber(value.minute, 2),
+        ["%S"] = padNumber(value.second, 2),
+        ["%p"] = hour < 12 and "AM" or "PM",
+        ["%%"] = "%",
+    }
+
+    local protectedPercent = "\1"
+    local result = tostring(pattern or ""):gsub("%%%%", protectedPercent)
+    result = result:gsub("%%[YymdeHIMSp]", function(token)
+        return replacements[token] or token
+    end)
+    result = result:gsub("%%F", replacements["%Y"] .. "-" .. replacements["%m"] .. "-" .. replacements["%d"])
+    result = result:gsub("%%R", replacements["%H"] .. ":" .. replacements["%M"])
+    result = result:gsub("%%T", replacements["%H"] .. ":" .. replacements["%M"] .. ":" .. replacements["%S"])
+    return result:gsub(protectedPercent, replacements["%%"])
+end
+
+function TimeFormat(amx, timestamp, pattern, output, length)
+    local maximum = math.max(0, (tonumber(length) or 1) - 1)
+    writeMemString(amx, output, formatKotnikTime(timestamp, pattern):sub(1, maximum))
+    return 1
+end
+
+local function safeKotnikFilePath(path)
+    path = tostring(path or ""):gsub("\\", "/"):gsub("^/+", "")
+    if path == "" or path:find(":", 1, true) or path:find("..", 1, true) then
+        return false
+    end
+    return path
+end
+
+function file_write(amx, path, text, mode)
+    path = safeKotnikFilePath(path)
+    if not path then return 0 end
+
+    local append = tostring(mode or "a"):sub(1, 1):lower() ~= "w"
+    local handle
+    if append and fileExists(path) then
+        handle = fileOpen(path)
+        if handle then fileSetPos(handle, fileGetSize(handle)) end
+    else
+        if fileExists(path) then fileDelete(path) end
+        handle = fileCreate(path)
+    end
+    if not handle then return 0 end
+    fileWrite(handle, tostring(text or ""))
+    fileClose(handle)
+    return 1
+end
+
+-- The logger plugin owns its directory tree.  Its dir_create native was only
+-- used as an initialization hint, so acknowledging a safe relative path keeps
+-- the original startup flow without granting arbitrary filesystem access.
+function dir_create(amx, path)
+    return safeKotnikFilePath(path) and 1 or 0
+end
+
 g_SAMPSyscallPrototypes.AddSimpleModel = {'i', 'i', 'i', 's', 's'}
 g_SAMPSyscallPrototypes.AddSimpleModelTimed = {'i', 'i', 'i', 's', 's', 'i', 'i'}
 g_SAMPSyscallPrototypes.FindTextureFileNameFromCRC = {'i', 'r', 'i'}
@@ -449,6 +535,10 @@ g_SAMPSyscallPrototypes.AddCharModel = {'i', 'i', 's', 's'}
 g_SAMPSyscallPrototypes.CountRunningTimers = {}
 g_SAMPSyscallPrototypes.GetVehicleSeats = {'v'}
 g_SAMPSyscallPrototypes.IsPlayerInDriveByMode = {'p'}
+g_SAMPSyscallPrototypes.Now = {}
+g_SAMPSyscallPrototypes.TimeFormat = {'i', 's', 'r', 'i'}
+g_SAMPSyscallPrototypes.file_write = {'s', 's', 's'}
+g_SAMPSyscallPrototypes.dir_create = {'s'}
 
 -- One-time house ownership reset. Houses are legacy INI files inside this
 -- resource, not rows in MySQL. Preserve every occupied file verbatim in one

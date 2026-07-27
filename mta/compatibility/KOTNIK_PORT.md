@@ -34,10 +34,15 @@ oraz ładowanie pluginów Kotnika. Nadal wymagają sprawdzenia:
 2. Gamemode importuje funkcje Streamera dla obiektów, pickupów, checkpointów,
    aktorów, obszarów i etykiet 3D. Wariant ustawia limit 2000 widocznych
    elementów, więc przed testem graczy potrzebny jest test pamięci i churnu.
-3. Trzeba potwierdzić na docelowym środowisku Linux ładowanie pluginów
-   Pawn.RakNet, pawn-memory, ColAndreas, sscanf, Whirlpool, chrono,
-   FileManager i MySQL. Discord Connector jest celowo zastąpiony bezpiecznymi
-   stubami.
+3. Docelowy hosting ładuje crashdetect, sscanf, Whirlpool, pawn-memory,
+   requests, profiler, ColAndreas i pozostałe wymagane pluginy. Chrono
+   (`Now`, `TimeFormat`) oraz używane przez Kotnika funkcje FileManagera
+   (`file_write`, `dir_create`) są obsługiwane bezpośrednio przez adapter Lua,
+   aby nie uzależniać serwera od starych binariów. MySQL R41-4 korzysta z
+   oficjalnego 32-bitowego wydania CentOS 7, zgodnego ze starszym systemem
+   bibliotecznym hostingu. Streamer musi być uruchamiany dokładnie w wersji
+   2.9.6 zgodnej z dołączonym include. Discord Connector jest celowo
+   zastąpiony bezpiecznymi stubami.
 4. `config.json` odwołuje się do trzech filtrów skryptowych, których nie ma w
    przekazanej paczce: `animy`, `realtime` i `sobeitblock`.
 5. Źródłowy `config.json` zawiera dane uwierzytelniające. Generator celowo go
