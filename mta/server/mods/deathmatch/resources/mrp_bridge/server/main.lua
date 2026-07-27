@@ -15,6 +15,19 @@ local function ensureBaseline()
         outputDebugString("[MRP] Brak zasobu " .. MRP.baselineResource .. ". Uruchom mta/setup.ps1.", 1)
         return false
     end
+
+    -- The Kotnik test map is intentionally kept on the server, but mapmanager
+    -- can select it before the production baseline during an AMX restart.
+    -- Stop only that known test variant before loading M-RP so two Pawn
+    -- gamemodes can never run in the same AMX VM.
+    local kotnik = getResourceFromName("amx-kotnik")
+    if kotnik and getResourceState(kotnik) == "running" then
+        if not stopResource(kotnik) then
+            outputDebugString("[MRP] Nie udało się zatrzymać testowego zasobu amx-kotnik.", 1)
+            return false
+        end
+    end
+
     if getResourceState(baseline) == "loaded" then
         return startResource(baseline)
     end
