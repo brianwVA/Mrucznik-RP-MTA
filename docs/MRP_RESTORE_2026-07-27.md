@@ -48,10 +48,29 @@ Po odtworzeniu panel potwierdził stan online oraz:
 - załadowanie `Mrucznik-RP.amx`,
 - uruchomienie zasobu `amx-mrucznik`.
 
-MRP ma długi etap inicjalizacji. W logu występują ostrzeżenia
-`mrp_databases.lua:69` i brak prawa `startResource` dla `mrp_bridge`,
-ale nie zatrzymują uruchomienia `amx-mrucznik`. Nie należy mieszać ich
-z pracami nad KotnikRP.
+MRP ma długi etap inicjalizacji. Ostrzeżenie
+`mrp_databases.lua:69: Bad argument @ 'dbQuery'` nie jest nieszkodliwe:
+oznacza, że kontrakt `mysql_query` został przełączony z MRP R5 na
+Kotnik R41. Skutkiem jest m.in. odrzucanie prawidłowych haseł
+istniejących kont mimo zachowanych pól `Key` i `Salt`.
+
+Poprawka zachowująca wszystkie dotychczasowe hashe:
+
+- Commit: `a4cf8e500`
+- Nakładka wdrożeniowa:
+  `MRP-login-database-fix-2026-07-27-v2.zip`
+- SHA-256 nakładki:
+  `aee234ed1f811ac5524503227b9edfd28dadde48aeb57051bc9e15ebfb1e2679`
+
+Aktywna konfiguracja `/mods/deathmatch/resources/mrp_bridge/shared/config.lua`
+musi zawierać:
+
+```lua
+MRP.baselineResource = "amx-mrucznik"
+```
+
+Nie może wskazywać `amx-kotnik`, ponieważ wtedy po restarcie usługi
+bridge ponownie uruchomi testowy gamemode KotnikRP.
 
 ## Kolejność kolejnego przywracania
 
@@ -60,6 +79,11 @@ z pracami nad KotnikRP.
 3. Odtworzyć bazę MRP z podanego zrzutu.
 4. Rozpakować referencyjne archiwum MRP do `/`.
 5. Nałożyć paczkę kamery logowania do `/`.
-6. Uruchomić usługę i poczekać na `startResource: Resource
+6. Nałożyć poprawkę adaptera bazy i sprawdzić, że bridge wskazuje
+   `amx-mrucznik`.
+7. Uruchomić usługę i poczekać na `startResource: Resource
    'amx-mrucznik' started`.
-7. Sprawdzić logowanie gracza, kamerę, pojazdy, obiekty i komendy.
+8. Sprawdzić, że po starcie nie pojawia się błąd `dbQuery` z pustym
+   argumentem.
+9. Sprawdzić logowanie istniejącego konta, kamerę, pojazdy, obiekty
+   i komendy.
